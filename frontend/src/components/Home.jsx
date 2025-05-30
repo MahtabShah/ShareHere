@@ -9,7 +9,7 @@ export const Home = ({ user, comment }) => {
   const HandleLike = async (id) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/auth/like_this_post`,
+        `https://sharehere-2ykp.onrender.com/api/auth/like_this_post`,
         {
           id: id,
           isliked: !isliked,
@@ -36,10 +36,10 @@ export const Home = ({ user, comment }) => {
 
   const SubmitComment = async (e, id) => {
     e.preventDefault();
-    console.log("form comment ------> ", new_comment);
+    // console.log("form comment ------> ", new_comment);
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/auth/set_comment_this_post`,
+        `https://sharehere-2ykp.onrender.com/api/auth/set_comment_this_post`,
         {
           headers: { Authorization: `Bearer ${token}` },
           id: id, // post ki id hai
