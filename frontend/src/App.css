@@ -1,0 +1,5 @@
+.like-comment-share small:hover {
+  cursor: pointer;
+  /* background: #c8dffb; */
+  color: #ff6600;
+}
