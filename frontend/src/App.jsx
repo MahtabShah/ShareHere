@@ -20,7 +20,7 @@ function App() {
   const fetchSentences = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/sentence/my", {
+      const res = await axios.get("https://sharehere-2ykp.onrender.com/api/sentence/my", {
         headers: { Authorization: `Bearer ${token}` },
       });
       // setLoading(false);
@@ -43,7 +43,7 @@ function App() {
 
   const fetchAllUsers = async () => {
     try {
-      await axios.get("http://localhost:5000/api/auth/home").then((res) => {
+      await axios.get("https://sharehere-2ykp.onrender.com/api/auth/home").then((res) => {
         // console.log("response at Home.jsx ", res.data);
         setall_user(res.data);
       });
@@ -53,7 +53,7 @@ function App() {
 
     try {
       await axios
-        .get("http://localhost:5000/api/auth/all_sentence")
+        .get("https://sharehere-2ykp.onrender.com/api/auth/all_sentence")
         .then((res) => {
           console.log("response at Home.jsx ", res.data);
           setall_comments(res.data);
@@ -64,7 +64,7 @@ function App() {
 
     try {
       await axios
-        .get("http://localhost:5000/api/auth/all_post_comments")
+        .get("https://sharehere-2ykp.onrender.com/api/auth/all_post_comments")
         .then((res) => {
           // console.log("response at Home.jsx ", res.data);
           setall_post_comments(res.data);
