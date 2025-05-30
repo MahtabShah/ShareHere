@@ -31,7 +31,14 @@ module.exports = { io };
 
 
 // Middleware
-app.use(cors());
+
+const corsOptions = {
+  origin: "https://sharehere-frontend.onrender.com", // must match your deployed frontend
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Connect to MongoDB
