@@ -18,12 +18,12 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://sharehere-2ykp.onrender.com/api/auth/login",
         formData
       );
-      alert("Login successful! Token: " + res.data.token);
+      // alert("Login successful! Token: " + res.data.token);
       localStorage.setItem("token", res.data.token);
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       alert("Login failed: " + err.response?.data?.message || err.message);
     }
