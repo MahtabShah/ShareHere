@@ -10,7 +10,7 @@ const server = http.createServer(app);
 // ✅ Setup Socket.IO with CORS to allow frontend
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173", // Replace with your frontend origin in production
+    origin: "https://sharehere-frontend.onrender.com", // Replace with your frontend origin in production
     methods: ['GET', 'POST']
   }
 });
