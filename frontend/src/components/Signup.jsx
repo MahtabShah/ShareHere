@@ -18,13 +18,13 @@ const Signup = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        "https://sharehere-2ykp.onrender.com/api/auth/signup",
         formData
       );
-      console.log("Signup successful! Token: " + res.data.token);
+      // console.log("Signup successful! Token: " + res.data.token);
       localStorage.setItem("token", res.data.token);
 
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       alert("Signup failed: " + err.response?.data?.message || err.message);
     }
