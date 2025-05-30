@@ -12,7 +12,7 @@ const PostSentence = ({ fetchSentences }) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/sentence/post",
+        "https://sharehere-2ykp.onrender.com/api/sentence/post",
         { text },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -25,7 +25,7 @@ const PostSentence = ({ fetchSentences }) => {
           (err.response?.data?.message || err.message)
       );
 
-      console.error("Error saving sentence:", err);
+      // console.error("Error saving sentence:", err);
 
       setErrors(err.response?.data?.message || err.message);
     }
