@@ -14,6 +14,8 @@ const server = http.createServer(app);
 //   : "http://localhost:5174";
 
 const allowedOrigin = "https://sharehere-frontend.onrender.com"
+console.log("Allowed Origin:", allowedOrigin);
+
 
 // ✅ Setup Socket.IO with CORS to allow frontend
 const io = socketIo(server, {
