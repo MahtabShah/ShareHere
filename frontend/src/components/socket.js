@@ -1,11 +1,9 @@
-import { io } from 'socket.io-client';
-const API = import.meta.env.VITE_API_URL;
-
 import { io } from "socket.io-client";
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
 
-const socket = io("https://sharequeot.onrender.com", {
-  withCredentials: true
+const socket = io(allowedOrigin, {
+  transports: ["websocket"], // optional, but better than polling
+  withCredentials: true,
 });
-// change to your server URL in production
 
 export default socket;
