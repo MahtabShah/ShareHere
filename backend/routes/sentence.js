@@ -39,14 +39,16 @@ const upload = multer({ storage });
 // POST a sentence (Protected)
 router.post('/post', verifyToken, async (req, res) => {
   // console.log("/post at line 23 res.user ", req.user)
-  const text = req.body.text;
-  const imagePaths = req.files.map(file => file.path);
+  const {images,  text} = req.body;
+  // const imagePaths = req.files.map(file => file.path);
+  console.log(text, "images....", images)
 
   const userId = req.user.userId || req.user.id;
   try {
     const sentence = new Sentence({
       text,
       userId: userId,
+      images: images,
     });
 
     await sentence.save();
@@ -55,11 +57,12 @@ router.post('/post', verifyToken, async (req, res) => {
     io.emit('sentence', sentence.toObject());
 
 
-  // console.log("/post at line 31, sentence : " , sentence)
+  console.log("/post at line 31, sentence : " , sentence)
 
     res.status(201).json({ message: 'Sentence saved', sentence });
   } catch (err) {
   console.error('Error saving sentence:', err);
+  console.log("logs---------->" , imagePaths)
     res.status(500).json({ message: 'Failed to save sentence' });
   }
 });
@@ -83,12 +86,12 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 router.get('/fix-sentences', async (req, res) => {
   try {
     const result = await User.updateMany(
-      { bg_clr: { $exists: false } },
-      { $set: { bg_clr: `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})` } },
+      // { bg_clr: { $exists: false } },
+      // { $set: { bg_clr: `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})` } },
 
-      console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
-      //  { likes: { $exists: false } },
-      // { $set: { likes: 0 } }
+      // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
+       { images: { $exists: false } },
+      { $set: { images: [String] } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

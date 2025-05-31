@@ -128,6 +128,27 @@ export const Home = ({ user, comment }) => {
 
             <div className="w-100">
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
+                <div className="d-flex rounded-3" style={{ overflowX: "auto" }}>
+                  {comment?.images?.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="border overflow-hidden rounded-3 m-3"
+                      style={{
+                        height: "440px",
+                        width: "600px",
+                        maxWidth: "94%",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <img
+                        src={img}
+                        alt={`Preview ${idx + 1}`}
+                        className="h-100 w-100"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  ))}
+                </div>
                 <li className="p-2 w-100 flex-grow-1 rounded-3">
                   {comment && (
                     <div key={comment.text.slice(0, -1)}>{comment.text}</div>

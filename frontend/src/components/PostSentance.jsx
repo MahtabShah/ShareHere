@@ -39,13 +39,19 @@ const PostSentence = ({ fetchSentences }) => {
       formData.append("images", img); // repeat key name for multiple files
     }
 
+    console.log("form dat ===> ", formData, images, text);
     try {
-      const res = await axios.post(`${API}/api/sentence/post`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.post(
+        `${API}/api/sentence/post`,
+        { images, text },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       // alert("Sentence saved: " + res.data.sentence.text);
       fetchSentences();
       setText("");
+      setImages([]);
     } catch (err) {
       alert(
         "Failed to save sentence: " +
