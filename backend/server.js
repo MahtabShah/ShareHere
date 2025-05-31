@@ -13,7 +13,7 @@ const server = http.createServer(app);
 //   ? 
 //   : "http://localhost:5174";
 // Allow multiple origins
-const allowedOrigins = process.env.VITE_API_URL || "https://sharehere-frontend.onrender.com" // Add production frontend
+const allowedOrigins = process.env.VITE_FRONTEND_URL || "https://sharehere-frontend.onrender.com" // Add production frontend
 
 
 app.use(cors({
