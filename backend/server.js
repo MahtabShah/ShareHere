@@ -9,16 +9,24 @@ const server = http.createServer(app);
 
 
 
+// const allowedOrigin = process.env.NODE_ENV === 'production'
+//   ? 
+//   : "http://localhost:5174";
+// Allow multiple origins
+const allowedOrigins = process.env.VITE_API_URL || "https://sharehere-frontend.onrender.com" // Add production frontend
+
+
 app.use(cors({
-  origin:  "https://sharehere-frontend.onrender.com",
+  origin: allowedOrigins,
   credentials: true // If using cookies/auth
 }));
+console.log("Allowed Origin:", allowedOrigins);
 
 
 // ✅ Setup Socket.IO with CORS to allow frontend
 const io = socketIo(server, {
   cors: {
-    origin:  "https://sharehere-frontend.onrender.com", // Replace with your frontend origin in production
+    origin: allowedOrigins, // Replace with your frontend origin in production
     methods: ['GET', 'POST']
   }
 });
@@ -41,7 +49,7 @@ module.exports = { io };
 // Middleware
 
 const corsOptions = {
-  origin:  "https://sharehere-frontend.onrender.com" , // must match your deployed frontend
+  origin: allowedOrigins, // must match your deployed frontend
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 };

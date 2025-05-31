@@ -1,7 +1,9 @@
 
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5000", {
+const backendUrl = import.meta.env.VITE_API_URL || "https://sharequeot.onrender.com"
+
+const socket = io(backendUrl, {
   transports: ["websocket"],
   withCredentials: true,
 });
