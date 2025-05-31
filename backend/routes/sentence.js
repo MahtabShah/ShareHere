@@ -6,19 +6,19 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
 const multer = require("multer");
+const storage = require('../utils/storage');
 
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/"); // Ensure this folder exists or create it
+//   },
+//   filename: (req, file, cb) => {
+//     const uniqueName = Date.now() + "-" + file.originalname;
+//     cb(null, uniqueName);
+//   },
+// });
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Ensure this folder exists or create it
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
-  },
-});
-
-const upload = multer({ storage });
+// const upload = multer({ storage });
 
 
 // Middleware to verify JWT
@@ -36,36 +36,79 @@ const upload = multer({ storage });
 // };
 
 
+
+
+
+
 // POST a sentence (Protected)
-router.post('/post', verifyToken, async (req, res) => {
-  // console.log("/post at line 23 res.user ", req.user)
-  const {images,  text} = req.body;
-  // const imagePaths = req.files.map(file => file.path);
-  console.log(text, "images....", images)
+
+const upload = multer({ storage: storage });
+
+// router.post('/post', verifyToken, upload.single('image'),async (req, res) => {
+//   // console.log("/post at line 23 res.user ", req.user)
+//   const {images,  text} = req.body;
+//   // const imagePaths = req.files.map(file => file.path);
+//   console.log(text, "images....", images)
+
+//   const userId = req.user.userId || req.user.id;
+//   try {
+//     const sentence = new Sentence({
+//       text,
+//       userId: userId,
+//       images: req.file.path ,
+//     });
+
+//     await sentence.save();
+
+//     // 🔴 Emit sentence to all connected clients
+//     io.emit('sentence', sentence.toObject());
+
+
+//   console.log("/post at line 31, sentence : " , sentence)
+
+//     res.status(201).json({ message: 'Sentence saved', sentence });
+//   } catch (err) {
+//   console.error('Error saving sentence:', err);
+//   console.log("logs---------->" , imagePaths)
+//     res.status(500).json({ message: 'Failed to save sentence' });
+//   }
+// });
+
+
+
+
+router.post('/post', verifyToken, upload.array('images'), async (req, res) => {
+  const { text } = req.body;
+  const files = req.files; // array of uploaded files
+
+  const imageUrls = files.map(file => file.path); // cloudinary URLs
 
   const userId = req.user.userId || req.user.id;
+
   try {
     const sentence = new Sentence({
       text,
       userId: userId,
-      images: images,
+      images: imageUrls,
     });
 
+    console.log("backend response 95 sentence.js " ,userId, sentence )
     await sentence.save();
 
-        // 🔴 Emit sentence to all connected clients
     io.emit('sentence', sentence.toObject());
-
-
-  console.log("/post at line 31, sentence : " , sentence)
 
     res.status(201).json({ message: 'Sentence saved', sentence });
   } catch (err) {
-  console.error('Error saving sentence:', err);
-  console.log("logs---------->" , imagePaths)
+    console.error('Error saving sentence:', err);
     res.status(500).json({ message: 'Failed to save sentence' });
   }
 });
+
+
+
+
+
+
 
 // GET all sentences by the logged-in user (Protected)
 router.get('/my', verifyToken, async (req, res) => {

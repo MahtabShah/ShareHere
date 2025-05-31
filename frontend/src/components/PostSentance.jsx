@@ -1,12 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { Loading } from "../../TinyComponent/LazyLoading";
+import { use } from "react";
+
 const API = import.meta.env.VITE_API_URL;
 
-const PostSentence = ({ fetchSentences }) => {
+const PostSentence = ({ fetchSentences, all_user }) => {
   const [text, setText] = useState("");
   const [Errors, setErrors] = useState("");
-
   const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]); // for showing thumbnails
+  const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
 
   const textareaRef = useRef(null);
 
@@ -26,28 +30,29 @@ const PostSentence = ({ fetchSentences }) => {
 
     const newImageUrls = files.map((file) => URL.createObjectURL(file));
     setImages((prev) => [...prev, ...newImageUrls]);
+
+    setImagePreviews((prev) => [...prev, ...files]); // store File objects
   };
+  const token = localStorage.getItem("token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
     // console.log("token......at line 10: frontend", token);
 
     const formData = new FormData();
     formData.append("text", text);
-    for (let img of images) {
+    console.log("form dat ===> 1 ", formData);
+
+    for (let img of imagePreviews) {
       formData.append("images", img); // repeat key name for multiple files
     }
 
+    setLazyLoading(true);
     console.log("form dat ===> ", formData, images, text);
     try {
-      const res = await axios.post(
-        `${API}/api/sentence/post`,
-        { images, text },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await axios.post(`${API}/api/sentence/post`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       // alert("Sentence saved: " + res.data.sentence.text);
       fetchSentences();
       setText("");
@@ -62,12 +67,34 @@ const PostSentence = ({ fetchSentences }) => {
 
       setErrors(err.response?.data?.message || err.message);
     }
+
+    setLazyLoading(!true);
   };
+
+  const [curr_user, setcurr_user] = useState(null);
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token"); // ya jahan se token milta ho
+
+  //   const decodeJWT = () => {
+  //     if (!token) return null;
+
+  //     const payload = token.split(".")[1];
+  //     const decodedPayload = atob(payload); // base64 decode
+  //     return JSON.parse(decodedPayload);
+  //   };
+
+  //   const userData = decodeJWT(); // ✅ call the function
+  //   setcurr_user(userData); // ✅ now set it
+  //   const current_user = all_user?.find((u) => u._id === curr_user.id);
+  //   setcurr_user(current_user);
+  //   console.log("userDate,,,,,", userData, current_user);
+  // }, []);
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="d-flex flex-column">
-        <h4>Post a Vibe Ink Here - - - :)</h4>
+      <div className="d-flex flex-column pt-2">
+        <h4>Post a Vibe Ink Here :)</h4>
 
         <div
           className="border position-relative rounded-0 border-bottom-0"
@@ -97,10 +124,12 @@ const PostSentence = ({ fetchSentences }) => {
                   backgroundColor: "#d63384",
                 }}
               >
-                M
+                {curr_user?.username?.charAt(0) || "M"}
               </div>
               <div>
-                <div style={{ fontWeight: "bold" }}>Mahtāb Shah</div>
+                <div style={{ fontWeight: "bold" }}>
+                  @{curr_user?.username || "Mahtab"}
+                </div>
                 {/* <small style={{ color: "#888" }}>
                           Visibility: Public
                         </small> */}
@@ -113,9 +142,9 @@ const PostSentence = ({ fetchSentences }) => {
                 key={idx}
                 className="border overflow-hidden rounded-3 m-3"
                 style={{
-                  height: "440px",
                   width: "600px",
-                  maxWidth: "94%",
+                  aspectRatio: "17/11",
+                  maxWidth: "92%",
                   flexShrink: 0,
                 }}
               >
@@ -135,7 +164,9 @@ const PostSentence = ({ fetchSentences }) => {
           value={text}
           onChange={handleInput}
           required
-          className="form-control rounded-0 shadow-none border-top-0 ps-3"
+          className={`form-control rounded-0 shadow-none ps-3 ${
+            images.length > 0 ? " border-0 border-top" : "border border-top-0"
+          }`}
           placeholder="Write your sentence here..."
           style={{ overflow: "hidden", resize: "none" }}
           spellCheck="false"
@@ -154,10 +185,10 @@ const PostSentence = ({ fetchSentences }) => {
 
           <button
             type="submit"
-            className="btn btn-outline-danger ps-5 pe-5 rounded-0"
+            className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
             style={{ height: "42px" }}
           >
-            Post
+            {LazyLoading ? <Loading clr={"white"} /> : "Post"}
           </button>
         </div>
       </div>

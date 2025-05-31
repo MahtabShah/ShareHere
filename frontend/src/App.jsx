@@ -68,7 +68,7 @@ function App() {
 
     try {
       await axios.get(`${API}/api/auth/all_sentence`).then((res) => {
-        console.log("response at Home.jsx ", res.data);
+        // console.log("response at Home.jsx ", res.data);
         setall_comments(res.data);
       });
     } catch (error) {
@@ -106,6 +106,8 @@ function App() {
     };
   }, []);
 
+  console.log("alll_coment===> ", all_comments);
+
   return (
     <Router>
       <div className="p-0 pt-3">
@@ -141,14 +143,8 @@ function App() {
                   <PostSentence
                     fetchSentences={fetchSentences}
                     fetchAllUsers={fetchAllUsers}
+                    all_user={all_user}
                   />
-
-                  {/* <Home
-                  all_user={all_user}
-                  all_comments={all_comments}
-                  fetchAllUsers={fetchAllUsers}
-                  fetchSentences={fetchSentences}
-                /> */}
 
                   {LazyLoading ? (
                     <div className="p-3 d-flex justify-content-center">
@@ -163,9 +159,9 @@ function App() {
                             {" "}
                             {all_comments
                               ?.filter((com) => com.userId === u._id)
-                              ?.map((c, idx) => {
+                              ?.map((c, indx) => {
                                 return (
-                                  <Fragment key={idx}>
+                                  <Fragment key={indx}>
                                     {all_comments?.filter(
                                       (com) => com.userId === u._id
                                     ).length > 0 && (

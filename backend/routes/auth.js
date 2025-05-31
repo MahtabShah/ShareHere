@@ -30,7 +30,8 @@ router.post('/signup', async (req, res) => {
     const user = new User({ username, email, password: hashedPassword , bg_clr: random_clr });
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, 'secretkey');
+    const token = jwt.sign({ id: user._id ,  username: user.username,
+    email: user.email,}, 'secretkey');
     res.status(201).json({ token });
 
   } catch (err) {

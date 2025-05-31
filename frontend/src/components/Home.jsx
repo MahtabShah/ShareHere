@@ -95,6 +95,8 @@ export const Home = ({ user, comment }) => {
     }
     setLazyLoading(!true);
   };
+
+  // console.log("everiy time--->", comment);
   return (
     <>
       {comment?.text?.trim() && (
@@ -134,9 +136,9 @@ export const Home = ({ user, comment }) => {
                       key={idx}
                       className="border overflow-hidden rounded-3 m-3"
                       style={{
-                        height: "440px",
                         width: "600px",
-                        maxWidth: "94%",
+                        maxWidth: "92%",
+                        aspectRatio: "17/11",
                         flexShrink: 0,
                       }}
                     >
