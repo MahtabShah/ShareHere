@@ -7,6 +7,7 @@ import { Accordion } from "react-bootstrap";
 
 import { Button, Card, CloseButton, Form, Row, Col } from "react-bootstrap";
 import { FaImage } from "react-icons/fa";
+const API = import.meta.env.VITE_API_URL;
 
 const UploadProduct = ({ fetchUser, user, setUser }) => {
   const [formData, setFormData] = useState({
@@ -122,26 +123,26 @@ const UploadProduct = ({ fetchUser, user, setUser }) => {
       form.append("images", images[i]);
     }
 
-    try {
-      form.append("user", JSON.stringify(user)); // Must be stringified
+    // try {
+    //   form.append("user", JSON.stringify(user)); // Must be stringified
 
-      const res = await fetch("http://localhost:3000/api/products", {
-        method: "POST",
-        body: form, // FormData object
-      });
+    //   const res = await fetch(`${API}/api/products`, {
+    //     method: "POST",
+    //     body: form, // FormData object
+    //   });
 
-      if (res.ok) {
-        const updatedUser = await res.json(); // Get the response
-        alert("Uploaded successfully!");
-        setUser(updatedUser);
-        fetchUser(); // Refresh homepage data
-        navigate("/");
-      } else {
-        alert("Upload failed!");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-    }
+    //   if (res.ok) {
+    //     const updatedUser = await res.json(); // Get the response
+    //     alert("Uploaded successfully!");
+    //     setUser(updatedUser);
+    //     fetchUser(); // Refresh homepage data
+    //     navigate("/");
+    //   } else {
+    //     alert("Upload failed!");
+    //   }
+    // } catch (err) {
+    //   console.error("Error:", err);
+    // }
   };
 
   useEffect(() => {

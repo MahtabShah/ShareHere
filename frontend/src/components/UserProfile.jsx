@@ -18,23 +18,23 @@ const UserProfile = ({ setUser, fetchUser, allusers }) => {
 
   const onEditMode = () => {
     // setOnEditMode(!OnEditMode)
-    nevigate(`/user/EditProfile/${User.id}`);
+    // nevigate(`/user/EditProfile/${User.id}`);
   };
 
   const HandelFollower = async () => {
-    try {
-      await axios
-        .put("http://localhost:3000/api/followed", {
-          userId: User?.id,
-        })
-        .then((res) => {
-          console.log("follower UserProfile at line: 31 component", res.data);
-          setUser(res.data);
-          fetchUser();
-        });
-    } catch (error) {
-      console.error("❌ Error updating follower:", error);
-    }
+    // try {
+    //   await axios
+    //     .put("http://localhost:3000/api/followed", {
+    //       userId: User?.id,
+    //     })
+    //     .then((res) => {
+    //       console.log("follower UserProfile at line: 31 component", res.data);
+    //       setUser(res.data);
+    //       fetchUser();
+    //     });
+    // } catch (error) {
+    //   console.error("❌ Error updating follower:", error);
+    // }
   };
 
   return (
