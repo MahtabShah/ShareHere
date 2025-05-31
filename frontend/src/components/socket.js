@@ -1,7 +1,7 @@
 
 import { io } from "socket.io-client";
 
-const backendUrl = import.meta.env.VITE_API_URL || "https://sharequeot.onrender.com"
+const backendUrl = import.meta.env.VITE_API_URL || "https://sharehere-2ykp.onrender.com"
 
 const socket = io(backendUrl, {
   transports: ["websocket"],
