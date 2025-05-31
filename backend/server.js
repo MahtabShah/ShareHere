@@ -10,7 +10,7 @@ const server = http.createServer(app);
 
 
 app.use(cors({
-  origin:  "https://sharehere-frontend.onrender.com",
+  origin:  "http://localhost:5174",
   credentials: true // If using cookies/auth
 }));
 
@@ -18,7 +18,7 @@ app.use(cors({
 // ✅ Setup Socket.IO with CORS to allow frontend
 const io = socketIo(server, {
   cors: {
-    origin:  "https://sharehere-frontend.onrender.com", // Replace with your frontend origin in production
+    origin:  "http://localhost:5174", // Replace with your frontend origin in production
     methods: ['GET', 'POST']
   }
 });
@@ -41,7 +41,7 @@ module.exports = { io };
 // Middleware
 
 const corsOptions = {
-  origin:  "https://sharehere-frontend.onrender.com" , // must match your deployed frontend
+  origin:  "http://localhost:5174" , // must match your deployed frontend
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 };
