@@ -5,6 +5,20 @@ const User = require("../models/User")
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
+const multer = require("multer");
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Ensure this folder exists or create it
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage });
 
 
 // Middleware to verify JWT
@@ -25,7 +39,9 @@ const { io } = require('../server');
 // POST a sentence (Protected)
 router.post('/post', verifyToken, async (req, res) => {
   // console.log("/post at line 23 res.user ", req.user)
-  const { text } = req.body;
+  const text = req.body.text;
+  const imagePaths = req.files.map(file => file.path);
+
   const userId = req.user.userId || req.user.id;
   try {
     const sentence = new Sentence({

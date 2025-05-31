@@ -36,7 +36,7 @@ function MainHeader() {
 
   return (
     <>
-      {["md"].map((expand) => (
+      {["sm"].map((expand) => (
         <Navbar
           key={expand}
           expand={expand}
@@ -49,7 +49,8 @@ function MainHeader() {
           <Container fluid>
             <Navbar.Brand href="/Explore" className="fw-bold fs-5">
               {" "}
-              Digital Market
+              {/* Digital Market */}
+              VIBE INK
             </Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
@@ -59,15 +60,15 @@ function MainHeader() {
             >
               <Offcanvas.Header closeButton>
                 <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
-                  AI Market
+                  AI [Allways Inspire] VIBE INK
                 </Offcanvas.Title>
               </Offcanvas.Header>
-              <Offcanvas.Body className="bg-light text-white">
-                <Nav className="justify-content-end flex-grow-1 pe-2 gap-2 align-items-center">
+              <Offcanvas.Body className="bg-light text-dark">
+                <Nav className="justify-content-end flex-grow-1 pe-2 gap-2 align-items-">
                   <Nav.Link href="/home">Home</Nav.Link>
-                  <Nav.Link href="/upload">Upload</Nav.Link>
+                  {/* <Nav.Link href="/upload">Upload</Nav.Link> */}
                   <Nav.Link href="/Explore">Explore</Nav.Link>
-                  <Nav.Link href="/shop">Shop Now</Nav.Link>
+                  {/* <Nav.Link href="/shop">Shop Now</Nav.Link> */}
 
                   <Nav.Link
                     href=""
@@ -80,19 +81,27 @@ function MainHeader() {
 
                   {loggedIn ? (
                     <>
-                      <button
-                        className="btn btn-danger text-white p-1 ps-2 pe-2 rounded-0"
-                        onClick={handleLogout}
-                      >
-                        Logout
-                      </button>
-                      <Nav.Link
-                        href={`/user/${currentUser}`}
-                        className="text-white text-center rounded-circle bg-danger"
-                        style={{ width: "42px" }}
-                      >
-                        <FontAwesomeIcon icon={faUser} />
-                      </Nav.Link>
+                      <div className="d-flex">
+                        <button
+                          className="btn btn-danger text-white p-1 ps-2 pe-5 rounded-0 flex-grow-1 position-relative"
+                          onClick={handleLogout}
+                          style={{ minWidth: "134px", height: "42px" }}
+                        >
+                          Logout
+                        </button>
+                        <Nav.Link
+                          href={`/user/${currentUser}`}
+                          className="text-white text-center position-absolute rounded-circle bg-danger "
+                          style={{
+                            width: "42px",
+                            zIndex: "2",
+                            right: "10px",
+                            boxShadow: "0 0 0 10px #f8f9fa",
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faUser} />
+                        </Nav.Link>
+                      </div>
                     </>
                   ) : (
                     <>

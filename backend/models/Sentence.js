@@ -4,7 +4,9 @@ const sentenceSchema = new mongoose.Schema({
   text: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-  likes: { type: Number , default:0}
+  likes: { type: Number , default:0},
+  images: [String], // Ideal way to store image URLs
+
 });
 
 const commentSchema = new mongoose.Schema({

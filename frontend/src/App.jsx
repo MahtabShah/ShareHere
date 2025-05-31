@@ -89,21 +89,15 @@ function App() {
   useEffect(() => {
     fetchSentences();
     fetchAllUsers();
-    // console.log("see the token is defined : ", token);
-
-    // const Interval = setInterval(() => {
-    //   fetchSentences();
-    //   fetchAllUsers();
-    // }, 1000); // Fetch every 5 seconds
-    // return () => clearInterval(Interval);
   }, [token]);
 
   useEffect(() => {
     socket.on("sentence", (sentence) => {
       fetchAllUsers();
 
-      setSentences((prev) => [...prev, sentence]); // ✅ personal sentences
-      // setall_comments((prev) => [sentence, ...prev]); // ✅ all user sentences
+      setSentences((prev) => [...prev, sentence]);
+      fetchSentences();
+      fetchAllUsers();
     });
     setLoading(false);
 
