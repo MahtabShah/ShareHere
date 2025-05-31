@@ -7,10 +7,17 @@ const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app); 
 
+
+
+const allowedOrigin = process.env.NODE_ENV === 'production'
+  ? "https://sharehere-frontend.onrender.com"
+  : "http://localhost:5174";
+
+
 // ✅ Setup Socket.IO with CORS to allow frontend
 const io = socketIo(server, {
   cors: {
-    origin: "https://sharehere-frontend.onrender.com", // Replace with your frontend origin in production
+    origin: allowedOrigin, // Replace with your frontend origin in production
     methods: ['GET', 'POST']
   }
 });
@@ -33,7 +40,7 @@ module.exports = { io };
 // Middleware
 
 const corsOptions = {
-  origin: "https://sharehere-frontend.onrender.com", // must match your deployed frontend
+  origin: allowedOrigin, // must match your deployed frontend
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 };

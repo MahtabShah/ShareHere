@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const API = import.meta.env.VITE_API_URL;
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,10 +18,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "https://sharehere-2ykp.onrender.com/api/auth/login",
-        formData
-      );
+      const res = await axios.post(`${API}/api/auth/login`, formData);
       // alert("Login successful! Token: " + res.data.token);
       localStorage.setItem("token", res.data.token);
       navigate("/home");

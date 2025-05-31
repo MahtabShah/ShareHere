@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const API = import.meta.env.VITE_API_URL;
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -17,10 +18,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "https://sharehere-2ykp.onrender.com/api/auth/signup",
-        formData
-      );
+      const res = await axios.post(`${API}/api/auth/signup`, formData);
       // console.log("Signup successful! Token: " + res.data.token);
       localStorage.setItem("token", res.data.token);
 

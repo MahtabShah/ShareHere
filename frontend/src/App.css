@@ -1,5 +1,41 @@
-.like-comment-share small:hover {
+body {
+  overflow-x: hidden;
+}
+
+:root {
+  --lightBlack-clr: #646464;
+  --light-clr: #e0dfdf;
+}
+
+.like-comment-share small :hover {
   cursor: pointer;
   /* background: #c8dffb; */
-  color: #ff6600;
+  /* color: #ff6600; */
+}
+
+.form-control:focus {
+  box-shadow: none;
+}
+
+textarea {
+  overflow: hidden;
+  resize: none;
+  height: 30px;
+  outline: none;
+}
+
+.animate-rotate {
+  animation: rotateBtn 0.4s ease forwards;
+}
+
+@keyframes rotateBtn {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  50% {
+    transform: rotateZ(-45deg) scale(1.6);
+  }
+  100% {
+    transform: rotateZ(0deg);
+  }
 }
