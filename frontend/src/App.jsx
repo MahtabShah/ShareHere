@@ -1,18 +1,18 @@
 import React, { Fragment } from "react";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
-import PostSentence from "./components/PostSentance";
-import MySentences from "./components/MySentence";
+import Signup from "./maincomponents/Signup";
+import Login from "./maincomponents/Login";
+import PostSentence from "./maincomponents/PostSentance";
+import MySentences from "./maincomponents/MySentence";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home } from "./components/Home";
+import { Home } from "./maincomponents/Home";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import socket from "./components/socket";
+import socket from "./maincomponents/socket";
 import "./App.css";
 import { Loading } from "../TinyComponent/LazyLoading";
-import MainHeader from "./components/MainHeader";
-import LeftNavbar from "./components/LeftNavbar";
+import MainHeader from "./maincomponents/MainHeader";
+import LeftNavbar from "./maincomponents/LeftNavbar";
 import UploadProduct from "./pages/UploadProduct";
 const API = import.meta.env.VITE_API_URL;
 
@@ -110,11 +110,11 @@ function App() {
 
   return (
     <Router>
-      <div className="p-0 pt-3">
+      <div className="p-0 pt-4">
         <MainHeader />
         <LeftNavbar isDisplayedLeftNav={isDisplayedLeftNav} />
         <section
-          className="p-3"
+          className="p-0"
           style={{
             marginTop: "34px",
             marginLeft: `${!isDisplayedLeftNav ? "200px" : "0"}`,

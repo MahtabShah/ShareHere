@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Logo } from "../../TinyComponent/Logo";
 
 function MainHeader() {
   const currentUser = "68367db96029e4bffe215341";
@@ -47,10 +48,8 @@ function MainHeader() {
           style={{ borderBottom: "1px solid var(--light-clr)" }}
         >
           <Container fluid>
-            <Navbar.Brand href="/Explore" className="fw-bold fs-5">
-              {" "}
-              {/* Digital Market */}
-              VIBE INK
+            <Navbar.Brand href="/Explore" className="fw-bold fs-5 pt-3 pb-0">
+              <Logo />
             </Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas

@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { MdSend, MdShare } from "react-icons/md";
 import { Loading } from "../../TinyComponent/LazyLoading";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import UploadProduct from "../pages/UploadProduct";
+import { FaShareAlt, FaRegComment, FaHeart } from "react-icons/fa"; // from Font Awesome
+import { BiShare, BiChat, BiHeart } from "react-icons/bi";
+import Carousel from "react-bootstrap/Carousel";
+import Nav from "react-bootstrap/Nav";
+
 const API = import.meta.env.VITE_API_URL;
 
 export const Home = ({ user, comment }) => {
@@ -11,6 +17,7 @@ export const Home = ({ user, comment }) => {
   const [isliked, setisliked] = useState(false);
   const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
+  const [isdotClicked, setdotClicked] = useState(false); //
 
   // Handle animation on click
   const animateButton = (btnName) => {
@@ -102,8 +109,8 @@ export const Home = ({ user, comment }) => {
       {comment?.text?.trim() && (
         <>
           <div
-            className="d-flex flex-column mt-3 p-0 w-100 bg-light"
-            // style={{ background: "#f5f5f5" }}
+            className="container d-flex flex-column mt-4 p-0 w-100 bg position-relative"
+            style={{ background: "#ddf" }}
             key={comment?.text?.slice(0, -1)}
           >
             <div className="d-flex gap-2">
@@ -122,36 +129,53 @@ export const Home = ({ user, comment }) => {
                 <div>{user?.username?.charAt(0).toUpperCase()}</div>
               </div>
 
-              <div className=" d-flex flex-column small align-item">
+              <div className=" d-flex flex-column flex-grow-1 small align-item">
                 <small className="small">@{user?.username}</small>
-                <small className="small">{comment?.text}</small>
+                <small className="small">
+                  {comment?.text.slice(0, 64)} . . .
+                </small>
+              </div>
+
+              <div className="d-flex pt-2 pe-3">
+                <div className="btn btn-outline-primary  rounded-0">Follow</div>
               </div>
             </div>
 
             <div className="w-100">
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
-                <div className="d-flex rounded-3" style={{ overflowX: "auto" }}>
-                  {comment?.images?.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="border overflow-hidden rounded-3 m-3"
-                      style={{
-                        width: "600px",
-                        maxWidth: "92%",
-                        aspectRatio: "17/11",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <img
-                        src={img}
-                        alt={`Preview ${idx + 1}`}
-                        className="h-100 w-100"
-                        style={{ objectFit: "cover" }}
-                      />
-                    </div>
-                  ))}
+                <div
+                  className="d-flex rounded-3"
+                  style={{ overflow: "hidden" }}
+                >
+                  <Carousel className="border w-100">
+                    {comment?.images?.map((img, idx) => (
+                      <Carousel.Item className="">
+                        <div
+                          key={idx}
+                          className="rounded-3 m-3"
+                          style={{
+                            width: "calc(100% - 2rem)",
+                            maxWidth: "600px",
+                            aspectRatio: "17/15",
+                            minHeight: "400px",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <img
+                            src={img}
+                            alt={`Preview ${idx + 1}`}
+                            className="h-100 w-100"
+                            style={{ objectFit: "cover" }}
+                          />
+                        </div>
+                        {/* <Carousel.Caption>
+                          <h3>First slide label</h3>
+                        </Carousel.Caption> */}
+                      </Carousel.Item>
+                    ))}
+                  </Carousel>
                 </div>
-                <li className="p-2 w-100 flex-grow-1 rounded-3">
+                <li className="p-2 w-100 flex-grow-1 rounded-3 ps-3">
                   {comment && (
                     <div key={comment.text.slice(0, -1)}>{comment.text}</div>
                   )}
@@ -159,8 +183,8 @@ export const Home = ({ user, comment }) => {
               </ul>
             </div>
 
-            <div className="p-2 border-top d-flex justify-content-between small like-comment-share">
-              <small
+            <div className="p-2 border-top d-flex justify-content-between like-comment-share ms-2 me-1">
+              <span
                 className={`pe-3 gap-1 fw-semibold d-flex align-items-center`}
                 style={{ color: `${isliked ? "#ff6600" : ""}`, width: "40px" }}
                 onClick={() => {
@@ -172,52 +196,62 @@ export const Home = ({ user, comment }) => {
                     animatingBtn === "likes" ? "animate-rotate" : ""
                   } rotate`}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    width="15"
-                    fill={isliked ? "#ff6600" : "#444"}
-                  >
-                    <path d="M1 21h4V9H1v12zM23 10c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32a.997.997 0 00-.29-.7l-1-1L9 9v12h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1z" />
-                  </svg>
+                  {isliked ? <FaHeart /> : <BiHeart />}
                 </span>
+
                 <span className="" style={{ marginTop: "0.26rem" }}>
                   {" "}
                   {comment?.likes}&nbsp;
                 </span>
-              </small>
-              <small
+              </span>
+              <span
                 className="ps-3 pe-3 p-1 fw-semibold d-flex align-items-center gap-1"
                 onClick={() => {
                   setopen_comment(!open_comment);
                 }}
               >
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    width="15"
-                    fill="#444"
-                  >
-                    <path d="M21 6h-2v9H6v2c0 1.1.9 2 2 2h9l4 4V8c0-1.1-.9-2-2-2zM3 6h2v12H3z" />
-                  </svg>
-                </span>
                 <span style={{ marginTop: "0.2rem" }}>
-                  {" "}
-                  {comment?.comments?.length || 0}&nbsp;
+                  <BiChat /> {comment?.comments?.length || 0}&nbsp;
                 </span>
-              </small>
-              <small className="ps-3 p-1 fw-semibold" onClick={HandleShare}>
-                <MdShare size={16} />
-                {/* <span> share</span> */}
-              </small>
+              </span>
+              <span className="ps-2 p-1 fw-semibold" onClick={HandleShare}>
+                <BiShare />
+              </span>
+
+              <span
+                onClick={() => {
+                  setdotClicked(!isdotClicked);
+                }}
+              >
+                <BsThreeDotsVertical size={16} />
+              </span>
             </div>
           </div>
+          {isdotClicked && (
+            <div
+              className="container mb-4 small fw-medium d-flex flex-wrap p-3 gap-3"
+              style={{
+                background: "#ccf",
+              }}
+            >
+              <Nav.Link href="/home">Home</Nav.Link>
+              <Nav.Link href="/home">Visit Post</Nav.Link>
+              <Nav.Link href="/home">Follow</Nav.Link>
+              <Nav.Link href="/home">Edit Post</Nav.Link>
+              <Nav.Link href="/home" className=" pe-2 ps-2 text-danger">
+                Delete
+              </Nav.Link>
+            </div>
+          )}
           {open_comment && (
-            <>
-              <div className="gap-1 border-top-0 border-bottom-0 d-flex flex-column position-relative">
+            <section
+              className="container"
+              style={{ background: "#ddf", borderTop: "1px solid #bbd" }}
+            >
+              <div
+                className="gap-1 border-top-0 border-bottom-0 ps-2 d-flex flex-column position-relative"
+                style={{ background: "#ddf" }}
+              >
                 <div className="d-flex mt-3 gap-1">
                   <div
                     className="d-flex align-items-center justify-content-center rounded-crcle text-white mt-1 me-2"
@@ -249,11 +283,11 @@ export const Home = ({ user, comment }) => {
                       e.target.style.height = `${e.target.scrollHeight}px`; // set new height
                     }}
                     value={new_comment || ""}
-                    style={{ marginTop: "0.1rem" }}
+                    style={{ marginTop: "0.1rem", background: "#ddf" }}
                   />
                 </div>
                 <div
-                  className="d-flex gap-3"
+                  className="d-flex gap-3 p-2"
                   style={{ alignSelf: "end", bottom: "0.5rem" }}
                 >
                   <button
@@ -268,7 +302,7 @@ export const Home = ({ user, comment }) => {
                   </button>
 
                   <button
-                    className="btn btn-outline-danger p-1 d-flex align-items-center ps-3 pe-3 rounded-0"
+                    className="btn btn-outline-danger p-1 d-flex align-items-center ps-3 pe-3 me-1 rounded-0"
                     onClick={(e) => {
                       SubmitComment(e, comment._id);
                     }}
@@ -282,7 +316,7 @@ export const Home = ({ user, comment }) => {
                 </div>
               </div>
 
-              <div className="ps- pb-3">
+              <div className="ps-2 pb-3">
                 {comment?.comments?.map((pc, idx) => {
                   return (
                     <>
@@ -316,7 +350,7 @@ export const Home = ({ user, comment }) => {
                   );
                 })}
               </div>
-            </>
+            </section>
           )}
         </>
       )}

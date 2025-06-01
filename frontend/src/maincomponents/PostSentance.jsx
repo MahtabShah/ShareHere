@@ -92,9 +92,9 @@ const PostSentence = ({ fetchSentences, all_user }) => {
   // }, []);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="d-flex flex-column pt-2">
-        <h4>Post a Vibe Ink Here :)</h4>
+    <form onSubmit={handleSubmit} className="container p-3">
+      <div className="d-flex flex-column">
+        <h4>Post a Vibe Ink Here : )</h4>
 
         <div
           className="border position-relative rounded-0 border-bottom-0"

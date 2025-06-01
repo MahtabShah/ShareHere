@@ -1,4 +1,11 @@
-body {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body,
+html {
   overflow-x: hidden;
 }
 
@@ -7,10 +14,10 @@ body {
   --light-clr: #e0dfdf;
 }
 
-.like-comment-share small :hover {
+.like-comment-share :hover {
   cursor: pointer;
   /* background: #c8dffb; */
-  /* color: #ff6600; */
+  /* color: #ff1900; */
 }
 
 .form-control:focus {
@@ -25,7 +32,7 @@ textarea {
 }
 
 .animate-rotate {
-  animation: rotateBtn 0.4s ease forwards;
+  animation: rotateBtn 0.5s ease forwards;
 }
 
 @keyframes rotateBtn {
@@ -33,7 +40,7 @@ textarea {
     transform: rotateZ(0deg);
   }
   50% {
-    transform: rotateZ(-45deg) scale(1.6);
+    transform: rotateZ(0deg) scale(2.6);
   }
   100% {
     transform: rotateZ(0deg);
