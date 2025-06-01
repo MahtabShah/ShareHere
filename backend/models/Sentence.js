@@ -6,6 +6,7 @@ const sentenceSchema = new mongoose.Schema({
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   likes: { type: Number , default:0},
   images: [String], // Ideal way to store image URLs
+  image_text: {type:String}
 
 });
 

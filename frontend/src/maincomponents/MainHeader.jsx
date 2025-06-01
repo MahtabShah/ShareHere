@@ -41,15 +41,17 @@ function MainHeader() {
         <Navbar
           key={expand}
           expand={expand}
-          className="mb-3 ps-2"
+          className="mb-0 ps-2"
           bg="light"
           variant="light"
           fixed="top"
           style={{ borderBottom: "1px solid var(--light-clr)" }}
         >
           <Container fluid>
-            <Navbar.Brand href="/Explore" className="fw-bold fs-5 pt-3 pb-0">
-              <Logo />
+            <Navbar.Brand href="/Explore" className="fw-bold fs-5 pb-0 mb-0">
+              <div className="mt-2">
+                <Logo />
+              </div>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas

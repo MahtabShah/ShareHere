@@ -9,7 +9,7 @@ import { BiShare, BiChat, BiHeart } from "react-icons/bi";
 import Carousel from "react-bootstrap/Carousel";
 import Nav from "react-bootstrap/Nav";
 // import { User } from "../../../backend/models/User";
-
+import PreImages from "../../TinyComponent/PreImages";
 const API = import.meta.env.VITE_API_URL;
 
 export const Home = ({ user, comment, admin }) => {
@@ -149,10 +149,10 @@ export const Home = ({ user, comment, admin }) => {
     }
     // alert("deleted..............");
   };
-  // console.log("everiy time--->", comment, user);
+  console.log("everiy time--->", comment.image_text);
 
   // const admin = payload;
-  console.log("admin===>", admin);
+  // console.log("admin===>", admin, user._id);
   return (
     <>
       {comment?.text?.trim() && (
@@ -186,12 +186,15 @@ export const Home = ({ user, comment, admin }) => {
               </div>
 
               <div className="d-flex flex-column pt-2 pe-3">
-                <div
-                  className="btn btn-outline-primary  rounded-0"
-                  onClick={HandleFollow}
-                >
-                  Follow
-                </div>
+                {admin._id !== user._id &&
+                  !user?.followers?.includes(admin._id) && (
+                    <div
+                      className="btn btn-outline-primary  rounded-0"
+                      onClick={HandleFollow}
+                    >
+                      Follow
+                    </div>
+                  )}
                 <small className="small" style={{ fontSize: "12px" }}>
                   {" "}
                   {user?.followers?.length} followers
@@ -205,12 +208,13 @@ export const Home = ({ user, comment, admin }) => {
                   className="d-flex rounded-3"
                   style={{ overflow: "hidden" }}
                 >
-                  <Carousel className="border w-100">
+                  <Carousel className="border w-100 container">
                     {comment?.images?.map((img, idx) => (
                       <Carousel.Item className="">
+                        {" "}
                         <div
                           key={idx}
-                          className="rounded-3 m-3"
+                          className="rounded-3 m-3 position-relative"
                           style={{
                             width: "calc(100% - 2rem)",
                             maxWidth: "600px",
@@ -219,12 +223,37 @@ export const Home = ({ user, comment, admin }) => {
                             flexShrink: 0,
                           }}
                         >
-                          <img
-                            src={img}
-                            alt={`Preview ${idx + 1}`}
-                            className="h-100 w-100"
-                            style={{ objectFit: "cover" }}
-                          />
+                          <div
+                            className="w-100 h-100 bg-image p-3 border"
+                            style={{
+                              background: `url(${img})`,
+                            }}
+                          ></div>
+
+                          <div
+                            className="position-absolute w-100 h-100 p-2"
+                            style={{ top: "0" }}
+                          >
+                            {/* <pre></pre> */}
+
+                            {comment?.image_text}
+                          </div>
+                          {/* <textarea
+                            name="image_text"
+                            id="image_text"
+                            className="position-absolute border-0 w-100 h-100 p-4"
+                            style={{
+                              top: "0",
+                              left: "0",
+                              background: "#3330",
+                              caretColor: "red",
+                            }}
+                            onChange={(e) => {
+                              handleInput(e, "image_text");
+                            }}
+                            spellCheck="false"
+                            placeholder="you can write a vibe ink here...."
+                          /> */}
                         </div>
                         {/* <Carousel.Caption>
                           <h3>First slide label</h3>
@@ -294,7 +323,11 @@ export const Home = ({ user, comment, admin }) => {
             >
               <Nav.Link href="/home">Home</Nav.Link>
               <Nav.Link href="/home">Visit Post</Nav.Link>
-              <Nav.Link onClick={HandleFollow}>Follow</Nav.Link>
+              {admin._id !== user._id && (
+                <Nav.Link onClick={HandleFollow}>
+                  {user?.followers?.includes(admin._id) ? "Unfollow" : "follow"}
+                </Nav.Link>
+              )}
               <Nav.Link href="/home">Edit Post</Nav.Link>
               {comment?.userId === payload.id ? (
                 <Nav.Link

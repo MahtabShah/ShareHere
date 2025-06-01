@@ -6,13 +6,13 @@ export const Logo = () => {
   return (
     <>
       <div
-        className="position-relative d-flex align-items-center justify-content-center"
+        className="position-relative d-flex pb-0 mb-0 align-items-center justify-content-center"
         style={{ minWidth: "fit-content" }}
       >
         {/* Digital Market */}
         <div className="">
           <span
-            className="position-relative d-inline-flex justify-content-center fs-4"
+            className="position-relative d-inline-flex justify-content-center fs-4 pt-1"
             style={{ borderTop: "2px solid #111", minWidth: "110px" }}
           >
             VIBE INK
@@ -21,7 +21,7 @@ export const Logo = () => {
 
         <div
           className="small d-flex align-items-start gap-2 position-absolute"
-          style={{ fontSize: "10px", top: "-17px" }}
+          style={{ fontSize: "10px", top: "-14px" }}
         >
           <span style={{ lineHeight: "2" }}>Allways</span>
           <span

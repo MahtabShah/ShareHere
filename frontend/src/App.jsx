@@ -157,6 +157,7 @@ function App() {
                     fetchSentences={fetchSentences}
                     fetchAllUsers={fetchAllUsers}
                     all_user={all_user}
+                    admin={admin}
                   />
 
                   {LazyLoading ? (

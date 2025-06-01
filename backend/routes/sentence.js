@@ -78,21 +78,32 @@ const upload = multer({ storage: storage });
 
 
 router.post('/post', verifyToken, upload.array('images'), async (req, res) => {
-  const { text } = req.body;
-  const files = req.files; // array of uploaded files
+  const { text, image_text } = req.body;
+  const files = req.files;
 
-  const imageUrls = files.map(file => file.path); // cloudinary URLs
+  // Parse Pre_Image[] (may come as object if multiple or string if one)
+  let Pre_Image = [];
+  if (Array.isArray(req.body.Pre_Image)) {
+    Pre_Image = req.body.Pre_Image;
+  } else if (typeof req.body.Pre_Image === 'string') {
+    Pre_Image = [req.body.Pre_Image];
+  } else {
+    Pre_Image = Object.values(req.body).filter((val, key) => key.startsWith("Pre_Image["));
+  }
+
+  const fileImageUrls = files?.map(file => file.path) || [];
+  const allImages = [...fileImageUrls, ...Pre_Image];
 
   const userId = req.user.userId || req.user.id;
 
   try {
     const sentence = new Sentence({
       text,
-      userId: userId,
-      images: imageUrls,
+      userId,
+      image_text,
+      images: allImages,
     });
 
-    console.log("backend response 95 sentence.js " ,userId, sentence )
     await sentence.save();
 
     io.emit('sentence', sentence.toObject());
@@ -128,15 +139,15 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get('/fix-sentences', async (req, res) => {
   try {
-    const result = await User.updateMany(
+    const result = await Sentence.updateMany(
       // { bg_clr: { $exists: false } },
       // { $set: { bg_clr: `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})` } },
 
       // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
-       { followers: { $exists: false } },
-      { $set: { followers: [Object.id] } },
-      { following: { $exists: false } },
-      { $set: { following: [Object.id] } }
+       { image_text: { $exists: false } },
+      { $set: { image_text: "" } },
+      // { following: { $exists: false } },
+      // { $set: { following: [Object.id] } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {
