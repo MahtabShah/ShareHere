@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../../TinyComponent/Logo";
 
-function MainHeader() {
+function MainHeader({ fetchAllUsers }) {
   const currentUser = "68367db96029e4bffe215341";
 
   const [VisibleNotification, setVisibleNotification] = useState(false);
@@ -25,6 +25,10 @@ function MainHeader() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    // fetchAllUsers();
+    navigate("/home");
+    window.location.reload();
+
     setLoggedIn(false);
     if (onLogout) onLogout();
   };

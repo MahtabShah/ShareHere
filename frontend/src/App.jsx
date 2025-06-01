@@ -136,8 +136,8 @@ function App() {
 
   return (
     <Router>
-      <div className="p-0 pt-4">
-        <MainHeader />
+      <div className="p-0 pt-4 col-sm-10 col-md-12" style={{ margin: "auto" }}>
+        <MainHeader fetchAllUsers={fetchAllUsers} />
         <LeftNavbar isDisplayedLeftNav={isDisplayedLeftNav} />
         <section
           className="p-0"
@@ -158,14 +158,27 @@ function App() {
                 </div>
               }
             />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/signup"
+              element={<Signup fetchAllUsers={fetchAllUsers} />}
+            />
+            <Route
+              path="/login"
+              element={<Login fetchAllUsers={fetchAllUsers} />}
+            />
             <Route path="api/sentence/my" element={<MySentences />} />
             <Route path="/upload" element={<UploadProduct />} />
             <Route
               path="/home"
               element={
-                <>
+                <section
+                  className={`${isDisplayedLeftNav ? "p-2" : "p-3"} pt-4`}
+                  style={{ margin: "auto", maxWidth: "600px" }}
+                >
+                  <h4 className={`${isDisplayedLeftNav ? "ps-3" : "ps-0"} `}>
+                    Post a Vibe Ink Here : )
+                  </h4>
+
                   <PostSentence
                     fetchSentences={fetchSentences}
                     fetchAllUsers={fetchAllUsers}
@@ -210,7 +223,7 @@ function App() {
                       })}
                     </>
                   )}
-                </>
+                </section>
               }
             />
           </Routes>

@@ -88,7 +88,7 @@ router.post('/post', verifyToken, upload.array('images'), async (req, res) => {
   } else if (typeof req.body.Pre_Image === 'string') {
     Pre_Image = [req.body.Pre_Image];
   } else {
-    Pre_Image = Object.values(req.body).filter((val, key) => key.startsWith("Pre_Image["));
+    Pre_Image = Object.values(req.body).filter((val, key) => val?.startsWith("Pre_Image["));
   }
 
   const fileImageUrls = files?.map(file => file.path) || [];

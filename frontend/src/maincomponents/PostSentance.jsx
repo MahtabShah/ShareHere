@@ -26,7 +26,7 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
   const [Pre_Image, setPre_Image] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]); // for showing thumbnails
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
-  const [selected_indx, setSelected_indx] = useState([]);
+  const [isPre_Image, setisPre_Image] = useState(false);
   const textareaRef = useRef(null);
 
   const handleInput = (e, key) => {
@@ -52,8 +52,9 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
     setImagePreviews((prev) => [...files, ...prev]); // store File objects
   };
   const token = localStorage.getItem("token");
+  const [selectedIndices, setSelectedIndices] = useState([]);
 
-  const handlePreImage = (img) => {
+  const handlePreImage = (img, idx) => {
     // console.log("----> hamare dost ", selected_indx);
 
     const condition = images?.includes(img);
@@ -73,6 +74,13 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
 
       // console.log("----> 2;", selected_indx);
     }
+
+    setSelectedIndices(
+      (prev) =>
+        prev.includes(idx)
+          ? prev.filter((i) => i !== idx) // remove if already selected
+          : [...prev, idx] // add if not selected
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -107,6 +115,7 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
       setimage_Text("");
       setImages([]);
       setImagePreviews([]);
+      setSelectedIndices([]);
     } catch (err) {
       alert(
         "Failed to save sentence: " +
@@ -121,18 +130,22 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
 
   const [curr_user, setcurr_user] = useState(null);
 
+  console.log("admin---- ", admin);
+
   return (
     <>
-      <form onSubmit={handleSubmit} className="container p-3">
+      <form
+        onSubmit={handleSubmit}
+        className="col-md-12 w-100"
+        style={{ maxWidth: "600px" }}
+      >
         <div className="d-flex flex-column">
-          <h4>Post a Vibe Ink Here : )</h4>
-
           <div
             className="border position-relative rounded-0 border-bottom-0"
             style={{ right: 0, minHeight: "230px" }}
           >
             <div
-              className="border position-absolute bg-light rounded- pt-1 d-flex align-items-center"
+              className="position-absolute bg-light rounded- pt-1 d-flex align-items-center"
               style={{ right: "0" }}
             >
               <input
@@ -168,7 +181,7 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
               </div>
             </div>
             <div className="d-flex rounded-3">
-              <Carousel className="border w-100">
+              <Carousel className="w-100">
                 {images?.map((img, idx) => (
                   <Carousel.Item className="">
                     <div
@@ -240,14 +253,25 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
           <br />
 
           <div className="d-flex gap-3 justify-content-end p-0 m-0">
-            <label
-              htmlFor="images"
-              className="btn btn-outline-dark ps-3 pe-3 rounded-0 p-2"
-              style={{ height: "42px" }}
-            >
-              Select Images
-            </label>
-
+            {!isPre_Image ? (
+              <div
+                className="btn btn-outline-dark ps-3 pe-3 rounded-0 p-2"
+                style={{ height: "42px" }}
+                onClick={() => {
+                  setisPre_Image(!isPre_Image);
+                }}
+              >
+                Select Images
+              </div>
+            ) : (
+              <label
+                htmlFor="images"
+                className="btn btn-outline-dark ps-3 pe-3 rounded-0 p-2"
+                style={{ height: "42px" }}
+              >
+                Browse Image
+              </label>
+            )}
             <button
               type="submit"
               className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
@@ -259,24 +283,30 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
         </div>
       </form>
 
-      <div
-        className="container d-grid gap-3 p-3"
-        style={{ gridTemplateColumns: "repeat(auto-fit , minmax(124px, 1fr)" }}
-      >
-        {pre_images?.map((img, idx) => {
-          return (
-            <>
-              <div
-                onClick={() => {
-                  handlePreImage(img);
-                }}
-              >
-                <PreImages img={img} idx={idx} />
-              </div>
-            </>
-          );
-        })}
-      </div>
+      {isPre_Image && (
+        <div
+          className="d-grid gap-3 pt-3 w-100"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit , minmax(124px, 1fr)",
+            maxWidth: "600px",
+          }}
+        >
+          {pre_images?.map((img, idx) => (
+            <div
+              key={idx}
+              onClick={() => handlePreImage(img, idx)}
+              className="borde"
+              style={{
+                border: selectedIndices.includes(idx)
+                  ? "2px solid #0d0"
+                  : "2px solid #f9f8fa",
+              }}
+            >
+              <PreImages img={img} idx={idx} />
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 };

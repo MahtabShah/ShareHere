@@ -144,16 +144,21 @@ export const Home = ({ user, comment, admin }) => {
     }
     // alert("deleted..............");
   };
-  console.log("everiy time--->", comment.image_text);
 
-  // const admin = payload;
+  const optimizeImage = (url, width = 600) => {
+    return url.replace("/upload/", `/upload/w_${width},f_auto,q_auto/`);
+  };
+
+  console.log("everiy time--->", comment);
+
+  // const admin = admin;
   // console.log("admin===>", admin, user._id);
   return (
     <>
       {comment?.text?.trim() && (
         <>
           <div
-            className="container d-flex flex-column mt-4 p-0 w-100 bg position-relative"
+            className="d-flex flex-column mt-4 p-0 bg position-relative col-md-12"
             style={{ background: "#ddf" }}
             key={comment?.text?.slice(0, -1)}
           >
@@ -200,30 +205,35 @@ export const Home = ({ user, comment, admin }) => {
             <div className="w-100">
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
                 <div
-                  className="d-flex rounded-3"
+                  className="d-flex rounded-3 m-3"
                   style={{ overflow: "hidden" }}
                 >
-                  <Carousel className="border w-100 container">
+                  <Carousel className="w-100">
                     {comment?.images?.map((img, idx) => (
                       <Carousel.Item className="">
                         {" "}
                         <div
                           key={idx}
-                          className="rounded-3 m-3 position-relative"
+                          className="rounded-3 p-0 position-relative"
                           style={{
-                            width: "calc(100% - 2rem)",
+                            // width: "calc(100% - 2rem)",
                             maxWidth: "600px",
-                            aspectRatio: "17/15",
+                            aspectRatio: "17/17",
                             minHeight: "400px",
                             flexShrink: 0,
+                            margin: "auto",
+                            // border: "2px solid red",
                           }}
                         >
-                          <div
-                            className="w-100 h-100 bg-image p-3 border"
-                            style={{
-                              background: `url(${img})`,
-                            }}
-                          ></div>
+                          <div className="w-100 h-100 bg-image">
+                            <img
+                              src={optimizeImage(img, 400)} // 400px for mobile-friendly width
+                              loading="lazy"
+                              alt={`image-${idx}`}
+                              className="h-100 w-100"
+                              style={{ objectFit: "cover" }}
+                            />
+                          </div>
 
                           <div
                             className="position-absolute w-100 h-100 p-2"
@@ -326,7 +336,7 @@ export const Home = ({ user, comment, admin }) => {
                 </Nav.Link>
               )}
               <Nav.Link href="/home">Edit Post</Nav.Link>
-              {comment?.userId === payload.id ? (
+              {comment?.userId === admin.id ? (
                 <Nav.Link
                   onClick={HandleDelete}
                   className=" pe-2 ps-2 text-danger"

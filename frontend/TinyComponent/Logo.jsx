@@ -10,21 +10,23 @@ export const Logo = () => {
         style={{ minWidth: "fit-content" }}
       >
         {/* Digital Market */}
-        <div className="">
-          <span
-            className="position-relative d-inline-flex justify-content-center fs-4 pt-1"
-            style={{ borderTop: "2px solid #111", minWidth: "110px" }}
-          >
-            VIBE INK
-          </span>
-        </div>
+        <span
+          className="position-relative d-inline-flex justify-content-center fs-4"
+          style={{
+            borderTop: "2px solid #111",
+            minWidth: "110px",
+            lineHeight: 1,
+          }}
+        >
+          VIBE INK
+        </span>
 
         <div
           className="small d-flex align-items-start gap-2 position-absolute"
-          style={{ fontSize: "10px", top: "-14px" }}
+          style={{ fontSize: "10px", top: "-16px" }}
         >
-          <span style={{ lineHeight: "2" }}>Allways</span>
-          <span
+          <span style={{ lineHeight: "1.6" }}>Allways</span>
+          {/* <span
             className="d-inline-flex text-light"
             style={{
               minWidth: "24px",
@@ -44,8 +46,8 @@ export const Logo = () => {
             }}
           >
             AI
-          </span>
-          <span style={{ lineHeight: "2" }}>Inspire</span>
+          </span> */}
+          <span style={{ lineHeight: "1.6" }}>Inspire</span>
         </div>
       </div>
     </>

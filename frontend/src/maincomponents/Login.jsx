@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 
-const Login = () => {
+const Login = ({ fetchAllUsers }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -21,7 +21,9 @@ const Login = () => {
       const res = await axios.post(`${API}/api/auth/login`, formData);
       // alert("Login successful! Token: " + res.data.token);
       localStorage.setItem("token", res.data.token);
+      // fetchAllUsers();
       navigate("/home");
+      window.location.reload();
     } catch (err) {
       alert("Login failed: " + err.response?.data?.message || err.message);
     }
