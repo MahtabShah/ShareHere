@@ -86,10 +86,26 @@ export const Home = ({ user, comment, admin }) => {
 
   // alert(user.bg_clr);
   const token = localStorage.getItem("token");
+  function parseJwt(token) {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64.padEnd(
+        base64.length + ((4 - (base64.length % 4)) % 4),
+        "="
+      );
+      const jsonPayload = atob(padded);
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      console.error("Invalid JWT Token:", e);
+      return null;
+    }
+  }
 
   // if (token) {
-  const payload = JSON.parse(atob(token?.split(".")[1]));
-  // console.log("Current user ID:", payload.id);
+  const payload = parseJwt(token);
+
+  console.log("Current user ID:", payload.id);
   // }
 
   const HandleFollow = async () => {
