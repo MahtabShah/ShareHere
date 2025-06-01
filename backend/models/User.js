@@ -23,7 +23,18 @@ const userSchema = new mongoose.Schema({
   bg_clr:{
     type: String,
     default: "#42b"
-  }
+  },
+
+  followers:[{
+    type: mongoose.Schema.Types.ObjectId,
+  }],
+
+  following:[{
+    type: mongoose.Schema.Types.ObjectId,
+  }]
+
+
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

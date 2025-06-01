@@ -76,7 +76,8 @@ app.use('/api/auth', authRoutes);
 const sentenceRoutes = require('./routes/sentence');
 app.use('/api/sentence', sentenceRoutes);
 
-
+const crudRoutes = require('./routes/crud');
+app.use('/api/crud', crudRoutes);
 
 const PORT = process.env.PORT || 5000;
 // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

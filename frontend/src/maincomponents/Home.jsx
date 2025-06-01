@@ -8,13 +8,15 @@ import { FaShareAlt, FaRegComment, FaHeart } from "react-icons/fa"; // from Font
 import { BiShare, BiChat, BiHeart } from "react-icons/bi";
 import Carousel from "react-bootstrap/Carousel";
 import Nav from "react-bootstrap/Nav";
+// import { User } from "../../../backend/models/User";
 
 const API = import.meta.env.VITE_API_URL;
 
-export const Home = ({ user, comment }) => {
+export const Home = ({ user, comment, admin }) => {
   const [open_comment, setopen_comment] = useState(false);
   const [new_comment, setnew_comment] = useState("");
   const [isliked, setisliked] = useState(false);
+  const [isfollowed, setisfollowed] = useState(false);
   const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
   const [isdotClicked, setdotClicked] = useState(false); //
@@ -85,6 +87,32 @@ export const Home = ({ user, comment }) => {
   // alert(user.bg_clr);
   const token = localStorage.getItem("token");
 
+  // if (token) {
+  const payload = JSON.parse(atob(token?.split(".")[1]));
+  // console.log("Current user ID:", payload.id);
+  // }
+
+  const HandleFollow = async () => {
+    // alert("followed.... start 95 home.js");
+    try {
+      setisfollowed(!isfollowed);
+      const res = await axios.put(
+        `${API}/api/crud/crud_follow_post`,
+        {
+          // data you want to send
+          id: user._id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // setisliked(!isliked);
+    } catch (err) {
+      alert("folloing failed: " + err.response?.data?.message || err.message);
+    }
+  };
+
   const SubmitComment = async (e, id) => {
     e.preventDefault();
     // console.log("form comment ------> ", new_comment);
@@ -103,7 +131,28 @@ export const Home = ({ user, comment }) => {
     setLazyLoading(!true);
   };
 
-  // console.log("everiy time--->", comment);
+  const HandleDelete = async () => {
+    // animateButton("likes");
+
+    const condition = window.confirm("want to delete............");
+
+    if (condition) {
+      try {
+        const res = await axios.delete(`${API}/api/crud/crud_delete_post`, {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { id: comment._id }, // pass id inside `data`
+        });
+        // setisliked(!isliked);
+      } catch (err) {
+        alert("Login failed: " + err.response?.data?.message || err.message);
+      }
+    }
+    // alert("deleted..............");
+  };
+  // console.log("everiy time--->", comment, user);
+
+  // const admin = payload;
+  console.log("admin===>", admin);
   return (
     <>
       {comment?.text?.trim() && (
@@ -136,8 +185,17 @@ export const Home = ({ user, comment }) => {
                 </small>
               </div>
 
-              <div className="d-flex pt-2 pe-3">
-                <div className="btn btn-outline-primary  rounded-0">Follow</div>
+              <div className="d-flex flex-column pt-2 pe-3">
+                <div
+                  className="btn btn-outline-primary  rounded-0"
+                  onClick={HandleFollow}
+                >
+                  Follow
+                </div>
+                <small className="small" style={{ fontSize: "12px" }}>
+                  {" "}
+                  {user?.followers?.length} followers
+                </small>
               </div>
             </div>
 
@@ -236,11 +294,18 @@ export const Home = ({ user, comment }) => {
             >
               <Nav.Link href="/home">Home</Nav.Link>
               <Nav.Link href="/home">Visit Post</Nav.Link>
-              <Nav.Link href="/home">Follow</Nav.Link>
+              <Nav.Link onClick={HandleFollow}>Follow</Nav.Link>
               <Nav.Link href="/home">Edit Post</Nav.Link>
-              <Nav.Link href="/home" className=" pe-2 ps-2 text-danger">
-                Delete
-              </Nav.Link>
+              {comment?.userId === payload.id ? (
+                <Nav.Link
+                  onClick={HandleDelete}
+                  className=" pe-2 ps-2 text-danger"
+                >
+                  Delete
+                </Nav.Link>
+              ) : (
+                ""
+              )}
             </div>
           )}
           {open_comment && (
@@ -259,7 +324,7 @@ export const Home = ({ user, comment }) => {
                       minWidth: "30px",
                       height: "30px",
                       borderRadius: "20px",
-                      background: `${user?.bg_clr}`,
+                      background: `${admin?.bg_clr}`,
                       // borderEndStartRadius: "0px",
                       // borderStartEndRadius: "0px",
                       // borderStartStartRadius: "0",

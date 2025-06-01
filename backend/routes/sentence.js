@@ -133,8 +133,10 @@ router.get('/fix-sentences', async (req, res) => {
       // { $set: { bg_clr: `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})` } },
 
       // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
-       { images: { $exists: false } },
-      { $set: { images: [String] } }
+       { followers: { $exists: false } },
+      { $set: { followers: [Object.id] } },
+      { following: { $exists: false } },
+      { $set: { following: [Object.id] } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

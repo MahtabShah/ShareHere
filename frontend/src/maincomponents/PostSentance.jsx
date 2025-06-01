@@ -57,13 +57,14 @@ const PostSentence = ({ fetchSentences, all_user }) => {
       fetchSentences();
       setText("");
       setImages([]);
+      setImagePreviews([]);
     } catch (err) {
       alert(
         "Failed to save sentence: " +
           (err.response?.data?.message || err.message)
       );
 
-      // console.error("Error saving sentence:", err);
+      console.error("Error saving sentence: 67", err);
 
       setErrors(err.response?.data?.message || err.message);
     }

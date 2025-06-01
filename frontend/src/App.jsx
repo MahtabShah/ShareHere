@@ -55,6 +55,7 @@ function App() {
   const [all_user, setall_user] = useState([]);
   const [all_comments, setall_comments] = useState([]);
   const [all_post_comments, setall_post_comments] = useState([]);
+  const payload = JSON.parse(atob(token?.split(".")[1])).id;
 
   const fetchAllUsers = async () => {
     try {
@@ -99,14 +100,26 @@ function App() {
       fetchSentences();
       fetchAllUsers();
     });
+
+    socket.on("userUpdated", (updatedUser) => {
+      setall_user((prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === updatedUser._id ? updatedUser : user
+        )
+      );
+    });
+
     setLoading(false);
 
     return () => {
       socket.off("sentence");
+      socket.off("userUpdated");
     };
   }, []);
 
-  console.log("alll_coment===> ", all_comments);
+  const admin = all_user.find((u) => u._id === payload);
+
+  // console.log("alll_coment===> ", all_comments);
 
   return (
     <Router>
@@ -169,6 +182,7 @@ function App() {
                                         <Home
                                           user={u}
                                           comment={c}
+                                          admin={admin}
                                           fetchAllUsers={fetchAllUsers}
                                           fetchSentences={fetchSentences}
                                         />
