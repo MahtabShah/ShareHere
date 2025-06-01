@@ -86,27 +86,6 @@ export const Home = ({ user, comment, admin }) => {
 
   // alert(user.bg_clr);
   const token = localStorage.getItem("token");
-  function parseJwt(token) {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const padded = base64.padEnd(
-        base64.length + ((4 - (base64.length % 4)) % 4),
-        "="
-      );
-      const jsonPayload = atob(padded);
-      return JSON.parse(jsonPayload);
-    } catch (e) {
-      console.error("Invalid JWT Token:", e);
-      return null;
-    }
-  }
-
-  // if (token) {
-  const payload = parseJwt(token);
-
-  console.log("Current user ID:", payload.id);
-  // }
 
   const HandleFollow = async () => {
     // alert("followed.... start 95 home.js");
@@ -202,8 +181,8 @@ export const Home = ({ user, comment, admin }) => {
               </div>
 
               <div className="d-flex flex-column pt-2 pe-3">
-                {admin._id !== user._id &&
-                  !user?.followers?.includes(admin._id) && (
+                {admin?._id !== user?._id &&
+                  !user?.followers?.includes(admin?._id) && (
                     <div
                       className="btn btn-outline-primary  rounded-0"
                       onClick={HandleFollow}
@@ -339,9 +318,11 @@ export const Home = ({ user, comment, admin }) => {
             >
               <Nav.Link href="/home">Home</Nav.Link>
               <Nav.Link href="/home">Visit Post</Nav.Link>
-              {admin._id !== user._id && (
+              {admin?._id !== user?._id && (
                 <Nav.Link onClick={HandleFollow}>
-                  {user?.followers?.includes(admin._id) ? "Unfollow" : "follow"}
+                  {user?.followers?.includes(admin?._id)
+                    ? "Unfollow"
+                    : "follow"}
                 </Nav.Link>
               )}
               <Nav.Link href="/home">Edit Post</Nav.Link>

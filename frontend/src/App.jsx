@@ -26,6 +26,7 @@ function App() {
   );
 
   const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1224);
+  const [admin_user, setadmin_user] = useState(null);
 
   window.addEventListener("resize", () => {
     setIsDisplayedLeftNav(window.innerWidth < 768);
@@ -50,12 +51,23 @@ function App() {
       console.log("Failed to fetch your sentences see err", err);
     }
   };
+
+  const fetch_admin_user = async () => {
+    try {
+      const res = await axios.get(`${API}/api/crud/crud`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // setLoading(false);
+      res.data?.length === 0 ? "" : setadmin_user(res.data);
+    } catch (err) {
+      console.log("Failed to fetch your sentences see err", err);
+    }
+  };
   //
 
   const [all_user, setall_user] = useState([]);
   const [all_comments, setall_comments] = useState([]);
   const [all_post_comments, setall_post_comments] = useState([]);
-  const payload = JSON.parse(atob(token?.split(".")[1])).id;
 
   const fetchAllUsers = async () => {
     try {
@@ -90,6 +102,7 @@ function App() {
   useEffect(() => {
     fetchSentences();
     fetchAllUsers();
+    fetch_admin_user();
   }, [token]);
 
   useEffect(() => {
@@ -117,7 +130,7 @@ function App() {
     };
   }, []);
 
-  const admin = all_user.find((u) => u._id === payload);
+  const admin = admin_user;
 
   // console.log("alll_coment===> ", all_comments);
 

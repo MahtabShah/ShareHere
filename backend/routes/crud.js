@@ -9,6 +9,26 @@ const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
 
 
+
+router.get('/crud', verifyToken,  async (req, res) => {
+ 
+  const userId = req.user.userId || req.user.id;
+  console.log("backend response 16 crud" ,userId)
+
+
+  try {
+    const user = await User.findById({_id:userId})
+    console.log("aaaaaaaaaaaaaaaaaaaaaa---> ", req.user, user)
+    res.json(user)
+  } catch (err) {
+    console.error('Error deleting sentence:', err);
+    res.status(500).json({ message: 'Failed to delete sentence' });
+  }
+});
+
+
+
+
 router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
   const { id } = req.body;
  
