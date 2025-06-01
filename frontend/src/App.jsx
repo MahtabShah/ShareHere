@@ -175,8 +175,11 @@ function App() {
                   className={`${isDisplayedLeftNav ? "p-2" : "p-3"} pt-4`}
                   style={{ margin: "auto", maxWidth: "600px" }}
                 >
-                  <h4 className={`${isDisplayedLeftNav ? "ps-3" : "ps-0"} `}>
-                    Post a Vibe Ink Here : )
+                  <h4
+                    className={`${isDisplayedLeftNav ? "ps-0" : "ps-3"}`}
+                    // style={{ borderBottom: "1px solid #222" }}
+                  >
+                    Post a Vibe Ink Here
                   </h4>
 
                   <PostSentence
@@ -212,6 +215,9 @@ function App() {
                                           admin={admin}
                                           fetchAllUsers={fetchAllUsers}
                                           fetchSentences={fetchSentences}
+                                          isDisplayedLeftNav={
+                                            isDisplayedLeftNav
+                                          }
                                         />
                                       </>
                                     )}

@@ -12,7 +12,7 @@ import Nav from "react-bootstrap/Nav";
 import PreImages from "../../TinyComponent/PreImages";
 const API = import.meta.env.VITE_API_URL;
 
-export const Home = ({ user, comment, admin }) => {
+export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
   const [open_comment, setopen_comment] = useState(false);
   const [new_comment, setnew_comment] = useState("");
   const [isliked, setisliked] = useState(false);
@@ -185,17 +185,17 @@ export const Home = ({ user, comment, admin }) => {
                 </small>
               </div>
 
-              <div className="d-flex flex-column pt-2 pe-3">
+              <div className="d-flex flex-column pt-2">
                 {admin?._id !== user?._id &&
                   !user?.followers?.includes(admin?._id) && (
                     <div
-                      className="btn btn-outline-primary  rounded-0"
+                      className="btn text-primary rounded-0 p-0 border"
                       onClick={HandleFollow}
                     >
                       Follow
                     </div>
                   )}
-                <small className="small" style={{ fontSize: "12px" }}>
+                <small className="small pe-2" style={{ fontSize: "12px" }}>
                   {" "}
                   {user?.followers?.length} followers
                 </small>
@@ -205,7 +205,7 @@ export const Home = ({ user, comment, admin }) => {
             <div className="w-100">
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
                 <div
-                  className="d-flex rounded-3 m-3"
+                  className={`d-flex mt-2 m-${isDisplayedLeftNav ? "0" : "3"}`}
                   style={{ overflow: "hidden" }}
                 >
                   <Carousel className="w-100">
@@ -214,9 +214,9 @@ export const Home = ({ user, comment, admin }) => {
                         {" "}
                         <div
                           key={idx}
-                          className="rounded-3 p-0 position-relative"
+                          className="p-0 position-relative w-100"
                           style={{
-                            // width: "calc(100% - 2rem)",
+                            // width: "calc(100% - 0px)",
                             maxWidth: "600px",
                             aspectRatio: "17/17",
                             minHeight: "400px",
@@ -321,7 +321,7 @@ export const Home = ({ user, comment, admin }) => {
           </div>
           {isdotClicked && (
             <div
-              className="container mb-4 small fw-medium d-flex flex-wrap p-3 gap-3"
+              className="container small fw-medium d-flex flex-wrap p-3 gap-3"
               style={{
                 background: "#ccf",
               }}
@@ -336,7 +336,9 @@ export const Home = ({ user, comment, admin }) => {
                 </Nav.Link>
               )}
               <Nav.Link href="/home">Edit Post</Nav.Link>
-              {comment?.userId === admin.id ? (
+              {comment?.userId === admin.id ||
+              "683ca60f4d22f430952c6d01" === admin._id ? (
+                // this way is just for temporary...!!!
                 <Nav.Link
                   onClick={HandleDelete}
                   className=" pe-2 ps-2 text-danger"
@@ -350,16 +352,16 @@ export const Home = ({ user, comment, admin }) => {
           )}
           {open_comment && (
             <section
-              className="container"
+              className="ps-3"
               style={{ background: "#ddf", borderTop: "1px solid #bbd" }}
             >
               <div
-                className="gap-1 border-top-0 border-bottom-0 ps-2 d-flex flex-column position-relative"
+                className="gap-1 border-top-0 border-bottom-0 d-flex flex-column position-relative"
                 style={{ background: "#ddf" }}
               >
                 <div className="d-flex mt-3 gap-1">
                   <div
-                    className="d-flex align-items-center justify-content-center rounded-crcle text-white mt-1 me-2"
+                    className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2"
                     style={{
                       minWidth: "30px",
                       height: "30px",

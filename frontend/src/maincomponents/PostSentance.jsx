@@ -253,7 +253,8 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
           <br />
 
           <div className="d-flex gap-3 justify-content-end p-0 m-0">
-            {!isPre_Image ? (
+            {/* {isPre_Image} */}
+            {!true ? (
               <div
                 className="btn btn-outline-dark ps-3 pe-3 rounded-0 p-2"
                 style={{ height: "42px" }}
@@ -283,7 +284,7 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
         </div>
       </form>
 
-      {isPre_Image && (
+      {/* {isPre_Image && (
         <div
           className="d-grid gap-3 pt-3 w-100"
           style={{
@@ -306,7 +307,7 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
     </>
   );
 };
