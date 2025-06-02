@@ -56,7 +56,8 @@ textarea {
 }
 
 .btn-tool > div {
-  font-size: clamp(4px, 2.1vw, 1.2rem) !important;
+  /* font-size: clamp(4px, 4vw, 1.2rem) !important; */
+  min-width: max-content !important;
 }
 
 @keyframes rotateBtn {
