@@ -72,7 +72,7 @@ function App() {
   const fetchAllUsers = async () => {
     try {
       await axios.get(`${API}/api/auth/home`).then((res) => {
-        // console.log("response at Home.jsx ", res.data);
+        // console.log("response at Home.jsx setall_user", res.data);
         setall_user(res.data);
       });
     } catch (error) {
@@ -81,7 +81,7 @@ function App() {
 
     try {
       await axios.get(`${API}/api/auth/all_sentence`).then((res) => {
-        // console.log("response at Home.jsx ", res.data);
+        console.log("response at Home.jsx all_sentence", res.data);
         setall_comments(res.data);
       });
     } catch (error) {

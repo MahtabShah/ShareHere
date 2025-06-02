@@ -1,21 +1,38 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Loading } from "../../TinyComponent/LazyLoading";
-import { use } from "react";
 import PreImages from "../../TinyComponent/PreImages";
 import Carousel from "react-bootstrap/Carousel";
 import Nav from "react-bootstrap/Nav";
+
 const API = import.meta.env.VITE_API_URL;
 
 const pre_images = [
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb", // Sunset Over Mountains
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e", // Calm Beach Scene
-  "https://images.unsplash.com/photo-1501785888041-af3ef285b470", // Forest Pathway
-  "https://images.unsplash.com/photo-1501004318641-b39e6451bec6", // Sunflower Field
-  "https://images.unsplash.com/photo-1529070538774-1843cb3265df", // Vintage Paper Texture
-  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d", // Starry Night Sky
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee", // Mountain Peak Sunrise
-  "https://images.unsplash.com/photo-1501594907352-04cda38ebc29", // Colorful Ink in Water
+  "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+  "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+  "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
+  "https://images.unsplash.com/photo-1529070538774-1843cb3265df",
+  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
+  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+  "https://images.unsplash.com/photo-1501594907352-04cda38ebc29",
+];
+
+const pre_bg_color = [
+  "#000",
+  "#23d",
+  "#0d0",
+  "#0dd",
+  "#00d",
+  "#dff",
+  "#df2",
+  "#cd2",
+  "#a27",
+  "#8ae",
+  "#098",
+  "#345",
+  "#456",
+  "#d00",
 ];
 
 const PostSentence = ({ fetchSentences, all_user, admin }) => {
@@ -23,21 +40,34 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
   const [image_text, setimage_Text] = useState("");
   const [Errors, setErrors] = useState("");
   const [images, setImages] = useState([]);
+  const [pages, setPages] = useState([]);
   const [Pre_Image, setPre_Image] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]); // for showing thumbnails
-  const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [LazyLoading, setLazyLoading] = useState(false);
   const [isPre_Image, setisPre_Image] = useState(false);
   const textareaRef = useRef(null);
+  const [bg_clr, setbg_clr] = useState("#dff");
+  const [vibes, setVibes] = useState([]);
+  const [selectedIndices, setSelectedIndices] = useState([]);
+  const [curr_user, setcurr_user] = useState(null);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const handleInput = (e, key) => {
+  const token = localStorage.getItem("token");
+
+  const handleInput = (idx, e, key) => {
     if (key === "text") {
       setText(e.target.value);
     } else if (key === "image_text") {
       setimage_Text(e.target.value);
+      const updated = [...vibes];
+      updated[idx] = e.target.value;
+      setVibes(updated);
     }
-    const textarea = textareaRef.current;
-    // textarea.style.height = "2px"; // Reset height
-    textarea.style.height = textarea.scrollHeight + "px"; // Set to scroll height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
   };
 
   const handleImageChange = (e) => {
@@ -47,90 +77,103 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
       return;
     }
 
-    const newImageUrls = files.map((file) => URL.createObjectURL(file));
-    setImages((prev) => [...newImageUrls, ...prev]); // used in this code
-    setImagePreviews((prev) => [...files, ...prev]); // store File objects
+    const fileURLs = files.map((file) => ({
+      type: "img",
+      val: URL.createObjectURL(file),
+    }));
+    const fileData = files.map((file) => ({ type: "img", val: file }));
+
+    setImages((prev) => [...prev, ...fileURLs]);
+    setPages((prev) => [...prev, ...fileData]);
+    setImagePreviews((prev) => [...prev, ...files]);
   };
-  const token = localStorage.getItem("token");
-  const [selectedIndices, setSelectedIndices] = useState([]);
 
   const handlePreImage = (img, idx) => {
-    // console.log("----> hamare dost ", selected_indx);
+    const alreadySelected = images.some((i) => i.val === img.val);
 
-    const condition = images?.includes(img);
-
-    if (condition) {
-      const imgs = images.filter((im, idx) => im !== img);
-      setImages(imgs);
-
-      const pre_imgs = Pre_Image.filter((im, idx) => im !== img);
-
-      setPre_Image((prev) => [...pre_imgs, ...prev]); // store File objects
-
-      // console.log("----> 1;", images);
+    if (alreadySelected) {
+      setImages(images.filter((i) => i.val !== img.val));
+      setPre_Image(Pre_Image.filter((i) => i.val !== img.val));
     } else {
-      setImages((prev) => [img, ...prev]);
-      setPre_Image((prev) => [img, ...prev]); // store File objects
-
-      // console.log("----> 2;", selected_indx);
+      const newImage = { type: "img", val: img };
+      setImages([newImage, ...images]);
+      setPre_Image([newImage, ...Pre_Image]);
     }
 
-    setSelectedIndices(
-      (prev) =>
-        prev.includes(idx)
-          ? prev.filter((i) => i !== idx) // remove if already selected
-          : [...prev, idx] // add if not selected
+    setSelectedIndices((prev) =>
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
     );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("text", text);
     formData.append("image_text", image_text);
 
-    // Append uploaded images (files)
-    for (let img of imagePreviews) {
-      formData.append("images", img);
-    }
-
-    // Append image URLs (Pre_Image) as array values
-    Pre_Image.forEach((url, i) => {
-      formData.append(`Pre_Image[${i}]`, url);
+    pages.forEach((page, idx) => {
+      if (page.type === "img") {
+        formData.append("images", page.val);
+      }
+      formData.append(
+        "pages_meta",
+        JSON.stringify({
+          type: page.type,
+          text: page.text,
+          vibe: vibes[idx],
+          val: page.type === "img" ? null : page.val,
+        })
+      );
     });
 
     setLazyLoading(true);
-
     try {
       const res = await axios.post(`${API}/api/sentence/post`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
         },
       });
-
       fetchSentences();
       setText("");
       setimage_Text("");
       setImages([]);
+      setPages([]);
       setImagePreviews([]);
       setSelectedIndices([]);
+      setVibes([]);
     } catch (err) {
       alert(
         "Failed to save sentence: " +
           (err.response?.data?.message || err.message)
       );
       setErrors(err.response?.data?.message || err.message);
-      console.error("Error saving sentence: 67", err);
+      console.error("Error saving sentence", err);
     }
-
     setLazyLoading(false);
   };
 
-  const [curr_user, setcurr_user] = useState(null);
+  useEffect(() => {
+    if (pages.length) setCarouselIndex(pages.length - 1);
+  }, [pages]);
 
-  console.log("admin---- ", admin);
+  const handleSelect = (selectedIndex, e) => {
+    setActiveIndex(selectedIndex);
+  };
+
+  const removeCurrentSlide = () => {
+    if (pages.length === 0) return;
+
+    const newPages = pages.filter((_, index) => index !== activeIndex);
+    const newImages = images.filter((_, index) => index !== activeIndex);
+
+    setPages(newPages);
+    setImages(newImages);
+
+    // Update activeIndex to avoid out-of-bounds
+    setActiveIndex((prev) =>
+      activeIndex >= newPages.length ? newPages.length - 1 : prev
+    );
+  };
 
   return (
     <>
@@ -180,47 +223,54 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
                 </div>
               </div>
             </div>
-            <div className="d-flex rounded-3">
-              <Carousel className="w-100">
-                {images?.map((img, idx) => (
+            <div
+              className="d-flex rounded-3 m-3 mt-2 border"
+              style={{
+                width: "calc(100% - 2rem)",
+                maxWidth: "600px",
+                aspectRatio: "17/15",
+                background: `${bg_clr}`,
+              }}
+            >
+              <Carousel
+                className="w-100"
+                interval={null}
+                activeIndex={activeIndex}
+                onSelect={handleSelect}
+              >
+                {images.map((page, idx) => (
                   <Carousel.Item className="">
                     <div
                       key={idx}
-                      className="rounded-3 m-3"
+                      className="rounded-3"
                       style={{
-                        width: "calc(100% - 2rem)",
+                        // width: "calc(100% - 2rem)",
                         maxWidth: "600px",
                         aspectRatio: "17/15",
-                        minHeight: "400px",
                         flexShrink: 0,
                       }}
                     >
-                      {/* <img
-                        src={img}
-                        alt={`Preview ${idx + 1}`}
-                        className="h-100 w-100"
-                        style={{ objectFit: "cover" }}
-                      /> */}
-
                       <div
                         className="w-100 h-100 bg-image p-3"
                         style={{
-                          background: `url(${img})`,
+                          background:
+                            page.type === "img" ? `url(${page.val})` : page.val,
                         }}
                       />
 
                       <textarea
                         name="image_text"
                         id="image_text"
-                        className="position-absolute border-0 w-100 h-100 p-4"
+                        className="position-absolute border-0 w-100 h-100 text-light p-4"
                         style={{
                           top: "0",
                           left: "0",
                           background: "#3330",
                           caretColor: "red",
                         }}
+                        value={vibes[idx] || ""}
                         onChange={(e) => {
-                          handleInput(e, "image_text");
+                          handleInput(idx, e, "image_text");
                         }}
                         spellCheck="false"
                         placeholder="you can write a vibe ink here...."
@@ -233,25 +283,68 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
                 ))}
               </Carousel>
             </div>
-          </div>
 
+            <div className="d-flex gap-1 align-items-center justify-content-center">
+              <span
+                className="bold fs-4 border pb-1 bg-light rounded-5 d-flex   align-items-center justify-content-center"
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setPages(() => [...pages, { type: "bg-clr", val: bg_clr }]);
+                  setImages(() => [...images, { type: "bg-clr", val: bg_clr }]);
+                }}
+
+                // onClick={() => {
+                //   const newColor =
+                //     "#" + Math.floor(Math.random() * 16777215).toString(16);
+                //   setPages((prev) => [
+                //     ...prev,
+                //     { type: "bg-clr", val: newColor },
+                //   ]);
+                //   setImages((prev) => [
+                //     ...prev,
+                //     { type: "bg-clr", val: newColor },
+                //   ]);
+                // }}
+              >
+                +
+              </span>
+              <span
+                className=" bold fs-4 border pb-1 bg-light rounded-5 d-flex  align-items-center justify-content-center"
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  cursor: "pointer",
+                }}
+                onClick={removeCurrentSlide}
+              >
+                -
+              </span>
+            </div>
+          </div>
+          {/* above select image area */}
           <textarea
             ref={textareaRef}
             value={text}
             onChange={(e) => {
-              handleInput(e, "text");
+              handleInput(0, e, "text");
             }}
             required
-            className={`form-control rounded-0 shadow-none ps-3 ${
+            className={`form-control rounded-0 shadow-none ps-3 pe-5 ${
               images.length > 0 ? " border-0 border-top" : "border border-top-0"
             }`}
-            placeholder="Write your sentence here..."
+            placeholder="Write about post here . . ."
             style={{ overflow: "hidden", resize: "none" }}
             spellCheck="false"
           />
+
           {Errors && <small className="text-danger">{Errors}</small>}
           <br />
 
+          {/* {browsssss imggggg} */}
           <div className="d-flex gap-3 justify-content-end p-0 m-0">
             {/* {isPre_Image} */}
             {!true ? (
@@ -284,7 +377,47 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
         </div>
       </form>
 
-      {/* {isPre_Image && (
+      <div className="d-flex flex-wrap border p-3 mt-2 gap-2 w-100">
+        {pre_bg_color.map((c, idx) => {
+          return (
+            <>
+              <span
+                key={`bg-${idx}`}
+                className="rounded-5"
+                style={{
+                  minWidth: "32px",
+                  minHeight: "32px",
+                  background: `${c}`,
+                  cursor: "pointer",
+                  border: `${
+                    bg_clr === c ? "2px solid red" : "2px solid #f9d8df00"
+                  }`,
+                }}
+                onClick={() => {
+                  setbg_clr(c);
+                  setPages((prev) =>
+                    prev.map((item, idx) =>
+                      idx === activeIndex && item.type === "bg-clr"
+                        ? { ...item, val: c }
+                        : item
+                    )
+                  );
+
+                  setImages((prev) =>
+                    prev.map((item, idx) =>
+                      idx === activeIndex && item.type === "bg-clr"
+                        ? { ...item, val: c }
+                        : item
+                    )
+                  );
+                }}
+              />
+            </>
+          );
+        })}
+      </div>
+
+      {isPre_Image && (
         <div
           className="d-grid gap-3 pt-3 w-100"
           style={{
@@ -307,7 +440,7 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
             </div>
           ))}
         </div>
-      )} */}
+      )}
     </>
   );
 };

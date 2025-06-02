@@ -28,6 +28,7 @@ html {
   background-position: center !important;
   background-repeat: no-repeat !important;
   background-size: cover !important;
+  /* border: 2px solid red; */
 }
 
 .pre {

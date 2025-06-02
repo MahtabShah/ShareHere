@@ -149,7 +149,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
     return url.replace("/upload/", `/upload/w_${width},f_auto,q_auto/`);
   };
 
-  console.log("everiy time--->", comment);
+  // console.log("everiy time--->", comment);
 
   // const admin = admin;
   // console.log("admin===>", admin, user._id);
@@ -158,8 +158,8 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
       {comment?.text?.trim() && (
         <>
           <div
-            className="d-flex flex-column mt-4 p-0 bg position-relative col-md-12"
-            style={{ background: "#ddf" }}
+            className="d-flex flex-column mt-4 p-0 bg position-relative border-bottomcol-md-12"
+            style={{ background: "#fafafa" }}
             key={comment?.text?.slice(0, -1)}
           >
             <div className="d-flex gap-2">
@@ -189,7 +189,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                 {admin?._id !== user?._id &&
                   !user?.followers?.includes(admin?._id) && (
                     <div
-                      className="btn text-primary rounded-0 p-0 border"
+                      className="btn text-primary rounded-0 p-0"
                       onClick={HandleFollow}
                     >
                       Follow
@@ -208,42 +208,58 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                   className={`d-flex mt-2 m-${isDisplayedLeftNav ? "0" : "3"}`}
                   style={{ overflow: "hidden" }}
                 >
-                  <Carousel className="w-100">
-                    {comment?.images?.map((img, idx) => (
-                      <Carousel.Item className="">
-                        {" "}
-                        <div
-                          key={idx}
-                          className="p-0 position-relative w-100"
-                          style={{
-                            // width: "calc(100% - 0px)",
-                            maxWidth: "600px",
-                            aspectRatio: "17/17",
-                            minHeight: "400px",
-                            flexShrink: 0,
-                            margin: "auto",
-                            // border: "2px solid red",
-                          }}
-                        >
-                          <div className="w-100 h-100 bg-image">
-                            <img
-                              src={optimizeImage(img, 400)} // 400px for mobile-friendly width
-                              loading="lazy"
-                              alt={`image-${idx}`}
-                              className="h-100 w-100"
-                              style={{ objectFit: "cover" }}
-                            />
-                          </div>
+                  <Carousel
+                    className="w-100"
+                    interval={null}
+                    defaultActiveIndex={1 || 0}
+                  >
+                    {comment?.pages?.map(
+                      (pg, idx) =>
+                        pg?.type && (
+                          <Carousel.Item className="">
+                            {" "}
+                            <div
+                              key={idx}
+                              className="p-0 position-relative w-100"
+                              style={{
+                                // width: "calc(100% - 0px)",
+                                maxWidth: "600px",
+                                aspectRatio: "17/17",
+                                minHeight: "400px",
+                                flexShrink: 0,
+                                margin: "auto",
+                                // border: "2px solid red",
+                              }}
+                            >
+                              <div className="w-100 h-100 bg-image">
+                                {pg.type === "img" ? (
+                                  <img
+                                    // src={optimizeImage(pg.val, 400)} // 400px for mobile-friendly width
+                                    src={pg.val} // 400px for mobile-friendly width
+                                    loading="lazy"
+                                    alt={`image-${idx}`}
+                                    className="h-100 w-100"
+                                    style={{ objectFit: "cover" }}
+                                  />
+                                ) : (
+                                  <div
+                                    className="bg-image h-100 w-100"
+                                    style={{ background: `${pg.val}` }}
+                                  ></div>
+                                )}
+                              </div>
 
-                          <div
-                            className="position-absolute w-100 h-100 p-2"
-                            style={{ top: "0" }}
-                          >
-                            {/* <pre></pre> */}
-
-                            {comment?.image_text}
-                          </div>
-                          {/* <textarea
+                              <div
+                                className="position-absolute text-white w-100 h-100 p-2"
+                                style={{
+                                  top: "0",
+                                  wordBreak: "break-word",
+                                  whiteSpace: "break-spaces",
+                                }}
+                              >
+                                {pg?.vibe}
+                              </div>
+                              {/* <textarea
                             name="image_text"
                             id="image_text"
                             className="position-absolute border-0 w-100 h-100 p-4"
@@ -259,12 +275,13 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                             spellCheck="false"
                             placeholder="you can write a vibe ink here...."
                           /> */}
-                        </div>
-                        {/* <Carousel.Caption>
+                            </div>
+                            {/* <Carousel.Caption>
                           <h3>First slide label</h3>
                         </Carousel.Caption> */}
-                      </Carousel.Item>
-                    ))}
+                          </Carousel.Item>
+                        )
+                    )}
                   </Carousel>
                 </div>
                 <li className="p-2 w-100 flex-grow-1 rounded-3 ps-3">
@@ -321,9 +338,9 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
           </div>
           {isdotClicked && (
             <div
-              className="container small fw-medium d-flex flex-wrap p-3 gap-3"
+              className="small fw-medium d-flex flex-wrap p-3 gap-3"
               style={{
-                background: "#ccf",
+                background: "#ddf",
               }}
             >
               <Nav.Link href="/home">Home</Nav.Link>
@@ -335,16 +352,20 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                     : "follow"}
                 </Nav.Link>
               )}
-              <Nav.Link href="/home">Edit Post</Nav.Link>
-              {comment?.userId === admin.id ||
+
+              {comment?.userId === admin._id ||
               "683ca60f4d22f430952c6d01" === admin._id ? (
                 // this way is just for temporary...!!!
-                <Nav.Link
-                  onClick={HandleDelete}
-                  className=" pe-2 ps-2 text-danger"
-                >
-                  Delete
-                </Nav.Link>
+
+                <>
+                  <Nav.Link href="/home">Edit Post</Nav.Link>
+                  <Nav.Link
+                    onClick={HandleDelete}
+                    className=" pe-2 ps-2 text-danger"
+                  >
+                    Delete
+                  </Nav.Link>
+                </>
               ) : (
                 ""
               )}
