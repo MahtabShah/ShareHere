@@ -657,7 +657,7 @@ const QuoteStyler = () => {
         <FaParagraph title="Paragraph Settings" />
       </div>
 
-      <div className="d-flex gap-2 mt-3 small">
+      <div className="d-flex gap-2 mt-3 btn-tool">
         <div
           className="btn btn-outline-primary rounded-0 p-0 pe-2 ps-2 fontFamily"
           onClick={() => {

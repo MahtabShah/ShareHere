@@ -55,6 +55,10 @@ textarea {
   height: 0;
 }
 
+.btn-tool > div {
+  font-size: clamp(4px, 2.1vw, 1.2rem) !important;
+}
+
 @keyframes rotateBtn {
   0% {
     transform: rotateZ(0deg);
