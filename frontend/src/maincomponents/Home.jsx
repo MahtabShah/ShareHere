@@ -149,7 +149,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
     return url.replace("/upload/", `/upload/w_${width},f_auto,q_auto/`);
   };
 
-  // console.log("everiy time--->", comment);
+  console.log("everiy time--->", comment);
 
   // const admin = admin;
   // console.log("admin===>", admin, user._id);
@@ -208,15 +208,16 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                   className={`d-flex mt-2 m-${isDisplayedLeftNav ? "0" : "3"}`}
                   style={{ overflow: "hidden" }}
                 >
+                  {" "}
                   <Carousel
                     className="w-100"
                     interval={null}
-                    defaultActiveIndex={1 || 0}
+                    defaultActiveIndex={0}
                   >
                     {comment?.pages?.map(
                       (pg, idx) =>
                         pg?.type && (
-                          <Carousel.Item className="">
+                          <Carousel.Item className="" key={idx}>
                             {" "}
                             <div
                               key={idx}
@@ -228,7 +229,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                                 minHeight: "400px",
                                 flexShrink: 0,
                                 margin: "auto",
-                                ...pg.pre_style,
+                                // pg.pre_style ? ...pg.pre_style : ,
                                 // border: "2px solid red",
                               }}
                             >
@@ -246,7 +247,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                                   <div
                                     className="bg-image h-100 w-100"
                                     style={{ background: `${pg.val}` }}
-                                  ></div>
+                                  />
                                 )}
                               </div>
 

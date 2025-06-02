@@ -204,7 +204,7 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
     );
   };
 
-  console.log("pre style = = = > ", pre_style);
+  // console.log("pre style = = = > ", pre_style);
 
   return (
     <>
