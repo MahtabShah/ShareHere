@@ -57,6 +57,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+
+// const dns = require('dns');
+// dns.setDefaultResultOrder('ipv4first');
+
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

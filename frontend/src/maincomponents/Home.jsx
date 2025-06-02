@@ -228,6 +228,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                                 minHeight: "400px",
                                 flexShrink: 0,
                                 margin: "auto",
+                                ...pg.pre_style,
                                 // border: "2px solid red",
                               }}
                             >
@@ -250,7 +251,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                               </div>
 
                               <div
-                                className="position-absolute text-white w-100 h-100 p-2"
+                                className="position-absolute w-100 h-100 p-3"
                                 style={{
                                   top: "0",
                                   wordBreak: "break-word",

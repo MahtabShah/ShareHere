@@ -12,6 +12,7 @@ const sentenceSchema = new mongoose.Schema({
       type: { type: String },
       val: String, // bg-color, text, or image URL
       vibe: {type: String},
+      pre_style:{},
 
     },
   ],

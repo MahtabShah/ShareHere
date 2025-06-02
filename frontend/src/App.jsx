@@ -14,6 +14,7 @@ import { Loading } from "../TinyComponent/LazyLoading";
 import MainHeader from "./maincomponents/MainHeader";
 import LeftNavbar from "./maincomponents/LeftNavbar";
 import UploadProduct from "./pages/UploadProduct";
+import { QuoteProvider } from "../../QueotrContext";
 const API = import.meta.env.VITE_API_URL;
 
 function App() {
@@ -135,107 +136,112 @@ function App() {
   // console.log("alll_coment===> ", all_comments);
 
   return (
-    <Router>
-      <div className="p-0 pt-4 col-sm-10 col-md-12" style={{ margin: "auto" }}>
-        <MainHeader fetchAllUsers={fetchAllUsers} />
-        <LeftNavbar isDisplayedLeftNav={isDisplayedLeftNav} />
-        <section
-          className="p-0"
-          style={{
-            marginTop: "34px",
-            marginLeft: `${!isDisplayedLeftNav ? "200px" : "0"}`,
-          }}
+    <QuoteProvider>
+      <Router>
+        <div
+          className="p-0 pt-4 col-sm-10 col-md-12"
+          style={{ margin: "auto" }}
         >
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <div>
-                  <hr />
-                  <PostSentence fetchSentences={fetchSentences} />
-                  <hr />
-                  <MySentences sentences={sentences} loading={loading} />
-                </div>
-              }
-            />
-            <Route
-              path="/signup"
-              element={<Signup fetchAllUsers={fetchAllUsers} />}
-            />
-            <Route
-              path="/login"
-              element={<Login fetchAllUsers={fetchAllUsers} />}
-            />
-            <Route path="api/sentence/my" element={<MySentences />} />
-            <Route path="/upload" element={<UploadProduct />} />
-            <Route
-              path="/home"
-              element={
-                <section
-                  className={`${isDisplayedLeftNav ? "p-2" : "p-3"} pt-4`}
-                  style={{ margin: "auto", maxWidth: "600px" }}
-                >
-                  <h4
-                    className={`${isDisplayedLeftNav ? "ps-0" : "ps-3"}`}
-                    // style={{ borderBottom: "1px solid #222" }}
+          <MainHeader fetchAllUsers={fetchAllUsers} />
+          <LeftNavbar isDisplayedLeftNav={isDisplayedLeftNav} />
+          <section
+            className="p-0"
+            style={{
+              marginTop: "34px",
+              marginLeft: `${!isDisplayedLeftNav ? "200px" : "0"}`,
+            }}
+          >
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <div>
+                    <hr />
+                    <PostSentence fetchSentences={fetchSentences} />
+                    <hr />
+                    <MySentences sentences={sentences} loading={loading} />
+                  </div>
+                }
+              />
+              <Route
+                path="/signup"
+                element={<Signup fetchAllUsers={fetchAllUsers} />}
+              />
+              <Route
+                path="/login"
+                element={<Login fetchAllUsers={fetchAllUsers} />}
+              />
+              <Route path="api/sentence/my" element={<MySentences />} />
+              <Route path="/upload" element={<UploadProduct />} />
+              <Route
+                path="/home"
+                element={
+                  <section
+                    className={`${isDisplayedLeftNav ? "p-2" : "p-3"} pt-4`}
+                    style={{ margin: "auto", maxWidth: "600px" }}
                   >
-                    Post a Vibe Ink Here
-                  </h4>
+                    <h4
+                      className={`${isDisplayedLeftNav ? "ps-0" : "ps-3"}`}
+                      // style={{ borderBottom: "1px solid #222" }}
+                    >
+                      Post a Vibe Ink Here
+                    </h4>
 
-                  <PostSentence
-                    fetchSentences={fetchSentences}
-                    fetchAllUsers={fetchAllUsers}
-                    all_user={all_user}
-                    admin={admin}
-                  />
+                    <PostSentence
+                      fetchSentences={fetchSentences}
+                      fetchAllUsers={fetchAllUsers}
+                      all_user={all_user}
+                      admin={admin}
+                    />
 
-                  {LazyLoading ? (
-                    <div className="p-3 d-flex justify-content-center">
-                      {" "}
-                      <Loading dm={34} />
-                    </div>
-                  ) : (
-                    <>
-                      {all_user?.map((u, idx) => {
-                        return (
-                          <Fragment key={idx}>
-                            {" "}
-                            {all_comments
-                              ?.filter((com) => com.userId === u._id)
-                              ?.map((c, indx) => {
-                                return (
-                                  <Fragment key={indx}>
-                                    {all_comments?.filter(
-                                      (com) => com.userId === u._id
-                                    ).length > 0 && (
-                                      <>
-                                        <Home
-                                          user={u}
-                                          comment={c}
-                                          admin={admin}
-                                          fetchAllUsers={fetchAllUsers}
-                                          fetchSentences={fetchSentences}
-                                          isDisplayedLeftNav={
-                                            isDisplayedLeftNav
-                                          }
-                                        />
-                                      </>
-                                    )}
-                                  </Fragment>
-                                );
-                              })}
-                          </Fragment>
-                        );
-                      })}
-                    </>
-                  )}
-                </section>
-              }
-            />
-          </Routes>
-        </section>
-      </div>
-    </Router>
+                    {LazyLoading ? (
+                      <div className="p-3 d-flex justify-content-center">
+                        {" "}
+                        <Loading dm={34} />
+                      </div>
+                    ) : (
+                      <>
+                        {all_user?.map((u, idx) => {
+                          return (
+                            <Fragment key={idx}>
+                              {" "}
+                              {all_comments
+                                ?.filter((com) => com.userId === u._id)
+                                ?.map((c, indx) => {
+                                  return (
+                                    <Fragment key={indx}>
+                                      {all_comments?.filter(
+                                        (com) => com.userId === u._id
+                                      ).length > 0 && (
+                                        <>
+                                          <Home
+                                            user={u}
+                                            comment={c}
+                                            admin={admin}
+                                            fetchAllUsers={fetchAllUsers}
+                                            fetchSentences={fetchSentences}
+                                            isDisplayedLeftNav={
+                                              isDisplayedLeftNav
+                                            }
+                                          />
+                                        </>
+                                      )}
+                                    </Fragment>
+                                  );
+                                })}
+                            </Fragment>
+                          );
+                        })}
+                      </>
+                    )}
+                  </section>
+                }
+              />
+            </Routes>
+          </section>
+        </div>
+      </Router>
+    </QuoteProvider>
   );
 }
 
