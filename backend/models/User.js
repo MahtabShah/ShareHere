@@ -26,13 +26,20 @@ const userSchema = new mongoose.Schema({
   },
 
   bio:{type:String},
-  cover_pic:String,
-  profile_pic:String,
+  cover_pic:String , default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s",
+
+  profile_pic:String , default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s",
   about_user:{type:String},
 
   followers:[{
     type: mongoose.Schema.Types.ObjectId,
   }],
+
+ notifications: [{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Notification'
+  }],
+  default: [],
 
   following:[{
     type: mongoose.Schema.Types.ObjectId,

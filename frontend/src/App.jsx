@@ -16,6 +16,8 @@ import LeftNavbar from "./maincomponents/LeftNavbar";
 import UploadProduct from "./pages/UploadProduct";
 import { QuoteProvider } from "./context/QueotrContext";
 import UserProfile from "./maincomponents/UserProfile";
+import { Notification } from "../TinyComponent/Notification";
+import BottomNav from "../TinyComponent/BotoomNav";
 const API = import.meta.env.VITE_API_URL;
 
 function App() {
@@ -67,6 +69,21 @@ function App() {
   };
   //
 
+  const [curr_all_notifications, setcurr_all_notifications] = useState([]);
+
+  const fetch_all_notifications = async () => {
+    try {
+      const res = await axios.get(`${API}/api/crud/all_notifications`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // setLoading(false);
+      console.log("notiiiiiiii---->", res.data);
+      setcurr_all_notifications(res.data);
+    } catch (error) {
+      console.log("erriorrr in notify", error);
+    }
+  };
+
   const [all_user, setall_user] = useState([]);
   const [all_comments, setall_comments] = useState([]);
   const [all_post_comments, setall_post_comments] = useState([]);
@@ -105,6 +122,7 @@ function App() {
     fetchSentences();
     fetchAllUsers();
     fetch_admin_user();
+    fetch_all_notifications();
   }, [token]);
 
   useEffect(() => {
@@ -114,7 +132,10 @@ function App() {
       setSentences((prev) => [...prev, sentence]);
       fetchSentences();
       fetchAllUsers();
+      fetch_all_notifications();
     });
+
+    fetch_all_notifications();
 
     socket.on("userUpdated", (updatedUser) => {
       setall_user((prevUsers) =>
@@ -122,6 +143,8 @@ function App() {
           user._id === updatedUser._id ? updatedUser : user
         )
       );
+
+      fetch_all_notifications();
     });
 
     setLoading(false);
@@ -143,8 +166,14 @@ function App() {
           className="p-0 pt-4 col-sm-10 col-md-12"
           style={{ margin: "auto" }}
         >
-          <MainHeader fetchAllUsers={fetchAllUsers} admin={admin} />
+          <MainHeader
+            fetchAllUsers={fetchAllUsers}
+            admin={admin}
+            curr_all_notifications={curr_all_notifications}
+            setcurr_all_notifications={setcurr_all_notifications}
+          />
           <LeftNavbar isDisplayedLeftNav={isDisplayedLeftNav} />
+          <BottomNav isDisplayedLeftNav={isDisplayedLeftNav} admin={admin} />
           <section
             className="p-0"
             style={{
@@ -164,6 +193,12 @@ function App() {
                   </div>
                 }
               />
+
+              <Route
+                path="/api/crud/all_notifications"
+                element={<Notification />}
+              />
+
               <Route
                 path="/signup"
                 element={<Signup fetchAllUsers={fetchAllUsers} />}

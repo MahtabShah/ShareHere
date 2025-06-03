@@ -10,9 +10,10 @@ import { faBell, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../../TinyComponent/Logo";
+import { Notification } from "../../TinyComponent/Notification";
 import { useQuote } from "../context/QueotrContext";
 
-function MainHeader({ fetchAllUsers, admin }) {
+function MainHeader({ curr_all_notifications, admin }) {
   const currentUser = "68367db96029e4bffe215341";
 
   const [VisibleNotification, setVisibleNotification] = useState(false);
@@ -172,70 +173,11 @@ function MainHeader({ fetchAllUsers, admin }) {
       ))}
 
       {VisibleNotification && (
-        <div
-          className="notification shadow-lg d-flex flex-column gap-3  p-2 bg-light position-fixed bg-black"
-          style={{
-            maxHeight: "80vh",
-            width: "280px",
-            zIndex: "100",
-            right: "0px",
-            top: "56px",
-            borderLeft: "1px solid var(--lightBlack-clr)",
-          }}
-        >
-          <div className="followersNotify p-2">
-            <div className="d-flex gap-2">
-              <div
-                className="dpPhoto rounded-circle bg-primary"
-                style={{ minWidth: "37px", height: "37px" }}
-              >
-                {/* <img src="" alt="" /> */}
-              </div>
-              <span className="small">
-                <span className="small d-block fw-light">16 min ago</span>
-                <span className="">Mahtab Shah followed you . .</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="commentNotify p-2">
-            <div className="d-flex gap-2">
-              <div
-                className="dpPhoto bg-danger rounded-circle"
-                style={{ minWidth: "37px", height: "37px" }}
-              >
-                {/* <img src="" alt="" /> */}
-              </div>
-              <span className="small">
-                <span className="small d-block fw-light">41 min ago</span>
-                <span className="fw-medium d-block">@ someone commented </span>
-                <span className="justify">
-                  {" "}
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Commodi, . . .
-                </span>
-              </span>
-            </div>
-          </div>
-
-          <div className="likeNootify p-2">
-            <div className="d-flex gap-2">
-              <div
-                className="dpPhoto rounded-circle bg-success"
-                style={{ minWidth: "37px", height: "37px" }}
-              >
-                {/* <img src="" alt="" /> */}
-              </div>
-              <span className="small">
-                <span className="small d-block fw-light">1 hour ago</span>
-                <span className="fw-medium d-block">
-                  @ someone liked your post{" "}
-                </span>
-                <span className="justify">You have reached 991 likes</span>
-              </span>
-            </div>
-          </div>
-        </div>
+        <Notification
+          curr_all_notifications={curr_all_notifications}
+          setVisibleNotification={setVisibleNotification}
+          admin={admin}
+        />
       )}
     </>
   );

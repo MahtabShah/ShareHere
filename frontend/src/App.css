@@ -74,3 +74,8 @@ textarea {
     transform: rotateZ(0deg);
   }
 }
+
+.on-hover-userid:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

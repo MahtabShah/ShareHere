@@ -87,8 +87,8 @@ router.get('/fix-sentences', async (req, res) => {
       // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
       //  { pages: { $exists: true } },
       // { $set: { pages: [{}] } },
-      { cover_pic: { $exists: false } },
-      { $set: { cover_pic: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s" } }
+      { notifications: { $exists: true } },
+      { $set: { notifications: [] } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

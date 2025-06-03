@@ -6,6 +6,8 @@ const User = require('../models/User');
 const {Sentence, Comment} = require('../models/Sentence');
 const { io } = require('../server');
 require("dotenv").config()
+const Notification = require("../models/Notification")
+
 
 
 const randomNum = ()=>{
@@ -27,7 +29,9 @@ router.post('/signup', async (req, res) => {
     const random_clr = `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, email, password: hashedPassword , bg_clr: random_clr });
+    const user = new User({ username, email, password: hashedPassword , bg_clr: random_clr ,  cover_pic:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s",
+
+  profile_pic:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s",});
     await user.save();
 
     const token = jwt.sign({ id: user._id ,  username: user.username,
@@ -128,6 +132,20 @@ router.put("/like_this_post" , async (req, res)=>{
     isliked ? sentence.likes += 1 : sentence.likes -= 1
     await sentence.save()
     console.log("all user want ot fetching 58: auth,js routes", req.body, id , "and ", sentence);
+
+    const newNotification = new Notification({
+        
+      "recipient": sentence.userId,  // User B (original commenter)
+      "type": "like",
+      "isRead": false,
+      "post":sentence,
+    
+    
+      })
+    
+      isliked ? await newNotification.save() : ""
+  console.log("new notifications - - - -- - - - -->" , newNotification)
+
     io.emit('sentence', sentence.toObject());
    try {
       res.json(sentence)
@@ -153,8 +171,22 @@ router.put("/set_comment_this_post" , async (req, res)=>{
         postId: id,
     })
  
-    await update_new_comment.save()
-    sentence?.comments?.push(update_new_comment._id)
+       await update_new_comment.save();
+sentence.comments.push(update_new_comment._id);
+await sentence.save(); // ✅ make sure the comment is saved to the sentence
+
+const newNotification = new Notification({
+  recipient: sentence.userId,          // User who originally created the post
+  sender: useriid,                     // Current commenter
+  type: "comment",
+  isRead: false,
+  post: sentence._id,                  // ✅ only the ObjectId
+  comment: update_new_comment._id,     // ✅ correct comment id
+});
+
+await newNotification.save(); // ✅ don't forget to save the notification
+
+      console.log("new notifications - - - -- - - - --> comment" , newNotification)
 
     await sentence.save()
     // console.log("all user want ot fetching 58: auth,js routes", new_comment, "id" , id , "and ", sentence, "user id -----\n",userId ,"update----\n", update_new_comment);

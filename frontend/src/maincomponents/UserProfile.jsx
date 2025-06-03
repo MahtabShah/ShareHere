@@ -108,7 +108,7 @@ const UserProfile = ({
       </div>
 
       <div className="text-end pe-3 pt-3" style={{ height: "60px" }}>
-        {id !== admin?._id && (
+        {/* {id !== admin?._id && (
           <button
             className="btn btn-outline-dark btn-sm"
             onClick={() => {
@@ -117,7 +117,7 @@ const UserProfile = ({
           >
             {isfollowed ? "Follow" : "Unfollow"}
           </button>
-        )}
+        )} */}
 
         <button
           className="btn btn-outline-dark btn-sm ms-2"

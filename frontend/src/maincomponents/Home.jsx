@@ -12,6 +12,8 @@ import Nav from "react-bootstrap/Nav";
 import PreImages from "../../TinyComponent/PreImages";
 const API = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { Card } from "react-bootstrap";
 
 export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
   const [open_comment, setopen_comment] = useState(false);
@@ -110,24 +112,6 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
     }
   };
 
-  const SubmitComment = async (e, id) => {
-    e.preventDefault();
-    // console.log("form comment ------> ", new_comment);
-    try {
-      setLazyLoading(true);
-      const res = await axios.put(`${API}/api/auth/set_comment_this_post`, {
-        headers: { Authorization: `Bearer ${token}` },
-        id: id, // post ki id hai
-        new_comment: new_comment,
-      });
-      // setisliked(!isliked);
-      setnew_comment("");
-    } catch (err) {
-      alert("Login failed: " + err.response?.data?.message || err.message);
-    }
-    setLazyLoading(!true);
-  };
-
   const HandleDelete = async () => {
     // animateButton("likes");
 
@@ -151,16 +135,47 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
     return url.replace("/upload/", `/upload/w_${width},f_auto,q_auto/`);
   };
 
-  console.log("everiy time--->", comment);
+  // console.log("everiy time--->", comment);
 
-  // const admin = admin;
-  // console.log("admin===>", admin, user._id);
+  const { search } = useLocation();
+  const postId = new URLSearchParams(search).get("postId");
+
+  useEffect(() => {
+    if (postId) {
+      const el = document.getElementById(postId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.style.backgroundColor = "#ffffcc"; // highlight
+        setTimeout(() => {
+          el.style.backgroundColor = "transparent"; // remove after delay
+        }, 2000);
+      }
+    }
+  }, [postId]);
+
+  const SubmitComment = async (e, id) => {
+    e.preventDefault();
+    // console.log("form comment ------> ", new_comment);
+    try {
+      setLazyLoading(true);
+      const res = await axios.put(`${API}/api/auth/set_comment_this_post`, {
+        headers: { Authorization: `Bearer ${token}` },
+        id: id, // post ki id hai
+        new_comment: new_comment,
+      });
+      // setisliked(!isliked);
+      setnew_comment("");
+    } catch (err) {
+      alert("Login failed: " + err.response?.data?.message || err.message);
+    }
+    setLazyLoading(!true);
+  };
   return (
     <>
       {comment?.text?.trim() && (
         <>
           <div
-            className="d-flex flex-column mt-4 p-0 bg position-relative border-bottomcol-md-12"
+            className="d-flex flex-column mt-4 p-0 bg position-relative border-bottom col-md-12"
             style={{ background: "#fafafa" }}
             key={comment?.text?.slice(0, -1)}
           >
@@ -169,7 +184,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                 className="d-flex align-items-center justify-content-center rounded-crcle text-white"
                 style={{
                   width: "40px",
-                  height: "40px",
+                  maxHheight: "40px",
                   borderRadius: "20px",
                   borderEndStartRadius: "0px",
                   borderStartEndRadius: "0px",
@@ -219,6 +234,8 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                     className="w-100"
                     interval={null}
                     defaultActiveIndex={0}
+                    key={comment._id}
+                    id={comment._id}
                   >
                     {comment?.pages?.map(
                       (pg, idx) =>
@@ -399,9 +416,6 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                       borderRadius: "20px",
                       background: `${admin?.bg_clr}`,
                       cursor: "pointer",
-                      // borderEndStartRadius: "0px",
-                      // borderStartEndRadius: "0px",
-                      // borderStartStartRadius: "0",
                     }}
                     onClick={() => {
                       nevigate(`/api/user/${admin._id}`);
@@ -411,9 +425,6 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                   </div>
 
                   <textarea
-                    // type="text"
-                    // value={text}
-                    // onChange={(e) => setText(e.target.value)}
                     required
                     className="w-100 shadow-none border-0 border-bottom rounded-0 ps-0 pt-1 fs-0 small"
                     placeholder="Write your sentence here . . . . . ."
@@ -458,48 +469,96 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                 </div>
               </div>
 
-              <div className="ps-2 pb-3">
-                {comment?.comments?.map((pc, idx) => {
-                  return (
-                    <>
-                      <div className="d-flex gap-1 mt-3" key={idx}>
-                        <div
-                          className="d-flex align-items-center justify-content-center rounded-crcle text-white"
-                          style={{
-                            minWidth: "30px",
-                            height: "30px",
-                            borderRadius: "20px",
-                            background: `${pc?.userId?.bg_clr}`,
-                            // borderEndStartRadius: "0px",
-                            // borderStartEndRadius: "0px",
-                            // borderStartStartRadius: "0",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => {
-                            nevigate(`/api/user/${pc?.userId._id}`);
-                          }}
-                        >
-                          <span>
-                            {pc?.userId?.username.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="small">
-                          <small className="fw-semibold">
-                            @{pc?.userId?.username}
-                          </small>
-                          <div key={idx} className="fs-6">
-                            {pc.text}
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })}
-              </div>
+              <CommentSection post={comment} />
             </section>
           )}
         </>
       )}
+    </>
+  );
+};
+
+export const CommentSection = ({ post }) => {
+  const nevigate = useNavigate();
+
+  return (
+    <>
+      <div className="ps-2 pb-3">
+        {post?.comments?.map((pc, idx) => {
+          return (
+            <>
+              <div className="d-flex gap-1 mt-3" key={idx}>
+                <div
+                  className="d-flex align-items-center justify-content-center rounded-crcle text-white"
+                  style={{
+                    minWidth: "30px",
+                    height: "30px",
+                    borderRadius: "20px",
+                    background: `${pc?.userId?.bg_clr}`,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    nevigate(`/api/user/${pc?.userId?._id}`);
+                  }}
+                >
+                  <span>{pc?.userId?.username.charAt(0).toUpperCase()}</span>
+                </div>
+                <div className="small">
+                  <small className="fw-semibold">@{pc?.userId?.username}</small>
+                  <div key={idx} className="fs-6">
+                    {pc?.text}
+                  </div>
+                </div>
+              </div>
+            </>
+          );
+        })}
+      </div>
+    </>
+  );
+};
+
+export const CardPost = ({ pg }) => {
+  return (
+    <>
+      <div
+        className="p-0 position-relative w-100"
+        style={{
+          aspectRatio: "1/1",
+          flexShrink: 0,
+        }}
+      >
+        <div className="w-100 h-100 bg-image">
+          {pg.type === "img" ? (
+            <img
+              src={pg.val} // 400px for mobile-friendly width
+              loading="lazy"
+              className="h-100 w-100"
+              style={{ objectFit: "cover" }}
+            />
+          ) : (
+            <div
+              className="bg-image h-100 w-100"
+              style={{ background: `${pg.val}` }}
+            />
+          )}
+        </div>
+
+        <div
+          className="position-absolute w-100 pt-1 h-100"
+          style={{
+            ...pg.pre_style,
+            top: "0",
+            left: "0",
+            wordBreak: "break-word",
+            whiteSpace: "break-spaces",
+            background: `${pg.val}`,
+            fontSize: "40%",
+          }}
+        >
+          {pg?.vibe}
+        </div>
+      </div>
     </>
   );
 };
