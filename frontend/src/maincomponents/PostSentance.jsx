@@ -4,8 +4,8 @@ import { Loading } from "../../TinyComponent/LazyLoading";
 import PreImages from "../../TinyComponent/PreImages";
 import Carousel from "react-bootstrap/Carousel";
 import Nav from "react-bootstrap/Nav";
-import { QuoteProvider } from "../../../QueotrContext";
-import { useQuote } from "../../../QueotrContext";
+import { QuoteProvider } from "../context/QueotrContext";
+import { useQuote } from "../context/QueotrContext";
 // import "@fortawesome/fontawesome-free/css/all.min.css";
 import { MdFormatSize } from "react-icons/md";
 
@@ -23,20 +23,48 @@ const pre_images = [
 ];
 
 const pre_bg_color = [
-  "#000",
-  "#23d",
-  "#0d0",
-  "#0dd",
-  "#00d",
-  "#dff",
-  "#df2",
-  "#cd2",
-  "#a27",
-  "#8ae",
-  "#098",
-  "#345",
-  "#456",
-  "#d00",
+  "#A294F9",
+  "#F1F0E8",
+  "#89A8B2",
+  "#D91656",
+  "#640D5F",
+  "#355F2E",
+  "#441752",
+  "#F72C5B",
+  "#F0BB78",
+  "#131010",
+  "#3E5879",
+  "#C84C05",
+  "#074799",
+  "#8D0B41",
+  "#7E5CAD",
+  "#500073",
+  "#8D77AB",
+  "#FFE9D6",
+  "#D7C1E0",
+  "#EEF5FF",
+  "#7E30E1",
+  "#B0D553",
+  "#D4F6CC",
+  "#171717",
+  "#DA0037",
+  "#217756",
+  "#008DDA",
+  "#664343",
+  "#E0AB5B",
+  "#FFA6D5",
+  "#240750",
+  "#3B3030",
+  "#5FBDFF",
+  "#7B66FF",
+  "#FFF8CD",
+  "#D4D7DD",
+  "#A888B5",
+  "#000B58",
+  "#F67280",
+  "#46B7B9",
+  "#8D72E1",
+  "#2B580C",
 ];
 
 const PostSentence = ({ fetchSentences, all_user, admin }) => {
@@ -218,6 +246,12 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
             className="border position-relative rounded-0 border-bottom-0"
             style={{ right: 0, minHeight: "230px" }}
           >
+            <div className="d-flex align-items-center justify-content-between">
+              <div className="d-flex  flex-grow-1 flex-column align-center pe-3 ps-3 p-2 w-100">
+                <QuoteStyler />
+              </div>
+            </div>
+
             <div
               className="position-absolute bg-light rounded- pt-1 d-flex align-items-center"
               style={{ right: "0" }}
@@ -232,15 +266,11 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
                 onChange={handleImageChange}
               />
             </div>
-            <div className="d-flex align-items-center justify-content-between">
-              <div className="d-flex  flex-grow-1 flex-column align-center pe-3 ps-3 p-2 w-100">
-                <QuoteStyler />
-              </div>
-            </div>
+
             <div
-              className="d-flex  ms-3 mt-2 border"
+              className="d-flex  mt-0 border"
               style={{
-                width: "calc(100% - 2rem)",
+                width: "calc(100% - 0rem)",
                 maxWidth: "600px",
                 aspectRatio: "17/17",
                 background: `${bg_clr}`,
@@ -300,49 +330,8 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
               </Carousel>
             </div>
 
-            <div className="d-flex gap-1 align-items-center justify-content-center mt-1">
-              <span
-                className="bold fs-4 border pb-1 bg-light rounded-5 d-flex   align-items-center justify-content-center"
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setPages(() => [...pages, { type: "bg-clr", val: bg_clr }]);
-                  setImages(() => [...images, { type: "bg-clr", val: bg_clr }]);
-                }}
-
-                // onClick={() => {
-                //   const newColor =
-                //     "#" + Math.floor(Math.random() * 16777215).toString(16);
-                //   setPages((prev) => [
-                //     ...prev,
-                //     { type: "bg-clr", val: newColor },
-                //   ]);
-                //   setImages((prev) => [
-                //     ...prev,
-                //     { type: "bg-clr", val: newColor },
-                //   ]);
-                // }}
-              >
-                +
-              </span>
-              <span
-                className=" bold fs-4 border pb-1 bg-light rounded-5 d-flex  align-items-center justify-content-center"
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  cursor: "pointer",
-                }}
-                onClick={removeCurrentSlide}
-              >
-                -
-              </span>
-            </div>
-
             <div
-              className="d-flex gap-2 m-3 none-scroller overflow-x-auto overflow-y-hidden"
+              className="d-flex gap-2 me-3 mt-2 ms-3 none-scroller overflow-x-auto overflow-y-hidden"
               style={{ maxHeight: "80px", maxWidth: "100%" }}
             >
               {pre_bg_color.map((c, idx) => {
@@ -382,6 +371,47 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
                   </>
                 );
               })}
+            </div>
+
+            <div className="d-flex gap-1 align-items-center justify-content-center mt-1">
+              <span
+                className="bold fs-4 border pb-1 bg-light rounded-5 d-flex   align-items-center justify-content-center"
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setPages(() => [...pages, { type: "bg-clr", val: bg_clr }]);
+                  setImages(() => [...images, { type: "bg-clr", val: bg_clr }]);
+                }}
+
+                // onClick={() => {
+                //   const newColor =
+                //     "#" + Math.floor(Math.random() * 16777215).toString(16);
+                //   setPages((prev) => [
+                //     ...prev,
+                //     { type: "bg-clr", val: newColor },
+                //   ]);
+                //   setImages((prev) => [
+                //     ...prev,
+                //     { type: "bg-clr", val: newColor },
+                //   ]);
+                // }}
+              >
+                +
+              </span>
+              <span
+                className=" bold fs-4 border pb-1 bg-light rounded-5 d-flex  align-items-center justify-content-center"
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  cursor: "pointer",
+                }}
+                onClick={removeCurrentSlide}
+              >
+                -
+              </span>
             </div>
           </div>
           {/* above select image area */}
@@ -505,52 +535,16 @@ import {
   FaSortAlphaDown,
   FaParagraph,
 } from "react-icons/fa";
-import { Form } from "react-bootstrap";
 
-const Toolbar = () => {
-  return (
-    <div
-      className="d-flex p-2 border rounded"
-      style={{ flexWrap: "wrap", gap: "10px" }}
-    >
-      {/* Font Section */}
-      <div className="d-flex flex-wrap align-items-center gap-2 border-end pe-3">
-        <Form.Select size="sm" style={{ width: "140px" }}>
-          <option>Calibri</option>
-          <option>Arial</option>
-          <option>Georgia</option>
-        </Form.Select>
-        <Form.Select size="sm" style={{ width: "60px" }}>
-          <option>24</option>
-          <option>22</option>
-          <option>20</option>
-        </Form.Select>
-
-        <FaItalic title="Italic" />
-        <FaUnderline title="Underline" />
-        <FaStrikethrough title="Strikethrough" />
-        <FaSubscript title="Subscript" />
-        <FaSuperscript title="Superscript" />
-        <FaHighlighter title="Highlight" />
-        <FaFont title="Font Color" />
-        <FaTextHeight title="Increase Font Size" />
-        <FaTextWidth title="Decrease Font Size" />
-      </div>
-
-      {/* Paragraph Section */}
-      <div className="d-flex flex-wrap align-items-center gap-2">
-        <FaListUl title="Bullets" />
-        <FaListOl title="Numbering" />
-        <FaAlignLeft title="Align Left" />
-        <FaAlignCenter title="Align Center" />
-        <FaAlignRight title="Align Right" />
-        <FaAlignJustify title="Justify" />
-        <FaSortAlphaDown title="Sort" />
-        <FaParagraph title="Paragraph Settings" />
-      </div>
-    </div>
-  );
-};
+import {
+  FaRegSun, // Could represent "glow" effect
+  FaPaintBrush, // Styling/text effects
+  FaAdjust, // Used for contrast/shadow
+  FaLayerGroup, // For multi-layer effects like shadows
+  FaRegSquare, // Could be used to symbolize a backdrop or outline
+  FaMagic, // For visual effects like shadows/glow
+  FaFireAlt, // Can represent a fiery text effect (strong glow)
+} from "react-icons/fa";
 
 const QuoteStyler = () => {
   const fontFamily = [
@@ -562,6 +556,47 @@ const QuoteStyler = () => {
     "Comic Sans MS",
     "Tahoma",
     "Lucida Console",
+    "Helvetica",
+    "Trebuchet MS",
+    "Impact",
+    "Palatino Linotype",
+    "Book Antiqua",
+    "Lucida Sans Unicode",
+    "Garamond",
+    "Segoe UI",
+    "Roboto",
+    "Open Sans",
+    "Lato",
+    "Oswald",
+    "Montserrat",
+    "Raleway",
+    "Ubuntu",
+    "Merriweather",
+    "PT Sans",
+    "Source Sans Pro",
+    "Noto Sans",
+    "Fira Sans",
+    "Inconsolata",
+    "Droid Sans",
+    "Cabin",
+    "Exo",
+    "Quicksand",
+    "Rubik",
+    "Work Sans",
+    "Josefin Sans",
+    "Bebas Neue",
+    "Playfair Display",
+    "Anton",
+    "Cinzel",
+    "Zilla Slab",
+    "Arvo",
+    "Mukta",
+    "Hind",
+    "Karla",
+    "IBM Plex Sans",
+    "Cairo",
+    "Manrope",
+    "Poppins",
   ];
 
   const fontSize = [
@@ -584,9 +619,28 @@ const QuoteStyler = () => {
     "34px",
     "38px",
     "40px",
+    "42px",
+    "45px",
+    "50px",
+    "54px",
+    "57px",
+    "64px",
   ];
 
-  const fontWeight = ["100", "300", "600"];
+  const fontWeight = [
+    "100",
+    "200",
+    "300",
+    "400",
+    "500",
+    "600",
+    "bold",
+    "bolder",
+    "700",
+    "800",
+    "900",
+    "1000",
+  ];
 
   const letterSpacing = [
     "0.5px",
@@ -610,12 +664,45 @@ const QuoteStyler = () => {
   ];
 
   const textAlign = ["left", "center", "right", "justify"];
-  const boxShadows = [
+
+  const textDecoration = [
     "none",
-    "2px 2px 5px rgba(0,0,0,0.1)",
-    "4px 4px 10px rgba(0,0,0,0.2)",
-    "0px 0px 8px rgba(0,0,0,0.3)",
-    "inset 2px 2px 5px rgba(0,0,0,0.2)",
+    "underline",
+    "overline",
+    "line-through",
+    // "solid",
+    // "double",
+    // "dotted",
+    // "dashed",
+    // "wavy",
+    // "auto", // For text-decoration-thickness
+    // "from-font", // For text-decoration-thickness
+    // "thin",
+    // "medium",
+    "thick",
+    "inherit",
+    "initial",
+    "unset",
+  ];
+
+  const fontStyle = ["normal", "italic"];
+
+  const textShadow = [
+    "1px 1px 2px black",
+    "2px 2px 4px rgba(0, 0, 0, 0.5)",
+    "0 0 3px #FF0000",
+    "0 0 5px #00FFFF",
+    "1px 0 5px #000",
+    "2px 2px 0 #999",
+    "0 1px 3px rgba(0,0,0,0.3)",
+    "1px 1px 1px rgba(255,255,255,0.8)",
+    "2px 2px 8px #444",
+    "0 0 10px #FFF, 0 0 20px #F0F, 0 0 30px #0FF",
+    "3px 3px 5px rgba(0,0,0,0.7)",
+    "1px 2px 2px #333",
+    "-1px -1px 0 #000, 1px 1px 0 #fff", // outline effect
+    "4px 4px 6px rgba(0,0,0,0.4)",
+    "0px 4px 3px rgba(0, 0, 0, 0.3)",
   ];
 
   const [active_style, setActive_style] = useState("fontSize");
@@ -627,39 +714,10 @@ const QuoteStyler = () => {
   };
 
   return (
-    // <>
-    //   <Toolbar />
-    // </>
     <>
-      {/* <h4>🛠️ Quote Styler</h4> */}
-
-      <div className="d-flex gap-3">
-        <FaItalic
-          title="Italic"
-          onClick={(e) => handleStyleChange("fontStyle", "italic")}
-        />
-        <FaUnderline
-          title="Underline"
-          onClick={(e) => handleStyleChange("textDecoration", "underline")}
-        />
-
-        <FaStrikethrough title="Strikethrough" />
-        <FaSubscript title="Subscript" />
-        <FaSuperscript title="Superscript" />
-        <FaHighlighter title="Highlight" />
-        <FaFont title="Font Color" />
-        <FaTextHeight title="Increase Font Size" />
-        <FaTextWidth title="Decrease Font Size" />
-        <FaListUl title="Bullets" />
-        <FaListOl title="Numbering" />
-
-        <FaSortAlphaDown title="Sort" />
-        <FaParagraph title="Paragraph Settings" />
-      </div>
-
-      <div className="d-flex gap-2 mt-3 btn-tool overflow-x-auto none-scroller">
+      <div className="d-flex gap-2 mt-1 btn-tool overflow-x-auto none-scroller">
         <div
-          className="btn btn-outline-primary rounded-0 p-0 pe-2 ps-2 fontFamily"
+          className="btn btn-outline-primary d-flex align-items-center rounded-0 p-0 pe-2 ps-2 fontFamily"
           onClick={() => {
             setActive_style("fontFamily");
           }}
@@ -669,11 +727,11 @@ const QuoteStyler = () => {
             color: `${active_style === "fontFamily" ? "#fff" : ""}`,
           }}
         >
-          Family
+          <FaFont />
         </div>
 
         <div
-          className="btn btn-outline-primary rounded-0 p-0  pe-2 ps-2 fontSize"
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 fontSize"
           onClick={() => {
             setActive_style("fontSize");
           }}
@@ -683,10 +741,24 @@ const QuoteStyler = () => {
             color: `${active_style === "fontSize" ? "#fff" : ""}`,
           }}
         >
-          Font Size
+          <FaTextHeight title="Increase Font Size" />
+        </div>
+
+        <div
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 fontSize"
+          onClick={() => {
+            setActive_style("fontStyle");
+          }}
+          style={{
+            cursor: "pointer",
+            background: `${active_style === "fontStyle" ? "#47e" : ""}`,
+            color: `${active_style === "fontStyle" ? "#fff" : ""}`,
+          }}
+        >
+          <FaItalic title="Font Style" />
         </div>
         <div
-          className="btn btn-outline-primary rounded-0 p-0  pe-2 ps-2 fontWeight"
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 fontWeight"
           onClick={() => {
             setActive_style("fontWeight");
           }}
@@ -696,37 +768,39 @@ const QuoteStyler = () => {
             color: `${active_style === "fontWeight" ? "#fff" : ""}`,
           }}
         >
-          Weight
+          <FaBold title="Highlight" />
         </div>
         <div
-          className="btn btn-outline-primary rounded-0 p-0   pe-2 ps-2 letterSpacing"
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
           onClick={() => {
-            setActive_style("letterSpacing");
+            setActive_style("textShadow");
           }}
           style={{
             cursor: "pointer",
-            background: `${active_style === "letterSpacing" ? "#47e" : ""}`,
-            color: `${active_style === "letterSpacing" ? "#fff" : ""}`,
+            background: `${active_style === "textShadow" ? "#47e" : ""}`,
+            color: `${active_style === "textShadow" ? "#fff" : ""}`,
           }}
         >
-          Spacing
-        </div>
-        <div
-          className="btn btn-outline-primary rounded-0 p-0  pe-2 ps-2 textAlign"
-          onClick={() => {
-            setActive_style("textAlign");
-          }}
-          style={{
-            cursor: "pointer",
-            background: `${active_style === "textAlign" ? "#47e" : ""}`,
-            color: `${active_style === "textAlign" ? "#fff" : ""}`,
-          }}
-        >
-          Align
+          {/* <FaShadow title="FaShadow" /> */}
+          <FaMagic title="FaShadow" />
         </div>
 
         <div
-          className="btn btn-outline-primary rounded-0 p-0  pe-2 ps-2 textAlign"
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
+          onClick={() => {
+            setActive_style("textDecoration");
+          }}
+          style={{
+            cursor: "pointer",
+            background: `${active_style === "textDecoration" ? "#47e" : ""}`,
+            color: `${active_style === "textDecoration" ? "#fff" : ""}`,
+          }}
+        >
+          <FaStrikethrough title="Strikethrough" />
+        </div>
+
+        <div
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 textAlign"
           onClick={() => {
             setActive_style("color");
           }}
@@ -738,6 +812,34 @@ const QuoteStyler = () => {
         >
           Color
         </div>
+
+        <div
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 letterSpacing"
+          onClick={() => {
+            setActive_style("letterSpacing");
+          }}
+          style={{
+            cursor: "pointer",
+            background: `${active_style === "letterSpacing" ? "#47e" : ""}`,
+            color: `${active_style === "letterSpacing" ? "#fff" : ""}`,
+          }}
+        >
+          Spacing
+        </div>
+
+        <div
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 textAlign"
+          onClick={() => {
+            setActive_style("textAlign");
+          }}
+          style={{
+            cursor: "pointer",
+            background: `${active_style === "textAlign" ? "#47e" : ""}`,
+            color: `${active_style === "textAlign" ? "#fff" : ""}`,
+          }}
+        >
+          <FaAlignCenter title="center" />
+        </div>
       </div>
 
       {[
@@ -745,8 +847,16 @@ const QuoteStyler = () => {
         { curr_style: "fontWeight", replace: "", Props: fontWeight },
         { curr_style: "fontFamily", replace: "", Props: fontFamily },
         { curr_style: "textAlign", replace: "", Props: textAlign },
-        { curr_style: "letterSpacing", replace: "", Props: letterSpacing },
+        { curr_style: "letterSpacing", replace: "px", Props: letterSpacing },
         { curr_style: "color", replace: "", Props: pre_bg_color },
+        { curr_style: "textShadow", replace: "", Props: textShadow },
+        { curr_style: "fontStyle", replace: "", Props: fontStyle },
+        { curr_style: "", replace: "", Props: fontStyle },
+        {
+          curr_style: "textDecoration",
+          replace: "",
+          Props: textDecoration,
+        },
       ].map((el) => {
         return (
           active_style === el.curr_style && (
@@ -754,7 +864,8 @@ const QuoteStyler = () => {
               Props={el.Props}
               handleStyleChange={handleStyleChange}
               val={active_style}
-              replace="px"
+              to={el.to || ""}
+              replace={el.replace}
             />
           )
         );
@@ -763,7 +874,7 @@ const QuoteStyler = () => {
   );
 };
 
-const Driver = ({ Props, handleStyleChange, val, replace = "" }) => {
+const Driver = ({ Props, handleStyleChange, val, replace = "", to }) => {
   const [active_opt, setActive_opt] = useState(null);
   return (
     <>
@@ -783,10 +894,32 @@ const Driver = ({ Props, handleStyleChange, val, replace = "" }) => {
             style={{
               cursor: "pointer",
               background: `${active_opt === size ? "#47e2" : "#0000"}`,
-              color: `${active_opt === size ? "#47e" : ""}`,
+              color: `${active_opt === size ? "" : size}`,
+              fontFamily: `${active_opt === size ? "inherit" : size}`,
+              fontWeight: `${active_opt === size ? "" : size}`,
+              textDecoration: `${active_opt === size ? "" : size}`,
+              fontStyle: `${active_opt === size ? "" : size}`,
+              textShadow: `${active_opt === size ? "" : size}`,
+              // fontSize: `${active_opt === size ? "#47e" : size}`,
+              fontSize: `${
+                val === "textShadow" ||
+                val === "color" ||
+                val === "textDecoration" ||
+                val === "fontWeight"
+                  ? "24px"
+                  : ""
+              }`,
             }}
           >
-            {size.replace(replace, "")}
+            {val === "textShadow"
+              ? "A"
+              : val === "color"
+              ? "A"
+              : val === "textDecoration"
+              ? "A"
+              : val === "fontWeight"
+              ? "A"
+              : size.replace(replace, to)}
           </option>
         ))}
       </div>

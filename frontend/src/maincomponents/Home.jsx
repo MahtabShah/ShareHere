@@ -11,6 +11,7 @@ import Nav from "react-bootstrap/Nav";
 // import { User } from "../../../backend/models/User";
 import PreImages from "../../TinyComponent/PreImages";
 const API = import.meta.env.VITE_API_URL;
+import { useNavigate } from "react-router-dom";
 
 export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
   const [open_comment, setopen_comment] = useState(false);
@@ -20,6 +21,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
   const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
   const [isdotClicked, setdotClicked] = useState(false); //
+  const nevigate = useNavigate();
 
   // Handle animation on click
   const animateButton = (btnName) => {
@@ -173,6 +175,10 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                   borderStartEndRadius: "0px",
                   borderStartStartRadius: "0",
                   background: `${user.bg_clr}`,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  nevigate(`/api/user/${user._id}`);
                 }}
               >
                 <div>{user?.username?.charAt(0).toUpperCase()}</div>
@@ -226,7 +232,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                                 // width: "calc(100% - 0px)",
                                 maxWidth: "600px",
                                 aspectRatio: "17/17",
-                                minHeight: "400px",
+                                // minHeight: "420px",
                                 flexShrink: 0,
                                 margin: "auto",
                                 // pg.pre_style ? ...pg.pre_style : ,
@@ -257,6 +263,8 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                                   top: "0",
                                   wordBreak: "break-word",
                                   whiteSpace: "break-spaces",
+                                  ...pg.pre_style,
+                                  background: `${pg.val}`,
                                 }}
                               >
                                 {pg?.vibe}
@@ -355,8 +363,8 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                 </Nav.Link>
               )}
 
-              {comment?.userId === admin._id ||
-              "683ca60f4d22f430952c6d01" === admin._id ? (
+              {comment?.userId === admin?._id ||
+              "683ca60f4d22f430952c6d01" === admin?._id ? (
                 // this way is just for temporary...!!!
 
                 <>
@@ -390,9 +398,13 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                       height: "30px",
                       borderRadius: "20px",
                       background: `${admin?.bg_clr}`,
+                      cursor: "pointer",
                       // borderEndStartRadius: "0px",
                       // borderStartEndRadius: "0px",
                       // borderStartStartRadius: "0",
+                    }}
+                    onClick={() => {
+                      nevigate(`/api/user/${admin._id}`);
                     }}
                   >
                     <span>{user?.username.charAt(0).toUpperCase()}</span>
@@ -461,6 +473,10 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                             // borderEndStartRadius: "0px",
                             // borderStartEndRadius: "0px",
                             // borderStartStartRadius: "0",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            nevigate(`/api/user/${pc?.userId._id}`);
                           }}
                         >
                           <span>

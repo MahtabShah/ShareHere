@@ -10,13 +10,15 @@ import { faBell, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../../TinyComponent/Logo";
+import { useQuote } from "../context/QueotrContext";
 
-function MainHeader({ fetchAllUsers }) {
+function MainHeader({ fetchAllUsers, admin }) {
   const currentUser = "68367db96029e4bffe215341";
 
   const [VisibleNotification, setVisibleNotification] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
+  // const { admin_user } = useQuote();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -32,6 +34,8 @@ function MainHeader({ fetchAllUsers }) {
     setLoggedIn(false);
     if (onLogout) onLogout();
   };
+
+  // console.log("00000000000>", admin);
 
   // if (loggedIn) {
   //   return (
@@ -73,6 +77,7 @@ function MainHeader({ fetchAllUsers }) {
                   <Nav.Link href="/home">Home</Nav.Link>
                   {/* <Nav.Link href="/upload">Upload</Nav.Link> */}
                   <Nav.Link href="/Explore">Explore</Nav.Link>
+                  <Nav.Link href={`/api/user/${admin?._id}`}>Profile</Nav.Link>
                   {/* <Nav.Link href="/shop">Shop Now</Nav.Link> */}
 
                   <Nav.Link
@@ -95,7 +100,7 @@ function MainHeader({ fetchAllUsers }) {
                           Logout
                         </button>
                         <Nav.Link
-                          href={`/user/${currentUser}`}
+                          href={`/api/user/${admin?._id}`}
                           className="text-white text-center position-absolute rounded-circle bg-danger "
                           style={{
                             width: "42px",

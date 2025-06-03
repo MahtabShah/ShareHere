@@ -14,7 +14,8 @@ import { Loading } from "../TinyComponent/LazyLoading";
 import MainHeader from "./maincomponents/MainHeader";
 import LeftNavbar from "./maincomponents/LeftNavbar";
 import UploadProduct from "./pages/UploadProduct";
-import { QuoteProvider } from "../../QueotrContext";
+import { QuoteProvider } from "./context/QueotrContext";
+import UserProfile from "./maincomponents/UserProfile";
 const API = import.meta.env.VITE_API_URL;
 
 function App() {
@@ -142,7 +143,7 @@ function App() {
           className="p-0 pt-4 col-sm-10 col-md-12"
           style={{ margin: "auto" }}
         >
-          <MainHeader fetchAllUsers={fetchAllUsers} />
+          <MainHeader fetchAllUsers={fetchAllUsers} admin={admin} />
           <LeftNavbar isDisplayedLeftNav={isDisplayedLeftNav} />
           <section
             className="p-0"
@@ -171,7 +172,22 @@ function App() {
                 path="/login"
                 element={<Login fetchAllUsers={fetchAllUsers} />}
               />
-              <Route path="api/sentence/my" element={<MySentences />} />
+              <Route
+                path="api/sentence/my"
+                element={<MySentences admin={admin} />}
+              />
+              <Route
+                path="api/user/:id"
+                element={
+                  <UserProfile
+                    admin={admin}
+                    all_user={all_user}
+                    all_post={all_comments}
+                    fetchAllUsers={fetchAllUsers}
+                    fetchSentences={fetchSentences}
+                  />
+                }
+              />
               <Route path="/upload" element={<UploadProduct />} />
               <Route
                 path="/home"

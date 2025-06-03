@@ -80,15 +80,15 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get('/fix-sentences', async (req, res) => {
   try {
-    const result = await Sentence.updateMany(
+    const result = await User.updateMany(
       // { bg_clr: { $exists: false } },
       // { $set: { bg_clr: `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})` } },
 
       // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
-       { pages: { $exists: true } },
-      { $set: { pages: [{}] } },
-      // { following: { $exists: false } },
-      // { $set: { following: [Object.id] } }
+      //  { pages: { $exists: true } },
+      // { $set: { pages: [{}] } },
+      { cover_pic: { $exists: false } },
+      { $set: { cover_pic: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s" } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

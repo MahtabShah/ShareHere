@@ -15,6 +15,8 @@ if (!token) {
   return res.status(403).json({ message: 'No token provided' });
 }
 
+// console.log("auth---> ", token)
+
 try {
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

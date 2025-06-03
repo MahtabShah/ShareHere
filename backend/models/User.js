@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
     default: "#42b"
   },
 
+  bio:{type:String},
+  cover_pic:String,
+  profile_pic:String,
+  about_user:{type:String},
+
   followers:[{
     type: mongoose.Schema.Types.ObjectId,
   }],

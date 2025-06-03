@@ -1,28 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+// const API = import.meta.env.VITE_API_URL;
 
-function MySentences({ sentences, loading }) {
+function MySentences({ sentences, loading, admin }) {
   //
   const [newSentence, setNewSentence] = useState("");
   const [error, setError] = useState("");
 
-  // fetchSentences();
-
-  // const handleAddSentence = async (e) => {
-  //   e.preventDefault();
-  //   if (!newSentence.trim()) return alert("Please enter some text.");
-  //   try {
-  //     await axios.post(
-  //       "http://localhost:5000/api/sentence/post",
-  //       { text: newSentence },
-  //       { headers: { Authorization: `Bearer ${token}` } }
-  //     );
-  //     setNewSentence("");
-  //     fetchSentences();
-  //   } catch {
-  //     alert("Failed to add sentence.");
-  //   }
-  // };
+  console.log("user admin ", admin);
 
   return (
     // <div>

@@ -58,6 +58,9 @@ textarea {
 .btn-tool > div {
   /* font-size: clamp(4px, 4vw, 1.2rem) !important; */
   min-width: max-content !important;
+  font-style: oblique;
+  text-shadow: 0 0 0 10px red;
+  font-variant: small-caps;
 }
 
 @keyframes rotateBtn {

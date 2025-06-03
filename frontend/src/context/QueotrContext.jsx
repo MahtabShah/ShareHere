@@ -1,11 +1,21 @@
 // QuoteContext.js
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const QuoteContext = createContext();
+const API = import.meta.env.VITE_API_URL;
 
 export const useQuote = () => useContext(QuoteContext);
 
 export const QuoteProvider = ({ children }) => {
+  const [isDisplayedLeftNav, setIsDisplayedLeftNav] = useState(
+    window.innerWidth < 768
+  );
+
+  window.addEventListener("resize", () => {
+    setIsDisplayedLeftNav(window.innerWidth < 768);
+    // setlgbreakPoint(window.innerWidth > 1224);
+  });
+
   const [quote, setQuote] = useState(
     "The future belongs to those who believe in the beauty of their dreams."
   );
@@ -23,7 +33,9 @@ export const QuoteProvider = ({ children }) => {
   });
 
   return (
-    <QuoteContext.Provider value={{ quote, setQuote, style, setStyle }}>
+    <QuoteContext.Provider
+      value={{ quote, setQuote, style, setStyle, isDisplayedLeftNav }}
+    >
       {children}
     </QuoteContext.Provider>
   );
