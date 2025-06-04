@@ -65,6 +65,18 @@ export const Notification = ({
   };
 
   console.log(curr_all_notifications);
+  const Track_post = (postId) => {
+    const target = document.getElementById(postId);
+
+    console.log("trackking..................165 app", postId);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      // If not found, navigate so it gets rendered first
+      navigate(`/home?postId=${postId}`);
+    }
+    setVisibleNotification(false);
+  };
 
   return (
     <>
@@ -74,11 +86,11 @@ export const Notification = ({
             className="notification shadow-lg d-flex flex-column gap-3 w-100 h-100 p-2 bg-light position-fixed overflow-y-auto"
             style={{
               maxHeight: "80vh",
-              maxWidth: "480px",
+              maxWidth: "400px",
               zIndex: "100",
               right: "0px",
               top: "56px",
-              borderLeft: "1px solid var(--lightBlack-clr)",
+              border: "1px solid var(--lightBlack-clr)",
             }}
           >
             {/* {LazyLoading && <Loading />} */}
@@ -92,7 +104,13 @@ export const Notification = ({
                       <div className="flex-grow-1 w-100 ps-2">
                         {post?.text.split(" ").slice(0, 40).join(" ")} . . .
                       </div>
-                      <div className="h-100" style={{ width: "74px" }}>
+                      <div
+                        className="h-100"
+                        style={{ width: "74px" }}
+                        onClick={() => {
+                          Track_post(post?._id);
+                        }}
+                      >
                         <CardPost pg={post?.pages[0]} />
                       </div>
                     </>
@@ -201,10 +219,10 @@ export const Notification = ({
                             <span
                               className="fw-medium d-block on-hover-userid"
                               onClick={() => {
-                                // setVisibleNotification(false);
                                 // setPostId(n?.comment?.postId);
                                 // go_to_comment(n?.comment?.postId);
                                 // console.log("liek-----", n.comment);
+                                Track_post(n?.post);
                               }}
                             >
                               @ someone liked your post{" "}

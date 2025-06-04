@@ -18,6 +18,10 @@ import { QuoteProvider } from "./context/QueotrContext";
 import UserProfile from "./maincomponents/UserProfile";
 import { Notification } from "../TinyComponent/Notification";
 import BottomNav from "../TinyComponent/BotoomNav";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+// import TextToImage from "../TinyComponent/ConvertDivintoImg";
+import { StatusPage, StatusRing } from "./Status";
 const API = import.meta.env.VITE_API_URL;
 
 function App() {
@@ -159,139 +163,168 @@ function App() {
 
   // console.log("alll_coment===> ", all_comments);
 
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const postId = params.get("postId"); // this should match c._id
+
+  useEffect(() => {
+    if (postId) {
+      const target = document.getElementById(postId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [postId, all_comments]); // wait for all_comments to load
+
   return (
     <QuoteProvider>
-      <Router>
-        <div
-          className="p-0 pt-4 col-sm-10 col-md-12"
-          style={{ margin: "auto" }}
+      <div className="p-0 pt-3 col-sm-10 col-md-12" style={{ margin: "auto" }}>
+        <MainHeader
+          fetchAllUsers={fetchAllUsers}
+          admin={admin}
+          curr_all_notifications={curr_all_notifications}
+          setcurr_all_notifications={setcurr_all_notifications}
+          // Track_post={Track_post}
+        />
+        <LeftNavbar isDisplayedLeftNav={isDisplayedLeftNav} />
+        <BottomNav isDisplayedLeftNav={isDisplayedLeftNav} admin={admin} />
+        <section
+          className="p-0"
+          style={{
+            marginTop: "34px",
+            marginLeft: `${!isDisplayedLeftNav ? "200px" : "0"}`,
+          }}
         >
-          <MainHeader
-            fetchAllUsers={fetchAllUsers}
-            admin={admin}
-            curr_all_notifications={curr_all_notifications}
-            setcurr_all_notifications={setcurr_all_notifications}
-          />
-          <LeftNavbar isDisplayedLeftNav={isDisplayedLeftNav} />
-          <BottomNav isDisplayedLeftNav={isDisplayedLeftNav} admin={admin} />
-          <section
-            className="p-0"
-            style={{
-              marginTop: "34px",
-              marginLeft: `${!isDisplayedLeftNav ? "200px" : "0"}`,
-            }}
-          >
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <div>
-                    <hr />
-                    <PostSentence fetchSentences={fetchSentences} />
-                    <hr />
-                    <MySentences sentences={sentences} loading={loading} />
-                  </div>
-                }
-              />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div>
+                  <hr />
+                  <PostSentence fetchSentences={fetchSentences} />
+                  <hr />
+                  <MySentences sentences={sentences} loading={loading} />
+                </div>
+              }
+            />
 
-              <Route
-                path="/api/crud/all_notifications"
-                element={<Notification />}
-              />
+            <Route
+              path="/api/crud/all_notifications"
+              element={<Notification />}
+            />
 
-              <Route
-                path="/signup"
-                element={<Signup fetchAllUsers={fetchAllUsers} />}
-              />
-              <Route
-                path="/login"
-                element={<Login fetchAllUsers={fetchAllUsers} />}
-              />
-              <Route
-                path="api/sentence/my"
-                element={<MySentences admin={admin} />}
-              />
-              <Route
-                path="api/user/:id"
-                element={
-                  <UserProfile
-                    admin={admin}
-                    all_user={all_user}
-                    all_post={all_comments}
-                    fetchAllUsers={fetchAllUsers}
-                    fetchSentences={fetchSentences}
-                  />
-                }
-              />
-              <Route path="/upload" element={<UploadProduct />} />
-              <Route
-                path="/home"
-                element={
-                  <section
-                    className={`${isDisplayedLeftNav ? "p-2" : "p-3"} pt-4`}
-                    style={{ margin: "auto", maxWidth: "600px" }}
-                  >
-                    <h4
-                      className={`${isDisplayedLeftNav ? "ps-0" : "ps-3"}`}
-                      // style={{ borderBottom: "1px solid #222" }}
-                    >
-                      Post a Vibe Ink Here
-                    </h4>
-
-                    <PostSentence
-                      fetchSentences={fetchSentences}
-                      fetchAllUsers={fetchAllUsers}
-                      all_user={all_user}
+            <Route
+              path="/signup"
+              element={<Signup fetchAllUsers={fetchAllUsers} />}
+            />
+            <Route
+              path="/login"
+              element={<Login fetchAllUsers={fetchAllUsers} />}
+            />
+            <Route
+              path="api/sentence/my"
+              element={<MySentences admin={admin} />}
+            />
+            <Route
+              path="api/user/:id"
+              element={
+                <UserProfile
+                  admin={admin}
+                  all_user={all_user}
+                  all_post={all_comments}
+                  fetchAllUsers={fetchAllUsers}
+                  fetchSentences={fetchSentences}
+                />
+              }
+            />
+            <Route path="/upload" element={<UploadProduct />} />
+            <Route
+              path="/home/postId?"
+              element={
+                <section
+                  className={`${isDisplayedLeftNav ? "p-2" : "p-3"} pt-4`}
+                  style={{ margin: "auto", maxWidth: "600px" }}
+                >
+                  <div className="status">
+                    <StatusRing
                       admin={admin}
+                      fetchAllUsers={fetchAllUsers}
+                      fetchSentences={fetchSentences}
+                      isDisplayedLeftNav={isDisplayedLeftNav}
                     />
+                  </div>
 
-                    {LazyLoading ? (
-                      <div className="p-3 d-flex justify-content-center">
-                        {" "}
-                        <Loading dm={34} />
-                      </div>
-                    ) : (
-                      <>
-                        {all_user?.map((u, idx) => {
-                          return (
-                            <Fragment key={idx}>
-                              {" "}
-                              {all_comments
-                                ?.filter((com) => com.userId === u._id)
-                                ?.map((c, indx) => {
-                                  return (
-                                    <Fragment key={indx}>
-                                      {all_comments?.filter(
-                                        (com) => com.userId === u._id
-                                      ).length > 0 && (
-                                        <>
-                                          <Home
-                                            user={u}
-                                            comment={c}
-                                            admin={admin}
-                                            fetchAllUsers={fetchAllUsers}
-                                            fetchSentences={fetchSentences}
-                                            isDisplayedLeftNav={
-                                              isDisplayedLeftNav
-                                            }
-                                          />
-                                        </>
-                                      )}
-                                    </Fragment>
-                                  );
-                                })}
-                            </Fragment>
-                          );
-                        })}
-                      </>
-                    )}
-                  </section>
-                }
-              />
-            </Routes>
-          </section>
-        </div>
-      </Router>
+                  <div className="status">
+                    <StatusPage
+                      // user={u}
+                      comment={all_comments[5]}
+                      admin={admin}
+                      fetchAllUsers={fetchAllUsers}
+                      fetchSentences={fetchSentences}
+                      isDisplayedLeftNav={isDisplayedLeftNav}
+                    />
+                  </div>
+                  <h4
+                    className={`${isDisplayedLeftNav ? "ps-0" : "ps-3"}`}
+                    // style={{ borderBottom: "1px solid #222" }}
+                  >
+                    Post a Vibe Ink Here
+                  </h4>
+
+                  <PostSentence
+                    fetchSentences={fetchSentences}
+                    fetchAllUsers={fetchAllUsers}
+                    all_user={all_user}
+                    admin={admin}
+                  />
+
+                  {LazyLoading ? (
+                    <div className="p-3 d-flex justify-content-center">
+                      {" "}
+                      <Loading dm={34} />
+                    </div>
+                  ) : (
+                    <>
+                      {all_user?.map((u, idx) => {
+                        return (
+                          <Fragment key={idx}>
+                            {all_comments
+                              ?.filter((com) => com.userId === u._id)
+                              ?.map((c, indx) => {
+                                return (
+                                  <Fragment key={indx}>
+                                    {all_comments?.filter(
+                                      (com) => com.userId === u._id
+                                    ).length > 0 && (
+                                      <div id={c._id}>
+                                        {" "}
+                                        {/* 👈 Set scrollable ID here */}
+                                        <Home
+                                          user={u}
+                                          comment={c}
+                                          admin={admin}
+                                          fetchAllUsers={fetchAllUsers}
+                                          fetchSentences={fetchSentences}
+                                          isDisplayedLeftNav={
+                                            isDisplayedLeftNav
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                  </Fragment>
+                                );
+                              })}
+                          </Fragment>
+                        );
+                      })}
+                    </>
+                  )}
+                </section>
+              }
+            />
+          </Routes>
+        </section>
+      </div>
     </QuoteProvider>
   );
 }

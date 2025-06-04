@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { MdSend, MdShare } from "react-icons/md";
 import { Loading } from "../../TinyComponent/LazyLoading";
@@ -14,6 +14,7 @@ const API = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Card } from "react-bootstrap";
+import html2canvas from "html2canvas";
 
 export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
   const [open_comment, setopen_comment] = useState(false);
@@ -24,6 +25,26 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
   const [isdotClicked, setdotClicked] = useState(false); //
   const nevigate = useNavigate();
+  const containerRef = useRef();
+  const [fontSize, setFontSize] = useState(16); // default px
+
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const width = entry.contentRect.width;
+
+        // Scale logic: font size = width / 20, clamp it
+        const newFontSize = Math.min(Math.min(width / 30)); // min 12px, max 36px
+        setFontSize(newFontSize);
+      }
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   // Handle animation on click
   const animateButton = (btnName) => {
@@ -170,13 +191,47 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
     }
     setLazyLoading(!true);
   };
+
+  const captureDivRef = useRef(null);
+  const [isRefReady, setIsRefReady] = useState(true);
+
+  const handleCapture = async () => {
+    if (!document.body.contains(captureDivRef.current)) {
+      alert("Element is not attached to DOM");
+      return;
+    }
+
+    const canvas = await html2canvas(captureDivRef?.current, {
+      useCORS: true,
+      backgroundColor: null, // preserve transparent background if needed
+      scale: 2, // for higher resolution
+      logging: true,
+    });
+    const dataURL = canvas.toDataURL("image/png");
+
+    // Optionally upload to Cloudinary
+    const formData = new FormData();
+    formData.append("file", dataURL);
+    formData.append("upload_preset", "page_Image"); // Replace this
+    formData.append("cloud_name", "dft5cl5ra"); // Replace this
+
+    const res = await axios.post(
+      "https://api.cloudinary.com/v1_1/dft5cl5ra/image/upload",
+      formData
+    );
+
+    console.log("Uploaded URL:", res.data.secure_url);
+    alert("Image uploaded at: " + res.data.secure_url);
+  };
+
   return (
     <>
-      {comment?.text?.trim() && (
+      {/* comment?.text?.trim() &&  */}
+      {
         <>
           <div
             className="d-flex flex-column mt-4 p-0 bg position-relative border-bottom col-md-12"
-            style={{ background: "#fafafa" }}
+            style={{ background: "#fafafa", fontSize: fontSize }}
             key={comment?.text?.slice(0, -1)}
           >
             <div className="d-flex gap-2">
@@ -184,7 +239,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                 className="d-flex align-items-center justify-content-center rounded-crcle text-white"
                 style={{
                   width: "40px",
-                  maxHheight: "40px",
+                  height: "40px",
                   borderRadius: "20px",
                   borderEndStartRadius: "0px",
                   borderStartEndRadius: "0px",
@@ -202,7 +257,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
               <div className=" d-flex flex-column flex-grow-1 small align-item">
                 <small className="small">@{user?.username}</small>
                 <small className="small">
-                  {comment?.text.slice(0, 64)} . . .
+                  {comment?.text.slice(0, 54)} . . .
                 </small>
               </div>
 
@@ -223,11 +278,18 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
               </div>
             </div>
 
+            {/* {isRefReady && (
+              <span onClick={handleCapture} className="btn btn-outline-danger">
+                Convert to Image
+              </span>
+            )} */}
+
             <div className="w-100">
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
                 <div
                   className={`d-flex mt-2 m-${isDisplayedLeftNav ? "0" : "3"}`}
                   style={{ overflow: "hidden" }}
+                  ref={captureDivRef}
                 >
                   {" "}
                   <Carousel
@@ -473,7 +535,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
             </section>
           )}
         </>
-      )}
+      }
     </>
   );
 };
@@ -483,7 +545,7 @@ export const CommentSection = ({ post }) => {
 
   return (
     <>
-      <div className="ps-2 pb-3">
+      <div className=" pb-3">
         {post?.comments?.map((pc, idx) => {
           return (
             <>
@@ -519,6 +581,25 @@ export const CommentSection = ({ post }) => {
 };
 
 export const CardPost = ({ pg }) => {
+  const [fontSize, setFontSize] = useState(16); // default px
+  const containerRef = useRef(null);
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const width = entry.contentRect.width;
+
+        // Scale logic: font size = width / 20, clamp it
+        const newFontSize = Math.min(Math.min(width / 30)); // min 12px, max 36px
+        setFontSize(newFontSize);
+      }
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
   return (
     <>
       <div
@@ -526,7 +607,9 @@ export const CardPost = ({ pg }) => {
         style={{
           aspectRatio: "1/1",
           flexShrink: 0,
+          cursor: "pointer",
         }}
+        ref={containerRef}
       >
         <div className="w-100 h-100 bg-image">
           {pg.type === "img" ? (
@@ -545,7 +628,7 @@ export const CardPost = ({ pg }) => {
         </div>
 
         <div
-          className="position-absolute w-100 pt-1 h-100"
+          className="position-absolute w-100 pt-1 h-100 overflow-hidden"
           style={{
             ...pg.pre_style,
             top: "0",
@@ -553,7 +636,7 @@ export const CardPost = ({ pg }) => {
             wordBreak: "break-word",
             whiteSpace: "break-spaces",
             background: `${pg.val}`,
-            fontSize: "40%",
+            fontSize: fontSize,
           }}
         >
           {pg?.vibe}

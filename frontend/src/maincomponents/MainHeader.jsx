@@ -12,13 +12,18 @@ import { useNavigate } from "react-router-dom";
 import { Logo } from "../../TinyComponent/Logo";
 import { Notification } from "../../TinyComponent/Notification";
 import { useQuote } from "../context/QueotrContext";
+import axios from "axios";
+const API = import.meta.env.VITE_API_URL;
 
 function MainHeader({ curr_all_notifications, admin }) {
-  const currentUser = "68367db96029e4bffe215341";
-
   const [VisibleNotification, setVisibleNotification] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [count, setCount] = useState(
+    curr_all_notifications?.filter((n) => n.isRead === false).length || 0
+  );
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
   // const { admin_user } = useQuote();
 
   useEffect(() => {
@@ -36,13 +41,31 @@ function MainHeader({ curr_all_notifications, admin }) {
     if (onLogout) onLogout();
   };
 
+  useEffect(() => {
+    setCount(
+      curr_all_notifications.filter((n) => n.isRead === false).length || 0
+    );
+  }, [curr_all_notifications]);
   // console.log("00000000000>", admin);
 
-  // if (loggedIn) {
-  //   return (
-  //
-  //   );
-  // }
+  const Mark_as_read_notification = async () => {
+    try {
+      const res = await axios.put(
+        `${API}/api/crud/crud_mark_notification`,
+        { curr_all_notifications }, // ✅ This is the body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // setLoading(false);
+      console.log("marked---->", res.data);
+      // setcurr_all_notifications(res.data);
+    } catch (error) {
+      console.log("error in notification", error);
+    }
+  };
 
   return (
     <>
@@ -85,9 +108,12 @@ function MainHeader({ curr_all_notifications, admin }) {
                     href=""
                     onClick={() => {
                       setVisibleNotification(!VisibleNotification);
+                      setCount(0);
+                      Mark_as_read_notification();
                     }}
                   >
                     <FontAwesomeIcon icon={faBell} />
+                    <NotificationBell count={count} />
                   </Nav.Link>
 
                   {loggedIn ? (
@@ -177,6 +203,7 @@ function MainHeader({ curr_all_notifications, admin }) {
           curr_all_notifications={curr_all_notifications}
           setVisibleNotification={setVisibleNotification}
           admin={admin}
+          // Track_post={Track_post}
         />
       )}
     </>
@@ -184,3 +211,23 @@ function MainHeader({ curr_all_notifications, admin }) {
 }
 
 export default MainHeader;
+
+const NotificationBell = ({ count }) => {
+  return (
+    <div className="position-relative d-inline-block">
+      {count > 0 && (
+        <span
+          className="position-absolute start-50 translate-middle bg-danger border border-light text-light d-flex align-items-center justify-content-center rounded-circle fw-bold"
+          style={{
+            fontSize: "0.5rem",
+            width: "20px",
+            height: "20px",
+            left: "5px",
+          }}
+        >
+          {count > 9 ? "9+" : count}
+        </span>
+      )}
+    </div>
+  );
+};

@@ -8,6 +8,8 @@ import { QuoteProvider } from "../context/QueotrContext";
 import { useQuote } from "../context/QueotrContext";
 // import "@fortawesome/fontawesome-free/css/all.min.css";
 import { MdFormatSize } from "react-icons/md";
+import TextToImage from "../../TinyComponent/ConvertDivintoImg";
+import html2canvas from "html2canvas";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -234,6 +236,27 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
 
   // console.log("pre style = = = > ", pre_style);
 
+  const containerRef = useRef();
+  const [fontSize, setFontSize] = useState(16); // default px
+
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const width = entry.contentRect.width;
+
+        // Scale logic: font size = width / 20, clamp it
+        const newFontSize = Math.min(Math.min(width / 30)); // min 12px, max 36px
+        setFontSize(newFontSize);
+      }
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       <form
@@ -267,68 +290,86 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
               />
             </div>
 
-            <div
-              className="d-flex  mt-0 border"
-              style={{
-                width: "calc(100% - 0rem)",
-                maxWidth: "600px",
-                aspectRatio: "17/17",
-                background: `${bg_clr}`,
-              }}
-            >
-              <Carousel
-                className="w-100"
-                interval={null}
-                activeIndex={activeIndex}
-                onSelect={handleSelect}
+            <pre>
+              <div
+                className="d-flex  mt-0 border"
+                style={{
+                  width: "calc(100% - 0rem)",
+                  maxWidth: "600px",
+                  aspectRatio: "17/17",
+                  background: `${bg_clr}`,
+                  fontSize: fontSize,
+                }}
               >
-                {images.map((page, idx) => (
-                  <Carousel.Item className="">
-                    <div
-                      key={idx}
-                      className="rounded-3"
-                      style={{
-                        // width: "calc(100% - 2rem)",
-                        maxWidth: "600px",
-                        aspectRatio: "17/17",
-                        flexShrink: 0,
-                      }}
-                    >
+                <Carousel
+                  className="w-100"
+                  interval={null}
+                  activeIndex={activeIndex}
+                  onSelect={handleSelect}
+                >
+                  {images.map((page, idx) => (
+                    <Carousel.Item className="">
                       <div
-                        className="w-100 h-100 bg-image p-3"
+                        key={idx}
+                        className="rounded-3"
                         style={{
-                          background:
-                            page.type === "img" ? `url(${page.val})` : page.val,
-                        }}
-                      />
-
-                      <textarea
-                        name="image_text"
-                        id="image_text"
-                        className="position-absolute border-0 w-100 h-100 p-4"
-                        style={{
+                          // width: "calc(100% - 2rem)",
+                          maxWidth: "600px",
+                          aspectRatio: "17/17",
+                          flexShrink: 0,
                           ...pre_style[idx],
                           ...style,
                           top: "0",
                           left: "0",
-                          background: "#3330",
+                          zIndex: 100, // higher
+                          background: "#3330", // transparent background
                           caretColor: "red",
+                          whiteSpace: "pre-wrap", // mimic pre
+                          overflow: "hidden", // hide scroll
+                          resize: "none", // prevent resizing
                         }}
-                        value={vibes[idx] || ""}
-                        onChange={(e) => {
-                          handleInput(idx, e, "image_text");
-                        }}
-                        spellCheck="false"
-                        placeholder="you can write a vibe ink here...."
-                      />
-                    </div>
-                    {/* <Carousel.Caption>
+                        ref={containerRef}
+                      >
+                        <div
+                          className="w-100 h-100 bg-image p-3"
+                          style={{
+                            background:
+                              page.type === "img"
+                                ? `url(${page.val})`
+                                : page.val,
+                          }}
+                        />
+                        {/* <pre> */}
+                        <textarea
+                          name="image_text"
+                          id="image_text"
+                          className="position-absolute border w-100 h-100 p-2"
+                          style={{
+                            ...pre_style[idx],
+                            ...style,
+                            top: "0",
+                            left: "0",
+                            zIndex: 100, // higher
+                            background: "#3330", // transparent background
+                            caretColor: "red",
+                            whiteSpace: "pre-wrap", // mimic pre
+                            overflow: "hidden", // hide scroll
+                            resize: "none", // prevent resizing
+                          }}
+                          value={vibes[idx] || ""}
+                          onChange={(e) => handleInput(idx, e, "image_text")}
+                          spellCheck="false"
+                          placeholder="you can write a vibe ink here...."
+                        />
+                      </div>
+                      {/* <Carousel.Caption>
                           <h3>First slide label</h3>
                         </Carousel.Caption> */}
-                  </Carousel.Item>
-                ))}
-              </Carousel>
-            </div>
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              </div>
+            </pre>
 
             <div
               className="d-flex gap-2 me-3 mt-2 ms-3 none-scroller overflow-x-auto overflow-y-hidden"
@@ -600,31 +641,26 @@ const QuoteStyler = () => {
   ];
 
   const fontSize = [
-    "5px",
-    "6px",
-    "7px",
-    "8px",
-    "9px",
-    "10px",
-    "12px",
-    "14px",
-    "16px",
-    "18px",
-    "20px",
-    "22px",
-    "24px",
-    "26px",
-    "28px",
-    "30px",
-    "34px",
-    "38px",
-    "40px",
-    "42px",
-    "45px",
-    "50px",
-    "54px",
-    "57px",
-    "64px",
+    "0.1em",
+    "0.2em",
+    "0.3em",
+    "0.4em",
+    "0.5em",
+    "0.6em",
+    "0.7em",
+    "0.8em",
+    "0.9em",
+    "1.0em",
+    "1.1em",
+    "1.2em",
+    "1.3em",
+    "1.4em",
+    "1.5em",
+    "1.6em",
+    "1.7em",
+    "1.8em",
+    "1.9em",
+    "2.0em",
   ];
 
   const fontWeight = [
