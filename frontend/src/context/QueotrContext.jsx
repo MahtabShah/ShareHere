@@ -16,6 +16,10 @@ export const QuoteProvider = ({ children }) => {
     // setlgbreakPoint(window.innerWidth > 1224);
   });
 
+  const [statusClicked, setStatusClicked] = useState(false);
+  const [duration, setDuration] = useState(3000);
+  const [isPaused, setIsPaused] = useState(false);
+
   const [quote, setQuote] = useState(
     "The future belongs to those who believe in the beauty of their dreams."
   );
@@ -34,7 +38,19 @@ export const QuoteProvider = ({ children }) => {
 
   return (
     <QuoteContext.Provider
-      value={{ quote, setQuote, style, setStyle, isDisplayedLeftNav }}
+      value={{
+        quote,
+        setQuote,
+        style,
+        setStyle,
+        isDisplayedLeftNav,
+        setStatusClicked,
+        statusClicked,
+        duration,
+        setDuration,
+        isPaused,
+        setIsPaused,
+      }}
     >
       {children}
     </QuoteContext.Provider>

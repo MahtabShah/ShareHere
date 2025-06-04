@@ -230,7 +230,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
       {
         <>
           <div
-            className="d-flex flex-column mt-4 p-0 bg position-relative border-bottom col-md-12"
+            className="d-flex flex-column mb-5 p-0 bg position-relative border-bottom col-md-12"
             style={{ background: "#fafafa", fontSize: fontSize }}
             key={comment?.text?.slice(0, -1)}
           >
@@ -581,7 +581,7 @@ export const CommentSection = ({ post }) => {
 };
 
 export const CardPost = ({ pg }) => {
-  const [fontSize, setFontSize] = useState(16); // default px
+  const [fontSize, setFontSize] = useState(10); // default px
   const containerRef = useRef(null);
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -603,9 +603,10 @@ export const CardPost = ({ pg }) => {
   return (
     <>
       <div
-        className="p-0 position-relative w-100"
+        className="p-0 m-0 position-relative w-100"
         style={{
           aspectRatio: "1/1",
+          height: "100%",
           flexShrink: 0,
           cursor: "pointer",
         }}

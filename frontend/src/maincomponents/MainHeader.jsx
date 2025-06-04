@@ -99,8 +99,8 @@ function MainHeader({ curr_all_notifications, admin }) {
               <Offcanvas.Body className="bg-light text-dark">
                 <Nav className="justify-content-end flex-grow-1 pe-2 gap-2 align-items-">
                   <Nav.Link href="/home">Home</Nav.Link>
-                  {/* <Nav.Link href="/upload">Upload</Nav.Link> */}
-                  <Nav.Link href="/Explore">Explore</Nav.Link>
+                  <Nav.Link href="/upload">Upload</Nav.Link>
+                  {/* <Nav.Link href="/Explore">Explore</Nav.Link> */}
                   <Nav.Link href={`/api/user/${admin?._id}`}>Profile</Nav.Link>
                   {/* <Nav.Link href="/shop">Shop Now</Nav.Link> */}
 
