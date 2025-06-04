@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, use } from "react";
 import axios from "axios";
 import { MdSend, MdShare } from "react-icons/md";
 import { Loading } from "../../TinyComponent/LazyLoading";
@@ -15,8 +15,10 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Card } from "react-bootstrap";
 import html2canvas from "html2canvas";
+import { CommentSection } from "./Home";
+import { useQuote } from "../context/QueotrContext";
 
-export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
+export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
   const [open_comment, setopen_comment] = useState(false);
   const [new_comment, setnew_comment] = useState("");
   const [isliked, setisliked] = useState(false);
@@ -72,13 +74,6 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
   };
 
   // On page load, scroll to saved position if present in URL
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const scrollPos = params.get("scroll");
-    if (scrollPos) {
-      window.scrollTo(0, parseInt(scrollPos));
-    }
-  }, []);
 
   const HandleShare = async () => {
     const url = new URL(window.location.href);
@@ -111,46 +106,6 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
 
   // alert(user.bg_clr);
   const token = localStorage.getItem("token");
-
-  const HandleFollow = async () => {
-    // alert("followed.... start 95 home.js");
-    try {
-      setisfollowed(!isfollowed);
-      const res = await axios.put(
-        `${API}/api/crud/crud_follow_post`,
-        {
-          // data you want to send
-          id: user._id,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      // setisliked(!isliked);
-    } catch (err) {
-      alert("folloing failed: " + err.response?.data?.message || err.message);
-    }
-  };
-
-  const HandleDelete = async () => {
-    // animateButton("likes");
-
-    const condition = window.confirm("want to delete............");
-
-    if (condition) {
-      try {
-        const res = await axios.delete(`${API}/api/crud/crud_delete_post`, {
-          headers: { Authorization: `Bearer ${token}` },
-          data: { id: comment._id }, // pass id inside `data`
-        });
-        // setisliked(!isliked);
-      } catch (err) {
-        alert("Login failed: " + err.response?.data?.message || err.message);
-      }
-    }
-    // alert("deleted..............");
-  };
 
   const optimizeImage = (url, width = 600) => {
     return url.replace("/upload/", `/upload/w_${width},f_auto,q_auto/`);
@@ -194,8 +149,11 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
 
   const captureDivRef = useRef(null);
   const [isRefReady, setIsRefReady] = useState(true);
+  const [ready_url, setReady_url] = useState("");
 
+  // return becouse of many times img generating
   const handleCapture = async () => {
+    return;
     if (!document.body.contains(captureDivRef.current)) {
       alert("Element is not attached to DOM");
       return;
@@ -221,8 +179,19 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
     );
 
     console.log("Uploaded URL:", res.data.secure_url);
-    alert("Image uploaded at: " + res.data.secure_url);
+    setReady_url(res.data.secure_url);
+    // alert("Image uploaded at: " + res.data.secure_url);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const scrollPos = params.get("scroll");
+    if (scrollPos) {
+      window.scrollTo(0, parseInt(scrollPos));
+    }
+
+    handleCapture();
+  }, []);
 
   return (
     <>
@@ -230,59 +199,36 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
       {
         <>
           <div
-            className="d-flex flex-column mb-5 p-0 bg position-relative border-bottom col-md-12"
-            style={{ background: "#fafafa", fontSize: fontSize }}
+            className="d-flex flex-column mt-4 p-0 bg position-relative border-bottom col-md-12"
+            style={{
+              background: "#fafafa",
+              fontSize: fontSize,
+            }}
             key={comment?.text?.slice(0, -1)}
           >
-            <div className="d-flex gap-2">
-              <div
-                className="d-flex align-items-center justify-content-center rounded-crcle text-white"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "20px",
-                  borderEndStartRadius: "0px",
-                  borderStartEndRadius: "0px",
-                  borderStartStartRadius: "0",
-                  background: `${user.bg_clr}`,
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  nevigate(`/api/user/${user._id}`);
-                }}
-              >
-                <div>{user?.username?.charAt(0).toUpperCase()}</div>
-              </div>
+            {/*--------------------- user ring and follow btn ----------------------- */}
+            <div className="d-flex gap-2 align-items-center">
+              <UserRing user={user} />
 
-              <div className=" d-flex flex-column flex-grow-1 small align-item">
-                <small className="small">@{user?.username}</small>
-                <small className="small">
-                  {comment?.text.slice(0, 54)} . . .
-                </small>
-              </div>
-
-              <div className="d-flex flex-column pt-2">
-                {admin?._id !== user?._id &&
-                  !user?.followers?.includes(admin?._id) && (
-                    <div
-                      className="btn text-primary rounded-0 p-0"
-                      onClick={HandleFollow}
-                    >
-                      Follow
-                    </div>
-                  )}
-                <small className="small pe-2" style={{ fontSize: "12px" }}>
+              <div className="d-flex flex-column pe-2">
+                <FollowBtn user={user} />
+                <div style={{ fontSize: "12px" }}>
                   {" "}
                   {user?.followers?.length} followers
-                </small>
+                </div>
               </div>
             </div>
 
-            {/* {isRefReady && (
-              <span onClick={handleCapture} className="btn btn-outline-danger">
-                Convert to Image
-              </span>
-            )} */}
+            {isRefReady && ready_url && (
+              // <span onClick={handleCapture} className="btn btn-outline-danger">
+              //   Convert to Image
+              // </span>
+
+              <a href={ready_url}>
+                {/* <img src={ready_url} alt="" /> */}
+                see post
+              </a>
+            )}
 
             <div className="w-100">
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
@@ -291,88 +237,49 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                   style={{ overflow: "hidden" }}
                   ref={captureDivRef}
                 >
-                  {" "}
-                  <Carousel
-                    className="w-100"
-                    interval={null}
-                    defaultActiveIndex={0}
-                    key={comment._id}
-                    id={comment._id}
-                  >
-                    {comment?.pages?.map(
-                      (pg, idx) =>
-                        pg?.type && (
-                          <Carousel.Item className="" key={idx}>
-                            {" "}
-                            <div
-                              key={idx}
-                              className="p-0 position-relative w-100"
-                              style={{
-                                // width: "calc(100% - 0px)",
-                                maxWidth: "600px",
-                                aspectRatio: "17/17",
-                                // minHeight: "420px",
-                                flexShrink: 0,
-                                margin: "auto",
-                                // pg.pre_style ? ...pg.pre_style : ,
-                                // border: "2px solid red",
-                              }}
-                            >
-                              <div className="w-100 h-100 bg-image">
-                                {pg.type === "img" ? (
-                                  <img
-                                    // src={optimizeImage(pg.val, 400)} // 400px for mobile-friendly width
-                                    src={pg.val} // 400px for mobile-friendly width
-                                    loading="lazy"
-                                    alt={`image-${idx}`}
-                                    className="h-100 w-100"
-                                    style={{ objectFit: "cover" }}
-                                  />
-                                ) : (
-                                  <div
-                                    className="bg-image h-100 w-100"
-                                    style={{ background: `${pg.val}` }}
-                                  />
-                                )}
-                              </div>
+                  {comment?.pages[0]?.type && (
+                    <div
+                      className="p-0 position-relative w-100"
+                      style={{
+                        maxWidth: "600px",
+                        aspectRatio: "17/17",
+                        flexShrink: 0,
+                        margin: "auto",
+                      }}
+                    >
+                      <div className="w-100 h-100 bg-image">
+                        {comment?.pages[0]?.type === "img" ? (
+                          <img
+                            // src={optimizeImage(pg.val, 400)} // 400px for mobile-friendly width
+                            src={`${comment?.pages[0]?.val}`} // 400px for mobile-friendly width
+                            loading="lazy"
+                            className="h-100 w-100"
+                            style={{ objectFit: "cover" }}
+                          />
+                        ) : (
+                          <div
+                            className="bg-image h-100 w-100"
+                            style={{ background: `${comment?.pages[0]?.val}` }}
+                          />
+                        )}
+                      </div>
 
-                              <div
-                                className="position-absolute w-100 h-100 p-3"
-                                style={{
-                                  top: "0",
-                                  wordBreak: "break-word",
-                                  whiteSpace: "break-spaces",
-                                  ...pg.pre_style,
-                                  background: `${pg.val}`,
-                                }}
-                              >
-                                {pg?.vibe}
-                              </div>
-                              {/* <textarea
-                            name="image_text"
-                            id="image_text"
-                            className="position-absolute border-0 w-100 h-100 p-4"
-                            style={{
-                              top: "0",
-                              left: "0",
-                              background: "#3330",
-                              caretColor: "red",
-                            }}
-                            onChange={(e) => {
-                              handleInput(e, "image_text");
-                            }}
-                            spellCheck="false"
-                            placeholder="you can write a vibe ink here...."
-                          /> */}
-                            </div>
-                            {/* <Carousel.Caption>
-                          <h3>First slide label</h3>
-                        </Carousel.Caption> */}
-                          </Carousel.Item>
-                        )
-                    )}
-                  </Carousel>
+                      <div
+                        className="position-absolute w-100 h-100 p-3"
+                        style={{
+                          top: "0",
+                          wordBreak: "break-word",
+                          whiteSpace: "break-spaces",
+                          ...comment?.pages[0]?.pre_style,
+                          background: `${comment?.pages[0]?.val}`,
+                        }}
+                      >
+                        {comment?.pages[0]?.vibe}
+                      </div>
+                    </div>
+                  )}
                 </div>
+
                 <li className="p-2 w-100 flex-grow-1 rounded-3 ps-3">
                   {comment && (
                     <div key={comment.text.slice(0, -1)}>{comment.text}</div>
@@ -432,32 +339,7 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
                 background: "#ddf",
               }}
             >
-              <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="/home">Visit Post</Nav.Link>
-              {admin?._id !== user?._id && (
-                <Nav.Link onClick={HandleFollow}>
-                  {user?.followers?.includes(admin?._id)
-                    ? "Unfollow"
-                    : "follow"}
-                </Nav.Link>
-              )}
-
-              {comment?.userId === admin?._id ||
-              "683ca60f4d22f430952c6d01" === admin?._id ? (
-                // this way is just for temporary...!!!
-
-                <>
-                  <Nav.Link href="/home">Edit Post</Nav.Link>
-                  <Nav.Link
-                    onClick={HandleDelete}
-                    className=" pe-2 ps-2 text-danger"
-                  >
-                    Delete
-                  </Nav.Link>
-                </>
-              ) : (
-                ""
-              )}
+              <SlipDotinPost user={user} post={comment} />
             </div>
           )}
           {open_comment && (
@@ -540,109 +422,152 @@ export const Home = ({ user, comment, admin, isDisplayedLeftNav }) => {
   );
 };
 
-export const CommentSection = ({ post }) => {
+const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
   const nevigate = useNavigate();
-
   return (
     <>
-      <div className=" pb-3">
-        {post?.comments?.map((pc, idx) => {
-          return (
-            <>
-              <div className="d-flex gap-1 mt-3" key={idx}>
-                <div
-                  className="d-flex align-items-center justify-content-center rounded-crcle text-white"
-                  style={{
-                    minWidth: "30px",
-                    height: "30px",
-                    borderRadius: "20px",
-                    background: `${pc?.userId?.bg_clr}`,
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    nevigate(`/api/user/${pc?.userId?._id}`);
-                  }}
-                >
-                  <span>{pc?.userId?.username.charAt(0).toUpperCase()}</span>
-                </div>
-                <div className="small">
-                  <small className="fw-semibold">@{pc?.userId?.username}</small>
-                  <div key={idx} className="fs-6">
-                    {pc?.text}
-                  </div>
-                </div>
-              </div>
-            </>
-          );
-        })}
+      <div className="d-flex gap-2 flex-grow-1">
+        <div
+          className="d-flex align-items-center w-100 justify-content-center rounded-crcle text-white"
+          style={{
+            maxWidth: "40px",
+            height: "40px",
+            borderRadius: "20px",
+            background: `${user.bg_clr}`,
+            cursor: "pointer",
+            ...style,
+          }}
+          onClick={() => {
+            nevigate(`/api/user/${user._id}`);
+          }}
+        >
+          <div>{user?.username?.charAt(0).toUpperCase()}</div>
+        </div>
+
+        <div className=" d-flex flex-column small align-item">
+          <small
+            className="small on-hover-userid"
+            onClick={() => {
+              nevigate(`/api/user/${user._id}`);
+            }}
+          >
+            @{user?.username}
+          </small>
+          <small className="small">{user?.bio?.slice(0, 54)} . . .</small>
+        </div>
       </div>
     </>
   );
 };
 
-export const CardPost = ({ pg }) => {
-  const [fontSize, setFontSize] = useState(10); // default px
-  const containerRef = useRef(null);
-  useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const width = entry.contentRect.width;
+const FollowBtn = ({ user }) => {
+  const { admin_user, fetch_admin_user } = useQuote();
+  const token = localStorage.getItem("token");
+  const [isfollowed, setisfollowed] = useState(false);
 
-        // Scale logic: font size = width / 20, clamp it
-        const newFontSize = Math.min(Math.min(width / 20)); // min 12px, max 36px
-        setFontSize(newFontSize);
-      }
-    });
+  // fetch_admin_user();
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+  console.log("admin_user is working....", admin_user);
+  const HandleFollow = async () => {
+    // alert("followed.... start 95 home.js");
+    try {
+      setisfollowed(!isfollowed);
+      const res = await axios.put(
+        `${API}/api/crud/crud_follow_post`,
+        {
+          id: user._id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch (err) {
+      console.log(
+        "folloing failed: " + err.response?.data?.message || err.message
+      );
     }
-
-    return () => observer.disconnect();
-  }, []);
+  };
   return (
     <>
-      <div
-        className="p-0 m-0 position-relative w-100"
-        style={{
-          aspectRatio: "1/1",
-          height: "100%",
-          flexShrink: 0,
-          cursor: "pointer",
-        }}
-        ref={containerRef}
-      >
-        <div className="w-100 h-100 bg-image">
-          {pg.type === "img" ? (
-            <img
-              src={pg.val} // 400px for mobile-friendly width
-              loading="lazy"
-              className="h-100 w-100"
-              style={{ objectFit: "cover" }}
-            />
-          ) : (
-            <div
-              className="bg-image h-100 w-100"
-              style={{ background: `${pg.val}` }}
-            />
-          )}
-        </div>
+      {admin_user?._id !== user?._id &&
+        !user?.followers?.includes(admin_user?._id) && (
+          <div
+            className="btn text-primary rounded-0 p-0"
+            onClick={HandleFollow}
+          >
+            Follow
+          </div>
+        )}
+    </>
+  );
+};
 
-        <div
-          className="position-absolute w-100 pt-1 h-100 overflow-hidden"
-          style={{
-            ...pg.pre_style,
-            top: "0",
-            left: "0",
-            wordBreak: "break-word",
-            whiteSpace: "break-spaces",
-            background: `${pg.val}`,
-            fontSize: fontSize,
-          }}
-        >
-          {pg?.vibe}
-        </div>
-      </div>
+const SlipDotinPost = ({ user, post }) => {
+  const token = localStorage.getItem("token");
+  const [isfollowed, setisfollowed] = useState(false);
+  const HandleFollow = async () => {
+    // alert("followed.... start 95 home.js");
+    try {
+      setisfollowed(!isfollowed);
+      const res = await axios.put(
+        `${API}/api/crud/crud_follow_post`,
+        {
+          // data you want to send
+          id: user._id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // setisliked(!isliked);
+    } catch (err) {
+      alert("folloing failed: " + err.response?.data?.message || err.message);
+    }
+  };
+
+  const HandleDelete = async () => {
+    // animateButton("likes");
+
+    const condition = window.confirm("want to delete............");
+
+    if (condition) {
+      try {
+        const res = await axios.delete(`${API}/api/crud/crud_delete_post`, {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { id: post._id }, // pass id inside `data`
+        });
+        // setisliked(!isliked);
+      } catch (err) {
+        alert("Login failed: " + err.response?.data?.message || err.message);
+      }
+    }
+    // alert("deleted..............");
+  };
+
+  const { admin_user, fetch_admin_user } = useQuote();
+  return (
+    <>
+      <Nav.Link href="/home">Home</Nav.Link>
+      <Nav.Link href="/home">Visit Post</Nav.Link>
+      {admin_user?._id !== user?._id && (
+        <Nav.Link onClick={HandleFollow}>
+          {user?.followers?.includes(admin_user?._id) ? "Unfollow" : "follow"}
+        </Nav.Link>
+      )}
+      {post?.userId === admin_user?._id ||
+      "683ca60f4d22f430952c6d01" === admin_user?._id ? (
+        // this way is just for temporary...!!!
+
+        <>
+          <Nav.Link href="/home">Edit Post</Nav.Link>
+          <Nav.Link onClick={HandleDelete} className=" pe-2 ps-2 text-danger">
+            Delete
+          </Nav.Link>
+        </>
+      ) : (
+        ""
+      )}{" "}
     </>
   );
 };

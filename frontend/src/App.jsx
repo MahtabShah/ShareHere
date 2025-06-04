@@ -23,6 +23,8 @@ import { useLocation } from "react-router-dom";
 import { useQuote } from "./context/QueotrContext";
 // import TextToImage from "../TinyComponent/ConvertDivintoImg";
 import { StatusPage, StatusRing } from "./Status";
+import { EachPost } from "./maincomponents/EachPost";
+
 const API = import.meta.env.VITE_API_URL;
 
 function App() {
@@ -320,8 +322,7 @@ function App() {
                                   ).length > 0 && (
                                     <div id={c._id}>
                                       {" "}
-                                      {/* 👈 Set scrollable ID here */}
-                                      <Home
+                                      <EachPost
                                         user={u}
                                         comment={c}
                                         admin={admin}
@@ -339,6 +340,45 @@ function App() {
                     })}
                   </>
                 )}
+
+                {/* {LazyLoading ? (
+                  <div className="p-3 d-flex justify-content-center">
+                    {" "}
+                    <Loading dm={34} />
+                  </div>
+                ) : (
+                  <>
+                    {all_user?.map((u, idx) => {
+                      return (
+                        <Fragment key={idx}>
+                          {all_comments
+                            ?.filter((com) => com.userId === u._id)
+                            ?.map((c, indx) => {
+                              return (
+                                <Fragment key={indx}>
+                                  {all_comments?.filter(
+                                    (com) => com.userId === u._id
+                                  ).length > 0 && (
+                                    <div id={c._id}>
+                                      {" "}
+                                      <Home
+                                        user={u}
+                                        comment={c}
+                                        admin={admin}
+                                        fetchAllUsers={fetchAllUsers}
+                                        fetchSentences={fetchSentences}
+                                        isDisplayedLeftNav={isDisplayedLeftNav}
+                                      />
+                                    </div>
+                                  )}
+                                </Fragment>
+                              );
+                            })}
+                        </Fragment>
+                      );
+                    })}
+                  </>
+                )} */}
               </section>
             }
           />

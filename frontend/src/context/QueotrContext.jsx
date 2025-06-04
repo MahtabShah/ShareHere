@@ -1,6 +1,6 @@
 // QuoteContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
-
+import axios from "axios";
 const QuoteContext = createContext();
 const API = import.meta.env.VITE_API_URL;
 
@@ -19,10 +19,27 @@ export const QuoteProvider = ({ children }) => {
   const [statusClicked, setStatusClicked] = useState(false);
   const [duration, setDuration] = useState(3000);
   const [isPaused, setIsPaused] = useState(false);
+  const [admin_user, setadmin_user] = useState(null);
+  const token = localStorage.getItem("token");
 
-  const [quote, setQuote] = useState(
-    "The future belongs to those who believe in the beauty of their dreams."
-  );
+  const fetch_admin_user = async () => {
+    try {
+      const res = await axios.get(`${API}/api/crud/crud`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // setLoading(false);
+      res.data?.length === 0 ? "" : setadmin_user(res.data);
+    } catch (err) {
+      alert("Failed to follow see err in console", err);
+      console.log("Failed to follow see err in console", err);
+    }
+  };
+
+  useEffect(() => {
+    fetch_admin_user();
+  }, []);
+  //
+
   const [style, setStyle] = useState({
     fontFamily: "Arial",
     fontSize: "24px",
@@ -39,8 +56,6 @@ export const QuoteProvider = ({ children }) => {
   return (
     <QuoteContext.Provider
       value={{
-        quote,
-        setQuote,
         style,
         setStyle,
         isDisplayedLeftNav,
@@ -50,6 +65,8 @@ export const QuoteProvider = ({ children }) => {
         setDuration,
         isPaused,
         setIsPaused,
+        admin_user,
+        fetch_admin_user,
       }}
     >
       {children}
