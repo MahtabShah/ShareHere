@@ -14,7 +14,7 @@ const { io } = require('../server');
 router.get('/crud', verifyToken,  async (req, res) => {
  
   const userId = req.user.userId || req.user.id;
-  console.log("backend response 16 crud" ,userId)
+  // console.log("backend response 16 crud" ,userId)
 
 
   try {
@@ -31,7 +31,7 @@ router.get('/crud', verifyToken,  async (req, res) => {
 router.get('/all_notifications', verifyToken,  async (req, res) => {
   // const {mahtab} = req.body;
   const userId = req.user.userId || req.user.id;
-  console.log("backend response 16 crud" ,userId)
+  // console.log("backend response 16 crud" ,userId)
 
 
 const curr_notifications = await Notification.find({ recipient: userId })
@@ -43,7 +43,7 @@ const curr_notifications = await Notification.find({ recipient: userId })
 
   // const curr_notifications = all_notifications.filter((n)=>n.recipient.toString() === "683e9c9de6a3ce43ca32c3da")
 
-  console.log("all----notifi 39", curr_notifications)
+  // console.log("all----notifi 39", curr_notifications)
 
 
   try {
@@ -174,6 +174,37 @@ io.emit('userUpdated', user_b);
 });
 
 
+
+router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
+  // const { curr_notifications } = req.body;
+ 
+  const userId = req.user.userId || req.user.id;
+  console.log("backend response 16 crud" ,userId)
+
+
+  try {
+
+  // const user_a = await User.findById(id); // post owener
+
+  const user = await User.findById(userId); // curr user
+  const curr_notifications = await Notification.find({recipient:userId})
+
+  curr_notifications.forEach(async(n)=>{
+     n.isRead = true;
+     await n.save()
+  })
+
+    await user.save()
+
+   
+    io.emit('userUpdated', user);
+    console.log("------------> mark" , curr_notifications , user)
+    res.status(201).json(curr_notifications);
+  } catch (err) {
+    console.error('Error deleting sentence:', err);
+    res.status(500).json({ message: 'Failed to delete sentence' });
+  }
+});
 
 
 module.exports = router
