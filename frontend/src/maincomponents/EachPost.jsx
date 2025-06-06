@@ -205,7 +205,7 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
                 <FollowBtn user={user} />
                 {user?._id === admin?._id && (
                   <span
-                    className="fs-5 fw-bold"
+                    className="small fw-semibold text-danger"
                     style={{ alignSelf: "end", cursor: "pointer" }}
                     onClick={() => {
                       setImage(comment?.images[0]);
@@ -213,7 +213,7 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
                       HandleStatus();
                     }}
                   >
-                    +{/* {clicked ? "+":""} */}
+                    Set status{/* {clicked ? "+":""} */}
                   </span>
                 )}
                 <div style={{ fontSize: "12px" }}>

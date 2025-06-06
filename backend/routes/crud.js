@@ -272,6 +272,8 @@ router.post("/create_status", async (req, res) => {
   try {
     const newStatus = new Status({ text, image, user });
     await newStatus.save();
+    io.emit('status', newStatus.toObject());
+
     res.status(201).json(newStatus);
   } catch (error) {
     console.error("Error creating status:", error);

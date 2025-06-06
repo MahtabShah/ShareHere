@@ -25,7 +25,7 @@ import { useQuote } from "./context/QueotrContext";
 import { StatusPage, StatusRing } from "./maincomponents/Status";
 import { EachPost } from "./maincomponents/EachPost";
 import ParentStatusComponent from "./maincomponents/Status";
-
+import { StatusCarousel } from "./maincomponents/Status";
 const API = import.meta.env.VITE_API_URL;
 
 function App() {
@@ -145,6 +145,10 @@ function App() {
       fetch_all_notifications();
     });
 
+    socket.on("status", () => {
+      fetchUserStatuses();
+    });
+
     fetch_all_notifications();
 
     socket.on("userUpdated", (updatedUser) => {
@@ -162,6 +166,7 @@ function App() {
     return () => {
       socket.off("sentence");
       socket.off("userUpdated");
+      socket.off("status");
     };
   }, []);
 
@@ -227,6 +232,7 @@ function App() {
         className="p-0"
         style={{
           marginTop: "34px",
+          marginBottom: "84px",
           marginLeft: `${!isDisplayedLeftNav ? "200px" : "0"}`,
         }}
       >
@@ -306,6 +312,8 @@ function App() {
                 className={`${isDisplayedLeftNav ? "p-0" : "p-3"} pt-4`}
                 style={{ margin: "auto", maxWidth: "600px" }}
               >
+                {/* <StatusCarousel /> */}
+
                 {followings && statuses && (
                   <div className="d-flex gap-3 overflow-x-auto status-parent align-items-center w-100 px-2">
                     <StatusRing

@@ -19,6 +19,72 @@ const pre_images = [
 ];
 
 const pre_bg_color = [
+  // 🌇 LINEAR GRADIENTS
+  "linear-gradient(to right, #ff7e5f, #feb47b)", // Sunset
+  "linear-gradient(to right, #4facfe, #00f2fe)", // Sky blue
+  "linear-gradient(to right, #43e97b, #38f9d7)", // Green mint
+  "linear-gradient(to right, #f7971e, #ffd200)", // Orange yellow
+  "linear-gradient(to right, #c33764, #1d2671)", // Purple blue
+  "linear-gradient(45deg, #ff9a9e, #fad0c4)", // Diagonal pink
+  "linear-gradient(to top, #a18cd1, #fbc2eb)", // Lavender pink
+  "linear-gradient(to right, #e0c3fc, #8ec5fc)", // Soft purple-blue
+  "linear-gradient(to right, #ffecd2, #fcb69f)", // Warm peach
+  "linear-gradient(to right, #ff8177, #ff867a, #ff8c7f)", // Pink burst
+  "linear-gradient(to right, #00c3ff, #ffff1c)", // Blue to yellow
+  "linear-gradient(to right, #00f260, #0575e6)", // Green to blue
+  "linear-gradient(to right, #fc00ff, #00dbde)", // Violet to aqua
+  "linear-gradient(to right, #e1eec3, #f05053)", // Soft green red
+  "linear-gradient(to right, #74ebd5, #9face6)", // Light sea
+  "linear-gradient(to right, #ff6a00, #ee0979)", // Fire vibes
+  "linear-gradient(to right, #fdfc47, #24fe41)", // Lime sun
+  "linear-gradient(to right, #12c2e9, #c471ed, #f64f59)", // Rainbow mix
+  "linear-gradient(to right, #ff9a9e, #fecfef)", // Sweet pink
+  "linear-gradient(to right, #a1c4fd, #c2e9fb)", // Sky morning
+
+  // 🌌 RADIAL GRADIENTS
+  "radial-gradient(circle, #ff9a9e, #fad0c4)", // Pink ripple
+  "radial-gradient(circle, #43cea2, #185a9d)", // Aqua waves
+  "radial-gradient(circle, #fbc2eb, #a6c1ee)", // Pastel splash
+  "radial-gradient(circle, #ffecd2, #fcb69f)", // Warm touch
+  "radial-gradient(circle, #d299c2, #fef9d7)", // Pink-beige
+  "radial-gradient(circle, #ffdde1, #ee9ca7)", // Peach rose
+  "radial-gradient(circle, #b7f8db, #50a7c2)", // Fresh sea
+  "radial-gradient(circle, #e0c3fc, #8ec5fc)", // Purple teal
+  "radial-gradient(circle, #fdfcfb, #e2d1c3)", // Sand cream
+  "radial-gradient(circle, #accbee, #e7f0fd)", // Calm sky
+
+  // 🎯 CONIC GRADIENTS
+  "conic-gradient(from 0deg, #ff9a9e, #fad0c4, #ff9a9e)", // Pink spin
+  "conic-gradient(from 90deg, #4facfe, #00f2fe, #4facfe)", // Sky swirl
+  "conic-gradient(from 180deg, #fbc2eb, #a6c1ee)", // Soft wheel
+  "conic-gradient(from 0deg, #f7971e, #ffd200, #f7971e)", // Sunny swirl
+  "conic-gradient(from 0deg at center, #00dbde, #fc00ff)", // Neon ring
+  "conic-gradient(from 45deg at center, #00c3ff, #ffff1c)", // Bright circle
+  "conic-gradient(from 0deg, #e1eec3, #f05053, #e1eec3)", // Soft rotate
+  "conic-gradient(from 90deg, #ff6a00, #ee0979, #ff6a00)", // Flaming twist
+  "conic-gradient(from 0deg, #a1c4fd, #c2e9fb)", // Calm motion
+  "conic-gradient(from 0deg, #12c2e9, #f64f59)", // Color storm
+
+  // 🎨 MIXED SPECIAL EFFECTS
+  "linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0))", // Frosted glass
+  "radial-gradient(circle at top left, #ffafbd, #ffc3a0)", // Glow corner
+  "linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)", // Aqua light
+  "radial-gradient(ellipse at center, #89f7fe 0%, #66a6ff 100%)", // Ocean eye
+  "conic-gradient(at center, #f2709c, #ff9472)", // Peach cone
+  "linear-gradient(to right, #dce35b, #45b649)", // Lemon leaf
+  "radial-gradient(circle, #fdfbfb, #ebedee)", // Gray puff
+  "linear-gradient(to right, #00b4db, #0083b0)", // Ocean breeze
+  "conic-gradient(at center, #74ebd5, #acb6e5)", // Breeze cone
+  "radial-gradient(circle, #fffbd5, #b20a2c)", // Sunset splash
+
+  "linear-gradient(to right, #ff7e5f, #feb47b)", // sunset
+  "linear-gradient(to right, #4facfe, #00f2fe)", // sky blue
+  "linear-gradient(to right, #43e97b, #38f9d7)", // green mint
+  "linear-gradient(to right, #f7971e, #ffd200)", // orange yellow
+  "linear-gradient(to right, #c33764, #1d2671)", // purple blue
+  "linear-gradient(45deg, #ff9a9e, #fad0c4)", // diagonal pink
+  "linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%)", // lavender pink
+  "linear-gradient(to right, #e0c3fc 0%, #8ec5fc 100%)", // soft purple-blue
   "#A294F9",
   "#F1F0E8",
   "#89A8B2",
@@ -63,7 +129,7 @@ const pre_bg_color = [
   "#2B580C",
 ];
 
-const PostSentence = ({ admin }) => {
+const PostSentence = ({ admin, type = "post" }) => {
   const [text, setText] = useState("");
   const [Errors, setErrors] = useState("");
   const [images, setImages] = useState("");
@@ -186,12 +252,41 @@ const PostSentence = ({ admin }) => {
     setLazyLoading(false);
   };
 
+  const [image, setImage] = useState(null);
+
+  // console.log("iiii", comment);
+
+  const HandleStatus = async () => {
+    // const [userId, setUserId] = useState(""); // use logged-in user ID
+    handleCapture();
+    setImage(ready_url);
+    try {
+      const res = await axios.post(
+        `${API}/api/crud/create_status`,
+        {
+          text,
+          image,
+          user: admin._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Created status:", res.data);
+      alert("Status created!");
+    } catch (err) {
+      console.error("Error creating status:", err);
+    }
+  };
+
   return (
     <>
       <form
         onSubmit={handleSubmit}
         className="col-md-12 w-100"
-        style={{ maxWidth: "600px" }}
+        style={{ maxWidth: "600px", transform: "scale(1)" }}
       >
         <div className="d-flex flex-column">
           <div
@@ -230,7 +325,7 @@ const PostSentence = ({ admin }) => {
             >
               <div
                 // key={idx}
-                className="rounded-0 w-100 p-2 h-100 bg-image"
+                className="rounded-0 w-100 p-2 h-100"
                 ref={divRef}
                 style={{
                   maxWidth: "600px",
@@ -243,6 +338,7 @@ const PostSentence = ({ admin }) => {
                   overflow: "hidden", // hide scroll
                   resize: "none", // prevent resizing
                   caret: "ActiveBorder",
+                  backgroundRepeat: "no-repeat",
                   background: `url(${images})`,
                 }}
                 spellCheck={false}
@@ -283,73 +379,84 @@ const PostSentence = ({ admin }) => {
           </div>
           {/* above select btn image area */}
 
-          <div className="border">
-            <div className="d-flex gap-2 align-items-center  p-2 pb-0 pt-2">
-              <div
-                className="d-flex fw-semibold ms-1 border text-white rounded-5 align-items-center justify-content-center"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  backgroundColor: `${admin?.bg_clr}`,
-                }}
-              >
-                {admin?.username?.charAt(0) || "M"}
-              </div>
-              <div>
-                <div style={{ fontWeight: "bold" }}>
-                  @{admin?.username || "Mahtab"}
+          {type === "post" && (
+            <div className="border">
+              <div className="d-flex gap-2 align-items-center  p-2 pb-0 pt-2">
+                <div
+                  className="d-flex fw-semibold ms-1 border text-white rounded-5 align-items-center justify-content-center"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    backgroundColor: `${admin?.bg_clr}`,
+                  }}
+                >
+                  {admin?.username?.charAt(0) || "M"}
                 </div>
-                {/* <small style={{ color: "#888" }}>Visibility: Public</small> */}
+                <div>
+                  <div style={{ fontWeight: "bold" }}>
+                    @{admin?.username || "Mahtab"}
+                  </div>
+                  {/* <small style={{ color: "#888" }}>Visibility: Public</small> */}
+                </div>
+              </div>
+              <div className="ps-1">
+                <textarea
+                  ref={textareaRef}
+                  value={text}
+                  onChange={(e) => {
+                    handleInput(0, e, "text");
+                  }}
+                  className={`form-control rounded-0 shadow-none ps-2 pe-2 border-0`}
+                  placeholder="Write about post here . . ."
+                  style={{ overflow: "hidden", resize: "none" }}
+                  spellCheck="false"
+                />
               </div>
             </div>
-            <div className="ps-1">
-              <textarea
-                ref={textareaRef}
-                value={text}
-                onChange={(e) => {
-                  handleInput(0, e, "text");
-                }}
-                required
-                className={`form-control rounded-0 shadow-none ps-2 pe-2 border-0`}
-                placeholder="Write about post here . . ."
-                style={{ overflow: "hidden", resize: "none" }}
-                spellCheck="false"
-              />
-            </div>
-          </div>
-
-          {Errors && <small className="text-danger">{Errors}</small>}
+          )}
+          {Errors && (
+            <small
+              className="text-danger position-absolute ps-3"
+              style={{ top: "-5px" }}
+            >
+              {Errors}
+            </small>
+          )}
           <br />
 
           {/* {browsssss imggggg} */}
-          <div className="d-flex gap-3 justify-content-end p-0 pb-5 mb-4">
+          <div className="d-flex gap-3 p-2 justify-content-end p-0 pb-5 mb-4">
             {/* {isPre_Image} */}
-            {!true ? (
-              <div
-                className="btn btn-outline-primary ps-3 pe-3 rounded-0 p-2"
-                style={{ height: "42px" }}
-                onClick={() => {
-                  setisPre_Image(!isPre_Image);
-                }}
-              >
-                Select Images
-              </div>
-            ) : (
-              <label
-                htmlFor="images"
-                className="btn btn-outline-primary ps-3 pe-3 rounded-0 p-2"
-                style={{ height: "42px" }}
-              >
-                Browse Image
-              </label>
-            )}
-            <button
-              type="submit"
-              className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
+
+            <label
+              htmlFor="images"
+              className="btn btn-outline-primary ps-3 pe-3 rounded-0 p-2"
               style={{ height: "42px" }}
             >
-              {LazyLoading ? <Loading clr={"white"} /> : "Post"}
-            </button>
+              Browse Image
+            </label>
+
+            {type === "post" && (
+              <button
+                type="submit"
+                className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
+                style={{ height: "42px" }}
+              >
+                {LazyLoading ? <Loading clr={"white"} /> : "Post"}
+              </button>
+            )}
+
+            {type === "status" && (
+              <button
+                className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
+                style={{ height: "42px" }}
+                onClick={() => {
+                  HandleStatus();
+                }}
+              >
+                Send
+              </button>
+            )}
           </div>
         </div>
       </form>
@@ -414,6 +521,9 @@ import {
 } from "react-icons/fa";
 
 const QuoteStyler = () => {
+  const [active_style, setActive_style] = useState("fontSize");
+
+  const { quote, style, setStyle } = useQuote();
   const fontFamily = [
     "Arial",
     "Times New Roman",
@@ -541,15 +651,6 @@ const QuoteStyler = () => {
     "underline",
     "overline",
     "line-through",
-    // "solid",
-    // "double",
-    // "dotted",
-    // "dashed",
-    // "wavy",
-    // "auto", // For text-decoration-thickness
-    // "from-font", // For text-decoration-thickness
-    // "thin",
-    // "medium",
     "thick",
     "inherit",
     "initial",
@@ -576,9 +677,35 @@ const QuoteStyler = () => {
     "0px 4px 3px rgba(0, 0, 0, 0.3)",
   ];
 
-  const [active_style, setActive_style] = useState("fontSize");
+  const backgroundPosition = [
+    "left top",
+    "left center",
+    "left bottom",
+    "center top",
+    "center center",
+    "center bottom",
+    "right top",
+    "right center",
+    "right bottom",
+    "10px 20px",
+    "50% 50%",
+    "100% 0%",
+    "0 0",
+    "bottom",
+    "top",
+    "right",
+    "left",
+  ];
 
-  const { quote, style, setStyle } = useQuote();
+  const backgroundSize = [
+    "auto", // default
+    "cover", // scale to cover entire area
+    "contain", // scale to fit inside the area
+    "100% 100%", // stretch to fill
+    "50% 50%", // half width and height
+    "100% auto", // full width, auto height
+    "auto 100%", // auto width, full height
+  ];
 
   const handleStyleChange = (prop, value) => {
     setStyle((prev) => ({ ...prev, [prop]: value }));
@@ -711,6 +838,38 @@ const QuoteStyler = () => {
         >
           <FaAlignCenter title="center" />
         </div>
+
+        <div
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 backgroundPosition "
+          onClick={() => {
+            setActive_style("backgroundPosition");
+          }}
+          style={{
+            cursor: "pointer",
+            background: `${
+              active_style === "backgroundPosition" ? "#47e" : ""
+            }`,
+            color: `${active_style === "backgroundPosition" ? "#fff" : ""}`,
+          }}
+        >
+          Image Position
+          {/* <FaAlignCenter title="center" /> */}
+        </div>
+
+        <div
+          className="btn btn-outline-primary  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 backgroundPosition "
+          onClick={() => {
+            setActive_style("backgroundSize");
+          }}
+          style={{
+            cursor: "pointer",
+            background: `${active_style === "backgroundSize" ? "#47e" : ""}`,
+            color: `${active_style === "backgroundSize" ? "#fff" : ""}`,
+          }}
+        >
+          Image Size
+          {/* <FaAlignCenter title="center" /> */}
+        </div>
       </div>
 
       {[
@@ -721,6 +880,12 @@ const QuoteStyler = () => {
         { curr_style: "letterSpacing", replace: "px", Props: letterSpacing },
         { curr_style: "color", replace: "", Props: pre_bg_color },
         { curr_style: "textShadow", replace: "", Props: textShadow },
+        { curr_style: "backgroundSize", replace: "", Props: backgroundSize },
+        {
+          curr_style: "backgroundPosition",
+          replace: "",
+          Props: backgroundPosition,
+        },
         { curr_style: "fontStyle", replace: "", Props: fontStyle },
         { curr_style: "", replace: "", Props: fontStyle },
         {

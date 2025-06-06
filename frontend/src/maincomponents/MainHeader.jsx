@@ -86,14 +86,14 @@ function MainHeader({ curr_all_notifications, admin }) {
           <Container fluid>
             <Navbar.Brand
               href="/Explore"
-              className="fw-bold fs-5 pb-0 mb-0 flex-grow-1"
+              className="fw-bold fs-6 pb-0 mb-0 flex-grow-1"
             >
               <div className="d-flex justify-content-between w-100 flex-grow-1">
                 <div className="mt-2">
                   <Logo />
                 </div>
                 {smbreakPoint && (
-                  <div>
+                  <div className="d-flex gap-2">
                     <Nav.Link
                       href=""
                       onClick={() => {
@@ -104,6 +104,18 @@ function MainHeader({ curr_all_notifications, admin }) {
                     >
                       <FontAwesomeIcon icon={faBell} />
                       <NotificationBell count={count} />
+                    </Nav.Link>
+                    <Nav.Link href="/upload">
+                      <small
+                        className="fw-normal rounded-5 border"
+                        style={{
+                          background: "#1111",
+                          padding: "4px 6px 6px",
+                        }}
+                      >
+                        {" "}
+                        create<span className="fw-bold">+</span>
+                      </small>
                     </Nav.Link>
                   </div>
                 )}

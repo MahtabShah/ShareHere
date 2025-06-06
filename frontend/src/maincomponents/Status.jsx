@@ -8,6 +8,7 @@ import Carousel from "react-bootstrap/Carousel";
 import { Fragment } from "react";
 import { useQuote } from "../context/QueotrContext";
 import { useNavigate } from "react-router-dom";
+import PostSentence from "./PostSentance";
 
 const ParentStatusComponent = ({ followings, statuses }) => {
   console.log(followings, statuses);
@@ -58,42 +59,72 @@ export const StatusRing = ({ userId, all_statuses }) => {
 
   return (
     user_statuses?.length >= 0 && (
-      <div className="status-item d-flex align-items-center justify-content-center">
-        <div className="status-ring d-flex align-items-center justify-content-center">
-          <div
-            className="status-image bg-light overflow-hidden"
-            onClick={() => {
-              if (user_statuses?.length > 0) setSelectedUserId(userId);
-            }}
-          >
-            <img
-              src={user_statuses[0]?.image || admin_user?.cover_pic}
-              alt=""
-              className="w-100 h-100"
-            />
-          </div>
-          {admin_user?._id === userId && (
+      <>
+        <div className="status-item d-flex align-items-center justify-content-center">
+          <div className="status-ring d-flex align-items-center justify-content-center">
             <div
-              className="position-absolute d-flex fw-bold align-items-center justify-content-center fs-5 pb-1 w-100 h-100 text-light bg-dark"
-              style={{
-                bottom: "2px",
-                right: "4px",
-                zIndex: "100",
-                maxHeight: "20px",
-                maxWidth: "20px",
-                aspectRatio: "1/1",
-                borderRadius: "50%",
-                cursor: "pointer",
-              }}
+              className="status-image bg-light overflow-hidden"
               onClick={() => {
-                nevigate("/upload");
+                if (user_statuses?.length > 0) setSelectedUserId(userId);
               }}
             >
-              +
+              <img
+                src={user_statuses[0]?.image || admin_user?.cover_pic}
+                alt=""
+                className="w-100 h-100"
+              />
             </div>
-          )}
+            {admin_user?._id === userId && (
+              <>
+                <div
+                  className="position-absolute d-flex fw-bold align-items-center justify-content-center fs-5 pb-1 w-100 h-100 text-light bg-dark"
+                  style={{
+                    bottom: "2px",
+                    right: "4px",
+                    zIndex: "100",
+                    maxHeight: "20px",
+                    maxWidth: "20px",
+                    aspectRatio: "1/1",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                  }}
+                  // onClick={() => {
+                  //   nevigate("/upload");
+                  // }}
+                >
+                  +
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+        {admin_user?._id === userId && (
+          <>
+            <div
+              className="position-fixed d-none bg-dark"
+              style={{
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 100000000,
+              }}
+            >
+              <div
+                className="border bg-light w-100 overflow-hidden  d-flex align-items-center flex-column mt-0 pt-0 position-relative border"
+                style={{
+                  height: "100dvh",
+                  margin: "auto",
+                  maxWidth: "420px",
+                  transform: "scale(0.9)",
+                }}
+              >
+                <PostSentence type={"status"} />
+              </div>
+            </div>
+          </>
+        )}
+      </>
     )
   );
 };
@@ -244,6 +275,72 @@ export const StatusPage = ({ userId, all_statuses }) => {
         </div>
       )}
     </>
+  );
+};
+
+export const StatusCarousel = () => {
+  const fileInputRef = useRef(null);
+  const [images, setImages] = useState([]);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImages((prev) => [...prev, { image: imageUrl }]);
+    }
+  };
+
+  return (
+    <div className="position-relative w-100" style={{ maxWidth: 400 }}>
+      {/* Carousel */}
+      <div className="flex-grow-1 d-flex align-items-center">
+        <Carousel className="w-100" interval={null}>
+          {images.map((status, idx) => (
+            <Carousel.Item key={idx}>
+              <div className="d-flex h-100 align-items-center justify-content-center">
+                <img
+                  src={status.image}
+                  alt={`status-${idx}`}
+                  className="h-100 w-100 object-fit-cover"
+                  style={{ maxHeight: "250px" }}
+                />
+              </div>
+            </Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
+
+      {/* Hidden File Input */}
+      <input
+        id="status"
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: "none" }}
+        onChange={handleImageUpload}
+      />
+
+      {/* Circular + Label */}
+      <label
+        htmlFor="status"
+        className="position-absolute d-flex fw-bold align-items-center justify-content-center fs-5 pb-1 w-100 h-100 text-light bg-dark"
+        style={{
+          bottom: "-20px",
+          right: "4px",
+          zIndex: 100,
+          minHeight: "30px",
+          maxWidth: "30px",
+          aspectRatio: "1/1",
+          borderRadius: "50%",
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          fileInputRef.current?.click();
+        }}
+      >
+        +
+      </label>
+    </div>
   );
 };
 
