@@ -580,67 +580,42 @@ export const CommentSection = ({ post }) => {
   );
 };
 
-export const CardPost = ({ pg }) => {
-  const [fontSize, setFontSize] = useState(10); // default px
-  const containerRef = useRef(null);
-  useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const width = entry.contentRect.width;
+export const CardPost = ({ post }) => {
+  // useEffect(() => {
+  //   const observer = new ResizeObserver((entries) => {
+  //     for (let entry of entries) {
+  //       const width = entry.contentRect.width;
 
-        // Scale logic: font size = width / 20, clamp it
-        const newFontSize = Math.min(Math.min(width / 20)); // min 12px, max 36px
-        setFontSize(newFontSize);
-      }
-    });
+  //       // Scale logic: font size = width / 20, clamp it
+  //       const newFontSize = Math.min(Math.min(width / 20)); // min 12px, max 36px
+  //       setFontSize(newFontSize);
+  //     }
+  //   });
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+  //   if (containerRef.current) {
+  //     observer.observe(containerRef.current);
+  //   }
 
-    return () => observer.disconnect();
-  }, []);
+  //   return () => observer.disconnect();
+  // }, []);
   return (
     <>
       <div
         className="p-0 m-0 position-relative w-100"
         style={{
-          aspectRatio: "1/1",
+          aspectRatio: "3/4",
           height: "100%",
           flexShrink: 0,
           cursor: "pointer",
         }}
-        ref={containerRef}
       >
         <div className="w-100 h-100 bg-image">
-          {pg.type === "img" ? (
-            <img
-              src={pg.val} // 400px for mobile-friendly width
-              loading="lazy"
-              className="h-100 w-100"
-              style={{ objectFit: "cover" }}
-            />
-          ) : (
-            <div
-              className="bg-image h-100 w-100"
-              style={{ background: `${pg.val}` }}
-            />
-          )}
-        </div>
-
-        <div
-          className="position-absolute w-100 pt-1 h-100 overflow-hidden"
-          style={{
-            ...pg.pre_style,
-            top: "0",
-            left: "0",
-            wordBreak: "break-word",
-            whiteSpace: "break-spaces",
-            background: `${pg.val}`,
-            fontSize: fontSize,
-          }}
-        >
-          {pg?.vibe}
+          <img
+            src={post?.images[0]} // 400px for mobile-friendly width
+            loading="lazy"
+            className="h-100 w-100"
+            style={{ objectFit: "cover" }}
+          />
         </div>
       </div>
     </>

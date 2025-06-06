@@ -7,14 +7,10 @@ const API = import.meta.env.VITE_API_URL;
 import { Loading } from "../../TinyComponent/LazyLoading";
 import { useQuote } from "../context/QueotrContext";
 import { Fragment } from "react";
+import { EachPost } from "./EachPost";
+import { FollowBtn } from "./EachPost";
 
-const UserProfile = ({
-  all_user,
-  admin,
-  all_post,
-  fetchAllUsers,
-  fetchSentences,
-}) => {
+const UserProfile = ({ all_user, admin, all_post }) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   // const nevigate = useNavigate();
   const { id } = useParams();
@@ -76,7 +72,7 @@ const UserProfile = ({
 
   return (
     <div
-      className="d-flex flex-column bg-light text-dark border"
+      className="d-flex flex-column bg-light text-dark border mb-5"
       style={{ maxWidth: "600px", margin: "auto", marginTop: "34px" }}
     >
       <div
@@ -108,16 +104,19 @@ const UserProfile = ({
       </div>
 
       <div className="text-end pe-3 pt-3" style={{ height: "60px" }}>
-        {/* {id !== admin?._id && (
-          <button
-            className="btn btn-outline-dark btn-sm"
-            onClick={() => {
-              HandleFollow();
-            }}
-          >
-            {isfollowed ? "Follow" : "Unfollow"}
-          </button>
-        )} */}
+        {id !== admin?._id && (
+          <>
+            <FollowBtn user={user} />
+            {user?.followers?.includes(admin?._id) && (
+              <button
+                className="btn btn-outline-dark btn-sm"
+                onClick={HandleFollow}
+              >
+                Unfollow
+              </button>
+            )}
+          </>
+        )}
 
         <button
           className="btn btn-outline-dark btn-sm ms-2"
@@ -155,7 +154,7 @@ const UserProfile = ({
       >
       </div> */}
 
-      <div className="border">
+      <div className="">
         {
           <section style={{ margin: "auto", maxWidth: "600px" }}>
             {LazyLoading ? (
@@ -184,13 +183,11 @@ const UserProfile = ({
                   return (
                     <>
                       <Fragment key={idx}>
-                        <Home
+                        <EachPost
                           user={user}
                           comment={ps}
                           admin={admin}
                           isDisplayedLeftNav={isDisplayedLeftNav}
-                          fetchAllUsers={fetchAllUsers}
-                          fetchSentences={fetchSentences}
                         />
                       </Fragment>
                     </>

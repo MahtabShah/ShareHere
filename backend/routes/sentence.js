@@ -15,39 +15,23 @@ const upload = multer({ storage });
 
 router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
   try {
-    const pagesMetaRaw = req.body.pages_meta;
 
-    const pagesMeta = Array.isArray(pagesMetaRaw)
-      ? pagesMetaRaw.map((meta) => JSON.parse(meta))
-      : [JSON.parse(pagesMetaRaw)];
-
-    const files = req.files;
+    // const files = req.files;
+    const {ready_url , text} = req.body;
     const userId = req.user.id;
 
 
 
-
-    console.log("-----------------------------l-----------------? " , req.user)
-  
-
-    let imgIndex = 0;
-    const finalPages = pagesMeta.map((page) => {
-      if (page.type === "img") {
-        page.val = files[imgIndex]?.path; // Cloudinary gives `path` as secure URL
-        imgIndex++;
-      }
-      return page;
-    });
-
-    console.log("pages............", finalPages)
     // Now save sentence to DB
     const newSentence = new Sentence({
-      text: req.body.text,
-      image_text: req.body.image_text,
+      text: text,
+      // image_text: req.body.image_text,
+      images:[ready_url],
       userId:userId,
-      pages: finalPages,
+      // pages: finalPages,
     });
 
+    console.log("new post at 53 - - - -- - - --->" , newSentence)
     await newSentence.save();
   io.emit('sentence', newSentence.toObject());
 

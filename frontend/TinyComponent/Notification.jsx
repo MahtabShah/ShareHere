@@ -99,22 +99,20 @@ export const Notification = ({
             ) : go_comment ? (
               <div className="border">
                 <div className="p-1 d-flex gap-3 justify-content-between">
-                  {post?.pages[0] && (
-                    <>
-                      <div className="flex-grow-1 w-100 ps-2">
-                        {post?.text.split(" ").slice(0, 40).join(" ")} . . .
-                      </div>
-                      <div
-                        className="h-100"
-                        style={{ width: "74px" }}
-                        onClick={() => {
-                          Track_post(post?._id);
-                        }}
-                      >
-                        <CardPost pg={post?.pages[0]} />
-                      </div>
-                    </>
-                  )}
+                  <>
+                    <div className="flex-grow-1 w-100 ps-2">
+                      {post?.text.split(" ").slice(0, 40).join(" ")} . . .
+                    </div>
+                    <div
+                      className="h-100"
+                      style={{ width: "74px" }}
+                      onClick={() => {
+                        Track_post(post?._id);
+                      }}
+                    >
+                      <CardPost post={post} />
+                    </div>
+                  </>
                 </div>
                 <div className="w-100 border">
                   <section

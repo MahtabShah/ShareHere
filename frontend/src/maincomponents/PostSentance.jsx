@@ -2,15 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Loading } from "../../TinyComponent/LazyLoading";
 import PreImages from "../../TinyComponent/PreImages";
-import Carousel from "react-bootstrap/Carousel";
-import Nav from "react-bootstrap/Nav";
-import { QuoteProvider } from "../context/QueotrContext";
 import { useQuote } from "../context/QueotrContext";
-// import "@fortawesome/fontawesome-free/css/all.min.css";
-import { MdFormatSize } from "react-icons/md";
-import TextToImage from "../../TinyComponent/ConvertDivintoImg";
 import html2canvas from "html2canvas";
-
+import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 
 const pre_images = [
@@ -69,38 +63,32 @@ const pre_bg_color = [
   "#2B580C",
 ];
 
-const PostSentence = ({ fetchSentences, all_user, admin }) => {
+const PostSentence = ({ admin }) => {
   const [text, setText] = useState("");
-  const [image_text, setimage_Text] = useState("");
   const [Errors, setErrors] = useState("");
-  const [images, setImages] = useState([]);
-  const [pages, setPages] = useState([]);
+  const [images, setImages] = useState("");
   const [Pre_Image, setPre_Image] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
   const [LazyLoading, setLazyLoading] = useState(false);
   const [isPre_Image, setisPre_Image] = useState(false);
   const textareaRef = useRef(null);
   const [bg_clr, setbg_clr] = useState("#dff");
-  const [vibes, setVibes] = useState([]);
-  const [pre_style, setPre_style] = useState([]);
   const [selectedIndices, setSelectedIndices] = useState([]);
-  const [curr_user, setcurr_user] = useState(null);
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  // console.log(style);
-
+  const nevigate = useNavigate();
   const token = localStorage.getItem("token");
+  const { style } = useQuote();
+  const containerRef = useRef();
+  const divRef = useRef(null);
 
   const handleInput = (idx, e, key) => {
     if (key === "text") {
       setText(e.target.value);
-    } else if (key === "image_text") {
-      setimage_Text(e.target.value);
-      const updated = [...vibes];
-      updated[activeIndex] = e.target.value;
+    } else {
+      const txt = e.currentTarget.textContent;
 
-      setVibes(updated);
+      // Force update to plain text (remove extra nodes) // for better styling u can active node like some text bold some text color
+      if (divRef.current) {
+        divRef.current.textContent = txt;
+      }
     }
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -109,21 +97,13 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
   };
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (images.length + files.length > 5) {
-      alert("You can't upload more than 5 images.");
-      return;
+    const file = e?.target?.files?.[0];
+    if (file) {
+      const image_url = URL.createObjectURL(file);
+      // Now you can use image_url (e.g., set it to state)
+      console.log(image_url);
+      setImages(image_url);
     }
-
-    const fileURLs = files.map((file) => ({
-      type: "img",
-      val: URL.createObjectURL(file),
-    }));
-    const fileData = files.map((file) => ({ type: "img", val: file }));
-
-    setImages((prev) => [...prev, ...fileURLs]);
-    setPages((prev) => [...prev, ...fileData]);
-    setImagePreviews((prev) => [...prev, ...files]);
   };
 
   const handlePreImage = (img, idx) => {
@@ -143,45 +123,58 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
     );
   };
 
+  // return becouse of many times img generating
+  const handleCapture = async () => {
+    // return;
+    if (!document.body.contains(containerRef.current)) {
+      alert("Element is not attached to DOM");
+      return;
+    }
+
+    const canvas = await html2canvas(containerRef?.current, {
+      useCORS: true,
+      backgroundColor: null, // preserve transparent background if needed
+      scale: 2, // for higher resolution
+      logging: true,
+    });
+    const dataURL = canvas.toDataURL("image/png");
+
+    // Optionally upload to Cloudinary
+    const formData = new FormData();
+    formData.append("file", dataURL);
+    formData.append("upload_preset", "page_Image"); // Replace this
+    formData.append("cloud_name", "dft5cl5ra"); // Replace this
+
+    const res = await axios.post(
+      "https://api.cloudinary.com/v1_1/dft5cl5ra/image/upload",
+      formData
+    );
+
+    console.log("Uploaded URL:", res.data.secure_url);
+    return res.data.secure_url;
+    // alert("Image uploaded at: " + res.data.secure_url);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("text", text);
-    formData.append("image_text", image_text);
-
-    pages.forEach((page, idx) => {
-      if (page.type === "img") {
-        formData.append("images", page.val);
-      }
-      formData.append(
-        "pages_meta",
-        JSON.stringify({
-          type: page.type,
-          text: page.text,
-          vibe: vibes[idx],
-          pre_style: pre_style[idx],
-          val: page.type === "img" ? null : page.val,
-        })
-      );
-    });
-
     setLazyLoading(true);
     try {
-      const res = await axios.post(`${API}/api/sentence/post`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      fetchSentences();
-      setText("");
-      setimage_Text("");
-      setImages([]);
-      setPages([]);
-      setImagePreviews([]);
-      setSelectedIndices([]);
-      setVibes([]);
-      setPre_style([]);
-      setStyle([]);
+      const ready_url = await handleCapture();
+      console.log(ready_url);
+      if (ready_url) {
+        const res = await axios.post(
+          `${API}/api/sentence/post`,
+          { ready_url: ready_url, text: text },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        nevigate("/home");
+        // setText("");
+        // setImages([]);
+      }
     } catch (err) {
       alert(
         "Failed to save sentence: " +
@@ -192,70 +185,6 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
     }
     setLazyLoading(false);
   };
-
-  useEffect(() => {
-    if (pages.length) setCarouselIndex(pages.length - 1);
-  }, [pages]);
-
-  const { style, setStyle } = useQuote();
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (pre_style[activeIndex]) {
-        setStyle({ ...pre_style[activeIndex] }); // load saved style for that slide
-      }
-    }, 330);
-  }, [activeIndex]);
-
-  useEffect(() => {
-    setPre_style((prev) => {
-      const updated = [...prev];
-      updated[activeIndex] = { ...style };
-      return updated;
-    });
-  }, [style, activeIndex]);
-
-  const handleSelect = (selectedIndex, e) => {
-    setActiveIndex(selectedIndex);
-  };
-
-  const removeCurrentSlide = () => {
-    if (pages.length === 0) return;
-
-    const newPages = pages.filter((_, index) => index !== activeIndex);
-    const newImages = images.filter((_, index) => index !== activeIndex);
-
-    setPages(newPages);
-    setImages(newImages);
-
-    // Update activeIndex to avoid out-of-bounds
-    setActiveIndex((prev) =>
-      activeIndex >= newPages.length ? newPages.length - 1 : prev
-    );
-  };
-
-  // console.log("pre style = = = > ", pre_style);
-
-  const containerRef = useRef();
-  const [fontSize, setFontSize] = useState(16); // default px
-
-  useEffect(() => {
-    const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const width = entry.contentRect.width;
-
-        // Scale logic: font size = width / 20, clamp it
-        const newFontSize = Math.min(Math.min(width / 30)); // min 12px, max 36px
-        setFontSize(newFontSize);
-      }
-    });
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <>
@@ -285,94 +214,47 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
                 id="images"
                 className="form-control d-none border-0"
                 accept="image/*"
-                multiple
                 onChange={handleImageChange}
               />
             </div>
 
-            <pre>
-              <div
-                className="d-flex  mt-0 border"
-                style={{
-                  width: "calc(100% - 0rem)",
-                  maxWidth: "600px",
-                  aspectRatio: "17/17",
-                  background: `${bg_clr}`,
-                  fontSize: fontSize,
-                }}
-              >
-                <Carousel
-                  className="w-100"
-                  interval={null}
-                  activeIndex={activeIndex}
-                  onSelect={handleSelect}
-                >
-                  {images.map((page, idx) => (
-                    <Carousel.Item className="">
-                      <div
-                        key={idx}
-                        className="rounded-3"
-                        style={{
-                          // width: "calc(100% - 2rem)",
-                          maxWidth: "600px",
-                          aspectRatio: "17/17",
-                          flexShrink: 0,
-                          ...pre_style[idx],
-                          ...style,
-                          top: "0",
-                          left: "0",
-                          zIndex: 100, // higher
-                          background: "#3330", // transparent background
-                          caretColor: "red",
-                          whiteSpace: "pre-wrap", // mimic pre
-                          overflow: "hidden", // hide scroll
-                          resize: "none", // prevent resizing
-                        }}
-                        ref={containerRef}
-                      >
-                        <div
-                          className="w-100 h-100 bg-image p-3"
-                          style={{
-                            background:
-                              page.type === "img"
-                                ? `url(${page.val})`
-                                : page.val,
-                          }}
-                        />
-                        {/* <pre> */}
-                        <textarea
-                          name="image_text"
-                          id="image_text"
-                          className="position-absolute border w-100 h-100 p-2"
-                          style={{
-                            ...pre_style[idx],
-                            ...style,
-                            top: "0",
-                            left: "0",
-                            zIndex: 100, // higher
-                            background: "#3330", // transparent background
-                            caretColor: "red",
-                            whiteSpace: "pre-wrap", // mimic pre
-                            overflow: "hidden", // hide scroll
-                            resize: "none", // prevent resizing
-                          }}
-                          value={vibes[idx] || ""}
-                          onChange={(e) => handleInput(idx, e, "image_text")}
-                          spellCheck="false"
-                          placeholder="you can write a vibe ink here...."
-                        />
-                      </div>
-                      {/* <Carousel.Caption>
-                          <h3>First slide label</h3>
-                        </Carousel.Caption> */}
-                    </Carousel.Item>
-                  ))}
-                </Carousel>
-              </div>
-            </pre>
-
             <div
-              className="d-flex gap-2 me-3 mt-2 ms-3 none-scroller overflow-x-auto overflow-y-hidden"
+              className="d-flex  mt-0 position-relative overflow-hidden"
+              style={{
+                width: "calc(100% - 0rem)",
+                maxWidth: "600px",
+                aspectRatio: "6/7",
+                background: `${bg_clr}`,
+              }}
+              ref={containerRef}
+            >
+              <div
+                // key={idx}
+                className="rounded-0 w-100 p-2 h-100 bg-image"
+                ref={divRef}
+                style={{
+                  maxWidth: "600px",
+                  aspectRatio: "6/7",
+                  zIndex: "100",
+                  flexShrink: 0,
+                  ...style,
+                  caretColor: "red",
+                  whiteSpace: "pre-wrap", // mimic pre
+                  overflow: "hidden", // hide scroll
+                  resize: "none", // prevent resizing
+                  caret: "ActiveBorder",
+                  background: `url(${images})`,
+                }}
+                spellCheck={false}
+                contentEditable={true}
+              >
+                You can write Here.......
+              </div>
+            </div>
+
+            {/* controller --------------------bgcolor */}
+            <div
+              className="d-flex gap-2 me-3 m-2 ms-3 none-scroller overflow-x-auto overflow-y-hidden"
               style={{ maxHeight: "80px", maxWidth: "100%" }}
             >
               {pre_bg_color.map((c, idx) => {
@@ -392,70 +274,14 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
                       }}
                       onClick={() => {
                         setbg_clr(c);
-                        setPages((prev) =>
-                          prev.map((item, idx) =>
-                            idx === activeIndex && item.type === "bg-clr"
-                              ? { ...item, val: c }
-                              : item
-                          )
-                        );
-
-                        setImages((prev) =>
-                          prev.map((item, idx) =>
-                            idx === activeIndex && item.type === "bg-clr"
-                              ? { ...item, val: c }
-                              : item
-                          )
-                        );
                       }}
                     />
                   </>
                 );
               })}
             </div>
-
-            <div className="d-flex gap-1 align-items-center justify-content-center mt-1">
-              <span
-                className="bold fs-4 border pb-1 bg-light rounded-5 d-flex   align-items-center justify-content-center"
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setPages(() => [...pages, { type: "bg-clr", val: bg_clr }]);
-                  setImages(() => [...images, { type: "bg-clr", val: bg_clr }]);
-                }}
-
-                // onClick={() => {
-                //   const newColor =
-                //     "#" + Math.floor(Math.random() * 16777215).toString(16);
-                //   setPages((prev) => [
-                //     ...prev,
-                //     { type: "bg-clr", val: newColor },
-                //   ]);
-                //   setImages((prev) => [
-                //     ...prev,
-                //     { type: "bg-clr", val: newColor },
-                //   ]);
-                // }}
-              >
-                +
-              </span>
-              <span
-                className=" bold fs-4 border pb-1 bg-light rounded-5 d-flex  align-items-center justify-content-center"
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  cursor: "pointer",
-                }}
-                onClick={removeCurrentSlide}
-              >
-                -
-              </span>
-            </div>
           </div>
-          {/* above select image area */}
+          {/* above select btn image area */}
 
           <div className="border">
             <div className="d-flex gap-2 align-items-center  p-2 pb-0 pt-2">
@@ -496,7 +322,7 @@ const PostSentence = ({ fetchSentences, all_user, admin }) => {
           <br />
 
           {/* {browsssss imggggg} */}
-          <div className="d-flex gap-3 justify-content-end p-0 m-0">
+          <div className="d-flex gap-3 justify-content-end p-0 pb-5 mb-4">
             {/* {isPre_Image} */}
             {!true ? (
               <div
@@ -641,26 +467,35 @@ const QuoteStyler = () => {
   ];
 
   const fontSize = [
-    "0.1em",
-    "0.2em",
-    "0.3em",
-    "0.4em",
-    "0.5em",
-    "0.6em",
-    "0.7em",
-    "0.8em",
-    "0.9em",
-    "1.0em",
-    "1.1em",
-    "1.2em",
-    "1.3em",
-    "1.4em",
-    "1.5em",
-    "1.6em",
-    "1.7em",
-    "1.8em",
-    "1.9em",
-    "2.0em",
+    "0.1rem",
+    "0.2rem",
+    "0.3rem",
+    "0.4rem",
+    "0.5rem",
+    "0.6rem",
+    "0.7rem",
+    "0.8rem",
+    "0.9rem",
+    "1.0rem",
+    "1.1rem",
+    "1.2rem",
+    "1.3rem",
+    "1.4rem",
+    "1.5rem",
+    "1.6rem",
+    "1.7rem",
+    "1.8rem",
+    "1.9rem",
+    "2.2rem",
+    "2.4rem",
+    "2.6rem",
+    "2.8rem",
+    "3.0rem",
+    "3.4rem",
+    "3.8rem",
+    "4.0rem",
+    "4.5rem",
+    "5.0rem",
   ];
 
   const fontWeight = [

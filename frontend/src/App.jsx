@@ -22,8 +22,9 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useQuote } from "./context/QueotrContext";
 // import TextToImage from "../TinyComponent/ConvertDivintoImg";
-import { StatusPage, StatusRing } from "./Status";
+import { StatusPage, StatusRing } from "./maincomponents/Status";
 import { EachPost } from "./maincomponents/EachPost";
+import ParentStatusComponent from "./maincomponents/Status";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -36,8 +37,8 @@ function App() {
     window.innerWidth < 768
   );
 
-  const { setStatusClicked, statusClicked } = useQuote();
-
+  const { statusClicked } = useQuote();
+  // console.log("statussssssssssssssssssssssss", statusClicked);
   const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1224);
   const [admin_user, setadmin_user] = useState(null);
 
@@ -86,7 +87,7 @@ function App() {
         headers: { Authorization: `Bearer ${token}` },
       });
       // setLoading(false);
-      console.log("notiiiiiiii---->", res.data);
+      // console.log("notiiiiiiii---->", res.data);
       setcurr_all_notifications(res.data);
     } catch (error) {
       console.log("erriorrr in notify", error);
@@ -109,7 +110,7 @@ function App() {
 
     try {
       await axios.get(`${API}/api/auth/all_sentence`).then((res) => {
-        console.log("response at Home.jsx all_sentence", res.data);
+        // console.log("response at Home.jsx all_sentence", res.data);
         setall_comments(res.data);
       });
     } catch (error) {
@@ -181,6 +182,36 @@ function App() {
     }
   }, [postId, all_comments]); // wait for all_comments to load
 
+  const [statuses, setStatuses] = useState([]);
+  const [followings, setFollowings] = useState([]);
+  // console.log("admin 108 status", admin_user);
+
+  const fetchUserStatuses = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/crud/all_status`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Optional, if protected
+        },
+      });
+      setStatuses(res.data);
+      // console.log("Status------------", res.data);
+    } catch (error) {
+      console.error("Failed to fetch statuses:", error);
+    }
+  };
+  useEffect(() => {
+    if (admin_user?._id) {
+      fetchUserStatuses();
+    }
+  }, [admin_user]);
+
+  // console.log("all_user?.followers", all_followings);
+  const all_followings = admin_user?.following;
+
+  useEffect(() => {
+    setFollowings(all_followings);
+  }, [all_followings]);
+
   return (
     <div className="p-0 pt-3 col-sm-10 col-md-12" style={{ margin: "auto" }}>
       <MainHeader
@@ -236,8 +267,6 @@ function App() {
                 admin={admin}
                 all_user={all_user}
                 all_post={all_comments}
-                fetchAllUsers={fetchAllUsers}
-                fetchSentences={fetchSentences}
               />
             }
           />
@@ -248,12 +277,19 @@ function App() {
                 className={`${isDisplayedLeftNav ? "p-2" : "p-3"} pt-4`}
                 style={{ margin: "auto", maxWidth: "600px" }}
               >
-                <h4
-                  className={`${isDisplayedLeftNav ? "ps-0" : "ps-0"}`}
-                  // style={{ borderBottom: "1px solid #222" }}
-                >
-                  Post a Vibe Ink Here
-                </h4>{" "}
+                <div className="d-flex justify-content-between">
+                  <h4
+                    className={`${isDisplayedLeftNav ? "ps-0" : "ps-0"}`}
+                    // style={{ borderBottom: "1px solid #222" }}
+                  >
+                    Post a Vibe Ink Here
+                  </h4>
+                  {/* <h4 className="btn btn-outline-primary disable">
+                    {" "}
+                    add status +{" "}
+                  </h4> */}
+                </div>
+
                 <PostSentence
                   fetchSentences={fetchSentences}
                   fetchAllUsers={fetchAllUsers}
@@ -267,40 +303,42 @@ function App() {
             path="/home/postId?"
             element={
               <section
-                className={`${isDisplayedLeftNav ? "p-2" : "p-3"} pt-4`}
+                className={`${isDisplayedLeftNav ? "p-0" : "p-3"} pt-4`}
                 style={{ margin: "auto", maxWidth: "600px" }}
               >
-                {!statusClicked && (
-                  <div className="d-flex gap-3 overflow-x-auto status-parent align-items-center w-100 px-0">
-                    {all_comments?.map((p, idx) => {
-                      return (
-                        <Fragment key={idx}>
-                          <StatusRing
-                            admin={admin}
-                            fetchAllUsers={fetchAllUsers}
-                            fetchSentences={fetchSentences}
-                            isDisplayedLeftNav={isDisplayedLeftNav}
-                            post={p}
-                          />
-                        </Fragment>
-                      );
-                    })}
+                {followings && statuses && (
+                  <div className="d-flex gap-3 overflow-x-auto status-parent align-items-center w-100 px-2">
+                    <StatusRing
+                      userId={admin_user?._id}
+                      all_statuses={statuses}
+                    />
+                    <ParentStatusComponent
+                      followings={followings}
+                      statuses={statuses}
+                    />
                   </div>
                 )}
 
-                <div
-                  className="p-2 mb-3"
-                  // style={{ height: "calc(100dvh - 120px)" }}
-                >
-                  <StatusPage
-                    // user={u}
-                    // comment={all_comments[5]}
-                    admin={admin}
-                    fetchAllUsers={fetchAllUsers}
-                    fetchSentences={fetchSentences}
-                    isDisplayedLeftNav={isDisplayedLeftNav}
-                  />
-                </div>
+                {/* {selectedUserId && (
+                  <div
+                    className="border d-flex overflow-hidden p-2 pt-0 justify-content-center align-items-center position-fixed bg-dark"
+                    style={{
+                      height: "",
+                      zIndex: "100000000",
+                      top: "0",
+                      left: "0",
+                      right: "0",
+                      bottom: "0",
+                      opacity: "0.98",
+                    }}
+                  >
+                    <StatusPage
+                      userId={selectedUserId}
+                      all_statuses={statuses}
+                      onClose={() => setSelectedUserId(null)}
+                    />
+                  </div>
+                )} */}
 
                 {LazyLoading ? (
                   <div className="p-3 d-flex justify-content-center">
@@ -340,45 +378,6 @@ function App() {
                     })}
                   </>
                 )}
-
-                {/* {LazyLoading ? (
-                  <div className="p-3 d-flex justify-content-center">
-                    {" "}
-                    <Loading dm={34} />
-                  </div>
-                ) : (
-                  <>
-                    {all_user?.map((u, idx) => {
-                      return (
-                        <Fragment key={idx}>
-                          {all_comments
-                            ?.filter((com) => com.userId === u._id)
-                            ?.map((c, indx) => {
-                              return (
-                                <Fragment key={indx}>
-                                  {all_comments?.filter(
-                                    (com) => com.userId === u._id
-                                  ).length > 0 && (
-                                    <div id={c._id}>
-                                      {" "}
-                                      <Home
-                                        user={u}
-                                        comment={c}
-                                        admin={admin}
-                                        fetchAllUsers={fetchAllUsers}
-                                        fetchSentences={fetchSentences}
-                                        isDisplayedLeftNav={isDisplayedLeftNav}
-                                      />
-                                    </div>
-                                  )}
-                                </Fragment>
-                              );
-                            })}
-                        </Fragment>
-                      );
-                    })}
-                  </>
-                )} */}
               </section>
             }
           />

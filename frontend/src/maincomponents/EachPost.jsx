@@ -147,51 +147,42 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
     setLazyLoading(!true);
   };
 
-  const captureDivRef = useRef(null);
-  const [isRefReady, setIsRefReady] = useState(true);
-  const [ready_url, setReady_url] = useState("");
-
-  // return becouse of many times img generating
-  const handleCapture = async () => {
-    return;
-    if (!document.body.contains(captureDivRef.current)) {
-      alert("Element is not attached to DOM");
-      return;
-    }
-
-    const canvas = await html2canvas(captureDivRef?.current, {
-      useCORS: true,
-      backgroundColor: null, // preserve transparent background if needed
-      scale: 2, // for higher resolution
-      logging: true,
-    });
-    const dataURL = canvas.toDataURL("image/png");
-
-    // Optionally upload to Cloudinary
-    const formData = new FormData();
-    formData.append("file", dataURL);
-    formData.append("upload_preset", "page_Image"); // Replace this
-    formData.append("cloud_name", "dft5cl5ra"); // Replace this
-
-    const res = await axios.post(
-      "https://api.cloudinary.com/v1_1/dft5cl5ra/image/upload",
-      formData
-    );
-
-    console.log("Uploaded URL:", res.data.secure_url);
-    setReady_url(res.data.secure_url);
-    // alert("Image uploaded at: " + res.data.secure_url);
-  };
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const scrollPos = params.get("scroll");
     if (scrollPos) {
       window.scrollTo(0, parseInt(scrollPos));
     }
-
-    handleCapture();
   }, []);
+
+  const [text, setText] = useState(comment?.text);
+  const [image, setImage] = useState(comment?.images[0]);
+
+  // console.log("iiii", comment);
+
+  const HandleStatus = async () => {
+    // const [userId, setUserId] = useState(""); // use logged-in user ID
+
+    try {
+      const res = await axios.post(
+        `${API}/api/crud/create_status`,
+        {
+          text,
+          image,
+          user: admin._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Created status:", res.data);
+      alert("Status created!");
+    } catch (err) {
+      console.error("Error creating status:", err);
+    }
+  };
 
   return (
     <>
@@ -201,17 +192,30 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
           <div
             className="d-flex flex-column mt-4 p-0 bg position-relative border-bottom col-md-12"
             style={{
-              background: "#fafafa",
+              background: "#f5f5f5",
               fontSize: fontSize,
             }}
             key={comment?.text?.slice(0, -1)}
           >
             {/*--------------------- user ring and follow btn ----------------------- */}
-            <div className="d-flex gap-2 align-items-center">
+            <div className="d-flex gap-2 ps-1 align-items-center">
               <UserRing user={user} />
 
               <div className="d-flex flex-column pe-2">
                 <FollowBtn user={user} />
+                {user?._id === admin?._id && (
+                  <span
+                    className="fs-5 fw-bold"
+                    style={{ alignSelf: "end", cursor: "pointer" }}
+                    onClick={() => {
+                      setImage(comment?.images[0]);
+                      setText(comment?.text);
+                      HandleStatus();
+                    }}
+                  >
+                    +{/* {clicked ? "+":""} */}
+                  </span>
+                )}
                 <div style={{ fontSize: "12px" }}>
                   {" "}
                   {user?.followers?.length} followers
@@ -219,65 +223,31 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
               </div>
             </div>
 
-            {isRefReady && ready_url && (
-              // <span onClick={handleCapture} className="btn btn-outline-danger">
-              //   Convert to Image
-              // </span>
-
-              <a href={ready_url}>
-                {/* <img src={ready_url} alt="" /> */}
-                see post
-              </a>
-            )}
-
             <div className="w-100">
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
                 <div
                   className={`d-flex mt-2 m-${isDisplayedLeftNav ? "0" : "3"}`}
                   style={{ overflow: "hidden" }}
-                  ref={captureDivRef}
                 >
-                  {comment?.pages[0]?.type && (
-                    <div
-                      className="p-0 position-relative w-100"
-                      style={{
-                        maxWidth: "600px",
-                        aspectRatio: "17/17",
-                        flexShrink: 0,
-                        margin: "auto",
-                      }}
-                    >
-                      <div className="w-100 h-100 bg-image">
-                        {comment?.pages[0]?.type === "img" ? (
-                          <img
-                            // src={optimizeImage(pg.val, 400)} // 400px for mobile-friendly width
-                            src={`${comment?.pages[0]?.val}`} // 400px for mobile-friendly width
-                            loading="lazy"
-                            className="h-100 w-100"
-                            style={{ objectFit: "cover" }}
-                          />
-                        ) : (
-                          <div
-                            className="bg-image h-100 w-100"
-                            style={{ background: `${comment?.pages[0]?.val}` }}
-                          />
-                        )}
-                      </div>
-
-                      <div
-                        className="position-absolute w-100 h-100 p-3"
-                        style={{
-                          top: "0",
-                          wordBreak: "break-word",
-                          whiteSpace: "break-spaces",
-                          ...comment?.pages[0]?.pre_style,
-                          background: `${comment?.pages[0]?.val}`,
-                        }}
-                      >
-                        {comment?.pages[0]?.vibe}
-                      </div>
+                  <div
+                    className="p-0 position-relative w-100"
+                    style={{
+                      maxWidth: "600px",
+                      aspectRatio: "6/7",
+                      flexShrink: 0,
+                      margin: "auto",
+                    }}
+                  >
+                    <div className="w-100 h-100 bg-image">
+                      <img
+                        // src={optimizeImage(pg.val, 400)} // 400px for mobile-friendly width
+                        src={`${comment?.images[0]}`} // 400px for mobile-friendly width
+                        loading="lazy"
+                        className="h-100 w-100"
+                        style={{ objectFit: "cover" }}
+                      />
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 <li className="p-2 w-100 flex-grow-1 rounded-3 ps-3">
@@ -426,7 +396,7 @@ const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
   const nevigate = useNavigate();
   return (
     <>
-      <div className="d-flex gap-2 flex-grow-1">
+      <div className="d-flex gap-2 flex-grow-1 align-items-center">
         <div
           className="d-flex align-items-center w-100 justify-content-center rounded-crcle text-white"
           style={{
@@ -460,14 +430,14 @@ const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
   );
 };
 
-const FollowBtn = ({ user }) => {
+export const FollowBtn = ({ user }) => {
   const { admin_user, fetch_admin_user } = useQuote();
   const token = localStorage.getItem("token");
   const [isfollowed, setisfollowed] = useState(false);
 
   // fetch_admin_user();
 
-  console.log("admin_user is working....", admin_user);
+  // console.log("admin_user is working....509 eachPost", admin_user);
   const HandleFollow = async () => {
     // alert("followed.... start 95 home.js");
     try {

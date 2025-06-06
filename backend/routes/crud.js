@@ -5,6 +5,7 @@ const router = express.Router();
 const {Sentence} = require('../models/Sentence');
 const Notification = require("../models/Notification")
 const User = require("../models/User")
+const Status = require("../models/Status")
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
@@ -56,8 +57,35 @@ const curr_notifications = await Notification.find({ recipient: userId })
   }
 });
 
+router.get("/all_status", async (req, res) => {
+  try {
+    const all_statuses = await Status.find()
+      .populate("user", "name email") // populate user with only name and email
+      .populate("likes", "name")      // populate likes with name
+      .populate("comments.user", "name"); // populate comments.user with name
 
+    res.status(200).json(all_statuses);
+  } catch (error) {
+    console.error("Error fetching statuses:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
+router.get("/user_status/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const statuses = await Status.find({ user: userId })
+      .populate("user", "name email")
+      .populate("likes", "name")
+      .populate("comments.user", "name");
+
+    res.status(200).json(statuses);
+  } catch (error) {
+    console.error("Error fetching user statuses:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 router.get("/each_post_comments", async (req, res) => {
   const postId = req.query.postId;
@@ -205,6 +233,52 @@ router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
     res.status(500).json({ message: 'Failed to delete sentence' });
   }
 });
+
+
+// PUT: Update a status by ID
+router.put("/update_status/:id", async (req, res) => {
+  const statusId = req.params.id;
+  const { text, image, user } = req.body;
+
+  try {
+    const updatedStatus = await Status.findByIdAndUpdate(
+      statusId,
+      {
+        text,
+        image,
+        user,
+      },
+      { new: true, runValidators: true } // return the updated doc
+    );
+
+    if (!updatedStatus) {
+      return res.status(404).json({ message: "Status not found" });
+    }
+
+    res.status(200).json(updatedStatus);
+  } catch (error) {
+    console.error("Error updating status:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
+
+
+router.post("/create_status", async (req, res) => {
+  const { text, image, user } = req.body;
+
+  try {
+    const newStatus = new Status({ text, image, user });
+    await newStatus.save();
+    res.status(201).json(newStatus);
+  } catch (error) {
+    console.error("Error creating status:", error);
+    res.status(500).json({ message: "Failed to create status" });
+  }
+});
+
 
 
 module.exports = router

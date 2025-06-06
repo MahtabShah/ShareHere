@@ -17,14 +17,13 @@ const API = import.meta.env.VITE_API_URL;
 
 function MainHeader({ curr_all_notifications, admin }) {
   const [VisibleNotification, setVisibleNotification] = useState(false);
+  const [smbreakPoint, setsmbreakPoint] = useState(window.innerWidth < 576);
   const [loggedIn, setLoggedIn] = useState(false);
   const [count, setCount] = useState(
     curr_all_notifications?.filter((n) => n.isRead === false).length || 0
   );
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-
-  // const { admin_user } = useQuote();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -46,7 +45,6 @@ function MainHeader({ curr_all_notifications, admin }) {
       curr_all_notifications.filter((n) => n.isRead === false).length || 0
     );
   }, [curr_all_notifications]);
-  // console.log("00000000000>", admin);
 
   const Mark_as_read_notification = async () => {
     try {
@@ -67,6 +65,12 @@ function MainHeader({ curr_all_notifications, admin }) {
     }
   };
 
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setsmbreakPoint(window.innerWidth < 576);
+    });
+  }, [smbreakPoint]);
+
   return (
     <>
       {["sm"].map((expand) => (
@@ -80,9 +84,29 @@ function MainHeader({ curr_all_notifications, admin }) {
           style={{ borderBottom: "1px solid var(--light-clr)" }}
         >
           <Container fluid>
-            <Navbar.Brand href="/Explore" className="fw-bold fs-5 pb-0 mb-0">
-              <div className="mt-2">
-                <Logo />
+            <Navbar.Brand
+              href="/Explore"
+              className="fw-bold fs-5 pb-0 mb-0 flex-grow-1"
+            >
+              <div className="d-flex justify-content-between w-100 flex-grow-1">
+                <div className="mt-2">
+                  <Logo />
+                </div>
+                {smbreakPoint && (
+                  <div>
+                    <Nav.Link
+                      href=""
+                      onClick={() => {
+                        setVisibleNotification(!VisibleNotification);
+                        setCount(0);
+                        Mark_as_read_notification();
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faBell} />
+                      <NotificationBell count={count} />
+                    </Nav.Link>
+                  </div>
+                )}
               </div>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
@@ -102,19 +126,20 @@ function MainHeader({ curr_all_notifications, admin }) {
                   <Nav.Link href="/upload">Upload</Nav.Link>
                   {/* <Nav.Link href="/Explore">Explore</Nav.Link> */}
                   <Nav.Link href={`/api/user/${admin?._id}`}>Profile</Nav.Link>
+                  {!smbreakPoint && (
+                    <Nav.Link
+                      href=""
+                      onClick={() => {
+                        setVisibleNotification(!VisibleNotification);
+                        setCount(0);
+                        Mark_as_read_notification();
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faBell} />
+                      <NotificationBell count={count} />
+                    </Nav.Link>
+                  )}
                   {/* <Nav.Link href="/shop">Shop Now</Nav.Link> */}
-
-                  <Nav.Link
-                    href=""
-                    onClick={() => {
-                      setVisibleNotification(!VisibleNotification);
-                      setCount(0);
-                      Mark_as_read_notification();
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faBell} />
-                    <NotificationBell count={count} />
-                  </Nav.Link>
 
                   {loggedIn ? (
                     <>

@@ -21,6 +21,7 @@ export const QuoteProvider = ({ children }) => {
   const [isPaused, setIsPaused] = useState(false);
   const [admin_user, setadmin_user] = useState(null);
   const token = localStorage.getItem("token");
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   const fetch_admin_user = async () => {
     try {
@@ -67,6 +68,8 @@ export const QuoteProvider = ({ children }) => {
         setIsPaused,
         admin_user,
         fetch_admin_user,
+        selectedUserId,
+        setSelectedUserId,
       }}
     >
       {children}
