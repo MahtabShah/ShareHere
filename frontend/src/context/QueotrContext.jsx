@@ -1,4 +1,4 @@
-// QuoteContext.js
+// Quote Context.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 const QuoteContext = createContext();
