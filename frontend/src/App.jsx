@@ -188,7 +188,7 @@ function App() {
 
   const fetchUserStatuses = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/crud/all_status`, {
+      const res = await axios.get(`${API}/api/crud/all_status`, {
         headers: {
           Authorization: `Bearer ${token}`, // Optional, if protected
         },
