@@ -218,7 +218,6 @@ const PostSentence = ({ admin, type = "post" }) => {
 
     console.log("Uploaded URL:", res.data.secure_url);
     return res.data.secure_url;
-    // alert("Image uploaded at: " + res.data.secure_url);
   };
 
   const handleSubmit = async (e) => {
@@ -355,24 +354,22 @@ const PostSentence = ({ admin, type = "post" }) => {
             >
               {pre_bg_color.map((c, idx) => {
                 return (
-                  <>
-                    <span
-                      key={`bg-${idx}`}
-                      className="rounded-5 d-block"
-                      style={{
-                        minWidth: "34px",
-                        minHeight: "34px",
-                        background: `${c}`,
-                        cursor: "pointer",
-                        border: `${
-                          bg_clr === c ? "2px solid red" : "2px solid #f9d8df00"
-                        }`,
-                      }}
-                      onClick={() => {
-                        setbg_clr(c);
-                      }}
-                    />
-                  </>
+                  <span
+                    key={`bg-${idx}`}
+                    className="rounded-5 d-block"
+                    style={{
+                      minWidth: "34px",
+                      minHeight: "34px",
+                      background: `${c}`,
+                      cursor: "pointer",
+                      border: `${
+                        bg_clr === c ? "2px solid red" : "2px solid #f9d8df00"
+                      }`,
+                    }}
+                    onClick={() => {
+                      setbg_clr(c);
+                    }}
+                  />
                 );
               })}
             </div>
@@ -893,7 +890,7 @@ const QuoteStyler = () => {
           replace: "",
           Props: textDecoration,
         },
-      ].map((el) => {
+      ].map((el, idx) => {
         return (
           active_style === el.curr_style && (
             <Driver
@@ -902,6 +899,7 @@ const QuoteStyler = () => {
               val={active_style}
               to={el.to || ""}
               replace={el.replace}
+              key={idx}
             />
           )
         );
@@ -917,6 +915,7 @@ const Driver = ({ Props, handleStyleChange, val, replace = "", to }) => {
       <div
         className="all_option d-flex align-items-center w-100 overflow-x-auto none-scroller"
         style={{ maxWidth: "100%" }}
+        key={val}
       >
         {Props.map((size, idx) => (
           <option

@@ -49,12 +49,13 @@ const ParentStatusComponent = ({ followings, statuses }) => {
 
 export const StatusRing = ({ userId, all_statuses }) => {
   const [user_statuses, setUser_statuses] = useState([]);
-  const { setSelectedUserId, admin_user } = useQuote();
+  const { setSelectedUserId, admin_user, fetch_user_statuses } = useQuote();
   const nevigate = useNavigate();
 
   useEffect(() => {
     const statuses = all_statuses?.filter((s) => s?.user?._id === userId);
     setUser_statuses(statuses);
+    fetch_user_statuses();
   }, [all_statuses, userId]);
 
   return (

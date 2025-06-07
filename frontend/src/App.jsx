@@ -214,8 +214,10 @@ function App() {
   const all_followings = admin_user?.following;
 
   useEffect(() => {
+    fetchUserStatuses();
     setFollowings(all_followings);
-  }, [all_followings]);
+    // alert("alert");
+  }, [followings]);
 
   return (
     <div className="p-0 pt-3 col-sm-10 col-md-12" style={{ margin: "auto" }}>

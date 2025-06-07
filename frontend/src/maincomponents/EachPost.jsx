@@ -89,7 +89,6 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-        // alert("Thanks for sharing!");
       } catch (err) {
         alert("Share cancelled or failed.");
       }
@@ -104,7 +103,6 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
     }
   };
 
-  // alert(user.bg_clr);
   const token = localStorage.getItem("token");
 
   const optimizeImage = (url, width = 600) => {
@@ -142,7 +140,7 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
       // setisliked(!isliked);
       setnew_comment("");
     } catch (err) {
-      alert("Login failed: " + err.response?.data?.message || err.message);
+      alert("comment failed: " + err.response?.data?.message || err.message);
     }
     setLazyLoading(!true);
   };
@@ -431,7 +429,7 @@ const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
 };
 
 export const FollowBtn = ({ user }) => {
-  const { admin_user, fetch_admin_user } = useQuote();
+  const { admin_user, fetch_user_statuses } = useQuote();
   const token = localStorage.getItem("token");
   const [isfollowed, setisfollowed] = useState(false);
 
@@ -439,7 +437,6 @@ export const FollowBtn = ({ user }) => {
 
   // console.log("admin_user is working....509 eachPost", admin_user);
   const HandleFollow = async () => {
-    // alert("followed.... start 95 home.js");
     try {
       setisfollowed(!isfollowed);
       const res = await axios.put(
@@ -451,6 +448,9 @@ export const FollowBtn = ({ user }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
+      fetch_user_statuses();
+      fetch_user_statuses();
     } catch (err) {
       console.log(
         "folloing failed: " + err.response?.data?.message || err.message
@@ -476,7 +476,6 @@ const SlipDotinPost = ({ user, post }) => {
   const token = localStorage.getItem("token");
   const [isfollowed, setisfollowed] = useState(false);
   const HandleFollow = async () => {
-    // alert("followed.... start 95 home.js");
     try {
       setisfollowed(!isfollowed);
       const res = await axios.put(
@@ -492,7 +491,9 @@ const SlipDotinPost = ({ user, post }) => {
 
       // setisliked(!isliked);
     } catch (err) {
-      alert("folloing failed: " + err.response?.data?.message || err.message);
+      console.log(
+        "folloing failed: " + err.response?.data?.message || err.message
+      );
     }
   };
 
@@ -509,10 +510,11 @@ const SlipDotinPost = ({ user, post }) => {
         });
         // setisliked(!isliked);
       } catch (err) {
-        alert("Login failed: " + err.response?.data?.message || err.message);
+        console.log(
+          "deleteing failed: " + err.response?.data?.message || err.message
+        );
       }
     }
-    // alert("deleted..............");
   };
 
   const { admin_user, fetch_admin_user } = useQuote();

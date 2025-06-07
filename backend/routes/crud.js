@@ -197,7 +197,7 @@ io.emit('userUpdated', user_b);
     res.status(201).json({ message: 'Sentence saved , see delete route' });
   } catch (err) {
     console.error('Error deleting sentence:', err);
-    res.status(500).json({ message: 'Failed to delete sentence' });
+    res.status(500).json({ message: 'Failed to follow' });
   }
 });
 

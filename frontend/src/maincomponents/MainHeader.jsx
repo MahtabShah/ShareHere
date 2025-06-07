@@ -84,10 +84,7 @@ function MainHeader({ curr_all_notifications, admin }) {
           style={{ borderBottom: "1px solid var(--light-clr)" }}
         >
           <Container fluid>
-            <Navbar.Brand
-              href="/Explore"
-              className="fw-bold fs-6 pb-0 mb-0 flex-grow-1"
-            >
+            <div href="/Explore" className="fw-bold fs-6 pb-0 mb-0 flex-grow-1">
               <div className="d-flex justify-content-between w-100 flex-grow-1">
                 <div className="mt-2">
                   <Logo />
@@ -120,7 +117,7 @@ function MainHeader({ curr_all_notifications, admin }) {
                   </div>
                 )}
               </div>
-            </Navbar.Brand>
+            </div>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
               id={`offcanvasNavbar-expand-${expand}`}
