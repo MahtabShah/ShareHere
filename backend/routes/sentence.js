@@ -71,8 +71,8 @@ router.get('/fix-sentences', async (req, res) => {
       // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
       //  { pages: { $exists: true } },
       // { $set: { pages: [{}] } },
-      { notifications: { $exists: true } },
-      { $set: { notifications: [] } }
+      { status: { $exists: false } },
+      { $set: { status: [] } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

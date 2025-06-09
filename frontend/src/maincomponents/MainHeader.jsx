@@ -1,13 +1,10 @@
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
-import React, { useState, useEffect } from "react";
+import { faBell, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../../TinyComponent/Logo";
 import { Notification } from "../../TinyComponent/Notification";
@@ -15,10 +12,17 @@ import { useQuote } from "../context/QueotrContext";
 import axios from "axios";
 const API = import.meta.env.VITE_API_URL;
 
-function MainHeader({ curr_all_notifications, admin }) {
+function MainHeader({}) {
   const [VisibleNotification, setVisibleNotification] = useState(false);
   const [smbreakPoint, setsmbreakPoint] = useState(window.innerWidth < 576);
   const [loggedIn, setLoggedIn] = useState(false);
+  const {
+    admin_user,
+    curr_all_notifications,
+    setUploadClicked,
+    uploadClicked,
+  } = useQuote();
+
   const [count, setCount] = useState(
     curr_all_notifications?.filter((n) => n.isRead === false).length || 0
   );
@@ -58,7 +62,7 @@ function MainHeader({ curr_all_notifications, admin }) {
         }
       );
       // setLoading(false);
-      console.log("marked---->", res.data);
+      // console.log("marked---->", res.data);
       // setcurr_all_notifications(res.data);
     } catch (error) {
       console.log("error in notification", error);
@@ -75,7 +79,7 @@ function MainHeader({ curr_all_notifications, admin }) {
     <>
       {["sm"].map((expand) => (
         <Navbar
-          key={expand}
+          key={`expand${expand}`}
           expand={expand}
           className="mb-0 ps-2"
           bg="light"
@@ -90,7 +94,7 @@ function MainHeader({ curr_all_notifications, admin }) {
                   <Logo />
                 </div>
                 {smbreakPoint && (
-                  <div className="d-flex gap-2">
+                  <div className="d-flex align-items-center gap-2">
                     <Nav.Link
                       href=""
                       onClick={() => {
@@ -102,16 +106,20 @@ function MainHeader({ curr_all_notifications, admin }) {
                       <FontAwesomeIcon icon={faBell} />
                       <NotificationBell count={count} />
                     </Nav.Link>
-                    <Nav.Link href="/upload">
+                    <Nav.Link
+                      onClick={() => {
+                        setUploadClicked(!uploadClicked);
+                      }}
+                    >
                       <small
-                        className="fw-normal rounded-5 border"
+                        className="fw-normal rounded-5 me-2 border"
                         style={{
                           background: "#1111",
                           padding: "4px 6px 6px",
                         }}
                       >
                         {" "}
-                        create<span className="fw-bold">+</span>
+                        create
                       </small>
                     </Nav.Link>
                   </div>
@@ -132,9 +140,17 @@ function MainHeader({ curr_all_notifications, admin }) {
               <Offcanvas.Body className="bg-light text-dark">
                 <Nav className="justify-content-end flex-grow-1 pe-2 gap-2 align-items-">
                   <Nav.Link href="/home">Home</Nav.Link>
-                  <Nav.Link href="/upload">Upload</Nav.Link>
+                  <Nav.Link
+                    onClick={() => {
+                      setUploadClicked(!uploadClicked);
+                    }}
+                  >
+                    Upload
+                  </Nav.Link>
                   {/* <Nav.Link href="/Explore">Explore</Nav.Link> */}
-                  <Nav.Link href={`/api/user/${admin?._id}`}>Profile</Nav.Link>
+                  <Nav.Link href={`/api/user/${admin_user?._id}`}>
+                    Profile
+                  </Nav.Link>
                   {!smbreakPoint && (
                     <Nav.Link
                       href=""
@@ -161,7 +177,7 @@ function MainHeader({ curr_all_notifications, admin }) {
                           Logout
                         </button>
                         <Nav.Link
-                          href={`/api/user/${admin?._id}`}
+                          href={`/api/user/${admin_user?._id}`}
                           className="text-white text-center position-absolute rounded-circle bg-danger "
                           style={{
                             width: "42px",
@@ -188,44 +204,7 @@ function MainHeader({ curr_all_notifications, admin }) {
                       </Nav.Link>
                     </>
                   )}
-
-                  {/* ( <div className="d-flex gap-2">
-                  //     {" "}
-                  //     <button
-                  //       className="btn btn-secondary"
-                  //       onClick={() => alert("Go to profile")}
-                  //     >
-                  //       Profile
-                  //     </button>
-                  //     <button className="btn btn-danger" onClick={handleLogout}>
-                  //       Logout
-                  //     </button>
-                  //   </div>
-                  // )} /*}                  
-
-                  {/* <NavDropdown
-                    title="Dropdown"
-                    id={`offcanvasNavbarDropdown-expand-${expand}`}
-                  >
-                    <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                    <NavDropdown.Item href="#action4">
-                      Another action
-                    </NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action5">
-                      Something else here
-                    </NavDropdown.Item>
-                  </NavDropdown> */}
                 </Nav>
-                {/* <Form className="d-flex">
-                  <Form.Control
-                    type="search"
-                    placeholder="Search"
-                    className="me-2 bg-dark text-white rounded-5"
-                    aria-label="Search"
-                  />
-                  <Button variant="outline-success rounded-5">Search</Button>
-                </Form> */}
               </Offcanvas.Body>
             </Navbar.Offcanvas>
           </Container>
@@ -233,18 +212,11 @@ function MainHeader({ curr_all_notifications, admin }) {
       ))}
 
       {VisibleNotification && (
-        <Notification
-          curr_all_notifications={curr_all_notifications}
-          setVisibleNotification={setVisibleNotification}
-          admin={admin}
-          // Track_post={Track_post}
-        />
+        <Notification setVisibleNotification={setVisibleNotification} />
       )}
     </>
   );
 }
-
-export default MainHeader;
 
 const NotificationBell = ({ count }) => {
   return (
@@ -265,3 +237,5 @@ const NotificationBell = ({ count }) => {
     </div>
   );
 };
+
+export default MainHeader;

@@ -2,7 +2,6 @@ import React, { useState, useEffect, use } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { Home } from "./Home";
 const API = import.meta.env.VITE_API_URL;
 import { Loading } from "../../TinyComponent/LazyLoading";
 import { useQuote } from "../context/QueotrContext";
@@ -10,11 +9,11 @@ import { Fragment } from "react";
 import { EachPost } from "./EachPost";
 import { FollowBtn } from "./EachPost";
 
-const UserProfile = ({ all_user, admin, all_post }) => {
+const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   // const nevigate = useNavigate();
   const { id } = useParams();
-  const { isDisplayedLeftNav } = useQuote();
+  const { admin_user, all_posts, all_user } = useQuote();
   // setUser(User);
   // setUser(User);
   const user = all_user?.find((u) => u._id === id);
@@ -23,7 +22,7 @@ const UserProfile = ({ all_user, admin, all_post }) => {
 
   const token = localStorage.getItem("token");
 
-  // console.log("UserProfile component User:", user, id, admin);
+  // console.log("UserProfile component User:", user, id, admin_user);
 
   // const onEditMode = () => {
   //   // setOnEditMode(!OnEditMode)
@@ -67,13 +66,13 @@ const UserProfile = ({ all_user, admin, all_post }) => {
     }
   };
 
-  const user_post = all_post.filter((el) => el.userId === id);
-  console.log("user post ", all_post, user_post);
+  const user_post = all_posts.filter((el) => el.userId === id);
+  console.log("user post ", id, all_user);
 
   return (
     <div
       className="d-flex flex-column bg-light text-dark border mb-5"
-      style={{ maxWidth: "600px", margin: "auto", marginTop: "34px" }}
+      style={{ maxWidth: "600px", margin: "auto" }}
     >
       <div
         className="photoHeader w-100 position-relative border"
@@ -104,10 +103,10 @@ const UserProfile = ({ all_user, admin, all_post }) => {
       </div>
 
       <div className="text-end pe-3 pt-3" style={{ height: "60px" }}>
-        {id !== admin?._id && (
+        {id !== admin_user?._id && (
           <>
             <FollowBtn user={user} />
-            {user?.followers?.includes(admin?._id) && (
+            {user?.followers?.includes(admin_user?._id) && (
               <button
                 className="btn btn-outline-dark btn-sm"
                 onClick={HandleFollow}
@@ -164,7 +163,7 @@ const UserProfile = ({ all_user, admin, all_post }) => {
               </div>
             ) : (
               <>
-                {/* {all_user?.map((u, idx) => {
+                {/* {all_users?.map((u, idx) => {
                   return (
                     <Fragment key={idx}>
                       {" "}
@@ -183,12 +182,7 @@ const UserProfile = ({ all_user, admin, all_post }) => {
                   return (
                     <>
                       <Fragment key={idx}>
-                        <EachPost
-                          user={user}
-                          comment={ps}
-                          admin={admin}
-                          isDisplayedLeftNav={isDisplayedLeftNav}
-                        />
+                        <EachPost user={user} comment={ps} />
                       </Fragment>
                     </>
                   );
@@ -198,18 +192,6 @@ const UserProfile = ({ all_user, admin, all_post }) => {
           </section>
         }
       </div>
-
-      {/* <div className="p-3">
-        {User?.posts?.map((post, i) => (
-          <ProductOrderPage
-            setUser={setUser}
-            key={`products${i}`}
-            post={post}
-            User={User}
-            fetchUser={fetchUser}
-          />
-        ))}
-      </div> */}
     </div>
   );
 };

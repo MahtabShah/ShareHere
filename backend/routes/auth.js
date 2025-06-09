@@ -6,7 +6,9 @@ const User = require('../models/User');
 const {Sentence, Comment} = require('../models/Sentence');
 const { io } = require('../server');
 require("dotenv").config()
-const Notification = require("../models/Notification")
+const Notification = require("../models/Notification");
+const verifyToken = require('../middleware/verifyToken');
+
 
 
 
@@ -124,79 +126,91 @@ router.get("/all_post_comments" , async (req, res)=>{
 
 
 
-router.put("/like_this_post" , async (req, res)=>{
-    const { id , isliked} = req.body
-    const sentence = await Sentence.findById(id);
+router.put("/like_this_post", async (req, res) => {
+   const { id, isliked } = req.body;
 
+  try {
+    let post = await Sentence.findById(id); // no populate yet
 
-    isliked ? sentence.likes += 1 : sentence.likes -= 1
-    await sentence.save()
-    console.log("all user want ot fetching 58: auth,js routes", req.body, id , "and ", sentence);
+    isliked ? post.likes += 1 : post.likes -= 1;
+    await post.save();
+
+    // ✅ Re-fetch with populate after saving
+    post = await Sentence.findById(id)
+      .populate({
+        path: "comments",
+        populate: { path: "userId", model: "User" },
+      })
 
     const newNotification = new Notification({
-        
-      "recipient": sentence.userId,  // User B (original commenter)
-      "type": "like",
-      "isRead": false,
-      "post":sentence,
-    
-    
-      })
-    
-      isliked ? await newNotification.save() : ""
-  console.log("new notifications - - - -- - - - -->" , newNotification)
+      recipient: post.userId,
+      type: "like",
+      isRead: false,
+      post: post._id,
+    });
 
-    io.emit('sentence', sentence.toObject());
-   try {
-      res.json(sentence)
-   } catch (error) {
-    console.error("error in auth " , error)
-   }
- 
-})
+    if (isliked) await newNotification.save();
 
+    io.emit('sentence', post.toObject());
+    io.emit('Notification');
+    console.log("notification - -- - - - -" , newNotification)
+    res.json(post);
 
-router.put("/set_comment_this_post" , async (req, res)=>{
-    const { id , new_comment, headers} = req.body
-    const sentence = await Sentence.findById(id)
-
-    const token = headers.Authorization.split(" ")[1];
-     const decoded = jwt.verify(token , process.env.JWT_SECRET)
-     const useriid = decoded.id;
-    //  console.log("User ID-==========>147 auth.js " , useriid );
-
-     const update_new_comment = new Comment({
-        text: new_comment,
-        userId: useriid,
-        postId: id,
-    })
- 
-       await update_new_comment.save();
-sentence.comments.push(update_new_comment._id);
-await sentence.save(); // ✅ make sure the comment is saved to the sentence
-
-const newNotification = new Notification({
-  recipient: sentence.userId,          // User who originally created the post
-  sender: useriid,                     // Current commenter
-  type: "comment",
-  isRead: false,
-  post: sentence._id,                  // ✅ only the ObjectId
-  comment: update_new_comment._id,     // ✅ correct comment id
+  } catch (error) {
+    console.error("error in like_this_post route:", error);
+    res.status(500).json({ error: "Server Error" });
+  }
 });
 
-await newNotification.save(); // ✅ don't forget to save the notification
 
-      console.log("new notifications - - - -- - - - --> comment" , newNotification)
+router.put("/set_comment_this_post", verifyToken ,async (req, res) => {
+  const { id, new_comment, headers } = req.body;
 
-    await sentence.save()
-    // console.log("all user want ot fetching 58: auth,js routes", new_comment, "id" , id , "and ", sentence, "user id -----\n",userId ,"update----\n", update_new_comment);
-    io.emit('sentence', sentence.toObject());
-   try {
-      res.json(sentence)
-   } catch (error) {
-    console.error("error in auth " , error)
-   }
-})
+  try {
+    const token = req.headers['authorization'].split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const useriid = decoded.id;
+
+    const post = await Sentence.findById(id);
+
+    const update_new_comment = new Comment({
+      text: new_comment,
+      userId: useriid,
+      postId: id,
+    });
+
+    await update_new_comment.save();
+    post.comments.push(update_new_comment._id);
+    await post.save();
+
+    const newNotification = new Notification({
+      recipient: post.userId,
+      sender: useriid,
+      type: "comment",
+      isRead: false,
+      post: post._id,
+      comment: update_new_comment._id,
+    });
+
+    await newNotification.save();
+
+    // ✅ Re-fetch with full population after save
+    const populatedPost = await Sentence.findById(id)
+      .populate({
+        path: "comments",
+        populate: { path: "userId", model: "User" },
+      })
+
+    io.emit('sentence', populatedPost.toObject());
+    io.emit('Notification');
+
+    res.json(populatedPost);
+
+  } catch (error) {
+    console.error("error in set_comment_this_post:", error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
 
 
 module.exports = router;

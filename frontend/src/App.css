@@ -118,3 +118,9 @@ textarea {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.accordion-button:not(.collapsed),
+.accordion-button:focus {
+  box-shadow: none !important;
+  border-radius: 0;
+}

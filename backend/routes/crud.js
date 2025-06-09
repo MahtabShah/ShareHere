@@ -20,7 +20,7 @@ router.get('/crud', verifyToken,  async (req, res) => {
 
   try {
     const user = await User.findById({_id:userId})
-    // console.log("aaaaaaaaaaaaaaaaaaaaaa---> ", req.user, user)
+        console.log("aaaaaaaaaaaaaaaaaaaaaa---> ", req.user, user)
     res.json(user)
   } catch (err) {
     console.error('Error deleting sentence:', err);
@@ -38,7 +38,7 @@ router.get('/all_notifications', verifyToken,  async (req, res) => {
 const curr_notifications = await Notification.find({ recipient: userId })
   .populate("comment")
   .populate("message")
-  .populate("sender", "username profilePic")
+  .populate("sender")
   .sort({ createdAt: -1 });
 
 
@@ -109,8 +109,8 @@ router.get("/each_post_comments", async (req, res) => {
 });
 
 
-router.get("/get_userbyId", async (req, res) => {
-  const userId = req.query.userId;
+router.get("/get_userbyId/:userId", async (req, res) => {
+const userId = req.params.userId;
   console.log("userId", userId)
   try {
 
@@ -149,30 +149,21 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   const { id } = req.body;
  
   const userId = req.user.userId || req.user.id;
-  console.log("backend response 16 crud" ,userId , id)
-
 
   try {
-
   const user_a = await User.findById(id); // post owener
-
   const user_b = await User.findById(userId); // curr user
+  console.log("user b -" ,  user_b)
 
   const isFollowed = user_a.followers.includes(userId);
-
   const newNotification = new Notification({
-    
   "recipient": user_a._id,  // User B (original commenter)
   "sender": user_b._id,     // User C (who replied)
   "type": "follow",
   "isRead": false,
-
-
   })
 
-
-
-  // console.log("new notifications - - - -- - - - -->" , newNotification)
+  console.log("new notifications - - - -- - - - -->" , newNotification)
 
   if (isFollowed) {
     user_a.followers.pop(user_b._id)
@@ -180,20 +171,19 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   }else{
     user_a.followers.push(user_b._id)
     user_b.following.push(user_a._id)
-      await newNotification.save()
+    await newNotification.save()
 
   }
 
-
-   await user_a.save()
-   await user_b.save()
-
+  await user_a.save()
+  await user_b.save()
    
-// Emit a follow event with link to user profile
-io.emit('userUpdated', user_a);
-io.emit('userUpdated', user_b);
-// io.emit('sentence');
-    console.log("------------> follow" , user_a , user_b)
+  // Emit a follow event with link to user profile
+  io.emit('userUpdated', user_a);
+  io.emit('userUpdated', user_b);
+  io.emit('Notification');
+  
+    // console.log("------------> follow" , user_a , user_b)
     res.status(201).json({ message: 'Sentence saved , see delete route' });
   } catch (err) {
     console.error('Error deleting sentence:', err);
@@ -268,11 +258,16 @@ router.put("/update_status/:id", async (req, res) => {
 
 router.post("/create_status", async (req, res) => {
   const { text, image, user } = req.body;
-
   try {
+    const new_user = await User.findById(user); 
     const newStatus = new Status({ text, image, user });
-    await newStatus.save();
+    await new_user?.status?.unshift(newStatus)
+    await new_user.save()
+    await newStatus.save()
     io.emit('status', newStatus.toObject());
+    io.emit('userUpdated', new_user);
+
+    
 
     res.status(201).json(newStatus);
   } catch (error) {

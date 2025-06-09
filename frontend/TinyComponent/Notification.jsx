@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CommentSection } from "../src/maincomponents/Home";
-import { Home, CardPost } from "../src/maincomponents/Home";
+import { CardPost } from "../src/maincomponents/Home";
 import { Loading } from "./LazyLoading";
+import { useQuote } from "../src/context/QueotrContext";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+
 const API = import.meta.env.VITE_API_URL;
 
-export const Notification = ({
-  curr_all_notifications,
-  setVisibleNotification,
-  admin,
-}) => {
+export const Notification = ({ setVisibleNotification }) => {
   const mahtab = "683e9c9de6a3ce43ca32c3da";
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ export const Notification = ({
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
   const nevigate = useNavigate();
   const [go_comment, setGo_comment] = useState(false);
+
+  const { curr_all_notifications, admin_user } = useQuote();
 
   const go_to_comment = async (postId, userId) => {
     // navigate(`/home?postId=${post}`);
@@ -129,19 +132,27 @@ export const Notification = ({
             ) : (
               curr_all_notifications?.map((n, idx) => {
                 return (
-                  <>
+                  <Fragment key={`idx-notify${idx}`}>
                     {n?.type === "follow" && (
-                      <div className="followersNotify p-2">
+                      <div
+                        className="followersNotify p-2"
+                        key={`curr_notify${idx}`}
+                      >
                         <div className="d-flex gap-2">
                           <div
-                            className="dpPhoto rounded-circle bg-primary"
-                            style={{ minWidth: "37px", height: "37px" }}
+                            className="dpPhoto rounded-circle text-light d-flex justify-content-center align-items-center"
+                            style={{
+                              minWidth: "37px",
+                              height: "37px",
+                              background: `${n?.sender?.bg_clr}`,
+                            }}
                           >
                             {/* <img src="" alt="" /> */}
+                            {n?.sender?.username?.charAt(0).toUpperCase()}
                           </div>
                           <span className="small">
                             <span className="small d-block fw-light">
-                              16 min ago
+                              {dayjs(n?.createdAt).fromNow()}
                             </span>
                             <span className="">
                               <span
@@ -163,17 +174,21 @@ export const Notification = ({
                     )}
 
                     {n?.type === "comment" && (
-                      <div className="commentNotify p-2">
+                      <div className="commentNotify p-2" key={`cmnt${idx}`}>
                         <div className="d-flex gap-2">
                           <div
-                            className="dpPhoto bg-danger rounded-circle text-light d-flex align-items-center justify-content-center"
-                            style={{ minWidth: "37px", height: "37px" }}
+                            className="dpPhoto rounded-circle text-light d-flex align-items-center justify-content-center"
+                            style={{
+                              minWidth: "37px",
+                              height: "37px",
+                              background: `${n?.sender?.bg_clr}`,
+                            }}
                           >
                             {n?.sender?.username?.charAt(0)}
                           </div>
                           <span className="small">
                             <span className="small d-block fw-light">
-                              41 min ago
+                              {dayjs(n?.createdAt).fromNow()}
                             </span>
                             <span className="fw-medium d-block">
                               <span
@@ -202,7 +217,7 @@ export const Notification = ({
                     )}
 
                     {n?.type === "like" && (
-                      <div className="likeNootify p-2">
+                      <div className="likeNootify p-2" key={`like${idx}`}>
                         <div className="d-flex gap-2">
                           <div
                             className="dpPhoto rounded-circle bg-success"
@@ -212,7 +227,7 @@ export const Notification = ({
                           </div>
                           <span className="small">
                             <span className="small d-block fw-light">
-                              1 hour ago
+                              {dayjs(n?.createdAt).fromNow()}
                             </span>
                             <span
                               className="fw-medium d-block on-hover-userid"
@@ -232,7 +247,7 @@ export const Notification = ({
                         </div>
                       </div>
                     )}
-                  </>
+                  </Fragment>
                 );
               })
             )}

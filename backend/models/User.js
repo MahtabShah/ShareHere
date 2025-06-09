@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema({
   type: mongoose.Schema.Types.ObjectId,
   ref: 'Notification'
   }],
+
+  status:[{
+    type: mongoose.Schema.Types.ObjectId,
+  }],
+
   default: [],
 
   following:[{

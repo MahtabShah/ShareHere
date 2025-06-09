@@ -6,6 +6,7 @@ import { useQuote } from "../context/QueotrContext";
 import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
+import { Accordion } from "react-bootstrap";
 
 const pre_images = [
   "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
@@ -129,7 +130,7 @@ const pre_bg_color = [
   "#2B580C",
 ];
 
-const PostSentence = ({ admin, type = "post" }) => {
+const PostSentence = ({ type = "post" }) => {
   const [text, setText] = useState("");
   const [Errors, setErrors] = useState("");
   const [images, setImages] = useState("");
@@ -141,7 +142,7 @@ const PostSentence = ({ admin, type = "post" }) => {
   const [selectedIndices, setSelectedIndices] = useState([]);
   const nevigate = useNavigate();
   const token = localStorage.getItem("token");
-  const { style } = useQuote();
+  const { style, admin_user, uploadClicked, setUploadClicked } = useQuote();
   const containerRef = useRef();
   const divRef = useRef(null);
 
@@ -153,7 +154,7 @@ const PostSentence = ({ admin, type = "post" }) => {
 
       // Force update to plain text (remove extra nodes) // for better styling u can active node like some text bold some text color
       if (divRef.current) {
-        divRef.current.textContent = txt;
+        divRef.current.textContent = txt || "Type here....";
       }
     }
     if (textareaRef.current) {
@@ -197,12 +198,16 @@ const PostSentence = ({ admin, type = "post" }) => {
       return;
     }
 
-    const canvas = await html2canvas(containerRef?.current, {
+    const canvas = await html2canvas(containerRef.current, {
       useCORS: true,
-      backgroundColor: null, // preserve transparent background if needed
-      scale: 2, // for higher resolution
+      scale: 2,
       logging: true,
+      backgroundColor: null,
+      ignoreElements: (el) => {
+        return el.tagName === "IMG"; // Skip <img> if it causes CORS error
+      },
     });
+
     const dataURL = canvas.toDataURL("image/png");
 
     // Optionally upload to Cloudinary
@@ -236,6 +241,7 @@ const PostSentence = ({ admin, type = "post" }) => {
             },
           }
         );
+        setUploadClicked(false);
         nevigate("/home");
         // setText("");
         // setImages([]);
@@ -253,8 +259,6 @@ const PostSentence = ({ admin, type = "post" }) => {
 
   const [image, setImage] = useState(null);
 
-  // console.log("iiii", comment);
-
   const HandleStatus = async () => {
     // const [userId, setUserId] = useState(""); // use logged-in user ID
     handleCapture();
@@ -265,7 +269,7 @@ const PostSentence = ({ admin, type = "post" }) => {
         {
           text,
           image,
-          user: admin._id,
+          user: admin_user._id,
         },
         {
           headers: {
@@ -280,209 +284,230 @@ const PostSentence = ({ admin, type = "post" }) => {
     }
   };
 
+  // console.log("admin_usernnnn", admin_user);
+
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
-        className="col-md-12 w-100"
-        style={{ maxWidth: "600px", transform: "scale(1)" }}
-      >
-        <div className="d-flex flex-column">
-          <div
-            className="border position-relative rounded-0 border-bottom-0"
-            style={{ right: 0, minHeight: "230px" }}
-          >
-            <div className="d-flex align-items-center justify-content-between">
-              <div className="d-flex  flex-grow-1 flex-column align-center pe-3 ps-3 p-2 w-100">
-                <QuoteStyler />
-              </div>
-            </div>
-
-            <div
-              className="position-absolute bg-light rounded- pt-1 d-flex align-items-center"
-              style={{ right: "0" }}
-            >
-              <input
-                type="file"
-                name="images"
-                id="images"
-                className="form-control d-none border-0"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
-
-            <div
-              className="d-flex  mt-0 position-relative overflow-hidden"
-              style={{
-                width: "calc(100% - 0rem)",
-                maxWidth: "600px",
-                aspectRatio: "6/7",
-                background: `${bg_clr}`,
-              }}
-              ref={containerRef}
-            >
-              <div
-                // key={idx}
-                className="rounded-0 w-100 p-2 h-100"
-                ref={divRef}
+    <section
+      className="p-0 mb-0"
+      // style={{ margin: "auto", border: "3px solid red" }}
+    >
+      <Accordion activeKey="0" className="">
+        <Accordion.Item eventKey="0" className="rounded-0">
+          {" "}
+          <Accordion.Header className="shadow-0">
+            Upload a post
+          </Accordion.Header>
+          {uploadClicked && (
+            <Accordion.Body className="p-0">
+              <form
+                onSubmit={handleSubmit}
+                className="w-100"
                 style={{
                   maxWidth: "600px",
-                  aspectRatio: "6/7",
-                  zIndex: "100",
-                  flexShrink: 0,
-                  ...style,
-                  caretColor: "red",
-                  whiteSpace: "pre-wrap", // mimic pre
-                  overflow: "hidden", // hide scroll
-                  resize: "none", // prevent resizing
-                  caret: "ActiveBorder",
-                  backgroundRepeat: "no-repeat",
-                  background: `url(${images})`,
+                  transform: "scale(1)",
+                  margin: "auto",
                 }}
-                spellCheck={false}
-                contentEditable={true}
               >
-                You can write Here.......
-              </div>
-            </div>
+                <div className="d-flex flex-column">
+                  <div
+                    className="border position-relative rounded-0 border-bottom-0"
+                    style={{ right: 0, minHeight: "230px" }}
+                  >
+                    <div className="d-flex align-items-center justify-content-between">
+                      <div className="d-flex  flex-grow-1 flex-column align-center pe-3 ps-3 p-2 w-100">
+                        <QuoteStyler />
+                      </div>
+                    </div>
 
-            {/* controller --------------------bgcolor */}
-            <div
-              className="d-flex gap-2 me-3 m-2 ms-3 none-scroller overflow-x-auto overflow-y-hidden"
-              style={{ maxHeight: "80px", maxWidth: "100%" }}
-            >
-              {pre_bg_color.map((c, idx) => {
-                return (
-                  <span
-                    key={`bg-${idx}`}
-                    className="rounded-5 d-block"
-                    style={{
-                      minWidth: "34px",
-                      minHeight: "34px",
-                      background: `${c}`,
-                      cursor: "pointer",
-                      border: `${
-                        bg_clr === c ? "2px solid red" : "2px solid #f9d8df00"
-                      }`,
-                    }}
-                    onClick={() => {
-                      setbg_clr(c);
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-          {/* above select btn image area */}
+                    <div
+                      className="position-absolute bg-light rounded- pt-1 d-flex align-items-center"
+                      style={{ right: "0" }}
+                    >
+                      <input
+                        type="file"
+                        name="images"
+                        id="images"
+                        className="form-control d-none border-0"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                    </div>
 
-          {type === "post" && (
-            <div className="border">
-              <div className="d-flex gap-2 align-items-center  p-2 pb-0 pt-2">
+                    <div
+                      className="d-flex  mt-0 position-relative overflow-hidden"
+                      style={{
+                        width: "calc(100% - 0rem)",
+                        maxWidth: "600px",
+                        aspectRatio: "6/7",
+                        // background: `${bg_clr}`,
+                      }}
+                      ref={containerRef}
+                    >
+                      <div
+                        className="rounded-0 w-100 p-2 h-100"
+                        ref={divRef}
+                        style={{
+                          maxWidth: "600px",
+                          aspectRatio: "6/7",
+                          zIndex: "100",
+                          flexShrink: 0,
+                          ...style,
+                          caretColor: "red",
+                          whiteSpace: "pre-wrap", // mimic pre
+                          overflow: "hidden", // hide scroll
+                          resize: "none", // prevent resizing
+                          caret: "ActiveBorder",
+                          backgroundRepeat: "no-repeat",
+                          background: `${images ? `url(${images})` : bg_clr}`,
+                        }}
+                        spellCheck={false}
+                        contentEditable={true}
+                      />
+                    </div>
+
+                    {/* controller --------------------bgcolor */}
+                    <div
+                      className="d-flex gap-2 me-3 m-2 ms-3 none-scroller overflow-x-auto overflow-y-hidden"
+                      style={{ maxHeight: "80px", maxWidth: "100%" }}
+                    >
+                      {pre_bg_color.map((c, idx) => {
+                        return (
+                          <span
+                            key={`bg-${idx}`}
+                            className="rounded-5 d-block"
+                            style={{
+                              minWidth: "34px",
+                              minHeight: "34px",
+                              background: `${c}`,
+                              cursor: "pointer",
+                              border: `${
+                                bg_clr === c
+                                  ? "2px solid red"
+                                  : "2px solid #f9d8df00"
+                              }`,
+                            }}
+                            onClick={() => {
+                              setbg_clr(c);
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {/* above select btn image area */}
+
+                  {type === "post" && (
+                    <div className="border">
+                      <div className="d-flex gap-2 align-items-center  p-2 pb-0 pt-2">
+                        <div
+                          className="d-flex fw-semibold ms-1 border text-white rounded-5 align-items-center justify-content-center"
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            backgroundColor: `${admin_user?.bg_clr}`,
+                          }}
+                        >
+                          {admin_user?.username?.charAt(0) || "M"}
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: "bold" }}>
+                            @{admin_user?.username || "Mahtab"}
+                          </div>
+                          {/* <small style={{ color: "#888" }}>Visibility: Public</small> */}
+                        </div>
+                      </div>
+                      <div className="ps-1">
+                        <textarea
+                          ref={textareaRef}
+                          value={text}
+                          onChange={(e) => {
+                            handleInput(0, e, "text");
+                          }}
+                          className={`form-control rounded-0 shadow-none ps-2 pe-2 border-0`}
+                          placeholder="Write about post here . . ."
+                          style={{ overflow: "hidden", resize: "none" }}
+                          spellCheck="false"
+                          required
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {Errors && (
+                    <small
+                      className="text-danger position-absolute ps-3"
+                      style={{ top: "-5px" }}
+                    >
+                      {Errors}
+                    </small>
+                  )}
+                  <br />
+
+                  {/* {browsssss imggggg} */}
+                  <div className="d-flex gap-3 p-2 justify-content-end p-0 pb-5 mb-4">
+                    {/* {isPre_Image} */}
+
+                    <label
+                      htmlFor="images"
+                      className="btn btn-outline-primary ps-3 pe-3 rounded-0 p-2"
+                      style={{ height: "42px" }}
+                    >
+                      Browse Image
+                    </label>
+
+                    {type === "post" && (
+                      <button
+                        type="submit"
+                        className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
+                        style={{ height: "42px" }}
+                      >
+                        {LazyLoading ? <Loading clr={"white"} /> : "Post"}
+                      </button>
+                    )}
+
+                    {type === "status" && (
+                      <button
+                        className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
+                        style={{ height: "42px" }}
+                        onClick={() => {
+                          HandleStatus();
+                        }}
+                      >
+                        Send
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </form>
+
+              {isPre_Image && (
                 <div
-                  className="d-flex fw-semibold ms-1 border text-white rounded-5 align-items-center justify-content-center"
+                  className="d-grid gap-3 pt-3 w-100"
                   style={{
-                    width: "40px",
-                    height: "40px",
-                    backgroundColor: `${admin?.bg_clr}`,
+                    gridTemplateColumns: "repeat(auto-fit , minmax(124px, 1fr)",
+                    maxWidth: "600px",
                   }}
                 >
-                  {admin?.username?.charAt(0) || "M"}
+                  {pre_images?.map((img, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => handlePreImage(img, idx)}
+                      className="borde"
+                      style={{
+                        border: selectedIndices.includes(idx)
+                          ? "2px solid #0d0"
+                          : "2px solid #f9f8fa",
+                      }}
+                    >
+                      <PreImages img={img} idx={idx} />
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <div style={{ fontWeight: "bold" }}>
-                    @{admin?.username || "Mahtab"}
-                  </div>
-                  {/* <small style={{ color: "#888" }}>Visibility: Public</small> */}
-                </div>
-              </div>
-              <div className="ps-1">
-                <textarea
-                  ref={textareaRef}
-                  value={text}
-                  onChange={(e) => {
-                    handleInput(0, e, "text");
-                  }}
-                  className={`form-control rounded-0 shadow-none ps-2 pe-2 border-0`}
-                  placeholder="Write about post here . . ."
-                  style={{ overflow: "hidden", resize: "none" }}
-                  spellCheck="false"
-                />
-              </div>
-            </div>
+              )}
+            </Accordion.Body>
           )}
-          {Errors && (
-            <small
-              className="text-danger position-absolute ps-3"
-              style={{ top: "-5px" }}
-            >
-              {Errors}
-            </small>
-          )}
-          <br />
-
-          {/* {browsssss imggggg} */}
-          <div className="d-flex gap-3 p-2 justify-content-end p-0 pb-5 mb-4">
-            {/* {isPre_Image} */}
-
-            <label
-              htmlFor="images"
-              className="btn btn-outline-primary ps-3 pe-3 rounded-0 p-2"
-              style={{ height: "42px" }}
-            >
-              Browse Image
-            </label>
-
-            {type === "post" && (
-              <button
-                type="submit"
-                className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
-                style={{ height: "42px" }}
-              >
-                {LazyLoading ? <Loading clr={"white"} /> : "Post"}
-              </button>
-            )}
-
-            {type === "status" && (
-              <button
-                className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
-                style={{ height: "42px" }}
-                onClick={() => {
-                  HandleStatus();
-                }}
-              >
-                Send
-              </button>
-            )}
-          </div>
-        </div>
-      </form>
-
-      {isPre_Image && (
-        <div
-          className="d-grid gap-3 pt-3 w-100"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit , minmax(124px, 1fr)",
-            maxWidth: "600px",
-          }}
-        >
-          {pre_images?.map((img, idx) => (
-            <div
-              key={idx}
-              onClick={() => handlePreImage(img, idx)}
-              className="borde"
-              style={{
-                border: selectedIndices.includes(idx)
-                  ? "2px solid #0d0"
-                  : "2px solid #f9f8fa",
-              }}
-            >
-              <PreImages img={img} idx={idx} />
-            </div>
-          ))}
-        </div>
-      )}
-    </>
+        </Accordion.Item>
+      </Accordion>
+    </section>
   );
 };
 

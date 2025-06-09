@@ -59,74 +59,72 @@ export const StatusRing = ({ userId, all_statuses }) => {
   }, [all_statuses, userId]);
 
   return (
-    user_statuses?.length >= 0 && (
-      <>
-        <div className="status-item d-flex align-items-center justify-content-center">
-          <div className="status-ring d-flex align-items-center justify-content-center">
-            <div
-              className="status-image bg-light overflow-hidden"
-              onClick={() => {
-                if (user_statuses?.length > 0) setSelectedUserId(userId);
-              }}
-            >
-              <img
-                src={user_statuses[0]?.image || admin_user?.cover_pic}
-                alt=""
-                className="w-100 h-100"
-              />
-            </div>
-            {admin_user?._id === userId && (
-              <>
-                <div
-                  className="position-absolute d-flex fw-bold align-items-center justify-content-center fs-5 pb-1 w-100 h-100 text-light bg-dark"
-                  style={{
-                    bottom: "2px",
-                    right: "4px",
-                    zIndex: "100",
-                    maxHeight: "20px",
-                    maxWidth: "20px",
-                    aspectRatio: "1/1",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                  }}
-                  // onClick={() => {
-                  //   nevigate("/upload");
-                  // }}
-                >
-                  +
-                </div>
-              </>
-            )}
+    <>
+      <div className="status-item d-flex align-items-center justify-content-center">
+        <div className="status-ring d-flex align-items-center justify-content-center">
+          <div
+            className="status-image bg-light overflow-hidden"
+            onClick={() => {
+              if (user_statuses?.length > 0) setSelectedUserId(userId);
+            }}
+          >
+            <img
+              src={user_statuses[0]?.image || admin_user?.cover_pic}
+              alt=""
+              className="w-100 h-100"
+            />
           </div>
-        </div>
-        {admin_user?._id === userId && (
-          <>
-            <div
-              className="position-fixed d-none bg-dark"
-              style={{
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 100000000,
-              }}
-            >
+          {admin_user?._id === userId && (
+            <>
               <div
-                className="border bg-light w-100 overflow-hidden  d-flex align-items-center flex-column mt-0 pt-0 position-relative border"
+                className="position-absolute d-flex fw-bold align-items-center justify-content-center fs-5 pb-1 w-100 h-100 text-light bg-dark"
                 style={{
-                  height: "100dvh",
-                  margin: "auto",
-                  maxWidth: "420px",
-                  transform: "scale(0.9)",
+                  bottom: "2px",
+                  right: "4px",
+                  zIndex: "100",
+                  maxHeight: "20px",
+                  maxWidth: "20px",
+                  aspectRatio: "1/1",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  nevigate("/upload");
                 }}
               >
-                <PostSentence type={"status"} />
+                +
               </div>
+            </>
+          )}
+        </div>
+      </div>
+      {admin_user?._id === userId && (
+        <>
+          <div
+            className="position-fixed d-none bg-dark"
+            style={{
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              zIndex: 100000000,
+            }}
+          >
+            <div
+              className="border bg-light w-100 overflow-hidden  d-flex align-items-center flex-column mt-0 pt-0 position-relative border"
+              style={{
+                height: "100dvh",
+                margin: "auto",
+                maxWidth: "420px",
+                transform: "scale(0.9)",
+              }}
+            >
+              <PostSentence type={"status"} />
             </div>
-          </>
-        )}
-      </>
-    )
+          </div>
+        </>
+      )}
+    </>
   );
 };
 

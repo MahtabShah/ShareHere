@@ -1,34 +1,31 @@
-import { useEffect, useState, useRef, use } from "react";
+// ----------------------------------Done------------------------------------
+
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { MdSend, MdShare } from "react-icons/md";
+import { MdSend } from "react-icons/md";
 import { Loading } from "../../TinyComponent/LazyLoading";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import UploadProduct from "../pages/UploadProduct";
-import { FaShareAlt, FaRegComment, FaHeart } from "react-icons/fa"; // from Font Awesome
+import { FaHeart } from "react-icons/fa"; // from Font Awesome
 import { BiShare, BiChat, BiHeart } from "react-icons/bi";
-import Carousel from "react-bootstrap/Carousel";
 import Nav from "react-bootstrap/Nav";
-// import { User } from "../../../backend/models/User";
-import PreImages from "../../TinyComponent/PreImages";
-const API = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { Card } from "react-bootstrap";
-import html2canvas from "html2canvas";
 import { CommentSection } from "./Home";
 import { useQuote } from "../context/QueotrContext";
 
-export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
+const API = import.meta.env.VITE_API_URL;
+
+export const EachPost = ({ user, comment }) => {
+  // comment parameter is besiaclly post
   const [open_comment, setopen_comment] = useState(false);
   const [new_comment, setnew_comment] = useState("");
-  const [isliked, setisliked] = useState(false);
-  const [isfollowed, setisfollowed] = useState(false);
-  const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
   const [isdotClicked, setdotClicked] = useState(false); //
   const nevigate = useNavigate();
   const containerRef = useRef();
   const [fontSize, setFontSize] = useState(16); // default px
+
+  const { admin_user, HandleShare, isDisplayedLeftNav } = useQuote();
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -48,68 +45,17 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
     return () => observer.disconnect();
   }, []);
 
-  // Handle animation on click
-  const animateButton = (btnName) => {
-    setAnimatingBtn(btnName);
-    setTimeout(() => {
-      setAnimatingBtn(null);
-    }, 400); // duration of animation
-  };
-
-  const HandleLike = async (id) => {
-    animateButton("likes");
-    try {
-      const res = await axios.put(`${API}/api/auth/like_this_post`, {
-        id: id,
-        isliked: !isliked,
-      });
-      setisliked(!isliked);
-    } catch (err) {
-      alert("Login failed: " + err.response?.data?.message || err.message);
-    }
-  };
-
   const Handlecomment = (e) => {
     setnew_comment(e.target.value);
   };
 
   // On page load, scroll to saved position if present in URL
 
-  const HandleShare = async () => {
-    const url = new URL(window.location.href);
-    const scrollY = window.scrollY || window.pageYOffset;
-    url.searchParams.set("scroll", scrollY);
-
-    const shareData = {
-      title: document.title,
-      text: "Check out this page!",
-      url: url.toString(),
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        alert("Share cancelled or failed.");
-      }
-    } else {
-      // Fallback: copy URL to clipboard
-      try {
-        await navigator.clipboard.writeText(url.toString());
-        alert("URL copied to clipboard (native share not supported).");
-      } catch {
-        alert("Failed to copy URL.");
-      }
-    }
-  };
-
   const token = localStorage.getItem("token");
 
   const optimizeImage = (url, width = 600) => {
     return url.replace("/upload/", `/upload/w_${width},f_auto,q_auto/`);
   };
-
-  // console.log("everiy time--->", comment);
 
   const { search } = useLocation();
   const postId = new URLSearchParams(search).get("postId");
@@ -132,11 +78,14 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
     // console.log("form comment ------> ", new_comment);
     try {
       setLazyLoading(true);
-      const res = await axios.put(`${API}/api/auth/set_comment_this_post`, {
-        headers: { Authorization: `Bearer ${token}` },
-        id: id, // post ki id hai
-        new_comment: new_comment,
-      });
+      const res = await axios.put(
+        `${API}/api/auth/set_comment_this_post`,
+        {
+          id: id, // post ki id hai
+          new_comment: new_comment,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       // setisliked(!isliked);
       setnew_comment("");
     } catch (err) {
@@ -153,69 +102,32 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
     }
   }, []);
 
-  const [text, setText] = useState(comment?.text);
-  const [image, setImage] = useState(comment?.images[0]);
-
-  // console.log("iiii", comment);
-
-  const HandleStatus = async () => {
-    // const [userId, setUserId] = useState(""); // use logged-in user ID
-
-    try {
-      const res = await axios.post(
-        `${API}/api/crud/create_status`,
-        {
-          text,
-          image,
-          user: admin._id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Created status:", res.data);
-      alert("Status created!");
-    } catch (err) {
-      console.error("Error creating status:", err);
-    }
-  };
+  // console.log("userrr", user, "and", comment);
 
   return (
     <>
-      {/* comment?.text?.trim() &&  */}
       {
         <>
           <div
-            className="d-flex flex-column mt-4 p-0 bg position-relative border-bottom col-md-12"
+            className="d-flex flex-column mb-5 p-0 bg position-relative border-bottom"
             style={{
               background: "#f5f5f5",
               fontSize: fontSize,
             }}
-            key={comment?.text?.slice(0, -1)}
+            key={comment?._id}
           >
             {/*--------------------- user ring and follow btn ----------------------- */}
-            <div className="d-flex gap-2 ps-1 align-items-center">
+            <div className="d-flex gap-2 ps-3 mt-1 align-items-center">
               <UserRing user={user} />
 
-              <div className="d-flex flex-column pe-2">
-                <FollowBtn user={user} />
-                {user?._id === admin?._id && (
-                  <span
-                    className="small fw-semibold text-danger"
-                    style={{ alignSelf: "end", cursor: "pointer" }}
-                    onClick={() => {
-                      setImage(comment?.images[0]);
-                      setText(comment?.text);
-                      HandleStatus();
-                    }}
-                  >
-                    Set status{/* {clicked ? "+":""} */}
-                  </span>
+              <div className="d-flex flex-column align-items-end ">
+                <FollowBtn user={user} cls="btn ps-2 pe-2 me-1 rounded-0" />
+                {user?._id === admin_user?._id && (
+                  <div className="pe-3">
+                    <StatusBtn post={comment} />
+                  </div>
                 )}
-                <div style={{ fontSize: "12px" }}>
-                  {" "}
+                <div className="pe-3" style={{ fontSize: "12px" }}>
                   {user?.followers?.length} followers
                 </div>
               </div>
@@ -257,26 +169,7 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
             </div>
 
             <div className="p-2 border-top d-flex justify-content-between like-comment-share ms-2 me-1">
-              <span
-                className={`pe-3 gap-1 fw-semibold d-flex align-items-center`}
-                style={{ color: `${isliked ? "#ff6600" : ""}`, width: "40px" }}
-                onClick={() => {
-                  HandleLike(comment._id);
-                }}
-              >
-                <span
-                  className={`${
-                    animatingBtn === "likes" ? "animate-rotate" : ""
-                  } rotate`}
-                >
-                  {isliked ? <FaHeart /> : <BiHeart />}
-                </span>
-
-                <span className="" style={{ marginTop: "0.26rem" }}>
-                  {" "}
-                  {comment?.likes}&nbsp;
-                </span>
-              </span>
+              <LikeBtn post={comment} />
               <span
                 className="ps-3 pe-3 p-1 fw-semibold d-flex align-items-center gap-1"
                 onClick={() => {
@@ -326,14 +219,14 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
                       minWidth: "30px",
                       height: "30px",
                       borderRadius: "20px",
-                      background: `${admin?.bg_clr}`,
+                      background: `${admin_user?.bg_clr}`,
                       cursor: "pointer",
                     }}
                     onClick={() => {
-                      nevigate(`/api/user/${admin._id}`);
+                      nevigate(`/api/user/${admin_user?._id}`);
                     }}
                   >
-                    <span>{user?.username.charAt(0).toUpperCase()}</span>
+                    <span>{admin_user?.username.charAt(0).toUpperCase()}</span>
                   </div>
 
                   <textarea
@@ -390,7 +283,7 @@ export const EachPost = ({ user, comment, admin, isDisplayedLeftNav }) => {
   );
 };
 
-const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
+export const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
   const nevigate = useNavigate();
   return (
     <>
@@ -401,12 +294,12 @@ const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
             maxWidth: "40px",
             height: "40px",
             borderRadius: "20px",
-            background: `${user.bg_clr}`,
+            background: `${user?.bg_clr}`,
             cursor: "pointer",
             ...style,
           }}
           onClick={() => {
-            nevigate(`/api/user/${user._id}`);
+            nevigate(`/api/user/${user?._id}`);
           }}
         >
           <div>{user?.username?.charAt(0).toUpperCase()}</div>
@@ -416,7 +309,7 @@ const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
           <small
             className="small on-hover-userid"
             onClick={() => {
-              nevigate(`/api/user/${user._id}`);
+              nevigate(`/api/user/${user?._id}`);
             }}
           >
             @{user?.username}
@@ -428,78 +321,29 @@ const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
   );
 };
 
-export const FollowBtn = ({ user }) => {
-  const { admin_user, fetch_user_statuses } = useQuote();
-  const token = localStorage.getItem("token");
-  const [isfollowed, setisfollowed] = useState(false);
+export const FollowBtn = ({ user, cls, style = {} }) => {
+  const { admin_user, followersMap, toggleFollowStatus } = useQuote();
 
-  // fetch_admin_user();
+  const isFollowed =
+    followersMap[user?._id] ?? user?.followers?.includes(admin_user?._id);
 
-  // console.log("admin_user is working....509 eachPost", admin_user);
-  const HandleFollow = async () => {
-    try {
-      setisfollowed(!isfollowed);
-      const res = await axios.put(
-        `${API}/api/crud/crud_follow_post`,
-        {
-          id: user._id,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      fetch_user_statuses();
-      fetch_user_statuses();
-    } catch (err) {
-      console.log(
-        "folloing failed: " + err.response?.data?.message || err.message
-      );
-    }
+  const handleClick = () => {
+    toggleFollowStatus(user?._id);
   };
+
+  if (admin_user?._id === user?._id) return null;
+
   return (
-    <>
-      {admin_user?._id !== user?._id &&
-        !user?.followers?.includes(admin_user?._id) && (
-          <div
-            className="btn text-primary rounded-0 p-0"
-            onClick={HandleFollow}
-          >
-            Follow
-          </div>
-        )}
-    </>
+    <div className={cls} onClick={handleClick} style={{ ...style }}>
+      {isFollowed ? "Unfollow" : "Follow"}
+    </div>
   );
 };
 
-const SlipDotinPost = ({ user, post }) => {
+export const SlipDotinPost = ({ user, post }) => {
   const token = localStorage.getItem("token");
-  const [isfollowed, setisfollowed] = useState(false);
-  const HandleFollow = async () => {
-    try {
-      setisfollowed(!isfollowed);
-      const res = await axios.put(
-        `${API}/api/crud/crud_follow_post`,
-        {
-          // data you want to send
-          id: user._id,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      // setisliked(!isliked);
-    } catch (err) {
-      console.log(
-        "folloing failed: " + err.response?.data?.message || err.message
-      );
-    }
-  };
 
   const HandleDelete = async () => {
-    // animateButton("likes");
-
     const condition = window.confirm("want to delete............");
 
     if (condition) {
@@ -523,8 +367,8 @@ const SlipDotinPost = ({ user, post }) => {
       <Nav.Link href="/home">Home</Nav.Link>
       <Nav.Link href="/home">Visit Post</Nav.Link>
       {admin_user?._id !== user?._id && (
-        <Nav.Link onClick={HandleFollow}>
-          {user?.followers?.includes(admin_user?._id) ? "Unfollow" : "follow"}
+        <Nav.Link>
+          <FollowBtn user={user} cls="" />
         </Nav.Link>
       )}
       {post?.userId === admin_user?._id ||
@@ -540,6 +384,96 @@ const SlipDotinPost = ({ user, post }) => {
       ) : (
         ""
       )}{" "}
+    </>
+  );
+};
+
+export const LikeBtn = ({ post }) => {
+  const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
+  const [isliked, setisliked] = useState(false);
+
+  // Handle animation on click
+  const animateButton = (btnName) => {
+    setAnimatingBtn(btnName);
+    setTimeout(() => {
+      setAnimatingBtn(null);
+    }, 400); // duration of animation
+  };
+
+  const HandleLike = async (id) => {
+    animateButton("likes");
+    try {
+      await axios.put(`${API}/api/auth/like_this_post`, {
+        id: id,
+        isliked: !isliked,
+      });
+      setisliked(!isliked);
+    } catch (err) {
+      alert("like failed: " + err.response?.data?.message || err.message);
+    }
+  };
+
+  return (
+    <>
+      <span
+        className={`pe-3 gap-1 fw-semibold d-flex align-items-center`}
+        style={{ color: `${isliked ? "#ff6600" : ""}`, width: "40px" }}
+        onClick={() => {
+          HandleLike(post?._id);
+        }}
+      >
+        <span
+          className={`${
+            animatingBtn === "likes" ? "animate-rotate" : ""
+          } rotate`}
+        >
+          {isliked ? <FaHeart /> : <BiHeart />}
+        </span>
+
+        <span className="" style={{ marginTop: "0.26rem" }}>
+          {" "}
+          {post?.likes}&nbsp;
+        </span>
+      </span>
+    </>
+  );
+};
+
+export const StatusBtn = ({ post }) => {
+  const { admin_user, token } = useQuote();
+
+  const HandleStatus = async () => {
+    // const [userId, setUserId] = useState(""); // use logged-in user ID
+    try {
+      const res = await axios.post(
+        `${API}/api/crud/create_status`,
+        {
+          text: post?.text,
+          image: post?.images[0],
+          user: admin_user?._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Created status:", res.data);
+      alert("Status created!");
+    } catch (err) {
+      console.error("Error creating status:", err);
+    }
+  };
+
+  return (
+    <>
+      <span
+        className="small fw-semibold text-danger"
+        style={{ alignSelf: "end", cursor: "pointer" }}
+        onClick={HandleStatus}
+      >
+        Set status
+      </span>
     </>
   );
 };
