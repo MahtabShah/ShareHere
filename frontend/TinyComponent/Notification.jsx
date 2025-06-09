@@ -21,7 +21,8 @@ export const Notification = ({ setVisibleNotification }) => {
   const nevigate = useNavigate();
   const [go_comment, setGo_comment] = useState(false);
 
-  const { curr_all_notifications, admin_user } = useQuote();
+  const { curr_all_notifications, admin_user, fetch_all_notifications } =
+    useQuote();
 
   const go_to_comment = async (postId, userId) => {
     // navigate(`/home?postId=${post}`);
@@ -81,6 +82,10 @@ export const Notification = ({ setVisibleNotification }) => {
     setVisibleNotification(false);
   };
 
+  useEffect(() => {
+    fetch_all_notifications();
+  }, []);
+
   return (
     <>
       {setVisibleNotification && (
@@ -97,8 +102,8 @@ export const Notification = ({ setVisibleNotification }) => {
             }}
           >
             {/* {LazyLoading && <Loading />} */}
-            {LazyLoading ? (
-              <Loading />
+            {LazyLoading || curr_all_notifications.length < 1 ? (
+              <Loading dm={34} />
             ) : go_comment ? (
               <div className="border">
                 <div className="p-1 d-flex gap-3 justify-content-between">

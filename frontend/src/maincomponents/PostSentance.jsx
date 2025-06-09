@@ -288,8 +288,16 @@ const PostSentence = ({ type = "post" }) => {
 
   return (
     <section
-      className="p-0 mb-0"
-      // style={{ margin: "auto", border: "3px solid red" }}
+      className="p-0 mb-0 position-fixed overflow-y-auto none-scroller"
+      style={{
+        margin: "auto",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        zIndex: uploadClicked ? 100 : -100,
+        // border: "3px solid red",
+      }}
     >
       <Accordion activeKey="0" className="">
         <Accordion.Item eventKey="0" className="rounded-0">

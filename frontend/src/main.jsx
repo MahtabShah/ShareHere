@@ -10,20 +10,38 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UserProfile from "./maincomponents/UserProfile.jsx";
 import { SearchBaar } from "../TinyComponent/SearchBaar";
 import BottomNav from "../TinyComponent/BotoomNav.jsx";
+import EditUserProfile from "./maincomponents/EditProfile.jsx";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <QuoteProvider>
-      <main className="container p-0">
+      <main className="container p-0 pt-2 mt-5">
         <MainHeader />
         <PostSentence />
-        <SearchBaar />
+
         <BottomNav />
 
         <Routes>
-          <Route path="/*" element={<All_Post_Section />} />
-          <Route path="/home/postId?" element={<All_Post_Section />} />
+          <Route
+            path="/*"
+            element={
+              <>
+                <SearchBaar />
+                <All_Post_Section />
+              </>
+            }
+          />
+          <Route
+            path="/home/postId?"
+            element={
+              <>
+                <SearchBaar />
+                <All_Post_Section />
+              </>
+            }
+          />
           <Route path="api/user/:id" element={<UserProfile />} />
+          <Route path="api/user/edit/:id" element={<EditUserProfile />} />
         </Routes>
       </main>
     </QuoteProvider>

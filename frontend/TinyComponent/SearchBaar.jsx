@@ -59,42 +59,54 @@ export const SearchBaar = () => {
   }, [query]);
   // SearchBaar.jsx
 
-  return (
-    <div className="pt-3 p-2">
-      <form onSubmit={handleSearch} className="input-group">
-        <input
-          type="text"
-          className="form-control rounded-0"
-          placeholder="Search..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button className="btn btn-primary" type="submit">
-          Search
-        </button>
-      </form>
-      <div>
-        {Filterd_result?.map(
-          (res, idx) =>
-            admin_user._id !== res._id && (
-              <div className="d-flex mt-3" key={res._id || idx}>
-                <UserRing user={res} />
-                <FollowBtn
-                  user={res}
-                  cls="btn btn-outline-primary p-0 h-100 ps-3 rounded-0 pe-3 p-1"
-                />
-              </div>
-            )
-        )}
-      </div>
+  const trend = [
+    "Motivational",
+    "Parents",
+    "Study",
+    "Funney",
+    "Dosti",
+    "Life Changing",
+    "Sigma",
+    "Willone",
+  ];
 
-      <div>
-        {Filterd_posts?.map((res, idx) => (
-          <div
-            className="d-flex mt-3 flex-column border"
-            key={`F-post${res._id || idx}`}
-          >
-            {/* <div className="d-flex pt-2 pe-2">
+  return (
+    <>
+      <div className="pt-3 p-2">
+        <form onSubmit={handleSearch} className="input-group">
+          <input
+            type="text"
+            className="form-control rounded-0"
+            placeholder="Search..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button className="btn btn-primary" type="submit">
+            Search
+          </button>
+        </form>
+        <div>
+          {Filterd_result?.map(
+            (res, idx) =>
+              admin_user._id !== res._id && (
+                <div className="d-flex mt-3" key={res._id || idx}>
+                  <UserRing user={res} />
+                  <FollowBtn
+                    user={res}
+                    cls="btn btn-outline-primary p-0 h-100 ps-3 rounded-0 pe-3 p-1"
+                  />
+                </div>
+              )
+          )}
+        </div>
+
+        <div>
+          {Filterd_posts?.map((res, idx) => (
+            <div
+              className="d-flex mt-3 flex-column border"
+              key={`F-post${res._id || idx}`}
+            >
+              {/* <div className="d-flex pt-2 pe-2">
               <UserRing user={res} />
               <FollowBtn
                 user={res}
@@ -102,20 +114,33 @@ export const SearchBaar = () => {
                 style={{ width: "120px" }}
               />
             </div> */}
-            <div className="d-flex justify-cpntent-between">
-              <p className="flex-grow-1 w-100 p-2">{res.text}</p>
-              <div className="">
-                <CardPost
-                  post={res}
-                  style={{
-                    height: "80px",
-                  }}
-                />
+              <div className="d-flex justify-cpntent-between">
+                <p className="flex-grow-1 w-100 p-2">{res.text}</p>
+                <div className="">
+                  <CardPost
+                    post={res}
+                    style={{
+                      height: "80px",
+                    }}
+                  />
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+      </div>
+      <div className="ms-2 d-flex gap-3 overflow-x-auto none-scroller">
+        {trend.map((t, idx) => (
+          <div key={`idx-trend-${idx}`}>
+            <button
+              className="btn btn-outline-dark rounded-0"
+              style={{ minWidth: "max-content" }}
+            >
+              {t}
+            </button>
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };

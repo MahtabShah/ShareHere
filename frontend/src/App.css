@@ -124,3 +124,11 @@ textarea {
   box-shadow: none !important;
   border-radius: 0;
 }
+
+.form-lable {
+  min-width: 64px;
+}
+
+.vibe-ring {
+  border-radius: 50%;
+}

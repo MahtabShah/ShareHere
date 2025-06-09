@@ -46,6 +46,8 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
 
 
 
+
+
 // GET all sentences by the logged-in user (Protected)
 router.get('/my', verifyToken, async (req, res) => {
   // console.log('Fetching sentences for user exist or call here: calling----', req?.user);

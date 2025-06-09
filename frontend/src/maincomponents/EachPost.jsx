@@ -109,7 +109,7 @@ export const EachPost = ({ user, comment }) => {
       {
         <>
           <div
-            className="d-flex flex-column mb-5 p-0 bg position-relative border-bottom"
+            className="d-flex flex-column mt-5 p-0 bg position-relative border-bottom"
             style={{
               background: "#f5f5f5",
               fontSize: fontSize,
@@ -117,7 +117,7 @@ export const EachPost = ({ user, comment }) => {
             key={comment?._id}
           >
             {/*--------------------- user ring and follow btn ----------------------- */}
-            <div className="d-flex gap-2 ps-3 mt-1 align-items-center">
+            <div className="d-flex gap-2 ps-1 mt-1 align-items-center">
               <UserRing user={user} />
 
               <div className="d-flex flex-column align-items-end ">
@@ -136,7 +136,7 @@ export const EachPost = ({ user, comment }) => {
             <div className="w-100">
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
                 <div
-                  className={`d-flex mt-2 m-${isDisplayedLeftNav ? "0" : "3"}`}
+                  className={`d-flex mt-2 m-${isDisplayedLeftNav ? "0" : "1"}`}
                   style={{ overflow: "hidden" }}
                 >
                   <div
@@ -289,11 +289,10 @@ export const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
     <>
       <div className="d-flex gap-2 flex-grow-1 align-items-center">
         <div
-          className="d-flex align-items-center w-100 justify-content-center rounded-crcle text-white"
+          className="d-flex align-items-center w-100 justify-content-center rounded-crcle text-white overflow-hidden vibe-ring"
           style={{
             maxWidth: "40px",
             height: "40px",
-            borderRadius: "20px",
             background: `${user?.bg_clr}`,
             cursor: "pointer",
             ...style,
@@ -302,7 +301,15 @@ export const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
             nevigate(`/api/user/${user?._id}`);
           }}
         >
-          <div>{user?.username?.charAt(0).toUpperCase()}</div>
+          {/* <div>{user?.username?.charAt(0).toUpperCase()}</div> */}
+          <div className="overflow-hidden">
+            <img
+              src={user?.profile_pic}
+              alt=""
+              className="h-100 w-100 overflow-hidden"
+              style={{ objectFit: "cover", maxWidth: "40px", height: "40px" }}
+            />
+          </div>
         </div>
 
         <div className=" d-flex flex-column small align-item">
@@ -384,6 +391,18 @@ export const SlipDotinPost = ({ user, post }) => {
       ) : (
         ""
       )}{" "}
+      <Nav.Link href="#" className="text-danger">
+        <span
+          className="d-inline-flex bg-danger text-light justify-content-center"
+          style={{
+            minWidth: "20px",
+            clipPath: "polygon(0 100%, 50% 0 , 100% 100%)",
+          }}
+        >
+          !
+        </span>{" "}
+        Report
+      </Nav.Link>
     </>
   );
 };

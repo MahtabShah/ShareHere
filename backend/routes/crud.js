@@ -193,6 +193,39 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
 
 
 
+router.put('/update_user', verifyToken,  async (req, res) => {
+  const { name, bio, profile_pic, cover_pic } = req.body;
+  const userId = req.user.userId || req.user.id;
+
+  try {
+  const user_b = await User.findById(userId); // curr user
+  if (!user_b) return res.status(404).json({ msg: "User not found" });
+  console.log("user b -" ,  user_b)
+    user_b.username = name || user_b.username;
+    user_b.bio = bio || user_b.bio;
+    user_b.profile_pic = profile_pic || user_b.profile_pic;
+    user_b.cover_pic = cover_pic || user_b.cover_pic;
+
+  console.log("new formData - - - -- - - - -->" , name, bio, cover_pic)
+
+
+  await user_b.save()
+   
+  // Emit a follow event with link to user profile
+  io.emit('userUpdated', user_b);
+  
+  res.status(200).json({
+      msg: "Profile updated successfully",
+      profile_pic: user_b.profile_pic,
+      cover_pic: user_b.cover_pic,
+    });
+  } catch (err) {
+    console.error('Error deleting sentence:', err);
+    res.status(500).json({ message: 'Failed to follow' });
+  }
+});
+
+
 router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
   // const { curr_notifications } = req.body;
  
@@ -251,9 +284,6 @@ router.put("/update_status/:id", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
-
-
 
 
 router.post("/create_status", async (req, res) => {

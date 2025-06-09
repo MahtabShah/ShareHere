@@ -11,7 +11,7 @@ import { FollowBtn } from "./EachPost";
 
 const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
-  // const nevigate = useNavigate();
+  const nevigate = useNavigate();
   const { id } = useParams();
   const { admin_user, all_posts, all_user } = useQuote();
   // setUser(User);
@@ -79,16 +79,22 @@ const UserProfile = ({}) => {
         style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}
       >
         <div
-          className="text-center position-absolute ps-3"
-          style={{ bottom: "calc(-50px)" }}
+          className="text-center position-absolute ps-3 overflow-hodden bg-image"
+          style={{
+            bottom: "calc(-50px)",
+          }}
         >
-          <img
-            src={user?.profile_pic}
+          <div
             className="rounded-circle"
-            alt="Profile"
-            width="100"
-            height="100"
-            style={{ background: user?.bg_clr }}
+            style={{
+              background: user?.bg_clr,
+              minWidth: "100px",
+              minHeight: "100px",
+              background: `url(${user?.profile_pic})`,
+              aspectRatio: "1/1",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
           />
         </div>
         <img
@@ -103,26 +109,33 @@ const UserProfile = ({}) => {
       </div>
 
       <div className="text-end pe-3 pt-3" style={{ height: "60px" }}>
-        {id !== admin_user?._id && (
-          <>
-            <FollowBtn user={user} />
-            {user?.followers?.includes(admin_user?._id) && (
+        <div className="d-flex justify-content-end align-items-center">
+          {id !== admin_user?._id && (
+            <>
+              <FollowBtn
+                user={user}
+                cls={"btn btn-outline-dark btn-sm ps-2 pe-2"}
+              />
+              {/* {user?.followers?.includes(admin_user?._id) && (
               <button
                 className="btn btn-outline-dark btn-sm"
                 onClick={HandleFollow}
               >
                 Unfollow
               </button>
-            )}
-          </>
-        )}
+            )} */}
+            </>
+          )}
 
-        <button
-          className="btn btn-outline-dark btn-sm ms-2"
-          // onClick={onEditMode}
-        >
-          Edit Profile
-        </button>
+          <button
+            className="btn btn-outline-dark btn-sm ms-2"
+            onClick={() => {
+              nevigate(`/api/user/edit/${admin_user?._id}`);
+            }}
+          >
+            Edit Profile
+          </button>
+        </div>
       </div>
 
       <div className="ps-3 d-flex justify-content-between">

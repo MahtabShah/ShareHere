@@ -30,6 +30,8 @@ export const QuoteProvider = ({ children }) => {
   const [all_posts, set_all_posts] = useState([]);
   const [followings, setFollowings] = useState([]);
   const [uploadClicked, setUploadClicked] = useState(false);
+  const [all_post_loading, setAll_post_loading] = useState(false);
+  const [Errors, setErrors] = useState(null);
 
   const [curr_all_notifications, setcurr_all_notifications] = useState([]);
 
@@ -85,17 +87,24 @@ export const QuoteProvider = ({ children }) => {
 
   const fetch_all_users = async () => {
     try {
+      setAll_post_loading(true);
+
       await axios.get(`${API}/api/auth/home`).then((res) => {
         // console.log("response at Home.jsx setall_user", res.data);
         setall_user(res.data);
       });
+
+      setAll_post_loading(false);
     } catch (error) {
       console.error("error : ", error);
+      setErrors(error);
     }
   };
 
   const fetch_all_posts = async () => {
     setLoading(true);
+    setAll_post_loading(true);
+
     try {
       const res = await axios.get(`${API}/api/auth/all_sentence`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -104,7 +113,10 @@ export const QuoteProvider = ({ children }) => {
       res.data?.length === 0 ? "" : set_all_posts(res.data);
     } catch (err) {
       console.log("Failed to fetch your sentences see err", err);
+      setErrors(err);
     }
+
+    setAll_post_loading(false);
   };
 
   const fetch_all_notifications = async () => {
@@ -281,6 +293,8 @@ export const QuoteProvider = ({ children }) => {
         all_user,
         all_posts,
         followersMap,
+        all_post_loading,
+        Errors,
         updateFollowersMap,
         toggleFollowStatus,
       }}
