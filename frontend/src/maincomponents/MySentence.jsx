@@ -26,22 +26,6 @@ function MySentences({ sentences, loading, admin }) {
     <div className=" mt-4">
       <h2 className="mb-4">My Sentences</h2>
 
-      {/* Add sentence form */}
-      {/* <form onSubmit={handleAddSentence} className="mb-4">
-        <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter new sentence"
-            value={newSentence}
-            onChange={(e) => setNewSentence(e.target.value)}
-          />
-          <button className="btn btn-primary" type="submit">
-            Add
-          </button>
-        </div>
-      </form> */}
-
       {/* Loading or error */}
       {!loading && <div>Loading sentences...</div>}
       {error && <div className="text-danger">{error}</div>}
