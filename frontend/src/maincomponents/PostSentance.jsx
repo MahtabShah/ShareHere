@@ -371,13 +371,17 @@ const PostSentence = ({ type = "post" }) => {
                           aspectRatio: "6/7",
                           zIndex: "100",
                           flexShrink: 0,
-                          ...style,
                           caretColor: "red",
                           whiteSpace: "pre-wrap", // mimic pre
                           overflow: "hidden", // hide scroll
                           resize: "none", // prevent resizing
                           caret: "ActiveBorder",
+                          ...style,
+
                           backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center center",
+
                           background: `${images ? `url(${images})` : bg_clr}`,
                         }}
                         spellCheck={false}

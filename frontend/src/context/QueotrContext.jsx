@@ -183,6 +183,8 @@ export const QuoteProvider = ({ children }) => {
     textAlign: "center",
     letterSpacing: "0px",
     boxShadow: "none",
+    backgroundPosition: "center center",
+    backgroundSize: "cover",
   });
 
   const [followersMap, setFollowersMap] = useState({}); // { userId: true/false }
