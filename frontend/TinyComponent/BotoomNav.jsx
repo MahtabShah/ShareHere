@@ -1,12 +1,7 @@
 // -------------- Done ------------------------------
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faSpinner,
-  faHome,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { useQuote } from "../src/context/QueotrContext";
 export const btnclass = "btn btn-sm progressBtn text-white ps-4 pe-4 rounded-5";
