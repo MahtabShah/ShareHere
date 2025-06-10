@@ -79,7 +79,7 @@ const UserProfile = ({}) => {
         style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}
       >
         <div
-          className="text-center position-absolute ps-3 overflow-hodden bg-image"
+          className="text-center position-absolute ps-2 overflow-hodden bg-image"
           style={{
             bottom: "calc(-50px)",
           }}
@@ -93,7 +93,8 @@ const UserProfile = ({}) => {
               background: `url(${user?.profile_pic})`,
               aspectRatio: "1/1",
               backgroundSize: "cover",
-              backgroundPosition: "center",
+              backgroundPosition: "center center",
+              backgroundRepeat: "no-repeat",
             }}
           />
         </div>
@@ -103,7 +104,6 @@ const UserProfile = ({}) => {
           className="w-100 h-100"
           style={{
             objectFit: "cover",
-            // maxHeight: "400px",
           }}
         />
       </div>
@@ -116,49 +116,49 @@ const UserProfile = ({}) => {
                 user={user}
                 cls={"btn btn-outline-dark btn-sm ps-2 pe-2"}
               />
-              {/* {user?.followers?.includes(admin_user?._id) && (
-              <button
-                className="btn btn-outline-dark btn-sm"
-                onClick={HandleFollow}
-              >
-                Unfollow
-              </button>
-            )} */}
             </>
           )}
 
-          <button
-            className="btn btn-outline-dark btn-sm ms-2"
-            onClick={() => {
-              nevigate(`/api/user/edit/${admin_user?._id}`);
-            }}
-          >
-            Edit Profile
-          </button>
+          {id === admin_user?._id && (
+            <button
+              className="btn btn-outline-dark btn-sm ms-2"
+              onClick={() => {
+                nevigate(`/api/user/edit/${admin_user?._id}`);
+              }}
+            >
+              Edit Profile
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="ps-3 d-flex justify-content-between">
-        <div>
-          <h4 className="mt-3">{user?.username}</h4>
+      <div className="ps-3 d-flex flex-column justify-content-between">
+        <div className="d-flex  justify-content-between">
+          <h4 className="flex-grow-1">{user?.username}</h4>
           {/* <p className="mb-1">{User?.channel_name}</p> */}
-          <p className="small">{user?.bio}</p>
           {/* <p className="small">{User?.about_user}</p> */}
+          <div className="d-flex gap-3 ps-3 pe-3 mt-">
+            <span className="text-center">
+              <span>Followers</span>
+              <h5>{user?.followers?.length || 0}</h5>
+            </span>
+            <span className="text-center">
+              <span>Following</span>
+              <h5>{user?.following?.length || 0}</h5>
+            </span>
+          </div>
         </div>
-        <div className="d-flex gap-3 ps-3 pe-3 mt-3">
-          <span className="text-center">
-            <span>Followers</span>
-            <h5>{user?.followers?.length || 0}</h5>
+
+        <p className="small">
+          <span className="fs-6 fw-semibold">
+            {user?.bio?.trim().charAt(0)}
           </span>
-          <span className="text-center">
-            <span>Following</span>
-            <h5>{user?.following?.length || 0}</h5>
-          </span>
-        </div>
+          {user?.bio?.trim().slice(1)}
+        </p>
       </div>
 
       <hr className="bg-light" />
-      <h4 className="ps-3">Vibes share by @{user?.username}</h4>
+      <h4 className="ps-2">Vibes share by @{user?.username}</h4>
 
       {/* <div
         className="d-grid gap-4 p-3"

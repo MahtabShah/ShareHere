@@ -86,7 +86,9 @@ function All_Post_Section() {
           </div>
         ) : (
           <section
-            className={`${sm_break_point ? "p-0" : "p-0"}`}
+            className={`${
+              sm_break_point ? "p-0" : "p-0"
+            } d-flex flex-column gap-5`}
             style={{ margin: "auto", maxWidth: "600px" }}
           >
             {all_post_loading ? (

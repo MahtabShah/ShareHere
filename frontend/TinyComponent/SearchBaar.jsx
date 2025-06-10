@@ -3,12 +3,14 @@ import { useQuote } from "../src/context/QueotrContext";
 import { UserRing } from "../src/maincomponents/EachPost";
 import { FollowBtn } from "../src/maincomponents/EachPost";
 import { CardPost } from "../src/maincomponents/Home";
+import { useNavigate } from "react-router-dom";
 import { Loading } from "./LazyLoading";
 export const SearchBaar = () => {
   const [query, setQuery] = useState("");
   const [Filterd_result, setFilterd_result] = useState([]);
   const [Filterd_posts, setFilterd_posts] = useState([]);
   const { all_user, all_posts, admin_user } = useQuote();
+  const nevigate = useNavigate();
 
   // const [search_text, setSearch_text] = useState("");
 
@@ -37,7 +39,7 @@ export const SearchBaar = () => {
   useEffect(() => {
     const f_res = filter_users(all_user, query);
     setFilterd_result(f_res);
-  }, [query]);
+  }, [query, all_user]);
 
   const filter_posts = (all_posts, query) => {
     if (!query) return [];
@@ -88,7 +90,8 @@ export const SearchBaar = () => {
         <div>
           {Filterd_result?.map(
             (res, idx) =>
-              admin_user._id !== res._id && (
+              admin_user._id !== res._id &&
+              res && (
                 <div className="d-flex mt-3" key={res._id || idx}>
                   <UserRing user={res} />
                   <FollowBtn
@@ -106,17 +109,14 @@ export const SearchBaar = () => {
               className="d-flex mt-3 flex-column border"
               key={`F-post${res._id || idx}`}
             >
-              {/* <div className="d-flex pt-2 pe-2">
-              <UserRing user={res} />
-              <FollowBtn
-                user={res}
-                cls="btn btn-outline-primary p-0 h-100 ps-4 rounded-0 pe-4 p-1"
-                style={{ width: "120px" }}
-              />
-            </div> */}
               <div className="d-flex justify-cpntent-between">
                 <p className="flex-grow-1 w-100 p-2">{res.text}</p>
-                <div className="">
+                <div
+                  className=""
+                  onClick={() => {
+                    nevigate(`/home?postId=${res._id}`);
+                  }}
+                >
                   <CardPost
                     post={res}
                     style={{

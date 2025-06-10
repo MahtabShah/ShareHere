@@ -11,11 +11,13 @@ import UserProfile from "./maincomponents/UserProfile.jsx";
 import { SearchBaar } from "../TinyComponent/SearchBaar";
 import BottomNav from "../TinyComponent/BotoomNav.jsx";
 import EditUserProfile from "./maincomponents/EditProfile.jsx";
+import Signup from "./maincomponents/Signup";
+import Login from "./maincomponents/Login";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <QuoteProvider>
-      <main className="container p-0 pt-2 mt-5">
+      <main className="container p-0 pt-2 mt-5 mb-5">
         <MainHeader />
         <PostSentence />
 
@@ -42,6 +44,8 @@ createRoot(document.getElementById("root")).render(
           />
           <Route path="api/user/:id" element={<UserProfile />} />
           <Route path="api/user/edit/:id" element={<EditUserProfile />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </main>
     </QuoteProvider>

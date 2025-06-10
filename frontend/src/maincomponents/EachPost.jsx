@@ -109,9 +109,9 @@ export const EachPost = ({ user, comment }) => {
       {
         <>
           <div
-            className="d-flex flex-column mt-5 p-0 bg position-relative border-bottom"
+            className="d-flex flex-column p-0 bg position-relative border-bottom"
             style={{
-              background: "#f5f5f5",
+              background: "#faf8f9",
               fontSize: fontSize,
             }}
             key={comment?._id}
@@ -120,10 +120,16 @@ export const EachPost = ({ user, comment }) => {
             <div className="d-flex gap-2 ps-1 mt-1 align-items-center">
               <UserRing user={user} />
 
-              <div className="d-flex flex-column align-items-end ">
-                <FollowBtn user={user} cls="btn ps-2 pe-2 me-1 rounded-0" />
+              <div className="d-flex flex-column align-items-end">
+                {user._id !== admin_user._id && (
+                  <FollowBtn
+                    user={user}
+                    cls="btn ps-2 pe-2 me-2 rounded-0 small"
+                    style={{ fontSize: "14px" }}
+                  />
+                )}
                 {user?._id === admin_user?._id && (
-                  <div className="pe-3">
+                  <div className="pe-3 small">
                     <StatusBtn post={comment} />
                   </div>
                 )}
@@ -307,7 +313,11 @@ export const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
               src={user?.profile_pic}
               alt=""
               className="h-100 w-100 overflow-hidden"
-              style={{ objectFit: "cover", maxWidth: "40px", height: "40px" }}
+              style={{
+                objectFit: "cover",
+                maxWidth: "40px",
+                minHeight: "40px",
+              }}
             />
           </div>
         </div>
@@ -321,27 +331,61 @@ export const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
           >
             @{user?.username}
           </small>
-          <small className="small">{user?.bio?.slice(0, 54)} . . .</small>
+          <small className="small">{user?.bio?.slice(0, 24)} . . . .</small>
         </div>
       </div>
     </>
   );
 };
 
+/**
+ * NOTE: Always ensure that when you use FollowBtn, you pass the latest user object
+ * (with up-to-date followers array) as a prop, and update it in the parent component
+ * when the follow status changes. This ensures the FollowBtn reflects the correct state.
+ * we can also fetch letest user by its id in follow btn, ok next time In Sha Allah
+ */
+
 export const FollowBtn = ({ user, cls, style = {} }) => {
-  const { admin_user, followersMap, toggleFollowStatus } = useQuote();
+  const { admin_user, followersMap, toggleFollowStatus, token } = useQuote();
+  const [isFollowed, setIsFollowed] = useState(
+    user?.followers?.includes(admin_user?._id)
+  );
 
-  const isFollowed =
-    followersMap[user?._id] ?? user?.followers?.includes(admin_user?._id);
+  // const isFollowed =
+  //   followersMap[user?._id] ?? user?.followers?.includes(admin_user?._id);
 
-  const handleClick = () => {
-    toggleFollowStatus(user?._id);
+  const handleClick = async () => {
+    try {
+      // Flip follow status locally first
+
+      // API call
+      await axios.put(
+        `${API}/api/crud/crud_follow_post`,
+        { id: user?._id },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch (err) {
+      console.error("Error updating follow status:", err);
+      // Revert back on error
+    }
   };
 
-  if (admin_user?._id === user?._id) return null;
+  useEffect(() => {
+    const isFollowed = user?.followers?.includes(admin_user._id);
+    setIsFollowed(isFollowed);
+    console.log("isfollows", isFollowed);
+  }, [user]);
+
+  // if (admin_user?._id === user?._id) return null;
 
   return (
-    <div className={cls} onClick={handleClick} style={{ ...style }}>
+    <div
+      className={cls}
+      onClick={handleClick}
+      style={{ ...style, minWidth: "max-content" }}
+    >
       {isFollowed ? "Unfollow" : "Follow"}
     </div>
   );
@@ -392,7 +436,7 @@ export const SlipDotinPost = ({ user, post }) => {
         ""
       )}{" "}
       <Nav.Link href="#" className="text-danger">
-        <span
+        {/* <span
           className="d-inline-flex bg-danger text-light justify-content-center"
           style={{
             minWidth: "20px",
@@ -400,7 +444,7 @@ export const SlipDotinPost = ({ user, post }) => {
           }}
         >
           !
-        </span>{" "}
+        </span>{" "} */}
         Report
       </Nav.Link>
     </>
@@ -409,7 +453,8 @@ export const SlipDotinPost = ({ user, post }) => {
 
 export const LikeBtn = ({ post }) => {
   const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
-  const [isliked, setisliked] = useState(false);
+  const token = localStorage.getItem("token");
+  const { admin_user } = useQuote();
 
   // Handle animation on click
   const animateButton = (btnName) => {
@@ -422,15 +467,23 @@ export const LikeBtn = ({ post }) => {
   const HandleLike = async (id) => {
     animateButton("likes");
     try {
-      await axios.put(`${API}/api/auth/like_this_post`, {
-        id: id,
-        isliked: !isliked,
-      });
-      setisliked(!isliked);
+      await axios.put(
+        `${API}/api/auth/like_this_post`,
+        {
+          id: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (err) {
       alert("like failed: " + err.response?.data?.message || err.message);
     }
   };
+
+  const isliked = post.likes.includes(admin_user._id);
 
   return (
     <>
@@ -451,7 +504,7 @@ export const LikeBtn = ({ post }) => {
 
         <span className="" style={{ marginTop: "0.26rem" }}>
           {" "}
-          {post?.likes}&nbsp;
+          {post?.likes?.length}&nbsp;
         </span>
       </span>
     </>
@@ -487,8 +540,8 @@ export const StatusBtn = ({ post }) => {
   return (
     <>
       <span
-        className="small fw-semibold text-danger"
-        style={{ alignSelf: "end", cursor: "pointer" }}
+        className="small d-inline-flex fw-semibold text-danger"
+        style={{ alignSelf: "end", cursor: "pointer", minWidth: "max-content" }}
         onClick={HandleStatus}
       >
         Set status

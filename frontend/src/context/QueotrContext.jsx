@@ -249,11 +249,13 @@ export const QuoteProvider = ({ children }) => {
     };
 
     socket.on("userUpdated", handleUserUpdate);
+    socket.on("update", fetch_all_posts);
     socket.on("Notification", fetch_all_notifications);
 
     return () => {
       socket.off("userUpdated", handleUserUpdate);
       socket.off("Notification", fetch_all_notifications);
+      socket.off("update", fetch_all_posts);
     };
   }, []);
 
@@ -297,6 +299,7 @@ export const QuoteProvider = ({ children }) => {
         Errors,
         updateFollowersMap,
         toggleFollowStatus,
+        token,
       }}
     >
       {children}

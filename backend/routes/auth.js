@@ -126,13 +126,18 @@ router.get("/all_post_comments" , async (req, res)=>{
 
 
 
-router.put("/like_this_post", async (req, res) => {
-   const { id, isliked } = req.body;
+router.put("/like_this_post", verifyToken ,async (req, res) => {
+   const { id } = req.body;
 
   try {
+    const token = req.headers['authorization'].split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const useriid = decoded.id;  // admin or logged user
+
     let post = await Sentence.findById(id); // no populate yet
 
-    isliked ? post.likes += 1 : post.likes -= 1;
+    const isliked = post.likes.includes(useriid)
+    isliked ? post.likes.pop(useriid) : post.likes.push(useriid)
     await post.save();
 
     // ✅ Re-fetch with populate after saving

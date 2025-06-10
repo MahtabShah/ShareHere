@@ -134,8 +134,8 @@ router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
 
   try {
 
-  const sentence = await Sentence.findByIdAndDelete(id);
-    io.emit('sentence', sentence.toObject());
+    await Sentence.findByIdAndDelete(id);
+    io.emit('update');
     // console.log("------------> " , sentence)
     res.status(201).json({ message: 'Sentence saved , see delete route' });
   } catch (err) {
