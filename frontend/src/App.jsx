@@ -111,7 +111,7 @@ function App() {
     socket.on("userUpdated", (updatedUser) => {
       setall_user((prevUsers) =>
         prevUsers.map((user) =>
-          user._id === updatedUser._id ? updatedUser : user
+          user?._id === updatedUser?._id ? updatedUser : user
         )
       );
 
@@ -133,7 +133,7 @@ function App() {
 
   const { search } = useLocation();
   const params = new URLSearchParams(search);
-  const postId = params.get("postId"); // this should match c._id
+  const postId = params.get("postId"); // this should match c?._id
 
   useEffect(() => {
     if (postId) {
@@ -273,14 +273,14 @@ function App() {
                         return (
                           <Fragment key={`user${idx}`}>
                             {all_posts
-                              ?.filter((com) => com.userId === u._id)
+                              ?.filter((com) => com.userId === u?._id)
                               ?.map((c, indx) => {
                                 return (
                                   <Fragment key={`comment${indx}`}>
                                     {all_posts?.filter(
-                                      (com) => com.userId === u._id
+                                      (com) => com.userId === u?._id
                                     ).length > 0 && (
-                                      <div id={c._id}>
+                                      <div id={c?._id}>
                                         {" "}
                                         <EachPost
                                           user={u}

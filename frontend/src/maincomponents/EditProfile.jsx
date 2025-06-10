@@ -11,7 +11,7 @@ const token = localStorage.getItem("token");
 const EditUserProfile = () => {
   const { id } = useParams();
   const { all_user } = useQuote();
-  const user = all_user?.find((u) => u._id === id);
+  const user = all_user?.find((u) => u?._id === id);
   const nevigate = useNavigate();
   const [name, setName] = useState(user?.username);
   const [bio, setBio] = useState(user?.bio);

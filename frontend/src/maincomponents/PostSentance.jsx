@@ -269,7 +269,7 @@ const PostSentence = ({ type = "post" }) => {
         {
           text,
           image,
-          user: admin_user._id,
+          user: admin_user?._id,
         },
         {
           headers: {

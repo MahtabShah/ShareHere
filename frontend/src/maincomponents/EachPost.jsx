@@ -121,7 +121,7 @@ export const EachPost = ({ user, comment }) => {
               <UserRing user={user} />
 
               <div className="d-flex flex-column align-items-end">
-                {user._id !== admin_user._id && (
+                {user?._id !== admin_user?._id && (
                   <FollowBtn
                     user={user}
                     cls="btn ps-2 pe-2 me-2 rounded-0 small"
@@ -268,7 +268,7 @@ export const EachPost = ({ user, comment }) => {
                   <button
                     className="btn btn-outline-danger p-1 d-flex align-items-center ps-3 pe-3 me-1 rounded-0"
                     onClick={(e) => {
-                      SubmitComment(e, comment._id);
+                      SubmitComment(e, comment?._id);
                     }}
                   >
                     {LazyLoading ? (
@@ -373,7 +373,7 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
   };
 
   useEffect(() => {
-    const isFollowed = user?.followers?.includes(admin_user._id);
+    const isFollowed = user?.followers?.includes(admin_user?._id);
     setIsFollowed(isFollowed);
     console.log("isfollows", isFollowed);
   }, [user]);
@@ -401,7 +401,7 @@ export const SlipDotinPost = ({ user, post }) => {
       try {
         const res = await axios.delete(`${API}/api/crud/crud_delete_post`, {
           headers: { Authorization: `Bearer ${token}` },
-          data: { id: post._id }, // pass id inside `data`
+          data: { id: post?._id }, // pass id inside `data`
         });
         // setisliked(!isliked);
       } catch (err) {
@@ -483,7 +483,7 @@ export const LikeBtn = ({ post }) => {
     }
   };
 
-  const isliked = post.likes.includes(admin_user._id);
+  const isliked = post.likes.includes(admin_user?._id);
 
   return (
     <>

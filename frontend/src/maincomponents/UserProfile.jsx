@@ -16,7 +16,7 @@ const UserProfile = ({}) => {
   const { admin_user, all_posts, all_user } = useQuote();
   // setUser(User);
   // setUser(User);
-  const user = all_user?.find((u) => u._id === id);
+  const user = all_user?.find((u) => u?._id === id);
   // fetchUser();
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
 

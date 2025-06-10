@@ -217,7 +217,7 @@ export const QuoteProvider = ({ children }) => {
   useEffect(() => {
     const handleNewOrUpdatedSentence = (sentence) => {
       set_all_posts((prevPosts) => {
-        const index = prevPosts.findIndex((p) => p._id === sentence?._id);
+        const index = prevPosts.findIndex((p) => p?._id === sentence?._id);
 
         if (index !== -1) {
           const updatedPosts = [...prevPosts];
@@ -243,7 +243,7 @@ export const QuoteProvider = ({ children }) => {
     const handleUserUpdate = (updatedUser) => {
       setall_user((prevUsers) =>
         prevUsers.map((user) =>
-          user._id === updatedUser._id ? updatedUser : user
+          user?._id === updatedUser?._id ? updatedUser : user
         )
       );
     };

@@ -55,7 +55,7 @@ function All_Post_Section() {
     if (!all_posts || !all_user) return [];
 
     const mergedPosts = all_posts.map((post) => {
-      const user = all_user.find((u) => u._id === post.userId);
+      const user = all_user.find((u) => u?._id === post.userId);
       return { post, user };
     });
 
@@ -100,7 +100,7 @@ function All_Post_Section() {
                 ({ post, user }, idx) =>
                   user &&
                   post && (
-                    <div key={`comment-${idx}`} id={post._id}>
+                    <div key={`comment-${idx}`} id={post?._id}>
                       <EachPost user={user} comment={post} />
                     </div>
                   )
