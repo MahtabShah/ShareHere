@@ -295,7 +295,7 @@ const PostSentence = ({ type = "post" }) => {
         right: 0,
         top: 0,
         bottom: 0,
-        zIndex: uploadClicked ? 10000 : 100,
+        zIndex: uploadClicked ? 10000 : -100,
         // border: "3px solid red",
       }}
     >
