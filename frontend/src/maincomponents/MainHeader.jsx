@@ -10,6 +10,7 @@ import { Logo } from "../../TinyComponent/Logo";
 import { Notification } from "../../TinyComponent/Notification";
 import { useQuote } from "../context/QueotrContext";
 import axios from "axios";
+import { SearchBaar } from "../../TinyComponent/SearchBaar";
 const API = import.meta.env.VITE_API_URL;
 
 function MainHeader({}) {
@@ -90,9 +91,10 @@ function MainHeader({}) {
           <Container fluid>
             <div href="/Explore" className="fw-bold fs-6 pb-0 mb-0 flex-grow-1">
               <div className="d-flex justify-content-between w-100 flex-grow-1">
-                <div className="mt-2">
+                <div className="mt-2 d-flex align-items-center">
                   <Logo />
                 </div>
+
                 {smbreakPoint && (
                   <div className="d-flex align-items-center gap-2">
                     <Nav.Link
@@ -148,39 +150,46 @@ function MainHeader({}) {
                     Upload
                   </Nav.Link>
                   {/* <Nav.Link href="/Explore">Explore</Nav.Link> */}
-                  <Nav.Link href={`/api/user/${admin_user?._id}`}>
-                    Profile
-                  </Nav.Link>
-                  {!smbreakPoint && (
-                    <Nav.Link
-                      href=""
-                      onClick={() => {
-                        setVisibleNotification(!VisibleNotification);
-                        setCount(0);
-                        Mark_as_read_notification();
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faBell} />
-                      <NotificationBell count={count} />
+                  {smbreakPoint && (
+                    <Nav.Link href={`/api/user/${admin_user?._id}`}>
+                      Profile
                     </Nav.Link>
+                  )}
+                  {!smbreakPoint && (
+                    <>
+                      <Nav.Link
+                        href=""
+                        onClick={() => {
+                          setVisibleNotification(!VisibleNotification);
+                          setCount(0);
+                          Mark_as_read_notification();
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faBell} />
+                        <NotificationBell count={count} />
+                      </Nav.Link>
+                    </>
                   )}
                   {/* <Nav.Link href="/shop">Shop Now</Nav.Link> */}
 
                   {loggedIn ? (
                     <>
-                      <div className="d-flex">
-                        <button
-                          className="btn btn-danger text-white p-1 ps-2 pe-5 rounded-0 flex-grow-1 position-relative"
-                          onClick={handleLogout}
-                          style={{ minWidth: "134px", height: "42px" }}
-                        >
-                          Logout
-                        </button>
+                      <div className="d-flex align-items-center ">
+                        {smbreakPoint && (
+                          <button
+                            className="btn btn-danger text-white p-1 ps-2 pe-5 rounded-0 flex-grow-1 position-relative"
+                            onClick={handleLogout}
+                            style={{ minWidth: "134px", height: "34px" }}
+                          >
+                            Logout
+                          </button>
+                        )}
                         <Nav.Link
                           href={`/api/user/${admin_user?._id}`}
-                          className="text-white text-center position-absolute rounded-circle bg-danger "
+                          className="text-white text-center position-absolut rounded-circle bg-danger d-flex align-items-center justify-content-center "
                           style={{
-                            width: "42px",
+                            width: "34px",
+                            height: "34px",
                             zIndex: "2",
                             right: "10px",
                             boxShadow: "0 0 0 10px #f8f9fa",

@@ -129,7 +129,7 @@ export const SearchBaar = () => {
           ))}
         </div>
       </div>
-      <div className="ms-2 d-flex gap-3 overflow-x-auto none-scroller">
+      {/* <div className="ms-2 d-flex gap-3 overflow-x-auto none-scroller">
         {trend.map((t, idx) => (
           <div key={`idx-trend-${idx}`}>
             <button
@@ -140,7 +140,7 @@ export const SearchBaar = () => {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
     </>
   );
 };

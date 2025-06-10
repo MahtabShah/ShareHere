@@ -85,16 +85,13 @@ const UserProfile = ({}) => {
           }}
         >
           <div
-            className="rounded-circle"
+            className="rounded-circle bg-image"
             style={{
               background: user?.bg_clr,
               minWidth: "100px",
               minHeight: "100px",
               background: `url(${user?.profile_pic})`,
               aspectRatio: "1/1",
-              backgroundSize: "cover",
-              backgroundPosition: "center center",
-              backgroundRepeat: "no-repeat",
             }}
           />
         </div>
