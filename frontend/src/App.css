@@ -132,3 +132,9 @@ textarea {
 .vibe-ring {
   border-radius: 50%;
 }
+
+.navbar-toggler {
+  /* border: 2px solid red !important; */
+  border: none;
+  box-shadow: none !important;
+}

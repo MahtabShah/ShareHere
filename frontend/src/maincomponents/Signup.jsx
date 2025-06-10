@@ -30,31 +30,91 @@ const Signup = ({}) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Signup</h2>
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        onChange={handleChange}
-        required
-      />
-      <button type="submit">Signup</button>
-    </form>
+    <section className="text-center">
+      <div
+        className="p-5 bg-image"
+        style={{
+          backgroundImage:
+            "url('https://mdbootstrap.com/img/new/textures/full/171.jpg')",
+          height: "300px",
+        }}
+      ></div>
+
+      <div
+        className="card mx-4 mx-md-5 shadow-5-strong bg-body-tertiary"
+        style={{
+          marginTop: "-150px",
+          backdropFilter: "blur(30px)",
+        }}
+      >
+        <div className="card-body py-5 px-md-5">
+          <div className="row d-flex justify-content-center">
+            <div className="col-lg-8">
+              <h2 className="fw-bold mb-5">Login now</h2>
+              <form onSubmit={handleSubmit} className="">
+                <div className="form-outline mb-4 d-flex flex-column">
+                  <label className="form-label text-start" htmlFor="username">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    className="form-control"
+                    name="username"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-outline mb-4 d-flex flex-column">
+                  <label className="form-label text-start" htmlFor="email">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    className="form-control"
+                    name="email"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-outline mb-4 d-flex flex-column">
+                  <label className="form-label text-start" htmlFor="password">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    className="form-control"
+                    type="password"
+                    name="password"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="d-flex gap-3 justify-content-center">
+                  <button
+                    type="submit"
+                    className="btn btn-outline-primary btn-block mb-5 rounded-0 ps-3 pe-3"
+                  >
+                    Sign up
+                  </button>
+
+                  {/* <button
+                    type="submit"
+                    className="btn btn-success btn-block mb-5 rounded-0 ps-3 pe-3"
+                  >
+                    Login
+                  </button> */}
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 

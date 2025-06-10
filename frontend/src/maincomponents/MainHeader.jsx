@@ -96,7 +96,7 @@ function MainHeader({}) {
                 </div>
 
                 {smbreakPoint && (
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="d-flex align-items-center gap-3">
                     <Nav.Link
                       href=""
                       onClick={() => {
@@ -114,9 +114,9 @@ function MainHeader({}) {
                       }}
                     >
                       <small
-                        className="fw-normal rounded-5 me-2 border"
+                        className="fw-normal rounded-5 ps-2 pe-2 border"
                         style={{
-                          background: "#1111",
+                          background: "#3333",
                           padding: "4px 6px 6px",
                         }}
                       >
@@ -192,7 +192,7 @@ function MainHeader({}) {
                             height: "34px",
                             zIndex: "2",
                             right: "10px",
-                            boxShadow: "0 0 0 10px #f8f9fa",
+                            boxShadow: "0 0 0 6px #f8f9fa",
                           }}
                         >
                           <FontAwesomeIcon icon={faUser} />

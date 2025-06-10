@@ -10,7 +10,7 @@ import { throttle } from "lodash";
 const API = import.meta.env.VITE_API_URL;
 
 function All_Post_Section() {
-  const [visiblePosts, setVisiblePosts] = useState(6);
+  const [visiblePosts, setVisiblePosts] = useState(3);
   const [loading, setLoading] = useState(false);
   const [lazyLoading, setlazyLoading] = useState(true);
 
@@ -35,9 +35,11 @@ function All_Post_Section() {
     const handleScroll = throttle(() => {
       if (
         window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 10
+        document.body.offsetHeight - 100
       ) {
+        // if (visiblePosts < all_posts?.length) {
         setLoading(true);
+        // }
         setTimeout(() => {
           setVisiblePosts((prev) => prev + 3);
           setLoading(false);
@@ -107,11 +109,12 @@ function All_Post_Section() {
               )
             )}
 
-            {loading && (
-              <div className="d-flex justify-content-center p-3">
-                <Loading dm={34} />
-              </div>
-            )}
+            <div
+              className="d-flex justify-content-center p-3"
+              style={{ height: "44px" }}
+            >
+              {loading && <Loading dm={34} />}
+            </div>
           </section>
         )}
       </section>

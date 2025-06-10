@@ -295,18 +295,30 @@ const PostSentence = ({ type = "post" }) => {
         right: 0,
         top: 0,
         bottom: 0,
-        zIndex: uploadClicked ? 100 : -100,
+        zIndex: uploadClicked ? 10000 : 100,
         // border: "3px solid red",
       }}
     >
       <Accordion activeKey="0" className="">
         <Accordion.Item eventKey="0" className="rounded-0">
           {" "}
-          <Accordion.Header className="shadow-0">
-            Upload a post
-          </Accordion.Header>
+          {!uploadClicked && (
+            <Accordion.Header className="shadow-0">
+              Upload a post
+            </Accordion.Header>
+          )}
           {uploadClicked && (
             <Accordion.Body className="p-0">
+              <div className="d-flex justify-content-end">
+                <span
+                  className="btn btn-outline-danger rounded-0 m-2 ps-4 pe-4"
+                  onClick={() => {
+                    setUploadClicked(false);
+                  }}
+                >
+                  Back
+                </span>
+              </div>
               <form
                 onSubmit={handleSubmit}
                 className="w-100"
@@ -486,7 +498,6 @@ const PostSentence = ({ type = "post" }) => {
                   </div>
                 </div>
               </form>
-
               {isPre_Image && (
                 <div
                   className="d-grid gap-3 pt-3 w-100"
