@@ -377,11 +377,6 @@ const PostSentence = ({ type = "post" }) => {
                           resize: "none", // prevent resizing
                           caret: "ActiveBorder",
                           ...style,
-
-                          backgroundRepeat: "no-repeat",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center center",
-
                           background: `${images ? `url(${images})` : bg_clr}`,
                         }}
                         spellCheck={false}
