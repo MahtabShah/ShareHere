@@ -90,7 +90,7 @@ export const SearchBaar = () => {
         <div>
           {Filterd_result?.map(
             (res, idx) =>
-              admin_user._id !== res._id &&
+              admin_user?._id !== res?._id &&
               res && (
                 <div className="d-flex mt-3" key={res._id || idx}>
                   <UserRing user={res} />
