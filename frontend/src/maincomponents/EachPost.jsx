@@ -483,7 +483,7 @@ export const LikeBtn = ({ post }) => {
     }
   };
 
-  const isliked = post.likes.includes(admin_user?._id);
+  const isliked = post?.likes?.includes(admin_user?._id);
 
   return (
     <>
