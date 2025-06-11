@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {Sentence} = require('../models/Sentence');
+const Status = require("../models/Status");
 const User = require("../models/User")
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
@@ -66,15 +67,15 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get('/fix-sentences', async (req, res) => {
   try {
-    const result = await Sentence.updateMany(
+    const result = await Status.updateMany(
       // { bg_clr: { $exists: false } },
       // { $set: { bg_clr: `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})` } },
 
       // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
       //  { pages: { $exists: true } },
       // { $set: { pages: [{}] } },
-      { likes: { $exists: true } },
-      { $set: { likes: [] } }
+      { SeenBy: { $exists: false } },
+      { $set: { SeenBy: [] } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

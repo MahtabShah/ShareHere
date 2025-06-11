@@ -16,6 +16,12 @@ const statusSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+     SeenBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -40,5 +46,8 @@ const statusSchema = new mongoose.Schema(
     timestamps: true, // adds createdAt and updatedAt
   }
 );
+
+// ✅ TTL index: delete 24 hours (86400 seconds) after `createdAt`
+statusSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 module.exports = mongoose.model("Status", statusSchema);

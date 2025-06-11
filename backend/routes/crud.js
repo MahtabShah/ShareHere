@@ -10,6 +10,8 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
 
+// Helper to delete status older than 30s (for testing)
+
 
 
 router.get('/crud', verifyToken,  async (req, res) => {
@@ -19,8 +21,8 @@ router.get('/crud', verifyToken,  async (req, res) => {
 
 
   try {
-    const user = await User.findById({_id:userId})
-        console.log("aaaaaaaaaaaaaaaaaaaaaa---> ", req.user, user)
+    const user = await User.findById({_id:userId}).populate("following")
+    // console.log("aaaaaaaaaaaaaaaaaaaaaa---> ", req.user, user)
     res.json(user)
   } catch (err) {
     console.error('Error deleting sentence:', err);
@@ -123,6 +125,44 @@ const userId = req.params.userId;
     res.status(500).json({ message: "Server Error", error });
   }
 });
+
+
+
+
+
+
+const removeOrphanStatusRefs = async () => {
+  try {
+    const allStatusIds = await Status.find().distinct("_id");
+
+    await User.updateMany(
+      {},
+      {
+        $pull: {
+          status: { $nin: allStatusIds }, // Remove refs that are NOT in the Status collection
+        },
+      }
+    );
+    io.emit('status');
+
+    console.log("✅ Removed orphaned status references from users.");
+  } catch (err) {
+    console.error("❌ Error removing orphaned status refs:", err);
+  }
+};
+
+const cron = require("node-cron");
+
+// Every 5 minute
+cron.schedule("* * * * *", async () => {
+  await removeOrphanStatusRefs();
+  console.log("Cron job ran to clean up status refs.");
+});
+
+
+
+
+
 
 
 router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
@@ -259,26 +299,28 @@ router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
 
 
 // PUT: Update a status by ID
-router.put("/update_status/:id", async (req, res) => {
-  const statusId = req.params.id;
-  const { text, image, user } = req.body;
+
+router.put("/set_status_seen/:id", async (req, res) => {
+  const userId = req.params.id;
+  const { user_statuses } = req.body;
 
   try {
-    const updatedStatus = await Status.findByIdAndUpdate(
-      statusId,
-      {
-        text,
-        image,
-        user,
-      },
-      { new: true, runValidators: true } // return the updated doc
-    );
+    const updates = [];
 
-    if (!updatedStatus) {
-      return res.status(404).json({ message: "Status not found" });
+    for (let status of user_statuses) {
+      if (!status.SeenBy.includes(userId)) {
+        updates.push(
+          Status.findByIdAndUpdate(status._id, {
+            $addToSet: { SeenBy: userId }, // prevent duplicates
+          })
+        );
+      }
     }
 
-    res.status(200).json(updatedStatus);
+    await Promise.all(updates);
+    io.emit('status');
+
+    res.status(200).json({ message: "Statuses updated" });
   } catch (error) {
     console.error("Error updating status:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -295,6 +337,8 @@ router.post("/create_status", async (req, res) => {
     await new_user.save()
     await newStatus.save()
     io.emit('status', newStatus.toObject());
+    io.emit('status');
+
     io.emit('userUpdated', new_user);
 
     
@@ -305,6 +349,8 @@ router.post("/create_status", async (req, res) => {
     res.status(500).json({ message: "Failed to create status" });
   }
 });
+
+
 
 
 

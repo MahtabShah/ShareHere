@@ -24,6 +24,7 @@
     "express-session": "^1.18.1",
     "fontawesome-free": "^1.0.4",
     "fortawesome": "^0.0.1-security",
+    "framer-motion": "^12.17.0",
     "html2canvas": "^1.4.1",
     "lodash": "^4.17.21",
     "mongoose": "^8.15.1",

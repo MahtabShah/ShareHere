@@ -29,7 +29,7 @@ export const QuoteProvider = ({ children }) => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
   const [loading, setLoading] = useState(false);
-  const [statuses, setStatuses] = useState([]);
+  const [all_statuses, setall_statuses] = useState([]);
   const [all_posts, set_all_posts] = useState([]);
   const [sorted_posts, set_sorted_posts] = useState([]);
   const [followings, setFollowings] = useState([]);
@@ -38,6 +38,7 @@ export const QuoteProvider = ({ children }) => {
   const [Errors, setErrors] = useState(null);
   const [hasSorted, setHasSorted] = useState(false);
   const [curr_all_notifications, setcurr_all_notifications] = useState([]);
+  const [all_user, setall_user] = useState([]);
 
   const token = localStorage.getItem("token");
 
@@ -80,14 +81,12 @@ export const QuoteProvider = ({ children }) => {
           Authorization: `Bearer ${token}`, // Optional, if protected
         },
       });
-      setStatuses(res.data);
+      setall_statuses(res.data);
       // console.log("Status------------", res.data);
     } catch (error) {
-      console.error("Failed to fetch statuses:", error);
+      console.error("Failed to fetch all_statuses:", error);
     }
   };
-
-  const [all_user, setall_user] = useState([]);
 
   const fetch_all_users = async () => {
     try {
@@ -172,7 +171,7 @@ export const QuoteProvider = ({ children }) => {
     fetch_all_posts();
 
     if (admin_user?._id) {
-      fetch_user_statuses();
+      // fetch_user_statuses();
     }
   }, []);
 
@@ -256,12 +255,17 @@ export const QuoteProvider = ({ children }) => {
 
     socket.on("userUpdated", handleUserUpdate);
     socket.on("update", fetch_all_posts);
+    socket.on("status", () => {
+      fetch_user_statuses();
+      fetch_admin_user();
+    });
     socket.on("Notification", fetch_all_notifications);
 
     return () => {
       socket.off("userUpdated", handleUserUpdate);
       socket.off("Notification", fetch_all_notifications);
       socket.off("update", fetch_all_posts);
+      socket.off("status", fetch_user_statuses);
     };
   }, []);
 
@@ -276,9 +280,11 @@ export const QuoteProvider = ({ children }) => {
 
       set_all_posts(sorted);
       setHasSorted(true);
-      console.log("Deep cloned & sorted posts:", sorted);
+      // console.log("Deep cloned & sorted posts:", sorted);
     }
   }, [all_posts, hasSorted]);
+
+  useEffect(() => {});
 
   return (
     <QuoteContext.Provider
@@ -296,7 +302,7 @@ export const QuoteProvider = ({ children }) => {
         fetch_all_notifications,
         fetch_all_posts,
         fetch_all_users,
-        setStatuses,
+        setall_statuses,
         HandleShare,
         setStatusClicked,
         curr_all_notifications,
@@ -306,12 +312,12 @@ export const QuoteProvider = ({ children }) => {
         setUploadClicked,
         uploadClicked,
         setUploadClicked,
-
+        API,
         selectedUserId,
         admin_user,
         isPaused,
         all_followings,
-        statuses,
+        all_statuses,
         token,
         all_user,
         all_posts,
