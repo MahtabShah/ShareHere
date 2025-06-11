@@ -5,6 +5,9 @@ const QuoteContext = createContext();
 const API = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import socket from "../maincomponents/socket";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 export const useQuote = () => useContext(QuoteContext);
 
@@ -28,11 +31,12 @@ export const QuoteProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [statuses, setStatuses] = useState([]);
   const [all_posts, set_all_posts] = useState([]);
+  const [sorted_posts, set_sorted_posts] = useState([]);
   const [followings, setFollowings] = useState([]);
   const [uploadClicked, setUploadClicked] = useState(false);
   const [all_post_loading, setAll_post_loading] = useState(false);
   const [Errors, setErrors] = useState(null);
-
+  const [hasSorted, setHasSorted] = useState(false);
   const [curr_all_notifications, setcurr_all_notifications] = useState([]);
 
   const token = localStorage.getItem("token");
@@ -261,6 +265,21 @@ export const QuoteProvider = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!hasSorted && all_posts?.length > 0) {
+      const sorted = all_posts
+        .map((post) => ({
+          ...post,
+          rank: Rank_Calculation(post),
+        }))
+        .sort((a, b) => b.rank - a.rank);
+
+      set_all_posts(sorted);
+      setHasSorted(true);
+      console.log("Deep cloned & sorted posts:", sorted);
+    }
+  }, [all_posts, hasSorted]);
+
   return (
     <QuoteContext.Provider
       value={{
@@ -302,9 +321,37 @@ export const QuoteProvider = ({ children }) => {
         updateFollowersMap,
         toggleFollowStatus,
         token,
+        sorted_posts,
       }}
     >
       {children}
     </QuoteContext.Provider>
   );
 };
+
+function Rank_Calculation(post) {
+  if (!post) return 0;
+
+  const now = dayjs();
+  const createdAt = dayjs(post?.createdAt);
+  const ageInHours = now.diff(createdAt, "hour") || 1; // prevent divide by 0
+
+  const likes = post?.likes?.length || 0;
+  const comments = post?.comments?.length || 0;
+  const followers = post?.followers?.length || 1;
+  const following = post?.following?.length || 1;
+
+  // Engagement Score
+  const engagement = likes * 3 + comments * 7; // comment > like
+
+  // Network influence
+  const influence = Math.log10(followers + 1) / Math.log10(following + 2); // avoid division explosion
+
+  // Recency Bonus: newer posts get higher weight
+  const recencyFactor = 24 / ageInHours; // decay over 1 day
+
+  // Final rank formula (tunable)
+  const rank = engagement * recencyFactor * influence;
+
+  return Math.round(rank * 100) / 100; // round to 2 decimal places
+}

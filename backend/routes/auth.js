@@ -88,7 +88,11 @@ router.get("/home" , async (req, res)=>{
 
 
 router.get("/all_sentence" , async (req, res)=>{
-    const all_sentence = await Sentence.find().populate({
+  const limit = parseInt(req.query.limit) || 1000;
+  const page = parseInt(req.query.page) || 0;
+  const all_posts = await Sentence.find().sort({ createdAt: -1 }) // or use a `rank` field
+  .skip(page * limit)
+  .limit(limit).populate({
     path: 'comments',
     populate: { path: 'userId', model: 'User' },
     // populate: { path: 'postId', model: 'Sentence' },
@@ -96,7 +100,7 @@ router.get("/all_sentence" , async (req, res)=>{
   //  console.log("all user want ot fetching 77----: auth,js routes", all_sentence)
 
    try {
-      res.json(all_sentence)
+      res.json(all_posts)
    } catch (error) {
     console.error("error in auth " , error)
    }

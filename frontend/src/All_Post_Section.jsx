@@ -10,7 +10,7 @@ import { throttle } from "lodash";
 const API = import.meta.env.VITE_API_URL;
 
 function All_Post_Section() {
-  const [visiblePosts, setVisiblePosts] = useState(3);
+  const [visiblePosts, setVisiblePosts] = useState(5);
   const [loading, setLoading] = useState(false);
   const [lazyLoading, setlazyLoading] = useState(true);
 
