@@ -24,9 +24,7 @@ function MainHeader({}) {
     uploadClicked,
   } = useQuote();
 
-  const [count, setCount] = useState(
-    curr_all_notifications?.filter((n) => n.isRead === false).length || 0
-  );
+  const [count, setCount] = useState(0);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -46,9 +44,11 @@ function MainHeader({}) {
   };
 
   useEffect(() => {
-    setCount(
-      curr_all_notifications.filter((n) => n.isRead === false).length || 0
-    );
+    if (curr_all_notifications && curr_all_notifications?.length > 0) {
+      const length =
+        curr_all_notifications?.filter((n) => n?.isRead === false)?.length || 0;
+      setCount(length);
+    }
   }, [curr_all_notifications]);
 
   const Mark_as_read_notification = async () => {

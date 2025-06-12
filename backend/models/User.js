@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema({
 
   status:[{
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'Status' 
   }],
 
   default: [],

@@ -33,7 +33,7 @@ const ParentStatusComponent = () => {
     if (!admin_user?.following || !all_user) return;
 
     const followedWithStatus = all_user.filter(
-      (u) => admin_user.following.includes(u._id) && u?.status?.length > 0
+      (u) => admin_user?.following?.includes(u._id) && u?.status?.length > 0
     );
 
     // Place admin_user at index 0 if they have any status
@@ -101,9 +101,17 @@ export const StatusRing = ({ user, userIdx }) => {
     setIsClicked(seen);
   }, [user_statuses, admin_user]);
 
+  console.log("user ", user);
+  useEffect(() => {
+    all_statuses.filter((s) => s?.user?._id === user._id)?.length === 0
+      ? setIsClicked(true)
+      : "";
+  }, [user_statuses, all_statuses]);
+
   return (
     <>
-      {user && (
+      {(user._id === admin_user?._id ||
+        (user && user_statuses?.length > 0)) && (
         <div className="status-item d-flex align-items-center justify-content-center">
           <div
             className={`d-flex align-items-center justify-content-center status-ring  ${
@@ -114,7 +122,6 @@ export const StatusRing = ({ user, userIdx }) => {
               className="status-image bg-light overflow-hidden"
               onClick={() => {
                 if (user_statuses?.length > 0) setSelectedUserId(user?._id);
-                // ThisUserClickedStatus();
               }}
             >
               <img src={user?.profile_pic} alt="" className="w-100 h-100" />
@@ -288,7 +295,10 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
               interval={null}
               activeIndex={activeIndex}
               onSelect={setActiveIndex}
-              onMouseEnter={handlePause}
+              onMouseEnter={() => {
+                handlePause();
+                ThisUserClickedStatus(user_statuses);
+              }}
               onMouseLeave={handleResume}
               onTouchStart={handlePause}
               onTouchEnd={handleResume}

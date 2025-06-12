@@ -67,15 +67,15 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get('/fix-sentences', async (req, res) => {
   try {
-    const result = await Status.updateMany(
+    const result = await User.updateMany(
       // { bg_clr: { $exists: false } },
       // { $set: { bg_clr: `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})` } },
 
       // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
       //  { pages: { $exists: true } },
       // { $set: { pages: [{}] } },
-      { SeenBy: { $exists: false } },
-      { $set: { SeenBy: [] } }
+      { status: { $exists: true } },
+      { $set: { status: [] } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

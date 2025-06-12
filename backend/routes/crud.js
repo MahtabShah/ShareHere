@@ -9,7 +9,7 @@ const Status = require("../models/Status")
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
-
+const mongoose = require("mongoose");
 // Helper to delete status older than 30s (for testing)
 
 
@@ -154,14 +154,58 @@ const removeOrphanStatusRefs = async () => {
 const cron = require("node-cron");
 
 // Every 5 minute
-cron.schedule("* * * * *", async () => {
-  await removeOrphanStatusRefs();
-  console.log("Cron job ran to clean up status refs.");
+// cron.schedule("* * * * *", async () => {
+//   await removeOrphanStatusRefs();
+//   console.log("Cron job ran to clean up status refs.");
+// });
+
+// setTimeout(async () => {
+  // await removeOrphanStatusRefs();
+  
+// }, 1000);
+
+
+router.delete('/del_status', verifyToken, async (req, res) => {
+  const userId = req.user.userId || req.user.id;
+
+  try {
+    const oneMinuteAgo = new Date(Date.now() - 60 * 10000);
+
+    // Step 1: Find old statuses for this user
+    const oldStatuses = await Status.find({
+      user: userId,
+      createdAt: { $lt: oneMinuteAgo }
+    });
+
+    const oldStatusIds = oldStatuses.map(status => status._id);
+
+    if (oldStatusIds.length === 0) {
+      return res.status(200).json({ message: "No old statuses found.", deletedCount: 0 });
+    }
+
+    // Step 2: Delete from Status collection
+    await Status.deleteMany({ _id: { $in: oldStatusIds } });
+
+    // Step 3: Remove from user's status array
+    await User.findByIdAndUpdate(userId, {
+      $pull: { status: { $in: oldStatusIds } }
+    });
+
+    io.emit("status")
+
+
+    res.status(200).json({
+      message: "Old statuses deleted and removed from user.",
+      deletedCount: oldStatusIds.length
+    });
+
+
+
+  } catch (err) {
+    console.error("Error deleting old statuses:", err);
+    res.status(500).json({ message: "Failed to delete old statuses." });
+  }
 });
-
-
-
-
 
 
 
