@@ -130,6 +130,51 @@ const pre_bg_color = [
   "#2B580C",
 ];
 
+const pre_color = [
+  "#A294F9",
+  "#F1F0E8",
+  "#89A8B2",
+  "#D91656",
+  "#640D5F",
+  "#355F2E",
+  "#441752",
+  "#F72C5B",
+  "#F0BB78",
+  "#131010",
+  "#3E5879",
+  "#C84C05",
+  "#074799",
+  "#8D0B41",
+  "#7E5CAD",
+  "#500073",
+  "#8D77AB",
+  "#FFE9D6",
+  "#D7C1E0",
+  "#EEF5FF",
+  "#7E30E1",
+  "#B0D553",
+  "#D4F6CC",
+  "#171717",
+  "#DA0037",
+  "#217756",
+  "#008DDA",
+  "#664343",
+  "#E0AB5B",
+  "#FFA6D5",
+  "#240750",
+  "#3B3030",
+  "#5FBDFF",
+  "#7B66FF",
+  "#FFF8CD",
+  "#D4D7DD",
+  "#A888B5",
+  "#000B58",
+  "#F67280",
+  "#46B7B9",
+  "#8D72E1",
+  "#2B580C",
+];
+
 const PostSentence = ({ type = "post" }) => {
   const [text, setText] = useState("");
   const [Errors, setErrors] = useState("");
@@ -258,17 +303,18 @@ const PostSentence = ({ type = "post" }) => {
   };
 
   const [image, setImage] = useState(null);
+  const [statusLoading, setstatusLoading] = useState(false);
 
   const HandleStatus = async () => {
     // const [userId, setUserId] = useState(""); // use logged-in user ID
-    handleCapture();
-    setImage(ready_url);
+    setstatusLoading(true);
     try {
+      const ready_url = await handleCapture();
       const res = await axios.post(
         `${API}/api/crud/create_status`,
         {
           text,
-          image,
+          image: ready_url,
           user: admin_user?._id,
         },
         {
@@ -282,6 +328,7 @@ const PostSentence = ({ type = "post" }) => {
     } catch (err) {
       console.error("Error creating status:", err);
     }
+    setstatusLoading(false);
   };
 
   // console.log("admin_usernnnn", admin_user);
@@ -309,7 +356,10 @@ const PostSentence = ({ type = "post" }) => {
           )}
           {uploadClicked && (
             <Accordion.Body className="p-0">
-              <div className="d-flex justify-content-end">
+              <div
+                className="d-flex justify-content-between"
+                style={{ maxWidth: "614px", margin: "auto" }}
+              >
                 <span
                   className="btn btn-outline-danger rounded-0 m-2 ps-4 pe-4"
                   onClick={() => {
@@ -317,6 +367,20 @@ const PostSentence = ({ type = "post" }) => {
                   }}
                 >
                   Back
+                </span>
+
+                <span
+                  className="btn btn-primary rounded-0 m-2 ps-3 pe-3"
+                  onClick={async () => {
+                    await HandleStatus();
+                    setUploadClicked(false);
+                  }}
+                >
+                  {statusLoading ? (
+                    <Loading dm={24} clr="danger" />
+                  ) : (
+                    "set as status"
+                  )}
                 </span>
               </div>
               <form
@@ -354,17 +418,17 @@ const PostSentence = ({ type = "post" }) => {
                     </div>
 
                     <div
-                      className="d-flex  mt-0 position-relative overflow-hidden"
+                      className="d-flex  mt-0 position-relative overflow-hidden  bg-for-readyUrl"
                       style={{
                         width: "calc(100% - 0rem)",
                         maxWidth: "600px",
                         aspectRatio: "6/7",
-                        // background: `${bg_clr}`,
+                        background: `${bg_clr}`,
                       }}
                       ref={containerRef}
                     >
                       <div
-                        className="rounded-0 w-100 p-2 h-100"
+                        className="rounded-0 w-100 p-2 h-100 bg-for-readyUrl"
                         ref={divRef}
                         style={{
                           maxWidth: "600px",
@@ -376,6 +440,7 @@ const PostSentence = ({ type = "post" }) => {
                           overflow: "hidden", // hide scroll
                           resize: "none", // prevent resizing
                           caret: "ActiveBorder",
+
                           ...style,
                           background: `${images ? `url(${images})` : bg_clr}`,
                         }}
@@ -583,37 +648,6 @@ const QuoteStyler = () => {
     "Segoe UI",
     "Roboto",
     "Open Sans",
-    "Lato",
-    "Oswald",
-    "Montserrat",
-    "Raleway",
-    "Ubuntu",
-    "Merriweather",
-    "PT Sans",
-    "Source Sans Pro",
-    "Noto Sans",
-    "Fira Sans",
-    "Inconsolata",
-    "Droid Sans",
-    "Cabin",
-    "Exo",
-    "Quicksand",
-    "Rubik",
-    "Work Sans",
-    "Josefin Sans",
-    "Bebas Neue",
-    "Playfair Display",
-    "Anton",
-    "Cinzel",
-    "Zilla Slab",
-    "Arvo",
-    "Mukta",
-    "Hind",
-    "Karla",
-    "IBM Plex Sans",
-    "Cairo",
-    "Manrope",
-    "Poppins",
   ];
 
   const fontSize = [
@@ -718,19 +752,9 @@ const QuoteStyler = () => {
   ];
 
   const backgroundPosition = [
-    "left top",
-    "left center",
-    "left bottom",
     "center top",
     "center center",
     "center bottom",
-    "right top",
-    "right center",
-    "right bottom",
-    "10px 20px",
-    "50% 50%",
-    "100% 0%",
-    "0 0",
     "bottom",
     "top",
     "right",
@@ -918,7 +942,7 @@ const QuoteStyler = () => {
         { curr_style: "fontFamily", replace: "", Props: fontFamily },
         { curr_style: "textAlign", replace: "", Props: textAlign },
         { curr_style: "letterSpacing", replace: "px", Props: letterSpacing },
-        { curr_style: "color", replace: "", Props: pre_bg_color },
+        { curr_style: "color", replace: "", Props: pre_color },
         { curr_style: "textShadow", replace: "", Props: textShadow },
         { curr_style: "backgroundSize", replace: "", Props: backgroundSize },
         {
