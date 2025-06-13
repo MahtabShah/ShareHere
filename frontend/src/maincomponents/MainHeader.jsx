@@ -172,7 +172,7 @@ function MainHeader({}) {
                   )}
                   {/* <Nav.Link href="/shop">Shop Now</Nav.Link> */}
 
-                  {loggedIn && admin_user._id ? (
+                  {loggedIn && admin_user?._id ? (
                     <>
                       <div className="d-flex align-items-center ">
                         {smbreakPoint && (
