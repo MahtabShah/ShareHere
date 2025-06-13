@@ -77,10 +77,12 @@ router.get("/user_status/:userId", async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const statuses = await Status.find({ user: userId })
-      .populate("user", "name email")
-      .populate("likes", "name")
-      .populate("comments.user", "name");
+   const statuses = await Status.find({ user: userId })
+  .sort({ createdAt: -1 })
+  .populate("user", "name email")
+  .populate("likes", "name")
+  .populate("comments.user", "name");
+
 
     res.status(200).json(statuses);
   } catch (error) {
@@ -130,82 +132,65 @@ const userId = req.params.userId;
 
 
 
-
-const removeOrphanStatusRefs = async () => {
-  try {
-    const allStatusIds = await Status.find().distinct("_id");
-
-    await User.updateMany(
-      {},
-      {
-        $pull: {
-          status: { $nin: allStatusIds }, // Remove refs that are NOT in the Status collection
-        },
-      }
-    );
-    io.emit('status');
-
-    console.log("✅ Removed orphaned status references from users.");
-  } catch (err) {
-    console.error("❌ Error removing orphaned status refs:", err);
-  }
-};
-
-const cron = require("node-cron");
-
-// Every 5 minute
-// cron.schedule("* * * * *", async () => {
-//   await removeOrphanStatusRefs();
-//   console.log("Cron job ran to clean up status refs.");
-// });
-
-// setTimeout(async () => {
-  // await removeOrphanStatusRefs();
-  
-// }, 1000);
-
-
 router.delete('/del_status', verifyToken, async (req, res) => {
   const userId = req.user.userId || req.user.id;
 
   try {
-    const oneMinuteAgo = new Date(Date.now() - 60 * 10000);
+    const oneMinuteAgo = new Date(Date.now() - 85000);
 
-    // Step 1: Find old statuses for this user
+    // Get user + followings
+    const user = await User.findById(userId).populate("following");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Build clean ObjectId array
+   const userIdsToCheck = [user._id, ...user.following.map(f => f._id)];
+
+
+    console.log("Deleting statuses for userIds:", userIdsToCheck);
+    console.log("Delete before time:", oneMinuteAgo);
+
+    // Find old statuses
     const oldStatuses = await Status.find({
-      user: userId,
+      user: { $in: userIdsToCheck },
       createdAt: { $lt: oneMinuteAgo }
     });
 
-    const oldStatusIds = oldStatuses.map(status => status._id);
+    const oldStatusIds = oldStatuses.map(s => s._id);
 
     if (oldStatusIds.length === 0) {
-      return res.status(200).json({ message: "No old statuses found.", deletedCount: 0 });
+      return res.status(200).json({
+        message: "No old statuses to delete.",
+        deletedCount: 0,
+        deletedStatusIds: []
+      });
     }
 
-    // Step 2: Delete from Status collection
+    // Delete statuses
     await Status.deleteMany({ _id: { $in: oldStatusIds } });
 
-    // Step 3: Remove from user's status array
-    await User.findByIdAndUpdate(userId, {
-      $pull: { status: { $in: oldStatusIds } }
-    });
+    // Pull from users' status arrays
+    await User.updateMany(
+      { _id: { $in: userIdsToCheck } },
+      { $pull: { status: { $in: oldStatusIds } } }
+    );
 
-    io.emit("status")
-
+    io.emit("status");
 
     res.status(200).json({
-      message: "Old statuses deleted and removed from user.",
-      deletedCount: oldStatusIds.length
+      message: `Deleted ${oldStatusIds.length} old statuses.`,
+      deletedCount: oldStatusIds.length,
+      deletedStatusIds: oldStatusIds
     });
-
-
 
   } catch (err) {
     console.error("Error deleting old statuses:", err);
     res.status(500).json({ message: "Failed to delete old statuses." });
   }
 });
+
 
 
 
@@ -265,7 +250,11 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   // Emit a follow event with link to user profile
   io.emit('userUpdated', user_a);
   io.emit('userUpdated', user_b);
-  io.emit('Notification');
+
+  ["Notification" , "status"].forEach(el=>{
+  io.emit(el);
+
+  })
   
     // console.log("------------> follow" , user_a , user_b)
     res.status(201).json({ message: 'Sentence saved , see delete route' });
@@ -372,22 +361,30 @@ router.put("/set_status_seen/:id", async (req, res) => {
 });
 
 
+
 router.post("/create_status", async (req, res) => {
   const { text, image, user } = req.body;
   try {
     const new_user = await User.findById(user); 
-    const newStatus = new Status({ text, image, user });
-    await new_user?.status?.unshift(newStatus)
-    await new_user.save()
-    await newStatus.save()
-    io.emit('status', newStatus.toObject());
-    io.emit('status');
+    if (!new_user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    const newStatus = new Status({ text, image, user });
+    await newStatus.save();
+
+    if (Array.isArray(new_user.status)) {
+      new_user.status.unshift(newStatus._id);
+    } else {
+      new_user.status = [newStatus._id];
+    }
+    await new_user.save();
+
+    io.emit('status', newStatus.toObject());
     io.emit('userUpdated', new_user);
 
-    
-
     res.status(201).json(newStatus);
+
   } catch (error) {
     console.error("Error creating status:", error);
     res.status(500).json({ message: "Failed to create status" });

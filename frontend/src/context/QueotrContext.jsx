@@ -285,18 +285,16 @@ export const QuoteProvider = ({ children }) => {
   }, [all_posts, hasSorted]);
 
   useEffect(() => {
-    const del_status = setInterval(async () => {
+    setInterval(async () => {
       try {
         const res = await axios.delete(`${API}/api/crud/del_status`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("setcurr_all_notifications---->", res.data);
-        setcurr_all_notifications(res.data);
+        // console.log("setcurr_all_notifications---->", res.data);
       } catch (error) {
         console.log("error in notify", error);
       }
-    }, 1000);
-
+    }, 10000);
     // Cleanup function: will run when the component unmounts or dependencies change
     // return () => clearInterval(del_status);
   }, []);

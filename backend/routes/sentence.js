@@ -75,7 +75,9 @@ router.get('/fix-sentences', async (req, res) => {
       //  { pages: { $exists: true } },
       // { $set: { pages: [{}] } },
       { status: { $exists: true } },
-      { $set: { status: [] } }
+      { $set: { status: [] } },
+      //       { following: { $exists: true } },
+      // { $set: { following: [] } }
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

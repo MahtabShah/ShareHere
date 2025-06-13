@@ -32,6 +32,8 @@ const StatusPage = () => {
   return (
     <>
       <div className="d-flex gap-3 mt-3 overflow-x-auto status-parent align-items-center w-100 px-2">
+        {admin_user && <StatusRing user={admin_user} userIdx={"-idx-admin"} />}
+
         {followings?.length > 0 && (
           <ParentStatusComponent followings={followings} />
         )}
@@ -48,14 +50,14 @@ createRoot(document.getElementById("root")).render(
         <PostSentence />
         <BottomNav />
 
-        <StatusPage />
-
         <Routes>
           <Route
             path="/*"
             element={
               <>
                 <SearchBaar />
+                <StatusPage />
+
                 <All_Post_Section />
               </>
             }
@@ -65,6 +67,8 @@ createRoot(document.getElementById("root")).render(
             element={
               <>
                 <SearchBaar />
+                <StatusPage />
+
                 <All_Post_Section />
               </>
             }

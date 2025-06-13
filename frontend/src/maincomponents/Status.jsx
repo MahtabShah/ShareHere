@@ -10,16 +10,15 @@ import { useQuote } from "../context/QueotrContext";
 import { useNavigate } from "react-router-dom";
 import PostSentence from "./PostSentance";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { UserRing } from "./EachPost";
 import axios from "axios";
 
-const ParentStatusComponent = () => {
+const ParentStatusComponent = ({ followings }) => {
   const {
     selectedUserId,
     all_statuses,
     all_user,
     fetch_user_statuses,
-    setSelectedUserId,
     admin_user,
   } = useQuote();
 
@@ -31,34 +30,37 @@ const ParentStatusComponent = () => {
 
   useEffect(() => {
     if (!admin_user?.following || !all_user) return;
-
-    const followedWithStatus = all_user.filter(
-      (u) => admin_user?.following?.includes(u._id) && u?.status?.length > 0
-    );
+    const followedWithStatus = followings.filter((u) => u?.status?.length > 0);
 
     // Place admin_user at index 0 if they have any status
-    const isAdminInList = followedWithStatus.some(
-      (u) => u._id === admin_user._id
-    );
+    // const isAdminInList = followedWithStatus.some(
+    //   (u) => u._id === admin_user._id
+    // );
     let finalList;
 
     if (admin_user?.status?.length > 0) {
-      if (isAdminInList) {
-        // Move admin_user to front
-        finalList = [
-          followedWithStatus.find((u) => u._id === admin_user._id),
-          ...followedWithStatus.filter((u) => u._id !== admin_user._id),
-        ];
-      } else {
-        // Add admin_user to front
-        finalList = [admin_user, ...followedWithStatus];
-      }
+      // if (isAdminInList) {
+      // Move admin_user to front
+      finalList = [
+        // followedWithStatus.find((u) => u._id === admin_user._id),
+        ...followedWithStatus.filter((u) => u._id !== admin_user._id),
+      ];
+      // } else {
+      // Add admin_user to front
+      // finalList = [admin_user, ...followedWithStatus];
+      // }
     } else {
       finalList = followedWithStatus;
     }
 
     setfollowing_have_status(finalList);
   }, [admin_user, all_user, all_statuses]);
+
+  console.log(
+    following_have_status,
+    "user having folloeing and status ",
+    followings
+  );
 
   return (
     <div className="d-flex gap-3">
@@ -160,6 +162,7 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [SeenBy, setSeenBy] = useState(false);
   const [paused, setPaused] = useState(false);
   const {
     setSelectedUserId,
@@ -189,6 +192,7 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
       if (index < all_statuses_user.length - 1) {
         setIsTransitioning(true);
         setTimeout(() => {
+          setSeenBy(false);
           setSelectedUserId(all_statuses_user[index + 1]._id);
           setIsTransitioning(false);
         }, 500);
@@ -215,8 +219,14 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
     ThisUserClickedStatus(user_statuses);
   }, [user_statuses]);
 
-  const handlePause = () => setPaused(true);
-  const handleResume = () => setPaused(false);
+  const handlePause = () => {
+    setPaused(true);
+    ThisUserClickedStatus(user_statuses);
+  };
+  const handleResume = () => {
+    setPaused(false);
+    ThisUserClickedStatus(user_statuses);
+  };
 
   useEffect(() => {
     setUser(all_user?.filter((u) => u._id === userId)[0]);
@@ -233,7 +243,6 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
             height: "100dvh",
             margin: "auto",
             maxWidth: "520px",
-            transform: "scale(0.9)",
           }}
           initial={{ x: 200, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -265,7 +274,7 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
               <div className="d-flex justify-content-between w-100 gap-3 pe-1">
                 <div className="flex-grow-1 d-flex gap-2">
                   <img
-                    src={user_statuses[0]?.image}
+                    src={user?.profile_pic}
                     alt=""
                     className="rounded-circle"
                     style={{ width: 44, height: 44 }}
@@ -273,7 +282,6 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
                   <div>
                     <span>{user?.username}</span>
                     <br />
-                    <small>Today, 8:20</small>
                   </div>
                 </div>
                 <div className="d-flex gap-2 align-items-center">
@@ -297,7 +305,6 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
               onSelect={setActiveIndex}
               onMouseEnter={() => {
                 handlePause();
-                ThisUserClickedStatus(user_statuses);
               }}
               onMouseLeave={handleResume}
               onTouchStart={handlePause}
@@ -305,6 +312,15 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
             >
               {user_statuses.map((status, idx) => (
                 <Carousel.Item key={idx}>
+                  <div className="d-flex justify-content-between position-absolute w-100 text-danger p-2">
+                    <span>
+                      {new Date(status.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+
                   <div className="d-flex h-100 align-items-center justify-content-center">
                     <img
                       src={status?.image}
@@ -313,10 +329,42 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
                       style={{ objectFit: "cover" }}
                     />
                   </div>
+
+                  {SeenBy && admin_user._id === userId && (
+                    <div
+                      className="d-flex flex-column text-light bg-dark position-absolute p-3 w-100 border gap-3 overflow-y-auto"
+                      style={{
+                        zIndex: 5000000000,
+                        bottom: "0px",
+                        height: "80%",
+                      }}
+                    >
+                      {status?.SeenBy?.map((el) => (
+                        // <small>{all_user?.filter((u) => u._id == el)[0]}</small>
+                        <div>
+                          <UserRing
+                            user={all_user?.filter((u) => u._id == el)[0]}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </Carousel.Item>
               ))}
             </Carousel>
           </div>
+
+          {admin_user._id === userId && (
+            <small
+              className="position-absolute mb-3 p-3 d-flex w-100 justify-content-center fw-bold"
+              onClick={() => {
+                setSeenBy(!SeenBy);
+              }}
+              style={{ zIndex: 90000000, bottom: "40px", cursor: "pointer" }}
+            >
+              seen by
+            </small>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

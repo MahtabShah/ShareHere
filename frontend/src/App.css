@@ -142,3 +142,8 @@ textarea {
   border: none;
   box-shadow: none !important;
 }
+
+.carousel-control-prev,
+.carousel-control-next {
+  opacity: 0 !important;
+}

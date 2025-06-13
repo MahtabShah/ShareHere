@@ -48,6 +48,6 @@ const statusSchema = new mongoose.Schema(
 );
 
 // ✅ TTL index: delete 24 hours (86400 seconds) after `createdAt`
-// statusSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
+statusSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 module.exports = mongoose.model("Status", statusSchema);
