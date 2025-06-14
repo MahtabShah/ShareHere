@@ -32,7 +32,9 @@ const StatusPage = () => {
   return (
     <>
       <div className="d-flex gap-3 mt-3 overflow-x-auto status-parent align-items-center w-100 px-2">
-        {admin_user && <StatusRing user={admin_user} userIdx={"-idx-admin"} />}
+        {admin_user?._id && (
+          <StatusRing user={admin_user} userIdx={"-idx-admin"} />
+        )}
 
         {followings?.length > 0 && (
           <ParentStatusComponent followings={followings} />

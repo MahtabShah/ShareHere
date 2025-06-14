@@ -272,6 +272,9 @@ const PostSentence = ({ type = "post" }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!admin_user) {
+      nevigate("/login") || nevigate("/signup");
+    }
     setLazyLoading(true);
     try {
       const ready_url = await handleCapture();
@@ -306,6 +309,9 @@ const PostSentence = ({ type = "post" }) => {
   const [statusLoading, setstatusLoading] = useState(false);
 
   const HandleStatus = async () => {
+    if (!admin_user) {
+      nevigate("/login") || nevigate("/signup");
+    }
     // const [userId, setUserId] = useState(""); // use logged-in user ID
     setstatusLoading(true);
     try {

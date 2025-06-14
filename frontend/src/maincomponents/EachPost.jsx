@@ -76,6 +76,10 @@ export const EachPost = ({ user, comment }) => {
   const SubmitComment = async (e, id) => {
     e.preventDefault();
     // console.log("form comment ------> ", new_comment);
+    if (!admin_user) {
+      nevigate("/login") || nevigate("/signup");
+      return;
+    }
     try {
       setLazyLoading(true);
       const res = await axios.put(
@@ -351,6 +355,8 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
     user?.followers?.includes(admin_user?._id)
   );
 
+  const navigate = useNavigate();
+
   // const isFollowed =
   //   followersMap[user?._id] ?? user?.followers?.includes(admin_user?._id);
 
@@ -367,6 +373,10 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
         }
       );
     } catch (err) {
+      if (!admin_user) {
+        navigate("/login") || navigate("/signup");
+      }
+
       console.error("Error updating follow status:", err);
       // Revert back on error
     }
@@ -455,6 +465,7 @@ export const LikeBtn = ({ post }) => {
   const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
   const token = localStorage.getItem("token");
   const { admin_user } = useQuote();
+  const navigate = useNavigate();
 
   // Handle animation on click
   const animateButton = (btnName) => {
@@ -479,6 +490,9 @@ export const LikeBtn = ({ post }) => {
         }
       );
     } catch (err) {
+      if (!admin_user) {
+        navigate("/login") || navigate("/signup");
+      }
       alert("like failed: " + err.response?.data?.message || err.message);
     }
   };

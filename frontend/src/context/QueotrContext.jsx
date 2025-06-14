@@ -20,8 +20,6 @@ export const QuoteProvider = ({ children }) => {
     // setlgbreakPoint(window.innerWidth > 1224);
   });
 
-  const navigate = useNavigate();
-
   const [statusClicked, setStatusClicked] = useState(false);
   const [duration, setDuration] = useState(3000);
   const [isPaused, setIsPaused] = useState(false);
@@ -53,8 +51,8 @@ export const QuoteProvider = ({ children }) => {
       // setLoading(false);
       res.data?.length === 0 ? "" : setadmin_user(res.data);
     } catch (err) {
-      navigate("/login") || navigate("/signup");
-      setadmin_user(null);
+      // navigate("/login") || navigate("/signup");
+      // setadmin_user(null);
       console.log("Failed to fetch admin see err in console 34 context", err);
     }
   };
