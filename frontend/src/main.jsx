@@ -48,70 +48,69 @@ const Main = () => {
   return (
     <BrowserRouter>
       <QuoteProvider>
-        <>
-          <Routes>
-            {!admin_user && (
-              <>
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/*" element={<Login />} />
-              </>
-            )}
-            {admin_user && (
-              <main className="container p-0 pt-2 mt-5 mb-5">
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/login" element={<Login />} />
-                <Route
-                  path="/*"
-                  element={
-                    <>
-                      <MainHeader />
-                      <BottomNav />
-                      <PostSentence />
-                      <SearchBaar />
-                      <StatusPage />
-                      <All_Post_Section />
-                    </>
-                  }
-                />
-                <Route
-                  path="/home/postId?"
-                  element={
-                    <>
-                      <MainHeader />
-                      <BottomNav />
-                      <PostSentence />
-                      <SearchBaar />
-                      <StatusPage />
-                      <All_Post_Section />
-                    </>
-                  }
-                />
-                <Route
-                  path="api/user/:id"
-                  element={
-                    <>
-                      <MainHeader />
-                      <BottomNav />
-                      <PostSentence />
-                      <UserProfile />
-                    </>
-                  }
-                />
-                <Route
-                  path="api/user/edit/:id"
-                  element={
-                    <>
-                      <MainHeader />
-                      <BottomNav />
-                      <PostSentence />
-                      <EditUserProfile />
-                    </>
-                  }
-                />
-              </main>
-            )}
-          </Routes>
-        </>
+        <Routes>
+          {!admin_user && (
+            <>
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/*" element={<Login />} />
+            </>
+          )}
+
+          {admin_user && (
+            <>
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/*"
+                element={
+                  <main className="container p-0 pt-2 mt-5 mb-5">
+                    <MainHeader />
+                    <BottomNav />
+                    <PostSentence />
+                    <SearchBaar />
+                    <StatusPage />
+                    <All_Post_Section />
+                  </main>
+                }
+              />
+              <Route
+                path="/home/:postId?"
+                element={
+                  <main className="container p-0 pt-2 mt-5 mb-5">
+                    <MainHeader />
+                    <BottomNav />
+                    <PostSentence />
+                    <SearchBaar />
+                    <StatusPage />
+                    <All_Post_Section />
+                  </main>
+                }
+              />
+              <Route
+                path="/api/user/:id"
+                element={
+                  <main className="container p-0 pt-2 mt-5 mb-5">
+                    <MainHeader />
+                    <BottomNav />
+                    <PostSentence />
+                    <UserProfile />
+                  </main>
+                }
+              />
+              <Route
+                path="/api/user/edit/:id"
+                element={
+                  <main className="container p-0 pt-2 mt-5 mb-5">
+                    <MainHeader />
+                    <BottomNav />
+                    <PostSentence />
+                    <EditUserProfile />
+                  </main>
+                }
+              />
+            </>
+          )}
+        </Routes>
       </QuoteProvider>
     </BrowserRouter>
   );
