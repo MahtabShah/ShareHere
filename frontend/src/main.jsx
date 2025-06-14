@@ -43,76 +43,63 @@ const StatusPage = () => {
 };
 
 const Main = () => {
-  const { admin_user } = useQuote();
-
   return (
-    <QuoteProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <QuoteProvider>
         <Routes>
-          {!admin_user && (
-            <>
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/*" element={<Login />} />
-            </>
-          )}
-
-          {admin_user && (
-            <>
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route
-                path="/*"
-                element={
-                  <main className="container p-0 pt-2 mt-5 mb-5">
-                    <MainHeader />
-                    <BottomNav />
-                    <PostSentence />
-                    <SearchBaar />
-                    <StatusPage />
-                    <All_Post_Section />
-                  </main>
-                }
-              />
-              <Route
-                path="/home/:postId?"
-                element={
-                  <main className="container p-0 pt-2 mt-5 mb-5">
-                    <MainHeader />
-                    <BottomNav />
-                    <PostSentence />
-                    <SearchBaar />
-                    <StatusPage />
-                    <All_Post_Section />
-                  </main>
-                }
-              />
-              <Route
-                path="/api/user/:id"
-                element={
-                  <main className="container p-0 pt-2 mt-5 mb-5">
-                    <MainHeader />
-                    <BottomNav />
-                    <PostSentence />
-                    <UserProfile />
-                  </main>
-                }
-              />
-              <Route
-                path="/api/user/edit/:id"
-                element={
-                  <main className="container p-0 pt-2 mt-5 mb-5">
-                    <MainHeader />
-                    <BottomNav />
-                    <PostSentence />
-                    <EditUserProfile />
-                  </main>
-                }
-              />
-            </>
-          )}
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/*"
+            element={
+              <main className="container p-0 pt-2 mt-5 mb-5">
+                <MainHeader />
+                <BottomNav />
+                <PostSentence />
+                <SearchBaar />
+                <StatusPage />
+                <All_Post_Section />
+              </main>
+            }
+          />
+          <Route
+            path="/home/:postId?"
+            element={
+              <main className="container p-0 pt-2 mt-5 mb-5">
+                <MainHeader />
+                <BottomNav />
+                <PostSentence />
+                <SearchBaar />
+                <StatusPage />
+                <All_Post_Section />
+              </main>
+            }
+          />
+          <Route
+            path="/api/user/:id"
+            element={
+              <main className="container p-0 pt-2 mt-5 mb-5">
+                <MainHeader />
+                <BottomNav />
+                <PostSentence />
+                <UserProfile />
+              </main>
+            }
+          />
+          <Route
+            path="/api/user/edit/:id"
+            element={
+              <main className="container p-0 pt-2 mt-5 mb-5">
+                <MainHeader />
+                <BottomNav />
+                <PostSentence />
+                <EditUserProfile />
+              </main>
+            }
+          />
         </Routes>
-      </BrowserRouter>
-    </QuoteProvider>
+      </QuoteProvider>
+    </BrowserRouter>
   );
 };
 

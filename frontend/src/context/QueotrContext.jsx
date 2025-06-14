@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 const QuoteContext = createContext();
 const API = import.meta.env.VITE_API_URL;
+import { useNavigate } from "react-router-dom";
+
 import socket from "../maincomponents/socket";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -17,6 +19,8 @@ export const QuoteProvider = ({ children }) => {
     setsm_break_point(window.innerWidth < 768);
     // setlgbreakPoint(window.innerWidth > 1224);
   });
+
+  const navigate = useNavigate();
 
   const [statusClicked, setStatusClicked] = useState(false);
   const [duration, setDuration] = useState(3000);
@@ -49,6 +53,8 @@ export const QuoteProvider = ({ children }) => {
       // setLoading(false);
       res.data?.length === 0 ? "" : setadmin_user(res.data);
     } catch (err) {
+      navigate("/login") || navigate("/signup");
+      setadmin_user(null);
       console.log("Failed to fetch admin see err in console 34 context", err);
     }
   };

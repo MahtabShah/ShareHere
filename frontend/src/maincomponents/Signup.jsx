@@ -3,10 +3,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 import { Loading } from "../../TinyComponent/LazyLoading";
+import { useQuote } from "../context/QueotrContext";
 
 const Signup = ({}) => {
   const navigate = useNavigate();
   const [signupLoading, setsignupLoading] = useState(false);
+  const { fetch_admin_user } = useQuote();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -26,6 +28,7 @@ const Signup = ({}) => {
       // console.log("Signup successful! Token: " + res.data.token);
       localStorage.setItem("token", res.data.token);
       // fetchAllUsers();
+      await fetch_admin_user();
       navigate("/home");
       window.location.reload();
     } catch (err) {
