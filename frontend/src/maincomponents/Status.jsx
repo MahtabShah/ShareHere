@@ -356,13 +356,19 @@ export const StatusPage = ({ userId, all_statuses_user }) => {
 
           {admin_user._id === userId && (
             <small
-              className="position-absolute mb-3 p-3 d-flex w-100 justify-content-center fw-bold"
+              className="position-absolute mb-3 p-3 d-flex w-100 justify-content-center fw-bold text-light"
               onClick={() => {
                 setSeenBy(!SeenBy);
+                !SeenBy ? handlePause() : handleResume();
               }}
-              style={{ zIndex: 90000000, bottom: "40px", cursor: "pointer" }}
+              style={{
+                zIndex: 90000000000,
+                bottom: "0px",
+                cursor: "pointer",
+                width: "fit-content",
+              }}
             >
-              seen by
+              <span className="bg-dark ps-2 pe-2 p-1">seen by</span>
             </small>
           )}
         </motion.div>

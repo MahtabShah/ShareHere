@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
+import { Loading } from "../../TinyComponent/LazyLoading";
 
 const Signup = ({}) => {
   const navigate = useNavigate();
+  const [signupLoading, setsignupLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -17,6 +20,7 @@ const Signup = ({}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setsignupLoading(true);
     try {
       const res = await axios.post(`${API}/api/auth/signup`, formData);
       // console.log("Signup successful! Token: " + res.data.token);
@@ -27,6 +31,7 @@ const Signup = ({}) => {
     } catch (err) {
       alert("Signup failed: " + err.response?.data?.message || err.message);
     }
+    setsignupLoading(false);
   };
 
   return (
@@ -50,7 +55,7 @@ const Signup = ({}) => {
         <div className="card-body py-5 px-md-5">
           <div className="row d-flex justify-content-center">
             <div className="col-lg-8">
-              <h2 className="fw-bold mb-5">Login now</h2>
+              <h2 className="fw-bold mb-5">Sign up now</h2>
               <form onSubmit={handleSubmit} className="">
                 <div className="form-outline mb-4 d-flex flex-column">
                   <label className="form-label text-start" htmlFor="username">
@@ -99,7 +104,11 @@ const Signup = ({}) => {
                     type="submit"
                     className="btn btn-outline-primary btn-block mb-5 rounded-0 ps-3 pe-3"
                   >
-                    Sign up
+                    {signupLoading ? (
+                      <Loading dm={24} clr="light" />
+                    ) : (
+                      "Sign up"
+                    )}
                   </button>
 
                   {/* <button

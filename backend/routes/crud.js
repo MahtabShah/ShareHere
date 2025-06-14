@@ -136,7 +136,7 @@ router.delete('/del_status', verifyToken, async (req, res) => {
   const userId = req.user.userId || req.user.id;
 
   try {
-    const oneMinuteAgo = new Date(Date.now() - 85000);
+    const oneMinuteAgo = new Date(Date.now() - 85400 * 1000);
 
     // Get user + followings
     const user = await User.findById(userId).populate("following");
