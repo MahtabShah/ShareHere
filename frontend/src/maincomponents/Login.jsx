@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
+import { Loading } from "../../TinyComponent/LazyLoading";
 
 const Login = ({}) => {
   const navigate = useNavigate();
+  const [signupLoading, setsignupLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -81,19 +83,27 @@ const Login = ({}) => {
                     />
                   </div>
 
-                  <div className="d-flex gap-3 justify-content-center">
-                    <a
-                      className="btn btn-outline-primary btn-block mb-5 rounded-0 ps-3 pe-3"
-                      href="/signup"
-                    >
-                      Sign up
-                    </a>
+                  <div className="d-flex flex-column gap-2 align-items-center">
+                    <hr />
+                    <div className="d-flex gap-2 align-items-center">
+                      <small>you dont have any account ?</small>
 
+                      <a
+                        className="btn btn-primary btn-block rounded-0 ps-3 pe-3"
+                        href="/signup"
+                      >
+                        Sign up
+                      </a>
+                    </div>
                     <button
                       type="submit"
                       className="btn btn-success btn-block mb-5 rounded-0 ps-3 pe-3"
                     >
-                      Login
+                      {signupLoading ? (
+                        <Loading dm={24} clr="light" />
+                      ) : (
+                        "Login"
+                      )}
                     </button>
                   </div>
                 </form>

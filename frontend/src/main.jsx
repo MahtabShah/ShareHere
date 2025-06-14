@@ -1,7 +1,7 @@
 // import { StrictMode } from "react";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import { QuoteProvider } from "./context/QueotrContext.jsx";
 import All_Post_Section from "./All_Post_Section.jsx";
 import PostSentence from "./maincomponents/PostSentance.jsx";
@@ -43,43 +43,58 @@ const StatusPage = () => {
 };
 
 const Main = () => {
+  const nevigate = useNavigate();
   const { admin_user } = useQuote();
+
   return (
     <>
-      <main className="container p-0 pt-2 mt-5 mb-5">
-        <MainHeader />
-        <PostSentence />
-        <BottomNav />
+      <Routes>
+        {!admin_user && (
+          <>
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/*" element={<Login />} />
+          </>
+        )}
+        {admin_user && (
+          <main className="container p-0 pt-2 mt-5 mb-5">
+            <MainHeader />
+            <BottomNav />
 
-        <Routes>
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/*"
-            element={
-              <>
-                <SearchBaar />
-                <StatusPage />
+            <Routes>
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/*"
+                element={
+                  <>
+                    <PostSentence />
 
-                <All_Post_Section />
-              </>
-            }
-          />
-          <Route
-            path="/home/postId?"
-            element={
-              <>
-                <SearchBaar />
-                <StatusPage />
+                    <SearchBaar />
+                    <StatusPage />
 
-                <All_Post_Section />
-              </>
-            }
-          />
-          <Route path="api/user/:id" element={<UserProfile />} />
-          <Route path="api/user/edit/:id" element={<EditUserProfile />} />
-        </Routes>
-      </main>
+                    <All_Post_Section />
+                  </>
+                }
+              />
+              <Route
+                path="/home/postId?"
+                element={
+                  <>
+                    <PostSentence />
+
+                    <SearchBaar />
+                    <StatusPage />
+
+                    <All_Post_Section />
+                  </>
+                }
+              />
+              <Route path="api/user/:id" element={<UserProfile />} />
+              <Route path="api/user/edit/:id" element={<EditUserProfile />} />
+            </Routes>
+          </main>
+        )}
+      </Routes>
     </>
   );
 };

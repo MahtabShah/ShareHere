@@ -55,7 +55,7 @@ const Signup = ({}) => {
         <div className="card-body py-5 px-md-5">
           <div className="row d-flex justify-content-center">
             <div className="col-lg-8">
-              <h2 className="fw-bold mb-5">Sign up now</h2>
+              <h2 className="fw-bold mb-">Sign up now</h2>
               <form onSubmit={handleSubmit} className="">
                 <div className="form-outline mb-4 d-flex flex-column">
                   <label className="form-label text-start" htmlFor="username">
@@ -85,7 +85,7 @@ const Signup = ({}) => {
                   />
                 </div>
 
-                <div className="form-outline mb-4 d-flex flex-column">
+                <div className="form-outline mb-1  d-flex flex-column">
                   <label className="form-label text-start" htmlFor="password">
                     Password
                   </label>
@@ -99,7 +99,20 @@ const Signup = ({}) => {
                   />
                 </div>
 
-                <div className="d-flex gap-3 justify-content-center">
+                <div className="d-flex flex-column gap-2 align-items-center">
+                  <hr />
+                  <div className="d-flex gap-2 align-items-center">
+                    <small>you have already an account ?</small>
+                    <span
+                      type="submit"
+                      className="btn btn-success btn-block rounded-0 ps-3 pe-3"
+                      onClick={() => {
+                        navigate("/login");
+                      }}
+                    >
+                      Login
+                    </span>
+                  </div>
                   <button
                     type="submit"
                     className="btn btn-outline-primary btn-block mb-5 rounded-0 ps-3 pe-3"
@@ -110,13 +123,6 @@ const Signup = ({}) => {
                       "Sign up"
                     )}
                   </button>
-
-                  {/* <button
-                    type="submit"
-                    className="btn btn-success btn-block mb-5 rounded-0 ps-3 pe-3"
-                  >
-                    Login
-                  </button> */}
                 </div>
               </form>
             </div>
