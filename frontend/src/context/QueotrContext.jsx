@@ -3,18 +3,15 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 const QuoteContext = createContext();
 const API = import.meta.env.VITE_API_URL;
-import { useNavigate } from "react-router-dom";
 import socket from "../maincomponents/socket";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
-export const useQuote = () => useContext(QuoteContext);
+export const useQuote = () => useContext(QuoteContext) || {};
 
 export const QuoteProvider = ({ children }) => {
   const [sm_break_point, setsm_break_point] = useState(window.innerWidth < 768);
-
-  const nevigate = useNavigate();
 
   window.addEventListener("resize", () => {
     setsm_break_point(window.innerWidth < 768);

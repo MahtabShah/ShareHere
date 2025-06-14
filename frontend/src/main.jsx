@@ -46,8 +46,8 @@ const Main = () => {
   const { admin_user } = useQuote();
 
   return (
-    <BrowserRouter>
-      <QuoteProvider>
+    <QuoteProvider>
+      <BrowserRouter>
         <Routes>
           {!admin_user && (
             <>
@@ -111,8 +111,8 @@ const Main = () => {
             </>
           )}
         </Routes>
-      </QuoteProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </QuoteProvider>
   );
 };
 
