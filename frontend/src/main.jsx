@@ -43,7 +43,6 @@ const StatusPage = () => {
 };
 
 const Main = () => {
-  const nevigate = useNavigate();
   const { admin_user } = useQuote();
 
   return (
