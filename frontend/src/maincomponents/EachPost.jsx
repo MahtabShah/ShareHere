@@ -357,9 +357,6 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
 
   const navigate = useNavigate();
 
-  // const isFollowed =
-  //   followersMap[user?._id] ?? user?.followers?.includes(admin_user?._id);
-
   const handleClick = async () => {
     try {
       // Flip follow status locally first
