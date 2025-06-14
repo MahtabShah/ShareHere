@@ -42,15 +42,18 @@ const StatusPage = () => {
   );
 };
 
-createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <QuoteProvider>
+const Main = () => {
+  const { admin_user } = useQuote();
+  return (
+    <>
       <main className="container p-0 pt-2 mt-5 mb-5">
         <MainHeader />
         <PostSentence />
         <BottomNav />
 
         <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/*"
             element={
@@ -75,10 +78,16 @@ createRoot(document.getElementById("root")).render(
           />
           <Route path="api/user/:id" element={<UserProfile />} />
           <Route path="api/user/edit/:id" element={<EditUserProfile />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
         </Routes>
       </main>
+    </>
+  );
+};
+
+createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <QuoteProvider>
+      <Main />
     </QuoteProvider>
   </BrowserRouter>
 );

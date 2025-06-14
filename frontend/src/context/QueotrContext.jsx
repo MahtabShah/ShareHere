@@ -52,7 +52,7 @@ export const QuoteProvider = ({ children }) => {
       // setLoading(false);
       res.data?.length === 0 ? "" : setadmin_user(res.data);
     } catch (err) {
-      // nevigate("/signup");
+      nevigate("/signup");
       console.log("Failed to fetch admin see err in console 34 context", err);
     }
   };
