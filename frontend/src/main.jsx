@@ -57,9 +57,6 @@ const Main = () => {
         )}
         {admin_user && (
           <main className="container p-0 pt-2 mt-5 mb-5">
-            <MainHeader />
-            <BottomNav />
-
             <Routes>
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
@@ -67,11 +64,11 @@ const Main = () => {
                 path="/*"
                 element={
                   <>
+                    <MainHeader />
+                    <BottomNav />
                     <PostSentence />
-
                     <SearchBaar />
                     <StatusPage />
-
                     <All_Post_Section />
                   </>
                 }
@@ -80,17 +77,37 @@ const Main = () => {
                 path="/home/postId?"
                 element={
                   <>
+                    <MainHeader />
+                    <BottomNav />
                     <PostSentence />
-
                     <SearchBaar />
                     <StatusPage />
-
                     <All_Post_Section />
                   </>
                 }
               />
-              <Route path="api/user/:id" element={<UserProfile />} />
-              <Route path="api/user/edit/:id" element={<EditUserProfile />} />
+              <Route
+                path="api/user/:id"
+                element={
+                  <>
+                    <MainHeader />
+                    <BottomNav />
+                    <PostSentence />
+                    <UserProfile />
+                  </>
+                }
+              />
+              <Route
+                path="api/user/edit/:id"
+                element={
+                  <>
+                    <MainHeader />
+                    <BottomNav />
+                    <PostSentence />
+                    <EditUserProfile />
+                  </>
+                }
+              />
             </Routes>
           </main>
         )}
