@@ -359,6 +359,7 @@ function Rank_Calculation(post) {
   const comments = post?.comments?.length || 0;
   const followers = post?.followers?.length || 1;
   const following = post?.following?.length || 1;
+  // const isFollowed = post?.followers?.includes(u=>u._id == admin_user?._id) || 1;
 
   // Engagement Score
   const engagement = likes * 3 + comments * 7; // comment > like

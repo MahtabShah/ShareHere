@@ -6,6 +6,9 @@ import { useQuote } from "../context/QueotrContext";
 import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
+const CLOUDINARY_CLOUD_NAME = import.meta.env.CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_API_KEY = import.meta.env.CLOUDINARY_API_KEY;
+const CLOUDINARY_API_SECRET = import.meta.env.CLOUDINARY_API_SECRET;
 import { Accordion } from "react-bootstrap";
 
 const pre_images = [
@@ -55,16 +58,16 @@ const pre_bg_color = [
   "radial-gradient(circle, #accbee, #e7f0fd)", // Calm sky
 
   // 🎯 CONIC GRADIENTS
-  "conic-gradient(from 0deg, #ff9a9e, #fad0c4, #ff9a9e)", // Pink spin
-  "conic-gradient(from 90deg, #4facfe, #00f2fe, #4facfe)", // Sky swirl
-  "conic-gradient(from 180deg, #fbc2eb, #a6c1ee)", // Soft wheel
-  "conic-gradient(from 0deg, #f7971e, #ffd200, #f7971e)", // Sunny swirl
-  "conic-gradient(from 0deg at center, #00dbde, #fc00ff)", // Neon ring
-  "conic-gradient(from 45deg at center, #00c3ff, #ffff1c)", // Bright circle
-  "conic-gradient(from 0deg, #e1eec3, #f05053, #e1eec3)", // Soft rotate
-  "conic-gradient(from 90deg, #ff6a00, #ee0979, #ff6a00)", // Flaming twist
-  "conic-gradient(from 0deg, #a1c4fd, #c2e9fb)", // Calm motion
-  "conic-gradient(from 0deg, #12c2e9, #f64f59)", // Color storm
+  // "conic-gradient(from 0deg, #ff9a9e, #fad0c4, #ff9a9e)", // Pink spin
+  // "conic-gradient(from 90deg, #4facfe, #00f2fe, #4facfe)", // Sky swirl
+  // "conic-gradient(from 180deg, #fbc2eb, #a6c1ee)", // Soft wheel
+  // "conic-gradient(from 0deg, #f7971e, #ffd200, #f7971e)", // Sunny swirl
+  // "conic-gradient(from 0deg at center, #00dbde, #fc00ff)", // Neon ring
+  // "conic-gradient(from 45deg at center, #00c3ff, #ffff1c)", // Bright circle
+  // "conic-gradient(from 0deg, #e1eec3, #f05053, #e1eec3)", // Soft rotate
+  // "conic-gradient(from 90deg, #ff6a00, #ee0979, #ff6a00)", // Flaming twist
+  // "conic-gradient(from 0deg, #a1c4fd, #c2e9fb)", // Calm motion
+  // "conic-gradient(from 0deg, #12c2e9, #f64f59)", // Color storm
 
   // 🎨 MIXED SPECIAL EFFECTS
   "linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0))", // Frosted glass
@@ -259,10 +262,10 @@ const PostSentence = ({ type = "post" }) => {
     const formData = new FormData();
     formData.append("file", dataURL);
     formData.append("upload_preset", "page_Image"); // Replace this
-    formData.append("cloud_name", "dft5cl5ra"); // Replace this
+    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME); // Replace this
 
     const res = await axios.post(
-      "https://api.cloudinary.com/v1_1/dft5cl5ra/image/upload",
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
       formData
     );
 
@@ -546,7 +549,7 @@ const PostSentence = ({ type = "post" }) => {
 
                     {type === "post" && (
                       <button
-                        type="submit"
+                        type={LazyLoading ? "button" : "submit"}
                         className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
                         style={{ height: "42px" }}
                       >

@@ -7,8 +7,6 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import Carousel from "react-bootstrap/Carousel";
 import { Fragment } from "react";
 import { useQuote } from "../context/QueotrContext";
-import { useNavigate } from "react-router-dom";
-import PostSentence from "./PostSentance";
 import { motion, AnimatePresence } from "framer-motion";
 import { UserRing } from "./EachPost";
 import axios from "axios";
@@ -56,11 +54,11 @@ const ParentStatusComponent = ({ followings }) => {
     setfollowing_have_status(finalList);
   }, [admin_user, all_user, all_statuses]);
 
-  console.log(
-    following_have_status,
-    "user having folloeing and status ",
-    followings
-  );
+  // console.log(
+  //   following_have_status,
+  //   "user having folloeing and status ",
+  //   followings
+  // );
 
   return (
     <div className="d-flex gap-3">
@@ -129,7 +127,7 @@ export const StatusRing = ({ user, userIdx }) => {
               <img src={user?.profile_pic} alt="" className="w-100 h-100" />
             </div>
 
-            {admin_user?._id === user?._id && (
+            {/* {admin_user?._id === user?._id && (
               <div
                 className="position-absolute d-flex fw-bold align-items-center justify-content-center fs-5 pb-1 w-100 h-100 text-light bg-dark"
                 style={{
@@ -148,7 +146,7 @@ export const StatusRing = ({ user, userIdx }) => {
               >
                 +
               </div>
-            )}
+            )} */}
           </div>
         </div>
       )}
