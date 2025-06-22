@@ -353,7 +353,7 @@ function Rank_Calculation(post) {
 
   const now = dayjs();
   const createdAt = dayjs(post?.createdAt);
-  const ageInHours = now.diff(createdAt, "hour") || 1; // prevent divide by 0
+  const ageInHours = now.diff(createdAt, "minute") || 1; // prevent divide by 0
 
   const likes = post?.likes?.length || 0;
   const comments = post?.comments?.length || 0;
@@ -367,10 +367,10 @@ function Rank_Calculation(post) {
   const influence = Math.log10(followers + 1) / Math.log10(following + 2); // avoid division explosion
 
   // Recency Bonus: newer posts get higher weight
-  const recencyFactor = 24 / ageInHours; // decay over 1 day
+  const recencyFactor = 3600 / ageInHours; // decay over 1 day
 
   // Final rank formula (tunable)
   const rank = engagement * recencyFactor * influence;
 
-  return Math.round(rank * 100) / 100; // round to 2 decimal places
+  return Math.round(rank * (Math.random() * 100 + 1) * 100) / 100; // round to 2 decimal places
 }
