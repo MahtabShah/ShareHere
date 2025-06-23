@@ -90,6 +90,14 @@ textarea {
   );
 }
 
+.none-status {
+  background: conic-gradient(from 0deg, #9a939a, #e4dbdf, #9a939a, #9a939a);
+}
+
+.admin-none-status {
+  background: conic-gradient(from 0deg, #9a939a, #e4dbdf79, #9a939a00);
+}
+
 .status-image {
   width: 100%;
   height: 100%;
@@ -149,7 +157,11 @@ textarea {
 }
 
 .bg-for-readyUrl {
-  background-position: center center;
+  max-width: 600px;
+  aspect-ratio: 6/7;
+  z-index: 1000;
+  flex-shrink: 0;
+  white-space: pre-wrap;
+  resize: none;
   background-repeat: no-repeat !important;
-  background-size: cover;
 }

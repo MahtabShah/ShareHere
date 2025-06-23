@@ -115,13 +115,24 @@ export const StatusRing = ({ user, userIdx }) => {
         <div className="status-item d-flex align-items-center justify-content-center">
           <div
             className={`d-flex align-items-center justify-content-center status-ring  ${
-              isClicked ? "" : "status-ring-grad"
+              isClicked
+                ? user_statuses?.length > 0
+                  ? "none-status"
+                  : "admin-none-status"
+                : "status-ring-grad"
             }`}
           >
             <div
               className="status-image bg-light overflow-hidden"
               onClick={() => {
                 if (user_statuses?.length > 0) setSelectedUserId(user?._id);
+                else {
+                  // confirm("No status available. Do you want to upload one?") &&
+                  const confirm = window.confirm(
+                    "No status available. Do you want to upload one?"
+                  );
+                  if (confirm) setUploadClicked(true);
+                }
               }}
             >
               <img src={user?.profile_pic} alt="" className="w-100 h-100" />

@@ -6,9 +6,7 @@ import { useQuote } from "../context/QueotrContext";
 import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
-const CLOUDINARY_CLOUD_NAME = import.meta.env.CLOUDINARY_CLOUD_NAME;
-const CLOUDINARY_API_KEY = import.meta.env.CLOUDINARY_API_KEY;
-const CLOUDINARY_API_SECRET = import.meta.env.CLOUDINARY_API_SECRET;
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 import { Accordion } from "react-bootstrap";
 
 const pre_images = [
@@ -439,17 +437,8 @@ const PostSentence = ({ type = "post" }) => {
                       <div
                         className="rounded-0 w-100 p-2 h-100 bg-for-readyUrl"
                         ref={divRef}
+                        src={images ? images : ""}
                         style={{
-                          maxWidth: "600px",
-                          aspectRatio: "6/7",
-                          zIndex: "100",
-                          flexShrink: 0,
-                          caretColor: "red",
-                          whiteSpace: "pre-wrap", // mimic pre
-                          overflow: "hidden", // hide scroll
-                          resize: "none", // prevent resizing
-                          caret: "ActiveBorder",
-
                           ...style,
                           background: `${images ? `url(${images})` : bg_clr}`,
                         }}
