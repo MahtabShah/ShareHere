@@ -149,7 +149,7 @@ function MainHeader({}) {
                   >
                     Upload
                   </Nav.Link>
-                  {/* <Nav.Link href="/Explore">Explore</Nav.Link> */}
+                  <Nav.Link href="/Explore">Explore</Nav.Link>
                   {smbreakPoint && (
                     <Nav.Link href={`/api/user/${admin_user?._id}`}>
                       Profile

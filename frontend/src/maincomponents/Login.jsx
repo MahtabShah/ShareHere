@@ -93,7 +93,7 @@ const Login = ({}) => {
                       <small>you dont have any account ?</small>
 
                       <a
-                        className="btn btn-primary btn-block rounded-0 ps-3 pe-3"
+                        className="btn text-primary fw-bold btn-block rounded-0 ps-3 pe-3"
                         href="/signup"
                       >
                         Sign up

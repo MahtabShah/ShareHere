@@ -108,7 +108,7 @@ const Signup = ({}) => {
                     <small>you have already an account ?</small>
                     <span
                       type="submit"
-                      className="btn btn-success btn-block rounded-0 ps-3 pe-3"
+                      className="btn btn-block text-primary fw-bold rounded-0 ps-3 pe-3"
                       onClick={() => {
                         navigate("/login");
                       }}
@@ -118,7 +118,7 @@ const Signup = ({}) => {
                   </div>
                   <button
                     type="submit"
-                    className="btn btn-outline-primary btn-block mb-5 rounded-0 ps-3 pe-3"
+                    className="btn btn-outline-success  btn-block mb-5 rounded-0 ps-3 pe-3"
                   >
                     {signupLoading ? (
                       <Loading dm={24} clr="light" />

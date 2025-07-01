@@ -16,6 +16,7 @@ import Login from "./maincomponents/Login";
 import { StatusRing } from "./maincomponents/Status";
 import ParentStatusComponent from "./maincomponents/Status";
 import { useQuote } from "./context/QueotrContext";
+import Explore from "./maincomponents/Explore.jsx";
 
 const StatusPage = () => {
   const [followings, setFollowings] = useState();
@@ -49,6 +50,15 @@ const Main = () => {
     <BrowserRouter>
       <QuoteProvider>
         <Routes>
+          <Route
+            path="/Explore"
+            element={
+              <>
+                <MainHeader />
+                <Explore />
+              </>
+            }
+          />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route
