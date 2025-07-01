@@ -1,0 +1,15 @@
+.box {
+  border: 2px solid red;
+  width: 200px;
+  height: 200px;
+  padding: 4px;
+  --sm: media(width<= 600px);
+  --md: media(width<= 1000px);
+  /* background: if(
+    media(width <= 600px): red; media(width <= 1000px): blue; else: green;
+  );
+
+  color: if(
+    media(width<= 600px): #fff ; media(width<= 1000px): #cdc ;else: yellow;
+  ); */
+}

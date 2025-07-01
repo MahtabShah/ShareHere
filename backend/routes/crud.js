@@ -132,58 +132,38 @@ const userId = req.params.userId;
 
 
 
-router.delete('/del_status', verifyToken, async (req, res) => {
-  const userId = req.user.userId || req.user.id;
+router.delete('/del_status', async (req, res) => {
+  // const userId = req.user.userId || req.user.id;
+  const all_users = await User.find();
 
   try {
-    const oneMinuteAgo = new Date(Date.now() - 85400 * 1000);
 
-    // Get user + followings
-    const user = await User.findById(userId).populate("following");
+    const all_user_have_statuses = all_users?.filter((u) => u.status && u.status.length > 0);
+    // console.log("Deleting statuses older than:", all_user_have_statuses);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    all_user_have_statuses.forEach(async (user) => {
 
-    // Build clean ObjectId array
-   const userIdsToCheck = [user._id, ...user.following.map(f => f._id)];
-
-
-    console.log("Deleting statuses for userIds:", userIdsToCheck);
-    console.log("Delete before time:", oneMinuteAgo);
-
-    // Find old statuses
-    const oldStatuses = await Status.find({
-      user: { $in: userIdsToCheck },
-      createdAt: { $lt: oneMinuteAgo }
-    });
-
-    const oldStatusIds = oldStatuses.map(s => s._id);
-
-    if (oldStatusIds.length === 0) {
-      return res.status(200).json({
-        message: "No old statuses to delete.",
-        deletedCount: 0,
-        deletedStatusIds: []
+      user?.status?.forEach((statusId) => {
+        console.log("Checking status:", statusId);
+        Status.findById(statusId).then(async (status) => {
+          console.log("Found status:", status);
+          if (!status) {
+            user?.status?.pop(statusId);
+          }
+        }).catch(err => {
+          console.error("Error finding status:", err);
+        });
       });
-    }
 
-    // Delete statuses
-    await Status.deleteMany({ _id: { $in: oldStatusIds } });
 
-    // Pull from users' status arrays
-    await User.updateMany(
-      { _id: { $in: userIdsToCheck } },
-      { $pull: { status: { $in: oldStatusIds } } }
-    );
+     await user.save();
 
-    io.emit("status");
-
-    res.status(200).json({
-      message: `Deleted ${oldStatusIds.length} old statuses.`,
-      deletedCount: oldStatusIds.length,
-      deletedStatusIds: oldStatusIds
     });
+    io.emit("status");
+    res.status(200).json({
+      message: "Old statuses deleted successfully."
+    });
+    
 
   } catch (err) {
     console.error("Error deleting old statuses:", err);
@@ -390,9 +370,6 @@ router.post("/create_status", async (req, res) => {
     res.status(500).json({ message: "Failed to create status" });
   }
 });
-
-
-
 
 
 module.exports = router

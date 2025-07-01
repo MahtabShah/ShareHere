@@ -284,12 +284,10 @@ export const QuoteProvider = ({ children }) => {
     }
   }, [all_posts, hasSorted]);
 
-  useEffect(() => {
+  useEffect(async () => {
     setInterval(async () => {
       try {
-        const res = await axios.delete(`${API}/api/crud/del_status`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.delete(`${API}/api/crud/del_status`);
         // console.log("setcurr_all_notifications---->", res.data);
       } catch (error) {
         console.log("error in notify", error);

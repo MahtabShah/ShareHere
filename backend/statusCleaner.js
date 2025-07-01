@@ -19,7 +19,7 @@ const cleanUpOldStatuses = async () => {
       // 2. Delete the actual status from Status collection
       await Status.deleteOne({ _id: status._id });
 
-      console.log(`Deleted status: ${status._id}`);
+      // console.log(`Deleted status: ${status._id}`);
     }
   } catch (err) {
     console.error("Error cleaning statuses:", err);
