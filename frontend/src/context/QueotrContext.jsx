@@ -363,7 +363,7 @@ function Rank_Calculation(post) {
   const engagement = likes * 3 + comments * 7; // comment > like
 
   // Network influence
-  const influence = Math.log10(followers + 1) / Math.log10(following + 2); // avoid division explosion
+  const influence = Math.log10(followers + 2) / Math.log10(following + 2); // avoid division explosion
 
   // Recency Bonus: newer posts get higher weight
   const recencyFactor = 3600 / ageInHours; // decay over 1 day
