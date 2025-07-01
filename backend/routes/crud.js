@@ -6,6 +6,7 @@ const {Sentence} = require('../models/Sentence');
 const Notification = require("../models/Notification")
 const User = require("../models/User")
 const Status = require("../models/Status")
+const Report = require("../models/Report")
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
@@ -370,6 +371,41 @@ router.post("/create_status", async (req, res) => {
     res.status(500).json({ message: "Failed to create status" });
   }
 });
+
+
+
+
+
+router.post("/report_post", async (req, res) => {
+ const { postId, reason, details } = req.body;
+
+  if (!postId || !reason) {
+    return res.status(400).json({ error: "postId and reason are required." });
+  }
+
+  try {
+    const report = new Report({
+      postId,
+      reason,
+      details,
+    });
+
+    await report.save();
+
+    res.status(201).json({ message: "Report submitted successfully." });
+  } catch (error) {
+    console.error("Error saving report:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+
+// Optional: GET endpoint to view all reports (for admin/testing)
+router.get("/report_posts", async (req, res) => {
+  const reports = await Report.find();
+  res.json(reports);
+});
+
 
 
 module.exports = router

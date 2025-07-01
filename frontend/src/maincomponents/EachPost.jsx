@@ -11,6 +11,7 @@ import Nav from "react-bootstrap/Nav";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { CommentSection } from "./Home";
+import ReportPost from "../../TinyComponent/Report";
 import { useQuote } from "../context/QueotrContext";
 
 const API = import.meta.env.VITE_API_URL;
@@ -400,6 +401,7 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
 
 export const SlipDotinPost = ({ user, post }) => {
   const token = localStorage.getItem("token");
+  const [report, setReport] = useState(false);
 
   const HandleDelete = async () => {
     const condition = window.confirm("want to delete............");
@@ -442,7 +444,13 @@ export const SlipDotinPost = ({ user, post }) => {
       ) : (
         ""
       )}{" "}
-      <Nav.Link href="#" className="text-danger">
+      <Nav.Link
+        href="#"
+        className="text-danger"
+        onClick={() => {
+          setReport(!report);
+        }}
+      >
         {/* <span
           className="d-inline-flex bg-danger text-light justify-content-center"
           style={{
@@ -454,6 +462,7 @@ export const SlipDotinPost = ({ user, post }) => {
         </span>{" "} */}
         Report
       </Nav.Link>
+      {report && <ReportPost postId={post?._id} />}
     </>
   );
 };

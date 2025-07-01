@@ -246,7 +246,7 @@ const PostSentence = ({ type = "post" }) => {
 
     const canvas = await html2canvas(containerRef.current, {
       useCORS: true,
-      scale: 2,
+      scale: 4,
       logging: true,
       backgroundColor: null,
       ignoreElements: (el) => {
