@@ -15,10 +15,17 @@ export const useQuote = () => useContext(QuoteContext) || {};
 export const QuoteProvider = ({ children }) => {
   const [sm_break_point, setsm_break_point] = useState(window.innerWidth < 768);
   const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1224);
+  const [mobile_break_point, setmobile_break_point] = useState(
+    window.innerWidth < 540
+  );
+
+  const [activeIndex, setActiveIndex] = useState("Home");
+  const [openSlidWin, setopenSlidWin] = useState(false);
 
   window.addEventListener("resize", () => {
     setsm_break_point(window.innerWidth < 768);
     setlgbreakPoint(window.innerWidth > 1224);
+    setmobile_break_point(window.innerWidth < 540);
   });
 
   const [statusClicked, setStatusClicked] = useState(false);
@@ -39,6 +46,7 @@ export const QuoteProvider = ({ children }) => {
   const [hasSorted, setHasSorted] = useState(false);
   const [curr_all_notifications, setcurr_all_notifications] = useState([]);
   const [all_user, setall_user] = useState([]);
+  const [VisibleNotification, setVisibleNotification] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -321,10 +329,15 @@ export const QuoteProvider = ({ children }) => {
         fetch_all_notifications,
         fetch_user_byId,
         setLoading,
+        openSlidWin,
+        setopenSlidWin,
+        activeIndex,
+        setActiveIndex,
         setUploadClicked,
         uploadClicked,
         setUploadClicked,
         API,
+        mobile_break_point,
         lgbreakPoint,
         selectedUserId,
         admin_user,
@@ -341,6 +354,8 @@ export const QuoteProvider = ({ children }) => {
         toggleFollowStatus,
         token,
         sorted_posts,
+        setVisibleNotification,
+        VisibleNotification,
       }}
     >
       {children}

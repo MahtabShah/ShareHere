@@ -1,36 +1,46 @@
 // -------------- Done ------------------------------
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { useQuote } from "../src/context/QueotrContext";
 export const btnclass = "btn btn-sm progressBtn text-white ps-4 pe-4 rounded-5";
+import Nav from "react-bootstrap/Nav";
+import { SearchBaar } from "./SearchBaar";
+import { Notification } from "./Notification";
+import PostSentence from "../src/maincomponents/PostSentance";
+import {
+  faUser,
+  faHome,
+  faBell,
+  faSearch,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function BottomNav({}) {
-  const { admin_user, isDisplayedLeftNav } = useQuote();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [NavtransformX, setNavtransformX] = useState(true);
-  const inputtxtclr = "#777";
+  const {
+    admin_user,
+    sm_break_point,
+    mobile_break_point,
+    setopenSlidWin,
+    setActiveIndex,
+    setUploadClicked,
+    uploadClicked,
+    setVisibleNotification,
+    VisibleNotification,
+  } = useQuote();
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  const menuItems = [
-    { icon: faHome, label: "Home", herf: "/home" },
-    // { icon: faSpinner, label: "Progress", herf: "/home" },
-    // { icon: faSearch, label: "Search", herf: "/home" },
-    { icon: faUser, label: "Friends", herf: `api/user/${admin_user?._id}` },
-  ];
-
-  const handleItemClick = (index) => {
-    setActiveIndex(index);
-    onActiveChange(menuItems[index].label);
-    setNavtransformX(!NavtransformX);
-  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setLoggedIn(!!token);
+  }, []);
 
   return (
     <>
-      {!isDisplayedLeftNav ? (
+      {mobile_break_point && (
         <>
           <div
-            className="BottomNav w-100 d-sm-none bg-light position-fixed"
+            className="BottomNav border w-100 d-sm-none bg-light position-fixed"
             style={{
               zIndex: "11",
               borderRight: "1px solid var(--light-clr)",
@@ -39,30 +49,147 @@ export default function BottomNav({}) {
               left: "0",
             }}
           >
-            <ul className="nav nav-pills d-flex align-items-center w-100 border justify-content-between pe-2 ps-2 h-100 ">
-              {menuItems.map((item, idx) => (
-                <li key={`menuitems${idx}`} className="nav-item flex--1">
-                  <a
-                    href={item.herf}
-                    className={`nav-link d-flex align-items-center gap-3 fs-6 ${
-                      idx === activeIndex ? "text-black" : ""
-                    }`}
-                    style={{
-                      borderRadius: "4px",
-                      padding: "7px",
-                      color: `${inputtxtclr}`,
-                    }}
-                    onClick={() => handleItemClick(idx)}
+            <ul className="nav nav-pills gap-3 mb-auto d-flex justify-content-around">
+              <li className="nav-item ">
+                <Nav.Link
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  href="/Home"
+                  onClick={() => {
+                    setActiveIndex("Home");
+                    setopenSlidWin(false);
+                  }}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "24px", height: "24px" }}
                   >
-                    <FontAwesomeIcon icon={item.icon} />
-                  </a>
-                </li>
-              ))}
+                    <FontAwesomeIcon icon={faHome} />
+                  </div>
+                  <span
+                    className={`fw-semibold pe-5 ${
+                      sm_break_point ? "d-none" : ""
+                    }`}
+                    style={{ width: "154px" }}
+                  >
+                    Home
+                  </span>
+                </Nav.Link>
+              </li>
+
+              <li className="nav-item ">
+                <Nav.Link
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  onClick={() => {
+                    setUploadClicked(!uploadClicked);
+                    setActiveIndex("Upload");
+                    setopenSlidWin(true);
+                  }}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "24px", height: "24px" }}
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </div>
+                  <span
+                    className={`fw-semibold pe-5 ${
+                      sm_break_point ? "d-none" : ""
+                    }`}
+                    style={{ width: "154px" }}
+                  >
+                    Upload
+                  </span>
+                </Nav.Link>
+              </li>
+
+              <li className="nav-item ">
+                <Nav.Link
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  onClick={() => {
+                    setVisibleNotification(!VisibleNotification);
+                    setActiveIndex("Notifications");
+                    setopenSlidWin(true);
+                  }}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "24px", height: "24px" }}
+                  >
+                    <FontAwesomeIcon icon={faBell} />
+                  </div>
+                  <span
+                    className={`fw-semibold pe-5 ${
+                      sm_break_point ? "d-none" : ""
+                    }`}
+                    style={{ width: "154px" }}
+                  >
+                    Notifications
+                  </span>
+                </Nav.Link>
+              </li>
+
+              <li className="nav-item ">
+                <Nav.Link
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  onClick={() => {
+                    setopenSlidWin(true);
+                    setActiveIndex("Search");
+                  }}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "24px", height: "24px" }}
+                  >
+                    <FontAwesomeIcon icon={faSearch} />
+                  </div>
+                  <span
+                    className={`fw-semibold pe-5 ${
+                      sm_break_point ? "d-none" : ""
+                    }`}
+                    style={{ width: "154px" }}
+                  >
+                    Search
+                  </span>
+                </Nav.Link>
+              </li>
+
+              {loggedIn && admin_user?._id ? (
+                <>
+                  <li className="nav-item border-bottom pb-2">
+                    <a
+                      href={`/api/user/${admin_user?._id}`}
+                      className={`nav-link d-flex align-items-center gap-3 fs-6`}
+                    >
+                      <span
+                        className={`d-flex align-items-center justify-content-center border rounded-1 text-danger`}
+                        style={{
+                          width: "24px",
+                          height: "24px",
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faUser} />
+                      </span>
+
+                      <span
+                        className={`fw-semibold text-dark ${
+                          sm_break_point ? "d-none" : ""
+                        }`}
+                      >
+                        User Profile
+                      </span>
+                    </a>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <Nav.Link href="/signup">
+                    <FontAwesomeIcon icon={faUser} />
+                  </Nav.Link>
+                </>
+              )}
             </ul>
           </div>
         </>
-      ) : (
-        ""
       )}
     </>
   );

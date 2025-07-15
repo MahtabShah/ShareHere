@@ -63,7 +63,7 @@ const SuggetionSlip = () => {
 };
 
 export const SuggetionSlipInPost = () => {
-  const { all_user, sm_break_point } = useQuote();
+  const { all_user, sm_break_point, mobile_break_point } = useQuote();
   const rn = Math.random() * (all_user.length - 5) || 0;
   const some_user = all_user.slice(rn, rn + 5);
 
@@ -73,7 +73,9 @@ export const SuggetionSlipInPost = () => {
         className="d-flex gap-4 none-scroller overflow-x-auto"
         style={{
           // border: "2px solid red",
-          width: `${sm_break_point ? "calc(100dvw - 104px)" : "calc(100%)"}`,
+          width: `${
+            mobile_break_point ? "94vw" : sm_break_point ? "82vw" : "480px"
+          }`,
         }}
       >
         {some_user?.map((u, i) => {

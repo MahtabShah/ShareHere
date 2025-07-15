@@ -22,6 +22,12 @@ function MainHeader({}) {
     curr_all_notifications,
     setUploadClicked,
     uploadClicked,
+    sm_break_point,
+    mobile_break_point,
+    openSlidWin,
+    setopenSlidWin,
+    activeIndex,
+    setActiveIndex,
   } = useQuote();
 
   const [count, setCount] = useState(0);
@@ -97,38 +103,59 @@ function MainHeader({}) {
 
                 {smbreakPoint && (
                   <div className="d-flex align-items-center gap-3">
-                    <Nav.Link
-                      href=""
-                      onClick={() => {
-                        setVisibleNotification(!VisibleNotification);
-                        setCount(0);
-                        Mark_as_read_notification();
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faBell} />
-                      <NotificationBell count={count} />
-                    </Nav.Link>
-                    <Nav.Link
-                      onClick={() => {
-                        setUploadClicked(!uploadClicked);
-                      }}
-                    >
-                      <small
-                        className="fw-normal rounded-5 ps-2 pe-2 border"
-                        style={{
-                          background: "#3333",
-                          padding: "4px 6px 6px",
+                    <li className="nav-item " style={{ listStyle: "none" }}>
+                      <Nav.Link
+                        className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                        onClick={() => {
+                          setVisibleNotification(!VisibleNotification);
+                          setCount(0);
+                          Mark_as_read_notification();
+                          setActiveIndex("Notifications");
+                          setopenSlidWin(true);
                         }}
                       >
-                        {" "}
-                        create
-                      </small>
-                    </Nav.Link>
+                        <div
+                          className="d-flex align-items-center justify-content-center"
+                          style={{ width: "24px", height: "24px" }}
+                        >
+                          <FontAwesomeIcon icon={faBell} />
+                        </div>
+                        <span
+                          className={`fw-semibold pe-5 ${
+                            sm_break_point ? "d-none" : ""
+                          }`}
+                          style={{ width: "154px" }}
+                        >
+                          Notifications
+                        </span>
+                      </Nav.Link>
+                    </li>
+
+                    <li className="nav-item " style={{ listStyle: "none" }}>
+                      <Nav.Link
+                        className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                        onClick={() => {
+                          setUploadClicked(!uploadClicked);
+                          setActiveIndex("Upload");
+                          setopenSlidWin(true);
+                        }}
+                      >
+                        <div
+                          className="d-flex align-items-center justify-content-center"
+                          style={{
+                            background: "#3333",
+                            padding: "4px 6px 6px",
+                          }}
+                        >
+                          create
+                        </div>
+                      </Nav.Link>
+                    </li>
                   </div>
                 )}
               </div>
             </div>
-            <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
+            {/* <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
               id={`offcanvasNavbar-expand-${expand}`}
               aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
@@ -170,7 +197,6 @@ function MainHeader({}) {
                       </Nav.Link>
                     </>
                   )}
-                  {/* <Nav.Link href="/shop">Shop Now</Nav.Link> */}
 
                   {loggedIn && admin_user?._id ? (
                     <>
@@ -215,7 +241,7 @@ function MainHeader({}) {
                   )}
                 </Nav>
               </Offcanvas.Body>
-            </Navbar.Offcanvas>
+            </Navbar.Offcanvas> */}
           </Container>
         </Navbar>
       ))}

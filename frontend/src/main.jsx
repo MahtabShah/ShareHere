@@ -51,17 +51,21 @@ const StatusPage = () => {
 const Main = () => {
   const [sm_break_point, setsm_break_point] = useState(window.innerWidth < 768);
   const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1224);
+  const [mobile_break_point, setmobile_break_point] = useState(
+    window.innerWidth < 540
+  );
 
   window.addEventListener("resize", () => {
     setsm_break_point(window.innerWidth < 768);
     setlgbreakPoint(window.innerWidth > 1224);
+    setmobile_break_point(window.innerWidth < 540);
   });
 
   return (
     <BrowserRouter>
       <QuoteProvider>
         <LeftNavbar />
-        {/* <PostSentence /> */}
+        {mobile_break_point && <MainHeader />}
 
         <Routes>
           <Route
@@ -69,7 +73,9 @@ const Main = () => {
             element={
               <div
                 style={{
-                  marginLeft: `${sm_break_point ? "84px" : "254px"}`,
+                  marginLeft: `${
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                  }`,
                 }}
               >
                 <Explore />
@@ -81,7 +87,9 @@ const Main = () => {
             element={
               <div
                 style={{
-                  marginLeft: `${sm_break_point ? "72px" : "242px"}`,
+                  marginLeft: `${
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                  }`,
                 }}
               >
                 <Signup />
@@ -93,7 +101,9 @@ const Main = () => {
             element={
               <div
                 style={{
-                  marginLeft: `${sm_break_point ? "72px" : "242px"}`,
+                  marginLeft: `${
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                  }`,
                 }}
               >
                 <Login />
@@ -104,10 +114,11 @@ const Main = () => {
             path="/*"
             element={
               <main
-                className="p-0 pe-2 pt-2 mb-5"
+                className="p-0 pt-2 mb-5"
                 style={{
-                  marginLeft: `${sm_break_point ? "84px" : "254px"}`,
-                  // border: "2px solid red",
+                  marginLeft: `${
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                  }`,
                 }}
               >
                 <BottomNav />
@@ -121,9 +132,11 @@ const Main = () => {
             path="/home/:postId?"
             element={
               <main
-                className="p-0 pe-2 pt-2 mb-5"
+                className="p-0 pt-2 mb-5"
                 style={{
-                  marginLeft: `${sm_break_point ? "84px" : "254px"}`,
+                  marginLeft: `${
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                  }`,
                 }}
               >
                 <BottomNav />
@@ -139,7 +152,9 @@ const Main = () => {
               <main
                 className="p-0 mt-0"
                 style={{
-                  marginLeft: `${sm_break_point ? "74px" : "244px"}`,
+                  marginLeft: `${
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                  }`,
                 }}
               >
                 <BottomNav />
@@ -153,7 +168,9 @@ const Main = () => {
               <main
                 className="p-0 pt-2"
                 style={{
-                  marginLeft: `${sm_break_point ? "74px" : "244px"}`,
+                  marginLeft: `${
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                  }`,
                 }}
               >
                 <BottomNav />
