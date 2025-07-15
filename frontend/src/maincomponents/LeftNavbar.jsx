@@ -339,7 +339,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               marginTop: `${mobile_break_point ? "54px" : ""}`,
             }}
           >
-            <div className="d-flex gap-2 align-items-center pt-2 p-1">
+            {/* <div className="d-flex gap-2 align-items-center pt-2 p-1">
               <div
                 className="d-flex"
                 style={{ width: "16px", cursor: "pointer" }}
@@ -354,7 +354,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               <p className="fs-5 fw-semibold p-0 m-0 align-items-center">
                 {activeIndex} Here
               </p>
-            </div>
+            </div> */}
             {GiveComponent(activeIndex)}
           </div>
         )}
