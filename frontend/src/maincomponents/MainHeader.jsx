@@ -245,10 +245,6 @@ function MainHeader({}) {
           </Container>
         </Navbar>
       ))}
-
-      {VisibleNotification && (
-        <Notification setVisibleNotification={setVisibleNotification} />
-      )}
     </>
   );
 }
