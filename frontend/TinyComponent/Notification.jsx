@@ -86,7 +86,7 @@ export const Notification = ({ setVisibleNotification }) => {
       {setVisibleNotification && (
         <div className="list">
           <div
-            className="notification shadow-lg d-flex flex-column gap-2 w-100 h-100 p-2 bg-light overflow-y-auto"
+            className="notification shadow-lg ms-1 d-flex flex-column gap-2 w-100 h-100 p-2 bg-light overflow-y-auto"
             style={{
               maxHeight: "80vh",
               maxWidth: "400px",
