@@ -14,10 +14,11 @@ export const useQuote = () => useContext(QuoteContext) || {};
 
 export const QuoteProvider = ({ children }) => {
   const [sm_break_point, setsm_break_point] = useState(window.innerWidth < 768);
+  const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1224);
 
   window.addEventListener("resize", () => {
     setsm_break_point(window.innerWidth < 768);
-    // setlgbreakPoint(window.innerWidth > 1224);
+    setlgbreakPoint(window.innerWidth > 1224);
   });
 
   const [statusClicked, setStatusClicked] = useState(false);
@@ -324,6 +325,7 @@ export const QuoteProvider = ({ children }) => {
         uploadClicked,
         setUploadClicked,
         API,
+        lgbreakPoint,
         selectedUserId,
         admin_user,
         isPaused,

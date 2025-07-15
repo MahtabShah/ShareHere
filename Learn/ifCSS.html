@@ -4,29 +4,219 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Card</title>
-    <link
+    <!-- <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
-    />
+    /> -->
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        overflow: hidden;
+      }
+      .boll {
+        border: 1px solid rgb(151, 151, 151);
+        height: 54px;
+        width: 54px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(120deg, #f7fff0, rgb(231, 14, 40));
+        color: #fdf6f2;
+        transition-timing-function: linear;
+        /* animation: godown 2s linear infinite; */
+      }
+
+      .surface {
+        border: 1px solid rgb(0, 0, 0);
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+      }
+    </style>
   </head>
   <body>
     <div class="container mt-5">
-      <div class="card shadow-sm" style="width: 18rem">
-        <img
-          src="https://via.placeholder.com/150"
-          class="card-img-top"
-          alt="User Image"
-        />
-        <div class="card-body">
-          <h5 class="card-title">Mahtab Shah</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Frontend Developer</h6>
-          <p class="card-text">
-            Passionate about creating beautiful and functional UIs with HTML,
-            CSS, and Bootstrap.
-          </p>
-          <a href="#" class="btn btn-primary">View Profile</a>
-        </div>
-      </div>
+      <div class="boll border">boll</div>
+      <div class="surface"></div>
+      <div class="surface surfaceUp"></div>
     </div>
+    <script>
+      // let bollRef = document.querySelector(".boll");
+      let bollRefs = document.querySelectorAll(".boll");
+      let bodyRef = document.querySelector("body");
+      let surfaceRef = document.querySelector(".surface");
+      let surfaceUpRef = document.querySelector(".surfaceUp");
+      const WinH = window.innerHeight;
+
+      // | +
+
+      class Surface {
+        constructor(e, name, ref, refX, refY, unit) {
+          this.e = e;
+          this.name = name;
+          this.ref = ref;
+          this.refX = refX;
+          this.refY = refY;
+          this.unit = unit;
+          ref.style.transform = `translate(${refX}${unit}, ${refY}${unit})`;
+        }
+
+        getRefXY(x, y) {
+          return [this.refX + x, this.refY - y];
+        }
+      }
+
+      let surface = new Surface(1, "Earth", surfaceRef, 0, 500, "px");
+      let surfaceUp = new Surface(0.99, "Earth", surfaceUpRef, 0, 60, "px");
+
+      class Boll {
+        constructor(e = 1, name, iH, V, iU, Dim, ref, X, Y, uy, ux) {
+          this.e = e;
+          this.name = name;
+          this.iH = iH;
+          this.iU = iU;
+          this.uy = uy;
+          this.ux = ux;
+          this.V = V;
+          this.Dim = Dim;
+          this.ref = ref;
+          let arr = surface.getRefXY(X, Y);
+          this.X = X;
+          this.Y = Y;
+          ref.style.transform = `translate(${arr[0]}${surface.unit}, calc(${arr[1]}${surface.unit} - ${this.Dim}px - 1px))`;
+        }
+
+        setBollXY(x, y) {
+          let arr = surface.getRefXY(x, y);
+
+          this.ref.style.transform = `translate(${arr[0]}${surface.unit}, calc(${arr[1]}${surface.unit} - ${this.Dim}px - 1px))`;
+        }
+      }
+
+      class Env {
+        constructor(AirFr, G, name, ref) {
+          this.AirFr = AirFr;
+          this.name = name;
+          this.G = G;
+          this.ref = ref;
+        }
+      }
+
+      let env = new Env(0, -10 * WinH * 0.001, "Vaccume", bodyRef);
+
+      bollRefs.forEach((bollRef, i) => {
+        boll = new Boll(
+          1,
+          "DeyNight",
+          0,
+          0,
+          0,
+          54,
+          bollRef,
+          1,
+          200,
+          Math.random() * 100 + 1,
+          Math.random() * 100 + 1
+        );
+
+        BollPlay(boll);
+      });
+
+      function BollPlay(boll) {
+        let bollTop = boll.ref.getBoundingClientRect().top;
+        let surfaceTop = surface.ref.getBoundingClientRect().top;
+
+        let G = env.G;
+        let e = surface.e;
+        let bollH = boll.ref.getBoundingClientRect().height;
+
+        // let its have initial velocity upword --------------------------------------------
+
+        let dt = 0.07;
+
+        function checkBollTouchingTop(ref) {
+          if (ref.getBoundingClientRect().top - 2 - surfaceUp.refY <= 0) {
+            boll.uy = -boll.uy;
+          }
+
+          if (boll.Y > surface.refY) {
+            boll.uy = -boll.uy;
+          }
+        }
+
+        function checkBollTouchingLeftRight(ref) {
+          if (boll.X < 0) {
+            boll.ux = -boll.ux;
+            // console.log("boll ux left", boll.ux);
+          }
+
+          if (window.innerWidth - boll.X < 0) {
+            // boll.X = window.innerWidth;9
+            boll.ux = -boll.ux;
+            // console.log("boll us", boll.ux);
+          }
+        }
+
+        function UpwordMove() {
+          i = 0;
+          boll.setBollXY(boll.X, boll.Y);
+
+          let dy = boll.uy * dt + 0.5 * G * dt * dt;
+          let dx = boll.ux * dt;
+          boll.uy = boll.uy + G * dt;
+          boll.Y += dy;
+          boll.X += dx;
+
+          checkBollTouchingTop(boll.ref);
+          checkBollTouchingLeftRight(boll.ref);
+
+          // console.log("dy =>", dy, boll.Y, boll.uy);
+        }
+
+        function DownwordMove() {
+          boll.setBollXY(boll.X, boll.Y);
+
+          if (boll.uy < 0) {
+            let dy = -boll.uy * dt + 0.5 * G * dt * dt;
+            boll.uy = boll.uy + G * dt;
+            boll.Y -= dy;
+          }
+
+          let dx = boll.ux * dt;
+          boll.X += dx;
+
+          // console.log("dy =>", dy, boll.Y, boll.uy);
+          checkBollTouchingLeftRight(boll.ref);
+
+          if (boll.Y < 0) {
+            boll.uy = -surface.e * boll.uy;
+          }
+        }
+
+        const Int = setInterval(() => {
+          if (boll.uy >= 0) {
+            // console.log("upword move --------------------1");
+            UpwordMove();
+            // console.log("upword move --------------------2");
+          } else {
+            // console.log("DownwordMove --------------------1");
+            DownwordMove();
+            // console.log("DownwordMove --------------------2");
+          }
+
+          if (boll.Y < 0 && boll.uy < 0) {
+            // clearInterval(Int);
+          }
+        }, 1);
+      }
+    </script>
   </body>
 </html>

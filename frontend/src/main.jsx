@@ -17,6 +17,9 @@ import { StatusRing } from "./maincomponents/Status";
 import ParentStatusComponent from "./maincomponents/Status";
 import { useQuote } from "./context/QueotrContext";
 import Explore from "./maincomponents/Explore.jsx";
+import SuggetionSlip from "./maincomponents/NewUserUpdate.jsx";
+import LeftNavbar from "./maincomponents/LeftNavbar.jsx";
+import "./index.css";
 
 const StatusPage = () => {
   const [followings, setFollowings] = useState();
@@ -46,30 +49,70 @@ const StatusPage = () => {
 };
 
 const Main = () => {
+  const [sm_break_point, setsm_break_point] = useState(window.innerWidth < 768);
+  const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1224);
+
+  window.addEventListener("resize", () => {
+    setsm_break_point(window.innerWidth < 768);
+    setlgbreakPoint(window.innerWidth > 1224);
+  });
+
   return (
     <BrowserRouter>
       <QuoteProvider>
+        <LeftNavbar />
+        {/* <PostSentence /> */}
+
         <Routes>
           <Route
             path="/Explore"
             element={
-              <>
-                <MainHeader />
+              <div
+                style={{
+                  marginLeft: `${sm_break_point ? "84px" : "254px"}`,
+                }}
+              >
                 <Explore />
-              </>
+              </div>
             }
           />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/signup"
+            element={
+              <div
+                style={{
+                  marginLeft: `${sm_break_point ? "72px" : "242px"}`,
+                }}
+              >
+                <Signup />
+              </div>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <div
+                style={{
+                  marginLeft: `${sm_break_point ? "72px" : "242px"}`,
+                }}
+              >
+                <Login />
+              </div>
+            }
+          />
           <Route
             path="/*"
             element={
-              <main className="container p-0 pt-2 mt-5 mb-5">
-                <MainHeader />
+              <main
+                className="p-0 pe-2 pt-2 mb-5"
+                style={{
+                  marginLeft: `${sm_break_point ? "84px" : "254px"}`,
+                  // border: "2px solid red",
+                }}
+              >
                 <BottomNav />
-                <PostSentence />
                 <SearchBaar />
-                <StatusPage />
+                {/* <StatusPage /> */}
                 <All_Post_Section />
               </main>
             }
@@ -77,12 +120,15 @@ const Main = () => {
           <Route
             path="/home/:postId?"
             element={
-              <main className="container p-0 pt-2 mt-5 mb-5">
-                <MainHeader />
+              <main
+                className="p-0 pe-2 pt-2 mb-5"
+                style={{
+                  marginLeft: `${sm_break_point ? "84px" : "254px"}`,
+                }}
+              >
                 <BottomNav />
-                <PostSentence />
                 <SearchBaar />
-                <StatusPage />
+                {/* <StatusPage /> */}
                 <All_Post_Section />
               </main>
             }
@@ -90,10 +136,13 @@ const Main = () => {
           <Route
             path="/api/user/:id"
             element={
-              <main className="container p-0 pt-2 mt-5 mb-5">
-                <MainHeader />
+              <main
+                className="p-0 mt-0"
+                style={{
+                  marginLeft: `${sm_break_point ? "74px" : "244px"}`,
+                }}
+              >
                 <BottomNav />
-                <PostSentence />
                 <UserProfile />
               </main>
             }
@@ -101,10 +150,13 @@ const Main = () => {
           <Route
             path="/api/user/edit/:id"
             element={
-              <main className="container p-0 pt-2 mt-5 mb-5">
-                <MainHeader />
+              <main
+                className="p-0 pt-2"
+                style={{
+                  marginLeft: `${sm_break_point ? "74px" : "244px"}`,
+                }}
+              >
                 <BottomNav />
-                <PostSentence />
                 <EditUserProfile />
               </main>
             }

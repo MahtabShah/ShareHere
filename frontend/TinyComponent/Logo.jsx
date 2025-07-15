@@ -33,7 +33,7 @@ export const Logo = () => {
           <a
             href="/home"
             className={`d-inline-flex text-light ${
-              sm_break_point ? "ms-3" : ""
+              sm_break_point ? "ms-" : ""
             }`}
             style={{
               minWidth: "24px",

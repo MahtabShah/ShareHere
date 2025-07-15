@@ -4,11 +4,6 @@
   padding: 0;
 }
 
-body,
-html {
-  overflow-x: hidden;
-}
-
 :root {
   --lightBlack-clr: #646464;
   --light-clr: #e0dfdf;

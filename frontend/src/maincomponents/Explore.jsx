@@ -3,12 +3,14 @@ import post_img1 from "/src/assets/Screenshot 2025-07-01 185041.png";
 import post_img2 from "/src/assets/Screenshot 2025-07-01 185137.png";
 import { FaArrowRight } from "react-icons/fa";
 import { useQuote } from "../context/QueotrContext";
+import VoicePost from "./VoicePost";
 
 const Explore = () => {
   const { sm_break_point } = useQuote();
   return (
-    <div className="mt-5 pt-4 p-2 d-flex justify-content-center">
-      <section className="d-">
+    <div className="mt-5 pt-4 p-2 d-flex flex-column align-items-center justify-content-center">
+      <VoicePost />
+      {/* <section className="d-">
         <div className="text-center mb-4">
           <h2 className="fw-bold">Explore Our Platform</h2>
           <p className="text-muted">
@@ -69,7 +71,7 @@ const Explore = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* <section
         className="p-2 position-relative d-none h-100 w-100"

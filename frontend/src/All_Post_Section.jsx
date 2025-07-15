@@ -7,6 +7,9 @@ import { useLocation } from "react-router-dom";
 import { useQuote } from "./context/QueotrContext";
 import { EachPost } from "./maincomponents/EachPost";
 import { throttle } from "lodash";
+import SuggetionSlip, {
+  SuggetionSlipInPost,
+} from "./maincomponents/NewUserUpdate";
 const API = import.meta.env.VITE_API_URL;
 
 function All_Post_Section() {
@@ -66,59 +69,80 @@ function All_Post_Section() {
     return mergedPosts.slice(0, visiblePosts);
   }, [all_posts, all_user, visiblePosts]);
 
-  return (
-    <div
-      className="p-0 col-sm-12 col-md-12 col-lg-10"
-      style={{ margin: "auto" }}
-    >
-      <section
-        className="p-0"
-        style={{
-          marginTop: "34px",
-          marginBottom: "84px",
-          // marginLeft: `${!sm_break_point ? "200px" : "0"}`,
-        }}
-      >
-        {Errors ? (
-          <div
-            className="fs-3 text-danger p-2 d-flex justify-content-center align-items-center"
-            style={{ height: "64vh" }}
-          >
-            {Errors.message} . . .try leter !
-          </div>
-        ) : (
-          <section
-            className={`${
-              sm_break_point ? "p-0" : "p-0"
-            } d-flex flex-column gap-5`}
-            style={{ margin: "auto", maxWidth: "600px" }}
-          >
-            {all_post_loading ? (
-              <div className="d-flex justify-content-center p-3">
-                <Loading dm={34} />
-              </div>
-            ) : (
-              visiblePostComponents.map(
-                ({ post, user }, idx) =>
-                  user &&
-                  post && (
-                    <div key={`comment-${idx}`} id={post?._id}>
-                      <EachPost user={user} comment={post} />
-                    </div>
-                  )
-              )
-            )}
+  const rn = 6;
 
+  return (
+    <>
+      <div className="" style={{ margin: "auto" }}>
+        <section
+          style={{
+            marginBottom: "84px",
+            // border: "1px solid red",
+          }}
+        >
+          {Errors ? (
             <div
-              className="d-flex justify-content-center p-3"
-              style={{ height: "44px" }}
+              className="fs-3 text-danger p-2 d-flex justify-content-center align-items-center"
+              style={{ height: "64vh" }}
             >
-              {loading && <Loading dm={34} />}
+              {Errors.message} . . .try leter !
             </div>
-          </section>
-        )}
-      </section>
-    </div>
+          ) : (
+            <div
+              className="d-flex gap-4 p-2 justify-content-evenly"
+              style={
+                {
+                  // border: "2px solid blue",
+                }
+              }
+            >
+              <section
+                className={`${
+                  sm_break_point ? "p-0" : "p-0"
+                } d-flex flex-column gap-5`}
+                style={{
+                  // margin: "auto",
+                  maxWidth: "600px",
+                  // border: "2px solid blue",
+                }}
+              >
+                {all_post_loading ? (
+                  <div className="d-flex justify-content-center p-3">
+                    <Loading dm={34} />
+                  </div>
+                ) : (
+                  <>
+                    {visiblePostComponents.map(
+                      ({ post, user }, idx) =>
+                        user &&
+                        post && (
+                          <div key={`comment-${idx}`} id={post?._id}>
+                            <EachPost user={user} comment={post} />
+                            {/* {rn + 1 > idx && idx > rn - 1 && (
+                              <div className="mt-5">
+                                <SuggetionSlipInPost />
+                              </div>
+                            )} */}
+                          </div>
+                        )
+                    )}
+                  </>
+                )}
+
+                <div
+                  className="d-flex justify-content-center p-3"
+                  style={{ height: "44px" }}
+                >
+                  {loading && <Loading dm={34} />}
+                </div>
+              </section>
+
+              <SuggetionSlip />
+            </div>
+          )}
+        </section>
+      </div>
+    </>
   );
 }
 

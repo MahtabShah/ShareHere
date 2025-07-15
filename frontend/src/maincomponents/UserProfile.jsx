@@ -72,7 +72,7 @@ const UserProfile = ({}) => {
   return (
     <div
       className="d-flex flex-column bg-light text-dark border mb-5"
-      style={{ maxWidth: "600px", margin: "auto" }}
+      // style={{ maxWidth: "800px", margin: "auto" }}
     >
       <div
         className="photoHeader w-100 position-relative border"
@@ -155,7 +155,7 @@ const UserProfile = ({}) => {
       </div>
 
       <hr className="bg-light" />
-      <h4 className="ps-2">Vibes share by @{user?.username}</h4>
+      <h4 className="ps-2 text-center">Vibes share by @{user?.username}</h4>
 
       {/* <div
         className="d-grid gap-4 p-3"
@@ -167,7 +167,7 @@ const UserProfile = ({}) => {
         {
           <section style={{ margin: "auto", maxWidth: "600px" }}>
             {LazyLoading ? (
-              <div className="p-3 d-flex justify-content-center">
+              <div className="p-3 d-flex justify-content-start">
                 {" "}
                 <Loading dm={34} />
               </div>

@@ -86,31 +86,20 @@ export const Notification = ({ setVisibleNotification }) => {
       {setVisibleNotification && (
         <div className="list">
           <div
-            className="notification shadow-lg d-flex flex-column gap-2 w-100 h-100 p-2 bg-light position-fixed overflow-y-auto"
+            className="notification shadow-lg d-flex flex-column gap-2 w-100 h-100 p-2 bg-light overflow-y-auto"
             style={{
               maxHeight: "80vh",
               maxWidth: "400px",
               zIndex: "100",
-              right: "0px",
-              top: "56px",
+              right: "10px",
+              top: "84px",
               border: "1px solid var(--lightBlack-clr)",
             }}
           >
-            <div
-              className="ps-2 ms-1"
-              style={{ width: "24px", cursor: "pointer" }}
-              onClick={() => {
-                setVisibleNotification(false);
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-              </svg>
-            </div>
             {/* <i className="fa-solid fa-arrow-left"></i> */}
             {/* {LazyLoading && <Loading />} */}
             {LazyLoading || curr_all_notifications.length < 1 ? (
-              <Loading dm={34} />
+              <Loading dm={32} />
             ) : go_comment ? (
               <div className="border">
                 <div className="p-1 d-flex gap-3 justify-content-between">
