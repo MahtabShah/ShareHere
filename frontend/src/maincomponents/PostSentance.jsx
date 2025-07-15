@@ -343,7 +343,7 @@ const PostSentence = ({ type = "post" }) => {
 
   return (
     <section
-      className="p-0 mb-0  overflow-y-auto none-scroller"
+      className="p-0 mb-0 ms-1 overflow-y-auto none-scroller"
       style={{
         // margin: "auto",
         // left: 0,
@@ -357,7 +357,7 @@ const PostSentence = ({ type = "post" }) => {
         // border: "3px solid red",
       }}
     >
-      <div className="p-0">
+      <div className="p-0 m-0">
         <div
           className="d-flex justify-content-between"
           style={{ maxWidth: "614px", margin: "auto" }}
@@ -376,7 +376,7 @@ const PostSentence = ({ type = "post" }) => {
           onSubmit={handleSubmit}
           className="w-100"
           style={{
-            maxWidth: "600px",
+            maxWidth: "601px",
             transform: "scale(1)",
             margin: "auto",
           }}

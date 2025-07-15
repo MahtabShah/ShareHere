@@ -9,6 +9,11 @@
   --light-clr: #e0dfdf;
 }
 
+html,
+body {
+  overflow-x: clip;
+}
+
 .like-comment-share :hover {
   cursor: pointer;
   /* background: #c8dffb; */

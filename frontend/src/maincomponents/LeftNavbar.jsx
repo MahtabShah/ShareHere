@@ -329,12 +329,14 @@ export default function LeftNavbar({ onActiveChange = "" }) {
         </div>
         {openSlidWin && (
           <div
-            className="border p-2"
+            className="p-2"
             style={{
               zIndex: 222000000,
-              width: `clamp(100px, calc(100vw - ${
+              width: `clamp(100px, calc(5px + 100vw - ${
                 mobile_break_point ? "0px" : sm_break_point ? "84px" : "280px"
               }), 700px)`,
+
+              // border: "2px solid red",
 
               marginTop: `${mobile_break_point ? "54px" : ""}`,
             }}
