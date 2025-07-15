@@ -332,7 +332,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
             className="border p-2"
             style={{
               zIndex: 222000000,
-              width: `clamp(100px, calc(100dvw - ${
+              width: `clamp(100px, calc(100vw - ${
                 mobile_break_point ? "0px" : sm_break_point ? "84px" : "280px"
               }), 700px)`,
 
