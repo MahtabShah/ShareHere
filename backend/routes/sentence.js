@@ -18,7 +18,7 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
   try {
 
     // const files = req.files;
-    const {ready_url , text} = req.body;
+    const {ready_url , text , mode} = req.body;
     const userId = req.user.id;
 
 
@@ -29,6 +29,7 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
       // image_text: req.body.image_text,
       images:[ready_url],
       userId:userId,
+      mode: mode,
       // pages: finalPages,
     });
 
@@ -67,17 +68,9 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get('/fix-sentences', async (req, res) => {
   try {
-    const result = await User.updateMany(
-      // { bg_clr: { $exists: false } },
-      // { $set: { bg_clr: `rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})` } },
-
-      // console.log(`rgb(${randomNum() + 55}, ${randomNum() + 35}, ${randomNum() + 20})`)
-      //  { pages: { $exists: true } },
-      // { $set: { pages: [{}] } },
-      { status: { $exists: true } },
-      { $set: { status: [] } },
-      //       { following: { $exists: true } },
-      // { $set: { following: [] } }
+    const result = await Sentence.updateMany(
+      {mode: {$exists: false}},
+      {$set: {mode: "public"}}
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

@@ -284,7 +284,7 @@ const PostSentence = ({ type = "post" }) => {
       if (ready_url) {
         const res = await axios.post(
           `${API}/api/sentence/post`,
-          { ready_url: ready_url, text: text },
+          { ready_url: ready_url, text: text, mode: activeBtn3Profile },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -339,17 +339,46 @@ const PostSentence = ({ type = "post" }) => {
     setstatusLoading(false);
   };
 
+  const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
+
   // console.log("admin_usernnnn", admin_user);
 
   return (
     <section
-      className="p-0 mb-5 overflow-y-auto w-100 none-scroller"
+      className="p-0 pb-5 mb-5 overflow-y-auto w-100 none-scroller"
       style={{
         height: "calc(100dvh - 54px)",
         zIndex: uploadClicked ? 10000 : -100,
         // border: "1px solid red",
       }}
     >
+      <div className="d-flex gap-3 ps-2">
+        <button
+          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+            activeBtn3Profile === "public" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => setActiveBtn3Profile("public")}
+        >
+          For Public
+        </button>
+        <button
+          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+            activeBtn3Profile === "Follower" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => setActiveBtn3Profile("Follower")}
+        >
+          For Follower
+        </button>
+        <button
+          className={`btn border p-1 ps-3 pe-3 rounded-5 ${
+            activeBtn3Profile === "Paid" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => setActiveBtn3Profile("Paid")}
+          disabled={true}
+        >
+          Paid Only
+        </button>
+      </div>
       <div className="p-0 m-0">
         {/* <div
           className="d-flex justify-content-between"

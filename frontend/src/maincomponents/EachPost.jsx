@@ -13,7 +13,7 @@ import { useLocation } from "react-router-dom";
 import { CommentSection } from "./Home";
 import ReportPost from "../../TinyComponent/Report";
 import { useQuote } from "../context/QueotrContext";
-
+import follow_us from "/src/assets/follow-us.png";
 const API = import.meta.env.VITE_API_URL;
 
 export const EachPost = ({ user, comment }) => {
@@ -109,15 +109,34 @@ export const EachPost = ({ user, comment }) => {
 
   // console.log("userrr", user, "and", comment);
 
+  const [is_i_am_follower, setIs_i_am_follower] = useState(false);
+  const [mode, setMode] = useState(comment?.mode);
+
+  useEffect(() => {
+    if (user && user.followers && admin_user) {
+      const isFollower = user?.followers?.includes(admin_user?._id);
+
+      console.log(isFollower);
+      setIs_i_am_follower(isFollower);
+      setMode(
+        isFollower || admin_user._id == user._id ? "public" : comment.mode
+      );
+    }
+  }, [admin_user.followers]);
+
   return (
     <>
       {
         <>
           <div
-            className="d-flex flex-column p-0 bg position-relative border-bottom"
+            className="d-flex flex-column p-0 w-100 bg position-relative border-bottom"
             style={{
               background: "#faf8f9",
               fontSize: fontSize,
+              maxWidth: "600px",
+              aspectRatio: "6/7",
+              flexShrink: 0,
+              margin: "auto",
             }}
             key={comment?._id}
           >
@@ -144,29 +163,55 @@ export const EachPost = ({ user, comment }) => {
               </div>
             </div>
 
-            <div className="w-100">
+            <div>
               <ul style={{ listStyle: "none" }} className="p-0 m-0">
                 <div
-                  className={`d-flex mt-2 m-${isDisplayedLeftNav ? "0" : "1"}`}
-                  style={{ overflow: "hidden" }}
+                  className={`d-flex align-items-center  m-${
+                    isDisplayedLeftNav ? "0" : "1"
+                  }`}
+                  style={{
+                    overflow: "hidden",
+                    width: "94vw",
+                    maxWidth: "600px",
+                    aspectRatio: "6/7",
+                    background: mode == "public" ? "" : "#ddd",
+                  }}
                 >
-                  <div
-                    className="p-0 position-relative w-100"
-                    style={{
-                      maxWidth: "600px",
-                      aspectRatio: "6/7",
-                      flexShrink: 0,
-                      margin: "auto",
-                    }}
-                  >
-                    <div className="w-100 h-100 bg-image">
-                      <img
-                        // src={optimizeImage(pg.val, 400)} // 400px for mobile-friendly width
-                        src={`${comment?.images[0]}`} // 400px for mobile-friendly width
-                        loading="lazy"
-                        className="h-100 w-100"
-                        style={{ objectFit: "cover" }}
-                      />
+                  <div className="p-0 position-relative">
+                    <div className="h-100 bg-image d-flex align-items-center flex-column">
+                      {mode == "public" && (
+                        <img
+                          src={`${comment?.images[0]}`}
+                          loading="lazy"
+                          className="h-100 w-100"
+                          style={{
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+
+                      {mode == "Follower" && (
+                        <div
+                          className="d-flex align-items-center flex-column h-100"
+                          // style={{ border: "1px solid red" }}
+                        >
+                          <div style={{ width: "180px" }}>
+                            <img
+                              src={follow_us}
+                              alt=""
+                              className="h-100 w-100"
+                              style={{
+                                objectFit: "cover",
+                                opacity: "0.4",
+                              }}
+                            />
+                          </div>
+                          <p className="p-2 fs-5">
+                            This is for <b>Followers only</b>. Follow{" "}
+                            <b>@{user?.username}</b> to access this.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

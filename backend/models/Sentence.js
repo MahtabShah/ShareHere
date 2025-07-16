@@ -18,7 +18,13 @@ const sentenceSchema = new mongoose.Schema({
 
   likes:[{
     type: mongoose.Schema.Types.ObjectId,
-  }]
+  }],
+
+  mode:{
+    type: String,
+    enum: ["public" , "Follower" , "Paid"],
+    default:"public"
+  }
 
 
 });

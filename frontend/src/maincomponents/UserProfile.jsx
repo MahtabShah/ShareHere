@@ -13,7 +13,7 @@ const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   const nevigate = useNavigate();
   const { id } = useParams();
-  const { admin_user, all_posts, all_user } = useQuote();
+  const { admin_user, all_posts, all_user, mobile_break_point } = useQuote();
   // setUser(User);
   // setUser(User);
   const user = all_user?.find((u) => u?._id === id);
@@ -22,28 +22,6 @@ const UserProfile = ({}) => {
 
   const token = localStorage.getItem("token");
 
-  // console.log("UserProfile component User:", user, id, admin_user);
-
-  // const onEditMode = () => {
-  //   // setOnEditMode(!OnEditMode)
-  //   // nevigate(`/user/EditProfile/${User.id}`);
-  // };
-
-  // const HandelFollower = async () => {
-  //   // try {
-  //   //   await axios
-  //   //     .put("http://localhost:3000/api/followed", {
-  //   //       userId: User?.id,
-  //   //     })
-  //   //     .then((res) => {
-  //   //       console.log("follower UserProfile at line: 31 component", res.data);
-  //   //       setUser(res.data);
-  //   //       fetchUser();
-  //   //     });
-  //   // } catch (error) {
-  //   //   console.error("❌ Error updating follower:", error);
-  //   // }
-  // };
   const [isfollowed, setisfollowed] = useState(false);
   const HandleFollow = async () => {
     // alert("followed.... start 95 home.js");
@@ -67,12 +45,39 @@ const UserProfile = ({}) => {
   };
 
   const user_post = all_posts.filter((el) => el.userId === id);
-  console.log("user post ", id, all_user);
+  // console.log("user post ", id, all_user);
+
+  const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
+
+  const [FollowerPost, setFollowerPost] = useState([]);
+  const [PaidPost, setPaidPost] = useState([]);
+  const [PublicPost, setPublicPost] = useState([]);
+
+  useEffect(() => {
+    setFollowerPost(user_post?.filter((p) => p.mode == "Follower"));
+    setPaidPost(user_post?.filter((p) => p.mode == "Paid"));
+    setPublicPost(user_post?.filter((p) => p.mode == "public"));
+  }, [admin_user]);
+
+  const [followMSG, setfollowMSG] = useState(false);
+
+  const [is_i_am_follower, setIs_i_am_follower] = useState(false);
+  const [mode, setMode] = useState();
+
+  useEffect(() => {
+    if (user && user?.followers && admin_user) {
+      const isFollower = user?.followers?.includes(admin_user?._id);
+
+      console.log(isFollower);
+      setIs_i_am_follower(isFollower);
+      setMode(isFollower || admin_user._id == user._id ? "public" : "");
+    }
+  }, [admin_user?.followers]);
 
   return (
     <div
       className="d-flex flex-column bg-light text-dark border mb-5"
-      // style={{ maxWidth: "800px", margin: "auto" }}
+      style={{ marginTop: `${mobile_break_point ? "50px" : "0"}` }}
     >
       <div
         className="photoHeader w-100 position-relative border"
@@ -155,15 +160,41 @@ const UserProfile = ({}) => {
       </div>
 
       <hr className="bg-light" />
-      <h4 className="ps-2 text-center">Vibes share by @{user?.username}</h4>
+      <div className="d-flex gap-3 ps-2">
+        <button
+          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+            activeBtn3Profile === "public" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => setActiveBtn3Profile("public")}
+        >
+          Public
+        </button>
+        <button
+          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+            activeBtn3Profile === "Follower" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => {
+            setActiveBtn3Profile("Follower");
 
-      {/* <div
-        className="d-grid gap-4 p-3"
-        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px , 1fr))" }}
-      >
-      </div> */}
+            if (mode != "public") {
+              setfollowMSG(true);
+            }
+          }}
+        >
+          Follower
+        </button>
+        <button
+          className={`btn border p-1 ps-3 pe-3 rounded-5 ${
+            activeBtn3Profile === "Paid" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => setActiveBtn3Profile("Paid")}
+          disabled={true}
+        >
+          Paid
+        </button>
+      </div>
 
-      <div className="d-flex flex-column gap-2">
+      <div className="d-flex flex-column gap-2 mt-3">
         {
           <section style={{ margin: "auto", maxWidth: "600px" }}>
             {LazyLoading ? (
@@ -188,20 +219,75 @@ const UserProfile = ({}) => {
                   );
                 })} */}
 
-                {user_post.map((ps, idx) => {
-                  return (
-                    <>
-                      <Fragment key={idx}>
-                        <EachPost user={user} comment={ps} />
-                      </Fragment>
-                    </>
-                  );
-                })}
+                {activeBtn3Profile == "public" &&
+                  PublicPost?.map((ps, idx) => {
+                    return (
+                      <>
+                        <Fragment key={idx}>
+                          <EachPost user={user} comment={ps} />
+                        </Fragment>
+                      </>
+                    );
+                  })}
+
+                {activeBtn3Profile == "Follower" &&
+                  FollowerPost?.map((ps, idx) => {
+                    return (
+                      <>
+                        <Fragment key={idx}>
+                          <EachPost user={user} comment={ps} />
+                        </Fragment>
+                      </>
+                    );
+                  })}
+
+                {activeBtn3Profile == "Paid" &&
+                  PaidPost?.map((ps, idx) => {
+                    return (
+                      <>
+                        <Fragment key={idx}>
+                          <EachPost user={user} comment={ps} />
+                        </Fragment>
+                      </>
+                    );
+                  })}
               </>
             )}
           </section>
         }
       </div>
+
+      {followMSG && (
+        <div
+          className="position-fixed shadow-lg border d-flex flex-column justify-content-center align-items-center gap-3 p-4 bg-white rounded"
+          style={{
+            zIndex: 10000,
+            top: "40vh",
+            left: "20vw",
+            height: "20vh",
+            width: "60vw",
+          }}
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => {
+              setfollowMSG(false);
+            }} // <- You can define this function in your component
+            className="position-absolute btn-close"
+            style={{ top: "1px", right: "1px", scale: "0.6" }}
+            aria-label="Close"
+          ></button>
+
+          {/* Info Text */}
+          <small className="text-center">
+            This is for <b>Followers only</b>. Follow <b>@{user?.username}</b>{" "}
+            to access this.
+          </small>
+
+          {/* Follow Button */}
+          <FollowBtn user={user} cls="btn btn-primary rounded-pill px-4" />
+        </div>
+      )}
     </div>
   );
 };
