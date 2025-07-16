@@ -86,11 +86,11 @@ export const Notification = ({ setVisibleNotification }) => {
       {setVisibleNotification && (
         <div
           className="list p-2 me-1"
-          style={{ border: "1px solid var(--lightBlack-clr)" }}
+          // style={{ border: "1px solid var(--lightBlack-clr)" }}
         >
           {/* <h5 className=""></h5> */}
           <div
-            className="notification d-flex flex-column gap-2 h-100 w-100 p-2 bg-light overflow-y-auto"
+            className="notification d-flex flex-column gap-2 h-100 w-100 p-1 bg-light overflow-y-auto"
             style={{
               maxHeight: "80vh",
               // width: "calc(100% - 5px)",
@@ -137,7 +137,7 @@ export const Notification = ({ setVisibleNotification }) => {
                   <Fragment key={`idx-notify${idx}`}>
                     {n?.type === "follow" && (
                       <div
-                        className="followersNotify p-2"
+                        className="followersNotify"
                         key={`curr_notify${idx}`}
                       >
                         <div className="d-flex gap-2">
@@ -176,7 +176,7 @@ export const Notification = ({ setVisibleNotification }) => {
                     )}
 
                     {n?.type === "comment" && (
-                      <div className="commentNotify p-2" key={`cmnt${idx}`}>
+                      <div className="commentNotify" key={`cmnt${idx}`}>
                         <div className="d-flex gap-2">
                           <div
                             className="dpPhoto rounded-circle text-light d-flex align-items-center justify-content-center"
@@ -219,7 +219,7 @@ export const Notification = ({ setVisibleNotification }) => {
                     )}
 
                     {n?.type === "like" && (
-                      <div className="likeNootify p-2" key={`like${idx}`}>
+                      <div className="likeNootify" key={`like${idx}`}>
                         <div className="d-flex gap-2">
                           <div
                             className="dpPhoto rounded-circle bg-success"
