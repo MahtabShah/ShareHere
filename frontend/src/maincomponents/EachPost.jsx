@@ -113,16 +113,16 @@ export const EachPost = ({ user, comment }) => {
   const [mode, setMode] = useState(comment?.mode);
 
   useEffect(() => {
-    if (user && user.followers && admin_user) {
+    if (user && user?.followers && admin_user) {
       const isFollower = user?.followers?.includes(admin_user?._id);
 
       console.log(isFollower);
       setIs_i_am_follower(isFollower);
       setMode(
-        isFollower || admin_user._id == user._id ? "public" : comment.mode
+        isFollower || admin_user?._id == user?._id ? "public" : comment?.mode
       );
     }
-  }, [admin_user.followers]);
+  }, [admin_user?.followers]);
 
   return (
     <>

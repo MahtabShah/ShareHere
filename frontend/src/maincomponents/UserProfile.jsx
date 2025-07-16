@@ -208,21 +208,6 @@ const UserProfile = ({}) => {
                   </div>
                 ) : (
                   <>
-                    {/* {all_users?.map((u, idx) => {
-                  return (
-                    <Fragment key={idx}>
-                      {" "}
-                      {all_comments
-                        ?.filter((com) => com.userId === u._id)
-                        ?.map((c, indx) => {
-                          return (
-                            
-                          );
-                        })}
-                    </Fragment>
-                  );
-                })} */}
-
                     {activeBtn3Profile == "public" &&
                       PublicPost?.map((ps, idx) => {
                         return (
