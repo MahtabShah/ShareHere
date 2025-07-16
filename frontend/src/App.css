@@ -12,6 +12,7 @@
 html,
 body {
   overflow-x: clip;
+  /* border: 2px solid red; */
 }
 
 .like-comment-share :hover {

@@ -84,14 +84,17 @@ export const Notification = ({ setVisibleNotification }) => {
   return (
     <>
       {setVisibleNotification && (
-        <div className="list p-2">
+        <div
+          className="list p-2 me-1"
+          style={{ border: "1px solid var(--lightBlack-clr)" }}
+        >
+          {/* <h5 className=""></h5> */}
           <div
             className="notification d-flex flex-column gap-2 h-100 w-100 p-2 bg-light overflow-y-auto"
             style={{
               maxHeight: "80vh",
               // width: "calc(100% - 5px)",
               zIndex: "100",
-              border: "1px solid var(--lightBlack-clr)",
             }}
           >
             {/* <i className="fa-solid fa-arrow-left"></i> */}

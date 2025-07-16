@@ -122,7 +122,11 @@ const Main = () => {
                 }}
               >
                 <BottomNav />
-                <SearchBaar />
+                <div
+                  style={{ marginTop: `${mobile_break_point ? "54px" : "0"}` }}
+                >
+                  <SearchBaar />
+                </div>
                 {/* <StatusPage /> */}
                 <All_Post_Section />
               </main>
@@ -140,7 +144,11 @@ const Main = () => {
                 }}
               >
                 <BottomNav />
-                <SearchBaar />
+                <div
+                  style={{ marginTop: `${mobile_break_point ? "54px" : "0"}` }}
+                >
+                  <SearchBaar />
+                </div>
                 {/* <StatusPage /> */}
                 <All_Post_Section />
               </main>

@@ -163,7 +163,7 @@ const UserProfile = ({}) => {
       >
       </div> */}
 
-      <div className="">
+      <div className="d-flex flex-column gap-2">
         {
           <section style={{ margin: "auto", maxWidth: "600px" }}>
             {LazyLoading ? (

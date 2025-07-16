@@ -93,11 +93,28 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
   function GiveComponent(activeIndex) {
     if (activeIndex == "Search") {
-      return <SearchBaar />;
+      return (
+        <>
+          <h5 className="ms-2">Search Your Quote Here</h5>
+          <SearchBaar />
+        </>
+      );
     } else if (activeIndex == "Notifications") {
-      return <Notification setVisibleNotification={setVisibleNotification} />;
+      return (
+        <>
+          {" "}
+          <h5 className="ms-2">All Notifications</h5>
+          <Notification setVisibleNotification={setVisibleNotification} />
+        </>
+      );
     } else if (activeIndex == "Upload") {
-      return <PostSentence />;
+      return (
+        <>
+          <h5 className="ms-2">Upload Your Thought Here</h5>
+
+          <PostSentence />
+        </>
+      );
     }
   }
 

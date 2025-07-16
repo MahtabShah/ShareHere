@@ -343,11 +343,11 @@ const PostSentence = ({ type = "post" }) => {
 
   return (
     <section
-      className="p-0 mb-0 ms-1 overflow-y-auto none-scroller"
+      className="p-0 mb-5 overflow-y-auto w-100 none-scroller"
       style={{
         height: "calc(100dvh - 54px)",
         zIndex: uploadClicked ? 10000 : -100,
-        // border: "3px solid red",
+        // border: "1px solid red",
       }}
     >
       <div className="p-0 m-0">
@@ -370,17 +370,16 @@ const PostSentence = ({ type = "post" }) => {
           className="w-100"
           style={{
             maxWidth: "601px",
-            transform: "scale(1)",
             margin: "auto",
           }}
         >
           <div className="d-flex flex-column">
             <div
-              className="border position-relative rounded-0 border-bottom-0"
+              className=" position-relative rounded-0 border-bottom-0"
               style={{ right: 0, minHeight: "230px" }}
             >
               <div className="d-flex align-items-center justify-content-between">
-                <div className="d-flex  flex-grow-1 flex-column align-center pe-3 ps-3 p-2 w-100">
+                <div className="d-flex  flex-grow-1 flex-column align-center p-2 w-100">
                   <QuoteStyler />
                 </div>
               </div>
