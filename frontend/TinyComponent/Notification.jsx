@@ -90,7 +90,7 @@ export const Notification = ({ setVisibleNotification }) => {
         >
           {/* <h5 className=""></h5> */}
           <div
-            className="notification d-flex flex-column gap-2 h-100 w-100 p-1 bg-light overflow-y-auto"
+            className="notification d-flex flex-column gap-3 h-100 w-100 bg-light overflow-y-auto"
             style={{
               maxHeight: "80vh",
               // width: "calc(100% - 5px)",
@@ -100,7 +100,7 @@ export const Notification = ({ setVisibleNotification }) => {
             {/* <i className="fa-solid fa-arrow-left"></i> */}
             {/* {LazyLoading && <Loading />} */}
             {LazyLoading || curr_all_notifications.length < 1 ? (
-              <Loading dm={32} />
+              "No Notification Yet . . ."
             ) : go_comment ? (
               <div className="border">
                 <div className="p-1 d-flex gap-3 justify-content-between">
