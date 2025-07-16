@@ -345,20 +345,13 @@ const PostSentence = ({ type = "post" }) => {
     <section
       className="p-0 mb-0 ms-1 overflow-y-auto none-scroller"
       style={{
-        // margin: "auto",
-        // left: 0,
-        // left: `${sm_break_point ? "80px" : "254px"}`,
-        // right: 0,
-        // top: "54px",
-        // bottom: 0,
-        // transform: "scale(0.7)",
         height: "calc(100dvh - 54px)",
         zIndex: uploadClicked ? 10000 : -100,
         // border: "3px solid red",
       }}
     >
       <div className="p-0 m-0">
-        <div
+        {/* <div
           className="d-flex justify-content-between"
           style={{ maxWidth: "614px", margin: "auto" }}
         >
@@ -371,7 +364,7 @@ const PostSentence = ({ type = "post" }) => {
           >
             {statusLoading ? <Loading dm={24} clr="danger" /> : "set as status"}
           </span>
-        </div>
+        </div> */}
         <form
           onSubmit={handleSubmit}
           className="w-100"
@@ -519,8 +512,9 @@ const PostSentence = ({ type = "post" }) => {
               {type === "post" && (
                 <button
                   type={LazyLoading ? "button" : "submit"}
-                  className="btn btn-outline-danger flex-grow-1 ps-5 pe-5 rounded-0"
+                  className="btn btn-danger flex-grow-1 ps-5 pe-5 rounded-0"
                   style={{ height: "42px" }}
+                  disabled={LazyLoading}
                 >
                   {LazyLoading ? <Loading clr={"white"} /> : "Post"}
                 </button>

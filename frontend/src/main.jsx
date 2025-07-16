@@ -114,7 +114,7 @@ const Main = () => {
             path="/*"
             element={
               <main
-                className="p-0 pt-2 mb-5"
+                className="p-0 pt-2 mb-5 me-0"
                 style={{
                   marginLeft: `${
                     mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
@@ -132,7 +132,7 @@ const Main = () => {
             path="/home/:postId?"
             element={
               <main
-                className="p-0 pt-2 mb-5"
+                className="p-0 pt-2 mb-5 me-0"
                 style={{
                   marginLeft: `${
                     mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"

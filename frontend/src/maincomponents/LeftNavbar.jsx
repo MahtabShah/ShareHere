@@ -171,7 +171,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
             <li className="nav-item ">
               <Nav.Link
                 className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-                href="/Home"
+                href={`${openSlidWin ? "" : "/Home"}`}
                 onClick={() => {
                   setActiveIndex("Home");
                   setopenSlidWin(false);
@@ -199,8 +199,12 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
                 onClick={() => {
                   setUploadClicked(!uploadClicked);
+                  if (activeIndex == "Upload") {
+                    setopenSlidWin(!openSlidWin);
+                  } else {
+                    setopenSlidWin(true);
+                  }
                   setActiveIndex("Upload");
-                  setopenSlidWin(true);
                 }}
               >
                 <div
@@ -227,8 +231,13 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                   setVisibleNotification(!VisibleNotification);
                   setCount(0);
                   Mark_as_read_notification();
-                  setActiveIndex("Notifications");
-                  setopenSlidWin(true);
+
+                  if (activeIndex == "Notifications") {
+                    setopenSlidWin(!openSlidWin);
+                  } else {
+                    setopenSlidWin(true);
+                    setActiveIndex("Notifications");
+                  }
                 }}
               >
                 <div
@@ -253,7 +262,12 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
                 onClick={() => {
                   setopenSlidWin(true);
-                  setActiveIndex("Search");
+                  if (activeIndex == "Search") {
+                    setopenSlidWin(!openSlidWin);
+                  } else {
+                    setopenSlidWin(true);
+                    setActiveIndex("Search");
+                  }
                 }}
               >
                 <div
@@ -306,6 +320,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                   <Nav.Link
                     href="/signup"
                     className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                    onClick={() => {
+                      setopenSlidWin(false);
+                    }}
                   >
                     <div
                       className="d-flex align-items-center justify-content-center gap-3"

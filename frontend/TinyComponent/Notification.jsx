@@ -84,15 +84,13 @@ export const Notification = ({ setVisibleNotification }) => {
   return (
     <>
       {setVisibleNotification && (
-        <div className="list">
+        <div className="list p-2">
           <div
-            className="notification shadow-lg ms-1 d-flex flex-column gap-2 w-100 h-100 p-2 bg-light overflow-y-auto"
+            className="notification d-flex flex-column gap-2 h-100 w-100 p-2 bg-light overflow-y-auto"
             style={{
               maxHeight: "80vh",
-              maxWidth: "400px",
+              // width: "calc(100% - 5px)",
               zIndex: "100",
-              right: "10px",
-              top: "84px",
               border: "1px solid var(--lightBlack-clr)",
             }}
           >

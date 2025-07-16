@@ -10,6 +10,7 @@ import { throttle } from "lodash";
 import SuggetionSlip, {
   SuggetionSlipInPost,
 } from "./maincomponents/NewUserUpdate";
+import axios from "axios";
 const API = import.meta.env.VITE_API_URL;
 
 function All_Post_Section() {
@@ -71,8 +72,31 @@ function All_Post_Section() {
 
   const rn = 6;
 
+  // const [img, setImg] = useState(+"https://zenquotes.io/api/image");
+
+  // const getImg = async () => {
+  //   const res = await axios.get("https://inspirobot.me/api?generate=true");
+  //   console.log(res);
+  //   setImg(res.data);
+  // };
+
+  // useEffect(() => {
+  //   getImg();
+  // }, []);
   return (
     <>
+      {/* <div className="p-3 m-2">
+        <p>
+          {" "}
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium
+          dolorum tempore inventore optio odio aut quo ea deserunt ratione
+          officiis distinctio id dolorem nobis magni possimus consequatur a,
+          quis ipsam!
+        </p>
+        <div style={{ width: "220px", aspectRatio: "2/3" }}>
+          <img src={img} alt="" className="w-100" />
+        </div>
+      </div> */}
       <div className="" style={{ margin: "auto" }}>
         <section
           style={{

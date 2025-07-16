@@ -74,7 +74,7 @@ export const SearchBaar = () => {
 
   return (
     <>
-      <div className="ps-1 pe-1">
+      <div className="p-2">
         <form onSubmit={handleSearch} className="input-group">
           <input
             type="text"

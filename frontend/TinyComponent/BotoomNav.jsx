@@ -23,8 +23,10 @@ export default function BottomNav({}) {
     mobile_break_point,
     setopenSlidWin,
     setActiveIndex,
+    activeIndex,
     setUploadClicked,
     uploadClicked,
+    openSlidWin,
     setVisibleNotification,
     VisibleNotification,
   } = useQuote();
@@ -53,7 +55,7 @@ export default function BottomNav({}) {
               <li className="nav-item ">
                 <Nav.Link
                   className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-                  href="/Home"
+                  href={`${openSlidWin ? "" : "/Home"}`}
                   onClick={() => {
                     setActiveIndex("Home");
                     setopenSlidWin(false);
@@ -81,8 +83,12 @@ export default function BottomNav({}) {
                   className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
                   onClick={() => {
                     setUploadClicked(!uploadClicked);
+                    if (activeIndex == "Upload") {
+                      setopenSlidWin(!openSlidWin);
+                    } else {
+                      setopenSlidWin(true);
+                    }
                     setActiveIndex("Upload");
-                    setopenSlidWin(true);
                   }}
                 >
                   <div
@@ -107,8 +113,13 @@ export default function BottomNav({}) {
                   className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
                   onClick={() => {
                     setVisibleNotification(!VisibleNotification);
-                    setActiveIndex("Notifications");
-                    setopenSlidWin(true);
+
+                    if (activeIndex == "Notifications") {
+                      setopenSlidWin(!openSlidWin);
+                    } else {
+                      setopenSlidWin(true);
+                      setActiveIndex("Notifications");
+                    }
                   }}
                 >
                   <div
@@ -133,7 +144,12 @@ export default function BottomNav({}) {
                   className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
                   onClick={() => {
                     setopenSlidWin(true);
-                    setActiveIndex("Search");
+                    if (activeIndex == "Search") {
+                      setopenSlidWin(!openSlidWin);
+                    } else {
+                      setopenSlidWin(true);
+                      setActiveIndex("Search");
+                    }
                   }}
                 >
                   <div
