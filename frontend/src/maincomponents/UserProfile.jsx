@@ -18,52 +18,20 @@ const UserProfile = ({}) => {
   // setUser(User);
   const user = all_user?.find((u) => u?._id === id);
   // fetchUser();
-  const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
-
-  const token = localStorage.getItem("token");
-
-  const [isfollowed, setisfollowed] = useState(false);
-  const HandleFollow = async () => {
-    // alert("followed.... start 95 home.js");
-    try {
-      setisfollowed(!isfollowed);
-      const res = await axios.put(
-        `${API}/api/crud/crud_follow_post`,
-        {
-          // data you want to send
-          id: id,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      // setisliked(!isliked);
-    } catch (err) {
-      alert("folloing failed: " + err.response?.data?.message || err.message);
-    }
-  };
+  const [LazyLoading, setLazyLoading] = useState(true); // to track which button is animating
 
   const user_post = all_posts.filter((el) => el.userId === id);
-  // console.log("user post ", id, all_user);
-
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
 
-  const [FollowerPost, setFollowerPost] = useState([]);
-  const [PaidPost, setPaidPost] = useState([]);
-  const [PublicPost, setPublicPost] = useState([]);
-
-  useEffect(() => {
-    setFollowerPost(user_post?.filter((p) => p.mode == "Follower"));
-    setPaidPost(user_post?.filter((p) => p.mode == "Paid"));
-    setPublicPost(user_post?.filter((p) => p.mode == "public"));
-  }, [all_posts]);
+  const FollowerPost = user_post?.filter((p) => p.mode == "Follower");
+  const PaidPost = user_post?.filter((p) => p.mode == "Paid");
+  const PublicPost = user_post?.filter((p) => p.mode == "public");
+  console.log("god");
 
   // console.log("KKKK", all_posts);
 
   const [followMSG, setfollowMSG] = useState(false);
 
-  const [is_i_am_follower, setIs_i_am_follower] = useState(false);
   const [mode, setMode] = useState();
 
   useEffect(() => {
@@ -71,9 +39,10 @@ const UserProfile = ({}) => {
       const isFollower = user?.followers?.includes(admin_user?._id);
 
       console.log(isFollower);
-      setIs_i_am_follower(isFollower);
       setMode(isFollower || admin_user._id == user._id ? "public" : "");
     }
+
+    setLazyLoading(user_post.length < 0);
   }, [admin_user?.followers]);
 
   return (
