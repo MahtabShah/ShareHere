@@ -345,7 +345,7 @@ const PostSentence = ({ type = "post" }) => {
 
   return (
     <section
-      className="p-0 pb-5 mb-5 overflow-y-auto w-100 none-scroller"
+      className="p-0 pb-5 mb-5 pt-2 border overflow-y-auto w-100 none-scroller"
       style={{
         height: "calc(100dvh - 54px)",
         zIndex: uploadClicked ? 10000 : -100,
@@ -480,10 +480,10 @@ const PostSentence = ({ type = "post" }) => {
             {/* above select btn image area */}
 
             {type === "post" && (
-              <div className="border">
+              <div className="border-top">
                 <div className="d-flex gap-2 align-items-center  p-2 pb-0 pt-2">
                   <div
-                    className="d-flex fw-semibold ms-1 border text-white rounded-5 align-items-center justify-content-center"
+                    className="d-flex fw-semibold ms-1 text-white rounded-5 align-items-center justify-content-center"
                     style={{
                       width: "40px",
                       height: "40px",
@@ -506,7 +506,7 @@ const PostSentence = ({ type = "post" }) => {
                     onChange={(e) => {
                       handleInput(0, e, "text");
                     }}
-                    className={`form-control rounded-0 shadow-none ps-2 pe-2 border-0`}
+                    className={`form-control rounded-0 shadow-none ps-2 pe-2 border-0 bg-light`}
                     placeholder="Write about post here . . ."
                     style={{ overflow: "hidden", resize: "none" }}
                     spellCheck="false"
@@ -526,7 +526,7 @@ const PostSentence = ({ type = "post" }) => {
             <br />
 
             {/* {browsssss imggggg} */}
-            <div className="d-flex gap-3 p-2 justify-content-end p-0 pb-5 mb-4">
+            <div className="d-flex gap-3 p-2 pt-0 justify-content-end p-0 pb-5 mb-4">
               {/* {isPre_Image} */}
 
               <label

@@ -110,8 +110,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     } else if (activeIndex == "Upload") {
       return (
         <>
-          <h5 className="ms-2">Upload Your Thought Here</h5>
-
+          <h5 className="">Upload Your Thought Here</h5>
           <PostSentence />
         </>
       );
@@ -136,35 +135,34 @@ export default function LeftNavbar({ onActiveChange = "" }) {
   return (
     <>
       <div
-        className="LeftNavbar d-flex position-fixed bg-light"
+        className="LeftNavbar d-flex h-100 position-fixed bg-light border-end"
         style={{
           zIndex: 11,
-          borderRight: "1px solid var(--light-clr)",
-          translate: `${mobile_break_point ? "-80px" : "0"}`,
+          // borderRight: "1px solid red",
+          translate: `${mobile_break_point ? "0px" : "0"}`,
+          width: `${openSlidWin ? "100%" : "0"}`,
         }}
       >
-        <div
-          className="d-flex p-2"
-          style={{ height: "100vh", borderTopRightRadius: "20px" }}
-        >
-          {/* <div className="mb-2 fw-bold text-uppercase fs-5">Menu</div> */}
-          <ul className="nav nav-pills flex-column gap-3 mb-auto">
-            <li className="nav-item border-bottom pb-2">
-              <a
-                href="/home"
-                className={`nav-link d-flex align-items-center gap-3 fs-6`}
-              >
-                <span
-                  className={`d-flex align-items-center justify-content-center text-light`}
-                  style={{
-                    width: "24px",
-                    height: "24px",
-                    // borderRadius: "50%",
-                    borderEndEndRadius: "0px",
-                    boxShadow: "0 0 0 2px #f8f9fa , 0 0 0 3px #111",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: `conic-gradient(
+        {!mobile_break_point && (
+          <div className="d-flex border-end" style={{ height: "100vh" }}>
+            {/* <div className="mb-2 fw-bold text-uppercase fs-5">Menu</div> */}
+            <ul className="nav nav-pills flex-column gap-3 mb-auto">
+              <li className="nav-item border-bottom pb-2">
+                <a
+                  href="/home"
+                  className={`nav-link d-flex align-items-center gap-3 fs-6`}
+                >
+                  <span
+                    className={`d-flex align-items-center justify-content-center text-light`}
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      // borderRadius: "50%",
+                      borderEndEndRadius: "0px",
+                      boxShadow: "0 0 0 2px #f8f9fa , 0 0 0 3px #111",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: `conic-gradient(
   from 0deg, 
   #ff3c78, 
 #c71832,
@@ -172,205 +170,204 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 #c71832, 
   #ff3c78
 )`,
-                  }}
-                >
-                  AI
-                </span>
-
-                <span
-                  className={`fw-semibold ${sm_break_point ? "d-none" : ""}`}
-                >
-                  VIBE INK
-                </span>
-              </a>
-            </li>
-
-            <li className="nav-item ">
-              <Nav.Link
-                className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-                href={`${openSlidWin ? "" : "/Home"}`}
-                onClick={() => {
-                  setActiveIndex("Home");
-                  setopenSlidWin(false);
-                }}
-              >
-                <div
-                  className="d-flex align-items-center justify-content-center"
-                  style={{ width: "24px", height: "24px" }}
-                >
-                  <FontAwesomeIcon icon={faHome} />
-                </div>
-                <span
-                  className={`fw-semibold pe-5 ${
-                    sm_break_point ? "d-none" : ""
-                  }`}
-                  style={{ width: "154px" }}
-                >
-                  Home
-                </span>
-              </Nav.Link>
-            </li>
-
-            <li className="nav-item ">
-              <Nav.Link
-                className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-                onClick={() => {
-                  setUploadClicked(!uploadClicked);
-                  if (activeIndex == "Upload") {
-                    setopenSlidWin(!openSlidWin);
-                  } else {
-                    setopenSlidWin(true);
-                  }
-                  setActiveIndex("Upload");
-                }}
-              >
-                <div
-                  className="d-flex align-items-center justify-content-center"
-                  style={{ width: "24px", height: "24px" }}
-                >
-                  <FontAwesomeIcon icon={faPlus} />
-                </div>
-                <span
-                  className={`fw-semibold pe-5 ${
-                    sm_break_point ? "d-none" : ""
-                  }`}
-                  style={{ width: "154px" }}
-                >
-                  Upload
-                </span>
-              </Nav.Link>
-            </li>
-
-            <li className="nav-item ">
-              <Nav.Link
-                className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-                onClick={() => {
-                  setVisibleNotification(!VisibleNotification);
-                  setCount(0);
-                  Mark_as_read_notification();
-
-                  if (activeIndex == "Notifications") {
-                    setopenSlidWin(!openSlidWin);
-                  } else {
-                    setopenSlidWin(true);
-                    setActiveIndex("Notifications");
-                  }
-                }}
-              >
-                <div
-                  className="d-flex align-items-center justify-content-center"
-                  style={{ width: "24px", height: "24px" }}
-                >
-                  <FontAwesomeIcon icon={faBell} />
-                </div>
-                <span
-                  className={`fw-semibold pe-5 ${
-                    sm_break_point ? "d-none" : ""
-                  }`}
-                  style={{ width: "154px" }}
-                >
-                  Notifications
-                </span>
-              </Nav.Link>
-            </li>
-
-            <li className="nav-item ">
-              <Nav.Link
-                className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-                onClick={() => {
-                  setopenSlidWin(true);
-                  if (activeIndex == "Search") {
-                    setopenSlidWin(!openSlidWin);
-                  } else {
-                    setopenSlidWin(true);
-                    setActiveIndex("Search");
-                  }
-                }}
-              >
-                <div
-                  className="d-flex align-items-center justify-content-center"
-                  style={{ width: "24px", height: "24px" }}
-                >
-                  <FontAwesomeIcon icon={faSearch} />
-                </div>
-                <span
-                  className={`fw-semibold pe-5 ${
-                    sm_break_point ? "d-none" : ""
-                  }`}
-                  style={{ width: "154px" }}
-                >
-                  Search
-                </span>
-              </Nav.Link>
-            </li>
-
-            {loggedIn && admin_user?._id ? (
-              <>
-                <li className="nav-item border-bottom pb-2">
-                  <a
-                    href={`/api/user/${admin_user?._id}`}
-                    className={`nav-link d-flex align-items-center gap-3 fs-6`}
-                  >
-                    <span
-                      className={`d-flex align-items-center justify-content-center border rounded-1 text-danger`}
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faUser} />
-                    </span>
-
-                    <span
-                      className={`fw-semibold text-dark ${
-                        sm_break_point ? "d-none" : ""
-                      }`}
-                    >
-                      User Profile
-                    </span>
-                  </a>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <Nav.Link
-                    href="/signup"
-                    className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-                    onClick={() => {
-                      setopenSlidWin(false);
                     }}
                   >
-                    <div
-                      className="d-flex align-items-center justify-content-center gap-3"
-                      style={{ width: "24px", height: "24px" }}
+                    AI
+                  </span>
+
+                  <span
+                    className={`fw-semibold ${sm_break_point ? "d-none" : ""}`}
+                  >
+                    VIBE INK
+                  </span>
+                </a>
+              </li>
+
+              <li className="nav-item ">
+                <Nav.Link
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  href={`${openSlidWin ? "" : "/Home"}`}
+                  onClick={() => {
+                    setActiveIndex("Home");
+                    setopenSlidWin(false);
+                  }}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "24px", height: "24px" }}
+                  >
+                    <FontAwesomeIcon icon={faHome} />
+                  </div>
+                  <span
+                    className={`fw-semibold pe-5 ${
+                      sm_break_point ? "d-none" : ""
+                    }`}
+                    style={{ width: "154px" }}
+                  >
+                    Home
+                  </span>
+                </Nav.Link>
+              </li>
+
+              <li className="nav-item ">
+                <Nav.Link
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  onClick={() => {
+                    setUploadClicked(!uploadClicked);
+                    if (activeIndex == "Upload") {
+                      setopenSlidWin(!openSlidWin);
+                    } else {
+                      setopenSlidWin(true);
+                    }
+                    setActiveIndex("Upload");
+                  }}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "24px", height: "24px" }}
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </div>
+                  <span
+                    className={`fw-semibold pe-5 ${
+                      sm_break_point ? "d-none" : ""
+                    }`}
+                    style={{ width: "154px" }}
+                  >
+                    Upload
+                  </span>
+                </Nav.Link>
+              </li>
+
+              <li className="nav-item ">
+                <Nav.Link
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  onClick={() => {
+                    setVisibleNotification(!VisibleNotification);
+                    setCount(0);
+                    Mark_as_read_notification();
+
+                    if (activeIndex == "Notifications") {
+                      setopenSlidWin(!openSlidWin);
+                    } else {
+                      setopenSlidWin(true);
+                      setActiveIndex("Notifications");
+                    }
+                  }}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "24px", height: "24px" }}
+                  >
+                    <FontAwesomeIcon icon={faBell} />
+                  </div>
+                  <span
+                    className={`fw-semibold pe-5 ${
+                      sm_break_point ? "d-none" : ""
+                    }`}
+                    style={{ width: "154px" }}
+                  >
+                    Notifications
+                  </span>
+                </Nav.Link>
+              </li>
+
+              <li className="nav-item ">
+                <Nav.Link
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  onClick={() => {
+                    setopenSlidWin(true);
+                    if (activeIndex == "Search") {
+                      setopenSlidWin(!openSlidWin);
+                    } else {
+                      setopenSlidWin(true);
+                      setActiveIndex("Search");
+                    }
+                  }}
+                >
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: "24px", height: "24px" }}
+                  >
+                    <FontAwesomeIcon icon={faSearch} />
+                  </div>
+                  <span
+                    className={`fw-semibold pe-5 ${
+                      sm_break_point ? "d-none" : ""
+                    }`}
+                    style={{ width: "154px" }}
+                  >
+                    Search
+                  </span>
+                </Nav.Link>
+              </li>
+
+              {loggedIn && admin_user?._id ? (
+                <>
+                  <li className="nav-item border-bottom pb-2">
+                    <a
+                      href={`/api/user/${admin_user?._id}`}
+                      className={`nav-link d-flex align-items-center gap-3 fs-6`}
                     >
-                      <FontAwesomeIcon icon={faUser} />
-                    </div>
-                    <span
-                      className={`fw-semibold pe-5 small ${
-                        sm_break_point ? "d-none" : ""
-                      }`}
+                      <span
+                        className={`d-flex align-items-center justify-content-center border rounded-1 text-danger`}
+                        style={{
+                          width: "24px",
+                          height: "24px",
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faUser} />
+                      </span>
+
+                      <span
+                        className={`fw-semibold text-dark ${
+                          sm_break_point ? "d-none" : ""
+                        }`}
+                      >
+                        User Profile
+                      </span>
+                    </a>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <Nav.Link
+                      href="/signup"
+                      className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                      onClick={() => {
+                        setopenSlidWin(false);
+                      }}
                     >
-                      {" "}
-                      Create an Account
-                    </span>
-                  </Nav.Link>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
+                      <div
+                        className="d-flex align-items-center justify-content-center gap-3"
+                        style={{ width: "24px", height: "24px" }}
+                      >
+                        <FontAwesomeIcon icon={faUser} />
+                      </div>
+                      <span
+                        className={`fw-semibold pe-5 small ${
+                          sm_break_point ? "d-none" : ""
+                        }`}
+                      >
+                        {" "}
+                        Create an Account
+                      </span>
+                    </Nav.Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+        )}
         {openSlidWin && (
           <div
             className="p-2"
             style={{
               zIndex: 222000000,
-              width: `clamp(100px, calc(5px + 100vw - ${
+              width: `clamp(100px, calc(100% - ${
                 mobile_break_point ? "0px" : sm_break_point ? "84px" : "280px"
               }), 700px)`,
-
-              // border: "2px solid red",
 
               marginTop: `${mobile_break_point ? "54px" : ""}`,
             }}
