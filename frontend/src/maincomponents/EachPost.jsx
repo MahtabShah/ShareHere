@@ -592,7 +592,7 @@ export const LikeBtn = ({ post, size = 18 }) => {
             animatingBtn === "likes" ? "animate-rotate" : ""
           } rotate`}
         >
-          {isliked ? <FaHeart size={size - 3} /> : <BiHeart size={size} />}
+          {isliked ? <FaHeart size={size - 4} /> : <BiHeart size={size} />}
         </span>
 
         <span className="" style={{ marginTop: "0.1rem" }}>

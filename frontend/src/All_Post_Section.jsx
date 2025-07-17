@@ -45,7 +45,7 @@ function All_Post_Section() {
         setLoading(true);
         // }
         setTimeout(() => {
-          setVisiblePosts((prev) => prev + 3);
+          setVisiblePosts((prev) => prev + 5);
           setLoading(false);
         }, 1000);
       }
@@ -72,7 +72,7 @@ function All_Post_Section() {
 
   const rn = 6;
 
-  // const [img, setImg] = useState(+"https://zenquotes.io/api/image");
+  // const [img, setImg] = useState("https://zenquotes.io/api/image");
 
   // const getImg = async () => {
   //   const res = await axios.get("https://inspirobot.me/api?generate=true");

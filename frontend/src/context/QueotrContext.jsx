@@ -34,7 +34,6 @@ export const QuoteProvider = ({ children }) => {
   const [admin_user, setadmin_user] = useState(null);
   const [user, set_user] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
   const [loading, setLoading] = useState(false);
   const [all_statuses, setall_statuses] = useState([]);
   const [all_posts, set_all_posts] = useState([]);
@@ -131,6 +130,25 @@ export const QuoteProvider = ({ children }) => {
     setAll_post_loading(false);
   };
 
+  let curr_page = 0;
+
+  const fetch_n_posts = async () => {
+    try {
+      const res = await axios.get(
+        `${API}/api/auth/all_sentence?_limit=5&_page=${curr_page}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      // setLoading(false);
+      curr_page++;
+      res.data?.length === 0 ? "" : set_all_posts(res.data);
+    } catch (err) {
+      console.log("Failed to fetch your sentences see err", err);
+      setErrors(err);
+    }
+  };
+
   const fetch_all_notifications = async () => {
     try {
       const res = await axios.get(`${API}/api/crud/all_notifications`, {
@@ -178,10 +196,6 @@ export const QuoteProvider = ({ children }) => {
     fetch_admin_user();
     fetch_all_users();
     fetch_all_posts();
-
-    if (admin_user?._id) {
-      // fetch_user_statuses();
-    }
   }, []);
 
   const [style, setStyle] = useState({

@@ -88,8 +88,8 @@ router.get("/home" , async (req, res)=>{
 
 
 router.get("/all_sentence" , async (req, res)=>{
-  const limit = parseInt(req.query.limit) || 1000;
-  const page = parseInt(req.query.page) || 0;
+  const limit = parseInt(req.query.limit);
+  const page = parseInt(req.query.page)  || 0;
   const all_posts = await Sentence.find().sort({ createdAt: -1 }) // or use a `rank` field
   .skip(page * limit)
   .limit(limit).populate({
@@ -106,6 +106,8 @@ router.get("/all_sentence" , async (req, res)=>{
    }
  
 })
+
+
 
 
 router.get("/all_post_comments" , async (req, res)=>{
