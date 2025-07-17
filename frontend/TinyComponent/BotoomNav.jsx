@@ -42,10 +42,9 @@ export default function BottomNav({}) {
       {mobile_break_point && (
         <>
           <div
-            className="BottomNav border w-100 d-sm-none bg-light position-fixed"
+            className="BottomNav w-100 d-sm-none bg-light position-fixed"
             style={{
               zIndex: "11",
-              borderRight: "1px solid var(--light-clr)",
               height: "48px",
               bottom: "0",
               left: "0",

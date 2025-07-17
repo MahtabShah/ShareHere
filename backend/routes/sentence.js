@@ -69,8 +69,8 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 router.get('/fix-sentences', async (req, res) => {
   try {
     const result = await Sentence.updateMany(
-      {mode: {$exists: false}},
-      {$set: {mode: "public"}}
+      {createdAt: {$exists: false}},
+      {$set: {createdAt:  Date.now()}}
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

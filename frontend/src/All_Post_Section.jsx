@@ -113,7 +113,7 @@ function All_Post_Section() {
             </div>
           ) : (
             <div
-              className="d-flex gap-4 p-2 justify-content-evenly"
+              className="d-flex gap-4 justify-content-evenly"
               style={
                 {
                   // border: "2px solid blue",

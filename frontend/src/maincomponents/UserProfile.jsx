@@ -47,7 +47,7 @@ const UserProfile = ({}) => {
 
   return (
     <>
-      {admin_user && all_posts ? (
+      {all_posts ? (
         <div
           className="d-flex flex-column bg-light text-dark border mb-5"
           style={{ marginTop: `${mobile_break_point ? "50px" : "0"}` }}

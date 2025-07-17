@@ -15,6 +15,9 @@ import ReportPost from "../../TinyComponent/Report";
 import { useQuote } from "../context/QueotrContext";
 import follow_us from "/src/assets/follow-us.png";
 const API = import.meta.env.VITE_API_URL;
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 export const EachPost = ({ user, comment }) => {
   // comment parameter is besiaclly post
@@ -129,19 +132,18 @@ export const EachPost = ({ user, comment }) => {
       {
         <>
           <div
-            className="d-flex flex-column p-0 w-100 bg position-relative border-bottom"
+            className="d-flex flex-column position-relative"
             style={{
-              background: "#faf8f9",
-              fontSize: fontSize,
+              background: "#f7f7f7ff",
+              width: "100%",
               maxWidth: "600px",
               aspectRatio: "6/7",
-              flexShrink: 0,
               margin: "auto",
             }}
             key={comment?._id}
           >
             {/*--------------------- user ring and follow btn ----------------------- */}
-            <div className="d-flex gap-2 ps-1 mt-1 align-items-center">
+            <div className="d-flex gap-2 ps-1 align-items-center">
               <UserRing user={user} />
 
               <div className="d-flex flex-column align-items-end">
@@ -171,14 +173,21 @@ export const EachPost = ({ user, comment }) => {
                   }`}
                   style={{
                     overflow: "hidden",
-                    width: "94vw",
-                    maxWidth: "600px",
-                    aspectRatio: "6/7",
+
                     background: mode == "public" ? "" : "#ddd",
                   }}
                 >
-                  <div className="p-0 position-relative">
-                    <div className="h-100 bg-image d-flex align-items-center flex-column">
+                  <div
+                    className="p-0 w-100 position-relative"
+                    // style={{ border: "1px solid red" }}
+                  >
+                    <div
+                      className="h-100  bg-image d-flex align-items-center flex-column"
+                      style={{
+                        maxWidth: "600px",
+                        aspectRatio: "6/7",
+                      }}
+                    >
                       {mode == "public" && (
                         <img
                           src={`${comment?.images[0]}`}
@@ -216,7 +225,7 @@ export const EachPost = ({ user, comment }) => {
                   </div>
                 </div>
 
-                <li className="p-2 w-100 flex-grow-1 rounded-3 ps-3">
+                <li className="p-2 ps-1 w-100 flex-grow-1 rounded-3 ms-1">
                   {comment && (
                     <div key={comment.text.slice(0, -1)}>{comment.text}</div>
                   )}
@@ -224,28 +233,40 @@ export const EachPost = ({ user, comment }) => {
               </ul>
             </div>
 
-            <div className="p-2 border-top d-flex justify-content-between like-comment-share ms-2 me-1">
-              <LikeBtn post={comment} />
+            <div
+              className="pt-2 border-top d-flex flex-column"
+              style={{ padding: "0 0.575rem" }}
+            >
+              <small>{dayjs(comment?.updatedAt).fromNow()}</small>
+              {/* <small>{comment.likes.length} </small> */}
+            </div>
+
+            <div
+              className="d-flex justify-content-between like-comment-share"
+              style={{ padding: "0.5rem 0.45rem" }}
+            >
+              <LikeBtn post={comment} size={22} />
               <span
-                className="ps-3 pe-3 p-1 fw-semibold d-flex align-items-center gap-1"
+                className="fw-semibold d-flex align-items-center gap-1"
                 onClick={() => {
                   setopen_comment(!open_comment);
                 }}
               >
                 <span style={{ marginTop: "0.2rem" }}>
-                  <BiChat /> {comment?.comments?.length || 0}&nbsp;
+                  <BiChat size={20} /> {comment?.comments?.length || 0}&nbsp;
                 </span>
               </span>
-              <span className="ps-2 p-1 fw-semibold" onClick={HandleShare}>
-                <BiShare />
+              <span className="fw-semibold" onClick={HandleShare}>
+                <BiShare size={20} />
               </span>
 
               <span
                 onClick={() => {
                   setdotClicked(!isdotClicked);
                 }}
+                className=""
               >
-                <BsThreeDotsVertical size={16} />
+                <BsThreeDotsVertical size={18} />
               </span>
             </div>
           </div>
@@ -260,34 +281,36 @@ export const EachPost = ({ user, comment }) => {
             </div>
           )}
           {open_comment && (
-            <section
-              className="ps-3"
-              style={{ background: "#ddf", borderTop: "1px solid #bbd" }}
-            >
+            <section className="pe-2" style={{ background: "#ddf" }}>
               <div
-                className="gap-1 border-top-0 border-bottom-0 d-flex flex-column position-relative"
+                className="gap-1 pt-2 d-flex flex-column position-relative"
                 style={{ background: "#ddf" }}
               >
-                <div className="d-flex mt-3 gap-1">
+                <div
+                  className="d-flex gap-1 ms-2 pb-2"
+                  style={{ borderBottom: "1px solid #aaa" }}
+                >
                   <div
-                    className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2"
+                    className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2 "
                     style={{
                       minWidth: "30px",
                       height: "30px",
                       borderRadius: "20px",
-                      background: `${admin_user?.bg_clr}`,
+                      background: `${admin_user?.bg_clr || "#2a1"}`,
                       cursor: "pointer",
                     }}
                     onClick={() => {
                       nevigate(`/api/user/${admin_user?._id}`);
                     }}
                   >
-                    <span>{admin_user?.username.charAt(0).toUpperCase()}</span>
+                    <span>
+                      {admin_user?.username.charAt(0).toUpperCase() || "#!"}
+                    </span>
                   </div>
 
                   <textarea
                     required
-                    className="w-100 shadow-none border-0 border-bottom rounded-0 ps-0 pt-1 fs-0 small"
+                    className="w-100 shadow-none border-0 rounded-0 ps-0 pt-1 fs-0 small"
                     placeholder="Write your sentence here . . . . . ."
                     onChange={(e) => {
                       Handlecomment(e);
@@ -297,40 +320,45 @@ export const EachPost = ({ user, comment }) => {
                       e.target.style.height = `${e.target.scrollHeight}px`; // set new height
                     }}
                     value={new_comment || ""}
-                    style={{ marginTop: "0.1rem", background: "#ddf" }}
+                    style={{
+                      marginTop: "0.1rem",
+                      background: "#ddf",
+                    }}
                   />
-                </div>
-                <div
-                  className="d-flex gap-3 p-2"
-                  style={{ alignSelf: "end", bottom: "0.5rem" }}
-                >
-                  <button
-                    className="btn btn-outline-dark ps-3 pe-3 p-1 rounded-0"
-                    style={{ alignSelf: "end", bottom: "0.5rem" }}
-                    onClick={(e) => {
-                      setopen_comment(!open_comment);
-                    }}
-                  >
-                    Cancel
-                    {/* <MdCancel size={20} /> */}
-                  </button>
 
-                  <button
-                    className="btn btn-outline-danger p-1 d-flex align-items-center ps-3 pe-3 me-1 rounded-0"
-                    onClick={(e) => {
-                      SubmitComment(e, comment?._id);
-                    }}
+                  <div
+                    className="d-flex gap-3"
+                    style={{ alignSelf: "end", bottom: "0.5rem" }}
                   >
-                    {LazyLoading ? (
-                      <Loading clr={"light"} />
-                    ) : (
-                      <MdSend size={20} />
-                    )}
-                  </button>
+                    {/* <button
+                      className="btn btn-outline-dark ps-3 pe-3 p-1 rounded-0"
+                      style={{ alignSelf: "end", bottom: "0.5rem" }}
+                      onClick={(e) => {
+                        setopen_comment(!open_comment);
+                      }}
+                    >
+                      Cancel
+                    </button> */}
+
+                    <button
+                      className="btn text-danger p-1 ps-3 rounded-0"
+                      onClick={(e) => {
+                        SubmitComment(e, comment?._id);
+                      }}
+                    >
+                      {LazyLoading ? (
+                        <Loading clr={"light"} />
+                      ) : (
+                        <MdSend size={20} />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <CommentSection post={comment} />
+              <div className="ps-2 pt-2">
+                <CommentSection post={comment} />
+              </div>
             </section>
           )}
         </>
@@ -512,7 +540,7 @@ export const SlipDotinPost = ({ user, post }) => {
   );
 };
 
-export const LikeBtn = ({ post }) => {
+export const LikeBtn = ({ post, size = 18 }) => {
   const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
   const token = localStorage.getItem("token");
   const { admin_user } = useQuote();
@@ -564,10 +592,10 @@ export const LikeBtn = ({ post }) => {
             animatingBtn === "likes" ? "animate-rotate" : ""
           } rotate`}
         >
-          {isliked ? <FaHeart /> : <BiHeart />}
+          {isliked ? <FaHeart size={size} /> : <BiHeart size={size} />}
         </span>
 
-        <span className="" style={{ marginTop: "0.26rem" }}>
+        <span className="" style={{ marginTop: "0.1rem" }}>
           {" "}
           {post?.likes?.length}&nbsp;
         </span>
