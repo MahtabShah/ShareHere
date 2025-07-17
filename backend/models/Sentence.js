@@ -24,6 +24,12 @@ const sentenceSchema = new mongoose.Schema({
     type: String,
     enum: ["public" , "Follower" , "Paid"],
     default:"public"
+  },
+
+  createdAt:{
+    type: Date,
+    default: Date.now()
+
   }
 
 

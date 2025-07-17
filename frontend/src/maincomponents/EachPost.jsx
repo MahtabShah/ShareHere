@@ -237,7 +237,7 @@ export const EachPost = ({ user, comment }) => {
               className="pt-2 border-top d-flex flex-column"
               style={{ padding: "0 0.575rem" }}
             >
-              <small>{dayjs(comment?.updatedAt).fromNow()}</small>
+              <small>{dayjs(comment?.createdAt).fromNow()}</small>
               {/* <small>{comment.likes.length} </small> */}
             </div>
 
@@ -592,7 +592,7 @@ export const LikeBtn = ({ post, size = 18 }) => {
             animatingBtn === "likes" ? "animate-rotate" : ""
           } rotate`}
         >
-          {isliked ? <FaHeart size={size} /> : <BiHeart size={size - 2} />}
+          {isliked ? <FaHeart size={size - 3} /> : <BiHeart size={size} />}
         </span>
 
         <span className="" style={{ marginTop: "0.1rem" }}>
