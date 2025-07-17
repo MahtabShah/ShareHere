@@ -85,7 +85,7 @@ export const Notification = ({ setVisibleNotification }) => {
     <>
       {setVisibleNotification && (
         <div
-          className="list p-2 me-1"
+          className="list p-1 me-1"
           // style={{ border: "1px solid var(--lightBlack-clr)" }}
         >
           {/* <h5 className=""></h5> */}

@@ -91,11 +91,13 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     }
   };
 
-  function GiveComponent(activeIndex) {
+  function GiveComponent(activeIndex, ref) {
     if (activeIndex == "Search") {
       return (
         <>
-          <h5 className="ms-2">Search Your Quote Here</h5>
+          <h5 className="d-flex align-items-center gap-3">
+            {ref} Search Your Quote Here
+          </h5>
           <SearchBaar />
         </>
       );
@@ -103,14 +105,18 @@ export default function LeftNavbar({ onActiveChange = "" }) {
       return (
         <>
           {" "}
-          <h5 className="ms-2">All Notifications</h5>
+          <h5 className="d-flex align-items-center gap-3">
+            {ref} All Notifications
+          </h5>
           <Notification setVisibleNotification={setVisibleNotification} />
         </>
       );
     } else if (activeIndex == "Upload") {
       return (
         <>
-          <h5 className="">Upload Your Thought Here</h5>
+          <h5 className="d-flex align-items-center gap-3">
+            {ref} Upload Your Thought Here
+          </h5>
           <PostSentence />
         </>
       );
@@ -375,9 +381,10 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               marginTop: `${mobile_break_point ? "54px" : ""}`,
             }}
           >
-            {/* <div className="d-flex gap-2 align-items-center pt-2 p-1">
-              <div
-                className="d-flex"
+            {GiveComponent(
+              activeIndex,
+              <span
+                className="d-inline-flex mt-1 ms-1"
                 style={{ width: "16px", cursor: "pointer" }}
                 onClick={() => {
                   setopenSlidWin(false);
@@ -386,12 +393,8 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                 </svg>
-              </div>
-              <p className="fs-5 fw-semibold p-0 m-0 align-items-center">
-                {activeIndex} Here
-              </p>
-            </div> */}
-            {GiveComponent(activeIndex)}
+              </span>
+            )}
           </div>
         )}
       </div>
