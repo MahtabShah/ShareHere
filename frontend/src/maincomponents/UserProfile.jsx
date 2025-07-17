@@ -49,8 +49,8 @@ const UserProfile = ({}) => {
     <>
       {all_posts ? (
         <div
-          className="d-flex flex-column bg-light text-dark border mb-5"
-          style={{ marginTop: `${mobile_break_point ? "50px" : "0"}` }}
+          className="d-flex flex-column bg-light text-dark border mb-5 pb-3"
+          style={{ paddingTop: `${mobile_break_point ? "50px" : "0"}` }}
         >
           <div
             className="photoHeader w-100 position-relative border"
@@ -133,7 +133,7 @@ const UserProfile = ({}) => {
           </div>
 
           <hr className="bg-light" />
-          <div className="d-flex gap-3 ps-2">
+          <div className="d-flex gap-3 ps-1">
             <button
               className={`btn border p-1 ps-2 pe-2 rounded-5 ${
                 activeBtn3Profile === "public" ? "btn-dark text-white" : ""
@@ -167,7 +167,7 @@ const UserProfile = ({}) => {
             </button>
           </div>
 
-          <div className="d-flex flex-column gap-2 mt-3">
+          <div className="mt-4">
             {
               <section style={{ margin: "auto", maxWidth: "600px" }}>
                 {LazyLoading ? (

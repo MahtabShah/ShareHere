@@ -132,9 +132,9 @@ export const EachPost = ({ user, comment }) => {
       {
         <>
           <div
-            className="d-flex flex-column position-relative"
+            className="d-flex flex-column position-relative mb-5"
             style={{
-              background: "#f7f7f7ff",
+              background: "#eee",
               width: "100%",
               maxWidth: "600px",
               aspectRatio: "6/7",

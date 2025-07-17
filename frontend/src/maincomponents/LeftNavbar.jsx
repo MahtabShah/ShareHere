@@ -384,7 +384,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
             {GiveComponent(
               activeIndex,
               <span
-                className="d-inline-flex mt-1 ms-1"
+                className="d-inline-flex ms-1"
                 style={{ width: "16px", cursor: "pointer" }}
                 onClick={() => {
                   setopenSlidWin(false);
