@@ -345,14 +345,14 @@ const PostSentence = ({ type = "post" }) => {
 
   return (
     <section
-      className="p-0 pb-5 mb-5 pt-2 border overflow-y-auto w-100 none-scroller"
+      className="p-0 pb-5 mb-5 pt-2  overflow-y-auto w-100 none-scroller"
       style={{
         height: "calc(100dvh - 54px)",
         zIndex: uploadClicked ? 10000 : -100,
         // border: "1px solid red",
       }}
     >
-      <div className="d-flex gap-3 ps-2">
+      <div className="d-flex gap-3 mb-2">
         <button
           className={`btn border p-1 ps-2 pe-2 rounded-5 ${
             activeBtn3Profile === "public" ? "btn-dark text-white" : ""
@@ -379,7 +379,7 @@ const PostSentence = ({ type = "post" }) => {
           Paid Only
         </button>
       </div>
-      <div className="p-0 m-0">
+      <div className="p-0 m-0 border">
         {/* <div
           className="d-flex justify-content-between"
           style={{ maxWidth: "614px", margin: "auto" }}

@@ -144,7 +144,10 @@ export default function LeftNavbar({ onActiveChange = "" }) {
         }}
       >
         {!mobile_break_point && (
-          <div className="d-flex border-end" style={{ height: "100vh" }}>
+          <div
+            className="d-flex border-end"
+            style={{ height: "100vh", minWidth: "max-content" }}
+          >
             {/* <div className="mb-2 fw-bold text-uppercase fs-5">Menu</div> */}
             <ul className="nav nav-pills flex-column gap-3 mb-auto">
               <li className="nav-item border-bottom pb-2">

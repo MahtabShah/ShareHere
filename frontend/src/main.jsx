@@ -74,7 +74,7 @@ const Main = () => {
               <div
                 style={{
                   marginLeft: `${
-                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "240px"
                   }`,
                 }}
               >
@@ -88,7 +88,7 @@ const Main = () => {
               <div
                 style={{
                   marginLeft: `${
-                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "240px"
                   }`,
                 }}
               >
@@ -102,7 +102,7 @@ const Main = () => {
               <div
                 style={{
                   marginLeft: `${
-                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "240px"
                   }`,
                 }}
               >
@@ -117,7 +117,7 @@ const Main = () => {
                 className="p-0 pt-2 mb-5 me-0"
                 style={{
                   marginLeft: `${
-                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "240px"
                   }`,
                 }}
               >
@@ -139,7 +139,7 @@ const Main = () => {
                 className="p-0 pt-2 mb-5 me-0"
                 style={{
                   marginLeft: `${
-                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "240px"
                   }`,
                 }}
               >
@@ -161,7 +161,7 @@ const Main = () => {
                 className="p-0 mt-0"
                 style={{
                   marginLeft: `${
-                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "240px"
                   }`,
                 }}
               >
@@ -177,7 +177,7 @@ const Main = () => {
                 className="p-0 pt-2"
                 style={{
                   marginLeft: `${
-                    mobile_break_point ? "0" : sm_break_point ? "80px" : "254px"
+                    mobile_break_point ? "0" : sm_break_point ? "80px" : "240px"
                   }`,
                 }}
               >
