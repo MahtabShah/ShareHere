@@ -8,7 +8,7 @@ import { useQuote } from "../context/QueotrContext";
 import { Fragment } from "react";
 import { EachPost } from "./EachPost";
 import { FollowBtn } from "./EachPost";
-
+import { useTheme } from "../context/Theme";
 const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   const nevigate = useNavigate();
@@ -34,6 +34,8 @@ const UserProfile = ({}) => {
 
   const [mode, setMode] = useState();
 
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
   useEffect(() => {
     if (user && user?.followers && admin_user) {
       const isFollower = user?.followers?.includes(admin_user?._id);
@@ -47,175 +49,187 @@ const UserProfile = ({}) => {
 
   return (
     <>
-      {all_posts ? (
+      <div
+        className="d-flex flex-column mb-5 pb-3"
+        style={{
+          paddingTop: `${mobile_break_point ? "50px" : "0"}`,
+          background: mainbg,
+        }}
+      >
         <div
-          className="d-flex flex-column bg-light text-dark border mb-5 pb-3"
-          style={{ paddingTop: `${mobile_break_point ? "50px" : "0"}` }}
+          className="photoHeader w-100 position-relative border"
+          style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}
         >
           <div
-            className="photoHeader w-100 position-relative border"
-            style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}
+            className="text-center position-absolute ps-2 overflow-hodden bg-image"
+            style={{
+              bottom: "calc(-50px)",
+            }}
           >
             <div
-              className="text-center position-absolute ps-2 overflow-hodden bg-image"
+              className="rounded-circle bg-image"
               style={{
-                bottom: "calc(-50px)",
-              }}
-            >
-              <div
-                className="rounded-circle bg-image"
-                style={{
-                  background: user?.bg_clr,
-                  minWidth: "100px",
-                  minHeight: "100px",
-                  background: `url(${user?.profile_pic})`,
-                  aspectRatio: "1/1",
-                }}
-              />
-            </div>
-            <img
-              src={user?.cover_pic}
-              alt="cover"
-              className="w-100 h-100"
-              style={{
-                objectFit: "cover",
+                background: user?.bg_clr,
+                minWidth: "100px",
+                minHeight: "100px",
+                background: `url(${user?.profile_pic})`,
+                aspectRatio: "1/1",
               }}
             />
           </div>
+          <img
+            src={user?.cover_pic}
+            alt="cover"
+            className="w-100 h-100"
+            style={{
+              objectFit: "cover",
+            }}
+          />
+        </div>
 
-          <div className="text-end pe-3 pt-3" style={{ height: "60px" }}>
-            <div className="d-flex justify-content-end align-items-center">
-              {id !== admin_user?._id && (
-                <>
-                  <FollowBtn
-                    user={user}
-                    cls={"btn btn-outline-dark btn-sm ps-2 pe-2"}
-                  />
-                </>
-              )}
+        <div
+          className="text-end pe-3 pt-3"
+          style={{ height: "60px", color: text_clrH }}
+        >
+          <div className="d-flex justify-content-end align-items-center">
+            {id !== admin_user?._id && (
+              <>
+                <FollowBtn
+                  user={user}
+                  cls={"btn btn-outline-dark btn-sm ps-2 pe-2"}
+                />
+              </>
+            )}
 
-              {id === admin_user?._id && (
-                <button
-                  className="btn btn-outline-dark btn-sm ms-2"
-                  onClick={() => {
-                    nevigate(`/api/user/edit/${admin_user?._id}`);
-                  }}
-                >
-                  Edit Profile
-                </button>
-              )}
-            </div>
+            {id === admin_user?._id && (
+              <button
+                className="btn btn-outline-dark btn-sm ms-2"
+                onClick={() => {
+                  nevigate(`/api/user/edit/${admin_user?._id}`);
+                }}
+                style={{ color: text_clrH }}
+              >
+                Edit Profile
+              </button>
+            )}
           </div>
+        </div>
 
-          <div className="ps-3 d-flex flex-column justify-content-between">
-            <div className="d-flex  justify-content-between">
-              <h4 className="flex-grow-1">{user?.username}</h4>
-              {/* <p className="mb-1">{User?.channel_name}</p> */}
-              {/* <p className="small">{User?.about_user}</p> */}
-              <div className="d-flex gap-3 ps-3 pe-3 mt-">
-                <span className="text-center">
-                  <span>Followers</span>
-                  <h5>{user?.followers?.length || 0}</h5>
-                </span>
-                <span className="text-center">
-                  <span>Following</span>
-                  <h5>{user?.following?.length || 0}</h5>
-                </span>
-              </div>
-            </div>
-
-            <p className="small">
-              <span className="fs-6 fw-semibold">
-                {user?.bio?.trim().charAt(0)}
+        <div
+          className="ps-3 d-flex flex-column justify-content-between"
+          style={{ color: text_clrH }}
+        >
+          <div className="d-flex  justify-content-between">
+            <h4 className="flex-grow-1">{user?.username}</h4>
+            {/* <p className="mb-1">{User?.channel_name}</p> */}
+            {/* <p className="small">{User?.about_user}</p> */}
+            <div className="d-flex gap-3 ps-3 pe-3 mt-">
+              <span className="text-center">
+                <span>Followers</span>
+                <h5>{user?.followers?.length || 0}</h5>
               </span>
-              {user?.bio?.trim().slice(1)}
-            </p>
+              <span className="text-center">
+                <span>Following</span>
+                <h5>{user?.following?.length || 0}</h5>
+              </span>
+            </div>
           </div>
 
-          <hr className="bg-light" />
-          <div className="d-flex gap-3 ps-1">
-            <button
-              className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-                activeBtn3Profile === "public" ? "btn-dark text-white" : ""
-              }`}
-              onClick={() => setActiveBtn3Profile("public")}
-            >
-              Public
-            </button>
-            <button
-              className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-                activeBtn3Profile === "Follower" ? "btn-dark text-white" : ""
-              }`}
-              onClick={() => {
-                setActiveBtn3Profile("Follower");
+          <p className="small">
+            <span className="fs-6 fw-semibold">
+              {user?.bio?.trim().charAt(0)}
+            </span>
+            {user?.bio?.trim().slice(1)}
+          </p>
+        </div>
 
-                if (mode != "public") {
-                  setfollowMSG(true);
-                }
-              }}
-            >
-              Follower
-            </button>
-            <button
-              className={`btn border p-1 ps-3 pe-3 rounded-5 ${
-                activeBtn3Profile === "Paid" ? "btn-dark text-white" : ""
-              }`}
-              onClick={() => setActiveBtn3Profile("Paid")}
-              disabled={true}
-            >
-              Paid
-            </button>
-          </div>
+        <hr className="bg-light" />
+        <div className="d-flex gap-3 ps-2">
+          <button
+            className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+              activeBtn3Profile === "public" ? "btn-dark" : ""
+            }`}
+            onClick={() => setActiveBtn3Profile("public")}
+            style={{ color: text_clrH }}
+          >
+            Public
+          </button>
+          <button
+            className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+              activeBtn3Profile === "Follower" ? "btn-dark" : ""
+            }`}
+            style={{ color: text_clrH }}
+            onClick={() => {
+              setActiveBtn3Profile("Follower");
 
-          <div className="mt-4">
-            {
-              <section style={{ margin: "auto", maxWidth: "600px" }}>
-                {LazyLoading ? (
-                  <div className="p-3 d-flex justify-content-start">
-                    {" "}
-                    <Loading dm={34} />
-                  </div>
-                ) : (
-                  <>
-                    {activeBtn3Profile == "public" &&
-                      PublicPost?.map((ps, idx) => {
-                        return (
-                          <>
-                            <Fragment key={idx}>
-                              <EachPost user={user} comment={ps} />
-                            </Fragment>
-                          </>
-                        );
-                      })}
+              if (mode != "public") {
+                setfollowMSG(true);
+              }
+            }}
+          >
+            Follower
+          </button>
+          <button
+            className={`btn border p-1 ps-3 pe-3 rounded-5 ${
+              activeBtn3Profile === "Paid" ? "btn-dark" : ""
+            }`}
+            onClick={() => setActiveBtn3Profile("Paid")}
+            disabled={true}
+            style={{ color: text_clrH }}
+          >
+            Paid
+          </button>
+        </div>
 
-                    {activeBtn3Profile == "Follower" &&
-                      FollowerPost?.map((ps, idx) => {
-                        return (
-                          <>
-                            <Fragment key={idx}>
-                              <EachPost user={user} comment={ps} />
-                            </Fragment>
-                          </>
-                        );
-                      })}
+        <div className="d-flex flex-column gap-5 mt-2">
+          {
+            <section style={{ margin: "auto", maxWidth: "600px" }}>
+              {LazyLoading ? (
+                <div className="p-3 d-flex justify-content-start">
+                  {" "}
+                  <Loading dm={34} />
+                </div>
+              ) : (
+                <div className="d-flex flex-column gap-5 mt-4">
+                  {activeBtn3Profile == "public" &&
+                    PublicPost?.map((ps, idx) => {
+                      return (
+                        <>
+                          <Fragment key={idx}>
+                            <EachPost user={user} comment={ps} />
+                          </Fragment>
+                        </>
+                      );
+                    })}
 
-                    {activeBtn3Profile == "Paid" &&
-                      PaidPost?.map((ps, idx) => {
-                        return (
-                          <>
-                            <Fragment key={idx}>
-                              <EachPost user={user} comment={ps} />
-                            </Fragment>
-                          </>
-                        );
-                      })}
-                  </>
-                )}
-              </section>
-            }
-          </div>
+                  {activeBtn3Profile == "Follower" &&
+                    FollowerPost?.map((ps, idx) => {
+                      return (
+                        <>
+                          <Fragment key={idx}>
+                            <EachPost user={user} comment={ps} />
+                          </Fragment>
+                        </>
+                      );
+                    })}
 
-          {followMSG && (
+                  {activeBtn3Profile == "Paid" &&
+                    PaidPost?.map((ps, idx) => {
+                      return (
+                        <>
+                          <Fragment key={idx}>
+                            <EachPost user={user} comment={ps} />
+                          </Fragment>
+                        </>
+                      );
+                    })}
+                </div>
+              )}
+            </section>
+          }
+        </div>
+        {all_posts ? (
+          followMSG && (
             <div
               className="position-fixed shadow-lg border d-flex flex-column justify-content-center align-items-center gap-3 p-4 bg-white rounded"
               style={{
@@ -245,13 +259,13 @@ const UserProfile = ({}) => {
               {/* Follow Button */}
               <FollowBtn user={user} cls="btn btn-primary rounded-pill px-4" />
             </div>
-          )}
-        </div>
-      ) : (
-        <div className="d-flex justify-content-center vh-100 align-items-center">
-          <Loading dm={32} />
-        </div>
-      )}
+          )
+        ) : (
+          <div className="d-flex justify-content-center vh-100 align-items-center">
+            <Loading dm={32} />
+          </div>
+        )}
+      </div>
     </>
   );
 };

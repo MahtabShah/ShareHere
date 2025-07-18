@@ -16,6 +16,8 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { useTheme } from "../src/context/Theme";
+
 export default function BottomNav({}) {
   const {
     admin_user,
@@ -37,17 +39,20 @@ export default function BottomNav({}) {
     setLoggedIn(!!token);
   }, []);
 
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
   return (
     <>
       {mobile_break_point && (
         <>
           <div
-            className="BottomNav w-100 d-sm-none bg-light position-fixed"
+            className="BottomNav w-100 d-sm-none position-fixed"
             style={{
-              zIndex: "11",
+              zIndex: 111110011,
               height: "48px",
               bottom: "0",
               left: "0",
+              background: mainbg,
             }}
           >
             <ul className="nav nav-pills gap-3 mb-auto d-flex justify-content-around">
@@ -62,7 +67,7 @@ export default function BottomNav({}) {
                 >
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px" }}
+                    style={{ width: "24px", height: "24px", color: text_clrH }}
                   >
                     <FontAwesomeIcon icon={faHome} />
                   </div>
@@ -92,7 +97,7 @@ export default function BottomNav({}) {
                 >
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px" }}
+                    style={{ width: "24px", height: "24px", color: text_clrH }}
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </div>
@@ -123,7 +128,7 @@ export default function BottomNav({}) {
                 >
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px" }}
+                    style={{ width: "24px", height: "24px", color: text_clrH }}
                   >
                     <FontAwesomeIcon icon={faBell} />
                   </div>
@@ -153,7 +158,7 @@ export default function BottomNav({}) {
                 >
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px" }}
+                    style={{ width: "24px", height: "24px", color: text_clrH }}
                   >
                     <FontAwesomeIcon icon={faSearch} />
                   </div>

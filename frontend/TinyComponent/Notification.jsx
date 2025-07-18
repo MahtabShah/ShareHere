@@ -7,6 +7,8 @@ import { Loading } from "./LazyLoading";
 import { useQuote } from "../src/context/QueotrContext";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { clamp } from "lodash";
+import { useTheme } from "../src/context/Theme";
 dayjs.extend(relativeTime);
 
 const API = import.meta.env.VITE_API_URL;
@@ -21,8 +23,13 @@ export const Notification = ({ setVisibleNotification }) => {
   const nevigate = useNavigate();
   const [go_comment, setGo_comment] = useState(false);
 
-  const { curr_all_notifications, admin_user, fetch_all_notifications } =
-    useQuote();
+  const {
+    curr_all_notifications,
+    admin_user,
+    fetch_all_notifications,
+    mobile_break_point,
+    sm_break_point,
+  } = useQuote();
 
   const go_to_comment = async (postId, userId) => {
     // navigate(`/home?postId=${post}`);
@@ -81,20 +88,30 @@ export const Notification = ({ setVisibleNotification }) => {
     fetch_all_notifications();
   }, []);
 
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
   return (
     <>
       {setVisibleNotification && (
         <div
           className="list p-1 me-1"
-          // style={{ border: "1px solid var(--lightBlack-clr)" }}
+          style={{
+            width: `calc(100vw - ${
+              mobile_break_point ? "4px" : sm_break_point ? "100px" : "265px"
+            })`,
+            background: mainbg,
+            color: text_clrM,
+          }}
         >
           {/* <h5 className=""></h5> */}
           <div
-            className="notification d-flex flex-column gap-4 h-100 w-100 bg-light overflow-y-auto"
+            className="notification d-flex flex-column gap-4 h-100 w-100 overflow-y-auto"
             style={{
               maxHeight: "80vh",
               // width: "calc(100% - 5px)",
               zIndex: "100",
+              background: mainbg,
+              color: text_clrM,
             }}
           >
             {/* <i className="fa-solid fa-arrow-left"></i> */}
@@ -102,8 +119,11 @@ export const Notification = ({ setVisibleNotification }) => {
             {LazyLoading || curr_all_notifications.length < 1 ? (
               <Loading dm={32} />
             ) : go_comment ? (
-              <div className="border">
-                <div className="p-1 d-flex gap-3 justify-content-between">
+              <div className="">
+                <div
+                  className="p-1 d-flex gap-3 justify-content-between"
+                  style={{ background: mainbg, color: text_clrM }}
+                >
                   <>
                     <div className="flex-grow-1 w-100 ps-2">
                       {post?.text.split(" ").slice(0, 40).join(" ")} . . .
@@ -142,7 +162,7 @@ export const Notification = ({ setVisibleNotification }) => {
                       >
                         <div className="d-flex gap-2">
                           <div
-                            className="dpPhoto rounded-circle text-light d-flex justify-content-center align-items-center"
+                            className="dpPhoto rounded-circle d-flex justify-content-center align-items-center"
                             style={{
                               minWidth: "37px",
                               height: "37px",
@@ -179,11 +199,12 @@ export const Notification = ({ setVisibleNotification }) => {
                       <div className="commentNotify" key={`cmnt${idx}`}>
                         <div className="d-flex gap-2">
                           <div
-                            className="dpPhoto rounded-circle text-light d-flex align-items-center justify-content-center"
+                            className="dpPhoto rounded-circle d-flex align-items-center justify-content-center border"
                             style={{
                               minWidth: "37px",
                               height: "37px",
                               background: `${n?.sender?.bg_clr}`,
+                              color: text_clrH,
                             }}
                           >
                             {n?.sender?.username?.charAt(0)}
@@ -199,13 +220,17 @@ export const Notification = ({ setVisibleNotification }) => {
                                   go_to_comment(n?.post, n?.recipient);
                                   console.log("post with userid ", n.recipient);
                                 }}
+                                style={{ color: text_clrH }}
                               >
                                 @{n?.sender?.username}
                                 {"  "}
                                 commented . . .{" "}
                               </span>{" "}
                             </span>
-                            <span className="justify">
+                            <span
+                              className="justify"
+                              style={{ color: text_clrH }}
+                            >
                               {" "}
                               {n?.comment?.text
                                 ?.split(" ")

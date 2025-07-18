@@ -32,7 +32,7 @@ import PostSentence from "./PostSentance";
 const API = import.meta.env.VITE_API_URL;
 const inputtxtclr = "#777";
 import CanvasVibeEditor from "./CanvasEditor";
-
+import { useTheme } from "../context/Theme";
 const menuItems = [
   { icon: faExternalLinkAlt, label: "Connect", herf: "Home" },
   { icon: faLock, label: "Privacy", herf: "Home" },
@@ -99,7 +99,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
           <h5 className="d-flex align-items-center gap-3">
             {ref} Search Your Quote Here
           </h5>
-          <SearchBaar />
+          <div className="w-100" style={{ maxWidth: "600px" }}>
+            <SearchBaar />
+          </div>
         </>
       );
     } else if (activeIndex == "Notifications") {
@@ -139,25 +141,32 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     if (onLogout) onLogout();
   };
 
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
   return (
     <>
       <div
-        className="LeftNavbar d-flex h-100 position-fixed bg-light border-end"
+        className="LeftNavbar d-flex h-100 pt-0 position-fixed"
         style={{
-          zIndex: 11,
-          // borderRight: "1px solid red",
-          translate: `${mobile_break_point ? "0px" : "0"}`,
+          zIndex: `${openSlidWin ? 10000 : 100000}`,
           width: `${openSlidWin ? "100%" : "0"}`,
+          background: mainbg,
+          borderRight: `${mobile_break_point ? "" : `1px solid ${text_clrL}`}`,
         }}
       >
         {!mobile_break_point && (
           <div
-            className="d-flex border-end"
-            style={{ height: "100vh", minWidth: "max-content" }}
+            className="d-flex"
+            style={{
+              height: "100vh",
+              minWidth: "max-content",
+              background: mainbg,
+              borderRight: `1px solid ${text_clrL}`,
+            }}
           >
             {/* <div className="mb-2 fw-bold text-uppercase fs-5">Menu</div> */}
             <ul className="nav nav-pills flex-column gap-3 mb-auto">
-              <li className="nav-item border-bottom pb-2">
+              <li className="nav-item  pt-3">
                 <a
                   href="/home"
                   className={`nav-link d-flex align-items-center gap-3 fs-6`}
@@ -195,7 +204,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link d-flex align-items-center gap-3 fs-6 `}
                   href={`${openSlidWin ? "" : "/Home"}`}
                   onClick={() => {
                     setActiveIndex("Home");
@@ -204,7 +213,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 >
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px" }}
+                    style={{ width: "24px", height: "24px", color: text_clrH }}
                   >
                     <FontAwesomeIcon icon={faHome} />
                   </div>
@@ -212,7 +221,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                     className={`fw-semibold pe-5 ${
                       sm_break_point ? "d-none" : ""
                     }`}
-                    style={{ width: "154px" }}
+                    style={{ width: "154px", color: text_clrH }}
                   >
                     Home
                   </span>
@@ -221,7 +230,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link d-flex align-items-center gap-3 fs-6 `}
                   onClick={() => {
                     setUploadClicked(!uploadClicked);
                     if (activeIndex == "Upload") {
@@ -234,7 +243,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 >
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px" }}
+                    style={{ width: "24px", height: "24px", color: text_clrH }}
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </div>
@@ -242,7 +251,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                     className={`fw-semibold pe-5 ${
                       sm_break_point ? "d-none" : ""
                     }`}
-                    style={{ width: "154px" }}
+                    style={{ width: "154px", color: text_clrH }}
                   >
                     Upload
                   </span>
@@ -251,7 +260,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link  d-flex align-items-center gap-3 fs-6 `}
                   onClick={() => {
                     setVisibleNotification(!VisibleNotification);
                     setCount(0);
@@ -267,7 +276,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 >
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px" }}
+                    style={{ width: "24px", height: "24px", color: text_clrH }}
                   >
                     <FontAwesomeIcon icon={faBell} />
                   </div>
@@ -275,7 +284,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                     className={`fw-semibold pe-5 ${
                       sm_break_point ? "d-none" : ""
                     }`}
-                    style={{ width: "154px" }}
+                    style={{ width: "154px", color: text_clrH }}
                   >
                     Notifications
                   </span>
@@ -284,7 +293,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link d-flex align-items-center gap-3 fs-6 `}
                   onClick={() => {
                     setopenSlidWin(true);
                     if (activeIndex == "Search") {
@@ -297,7 +306,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 >
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px" }}
+                    style={{ width: "24px", height: "24px", color: text_clrH }}
                   >
                     <FontAwesomeIcon icon={faSearch} />
                   </div>
@@ -305,7 +314,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                     className={`fw-semibold pe-5 ${
                       sm_break_point ? "d-none" : ""
                     }`}
-                    style={{ width: "154px" }}
+                    style={{ width: "154px", color: text_clrH }}
                   >
                     Search
                   </span>
@@ -314,7 +323,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               {loggedIn && admin_user?._id ? (
                 <>
-                  <li className="nav-item border-bottom pb-2">
+                  <li className="nav-item pb-2">
                     <a
                       href={`/api/user/${admin_user?._id}`}
                       className={`nav-link d-flex align-items-center gap-3 fs-6`}
@@ -330,9 +339,10 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                       </span>
 
                       <span
-                        className={`fw-semibold text-dark ${
+                        className={`fw-semibold ${
                           sm_break_point ? "d-none" : ""
                         }`}
+                        style={{ color: text_clrH }}
                       >
                         User Profile
                       </span>
@@ -372,14 +382,12 @@ export default function LeftNavbar({ onActiveChange = "" }) {
         )}
         {openSlidWin && (
           <div
-            className="p-2 overflow-y-auto position-relative none-scroller"
+            className="p-2 w-100 overflow-y-auto position-relative none-scroller"
             style={{
               zIndex: 22200,
-              width: `clamp(100px, calc(100% - ${
-                mobile_break_point ? "0px" : sm_break_point ? "84px" : "280px"
-              }), 700px)`,
-
               top: 0,
+              color: text_clrM,
+              // borderLeft: `1px solid ${text_clrL}`,
 
               // marginTop: `${mobile_break_point ? "54px" : ""}`,
             }}
@@ -393,7 +401,11 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                   setopenSlidWin(false);
                 }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  fill={text_clrM}
+                >
                   <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                 </svg>
               </span>

@@ -1,3 +1,8 @@
+html,
+body {
+  background: #000;
+}
+
 .class {
   border: 2px solid red;
 }
@@ -25,15 +30,27 @@ option {
   min-width: 28px;
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
+  justify-content: center;
   border-radius: 0;
 }
 
 .props-parent > div {
-  flex-grow: 1;
+  /* flex-grow: 1; */
 }
 
 input[type="number"]:focus {
   outline: none;
   border: none;
+}
+
+.search-bar {
+  height: 64px !important;
+}
+
+input::placeholder {
+  color: #aaa !important;
+}
+
+textarea::placeholder {
+  color: #aaa !important;
 }

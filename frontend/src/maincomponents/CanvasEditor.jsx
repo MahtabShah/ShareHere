@@ -158,11 +158,13 @@ const pre_bg_color = [
   "#2B580C",
 ];
 
+import { useTheme } from "../context/Theme";
+
 const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [canvasHeight, setCanvasHeight] = useState(300);
-  const [canvasBgColor, setCanvasBgColor] = useState("#222222");
+  const [canvasBgColor, setCanvasBgColor] = useState("#aaffcc");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
   const canvasRef = useRef(null);
@@ -175,14 +177,17 @@ const CanvasVibeEditor = () => {
     const newText = {
       id: idCounter++,
       type: "text",
-      content: "Edit me!",
+      // content: `
+
+      //                                     `,
+      content: "Type Here",
       x: 50,
       y: 50,
       width: 100,
       height: 60,
       fontSize: 28,
       fontFamily: "Arial",
-      color: "#f40707ff",
+      color: "#f40707",
       // shadow: "2px 2px 4px rgba(0,0,0,0.5)",
       zIndex: elements.length + 1,
       fontWeight: "normal",
@@ -382,12 +387,41 @@ const CanvasVibeEditor = () => {
     setLazyLoading(false);
   };
 
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
+  // useEffect(() => {
+  //   addTextBox();
+  // }, []);
+
+  const outerDivRef = useRef(null);
+  const txtareaRef = useRef(null);
+
+  const handleScroll = (e) => {
+    const scrollTop = e.target.scrollTop;
+    if (outerDivRef.current) {
+      outerDivRef.current.scrollTop = scrollTop;
+    }
+  };
+
+  const isSyncing = useRef(false); // To avoid infinite loop
+
+  // Sync scrolls both ways
+  const syncScroll = (source, target) => {
+    if (!isSyncing.current) {
+      isSyncing.current = true;
+      target.scrollTop = source.scrollTop;
+      setTimeout(() => {
+        isSyncing.current = false;
+      }, 0);
+    }
+  };
+
   return (
-    <div className="shadow-lg">
+    <div className="shadow-lg" style={{ background: mainbg }}>
       <div className="">
         {/* <div className="row">
           <div className="col-12 ms-2">
-            <h1 className="display-5 fw-bold text-primary">
+            <h1 className="display-5 fw-bold ">
               <FontAwesomeIcon icon={faExpand} className="me-2" />
               VIBE Canva Editor
             </h1>
@@ -397,9 +431,12 @@ const CanvasVibeEditor = () => {
           </div>
         </div> */}
 
-        <div className="row">
-          <div className="col-md-9">
-            <div className="card border-0 shadow-sm mb-2">
+        <div className="p-2">
+          <div className="">
+            <div
+              className="card border-0 shadow-sm mb-2"
+              style={{ background: mainbg }}
+            >
               {/* <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <span>Design Canvas</span>
                 <button
@@ -422,7 +459,14 @@ const CanvasVibeEditor = () => {
               </div> */}
 
               <div className="card border-0 shadow-sm position-sticky">
-                <div className="card-header d-flex justify-content-between align-items-center bg-info text-white rounded-0">
+                <div
+                  className="card-header d-flex ps-0 justify-content-between align-items-center rounded-0"
+                  style={{
+                    background: mainbg,
+                    color: text_clrM,
+                    // border: `1px solid ${text_clrL}`,
+                  }}
+                >
                   <strong>
                     {activeElement?.type === "text"
                       ? "Text Properties acitvated"
@@ -437,8 +481,9 @@ const CanvasVibeEditor = () => {
                   </button>
                 </div>
                 <div
-                  className="p-2 positio-fixed"
+                  className="py-2 positio-fixed"
                   // style={{ border: "2px solid red" }}
+                  style={{ background: mainbg }}
                 >
                   <>
                     <div
@@ -448,8 +493,15 @@ const CanvasVibeEditor = () => {
                       }}
                     >
                       <div>
-                        <div className="btn btn-outline-primary d-flex gap-2 align-items-center props-btn">
-                          <FontAwesomeIcon icon={faTextHeight} fontSize={12} />
+                        <div
+                          className="btn d-flex gap-2 align-items-center props-btn"
+                          style={{ border: `1px solid ${text_clrL}` }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faTextHeight}
+                            color={text_clrM}
+                            fontSize={12}
+                          />
 
                           <input
                             type="number"
@@ -459,7 +511,12 @@ const CanvasVibeEditor = () => {
                             min="8"
                             max="120"
                             value={activeElement?.fontSize}
-                            style={{ width: "34px", fontSize: "14px" }}
+                            style={{
+                              width: "34px",
+                              fontSize: "14px",
+                              background: mainbg,
+                              color: text_clrM,
+                            }}
                             onChange={(e) =>
                               handleChange(
                                 activeElement?.id,
@@ -471,10 +528,18 @@ const CanvasVibeEditor = () => {
                         </div>
                       </div>
 
-                      <div className="">
+                      <div
+                        className="d-flex  props-btn overflow-hidden"
+                        style={{ border: `1px solid ${text_clrL}` }}
+                      >
+                        <FaFont size={12} color={text_clrM} />
                         <select
-                          className="form-select shadow-none border-primary props-btn"
+                          className="form-select shadow-none border-0 props-btn"
                           value={activeElement?.fontFamily}
+                          style={{
+                            background: mainbg,
+                            color: text_clrM,
+                          }}
                           onChange={(e) =>
                             handleChange(
                               activeElement?.id,
@@ -496,12 +561,16 @@ const CanvasVibeEditor = () => {
                         </select>
                       </div>
 
-                      <div className="btn btn-outline-primary overflow-hidden p-0 props-btn">
+                      <div
+                        className="btn overflow-hidden p-0 props-btn"
+                        style={{ border: `1px solid ${text_clrL}` }}
+                      >
                         <input
                           type="color"
                           value={activeElement?.color}
                           style={{
                             scale: "2",
+                            border: `1px solid ${text_clrL}`,
                           }}
                           onChange={(e) =>
                             handleChange(
@@ -510,6 +579,7 @@ const CanvasVibeEditor = () => {
                               e.target.value
                             )
                           }
+                          defaultValue={"#ff0000"}
                         />
                       </div>
 
@@ -517,8 +587,9 @@ const CanvasVibeEditor = () => {
                         className={`btn  ${
                           activeElement?.fontWeight === "bold"
                             ? "btn-primary"
-                            : "btn-outline-primary"
+                            : ""
                         } props-btn`}
+                        style={{ border: `1px solid ${text_clrL}` }}
                         onClick={() =>
                           handleChange(
                             activeElement?.id,
@@ -529,15 +600,20 @@ const CanvasVibeEditor = () => {
                           )
                         }
                       >
-                        <FontAwesomeIcon icon={faBold} fontSize={12} />
+                        <FontAwesomeIcon
+                          icon={faBold}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
                       </button>
 
                       <button
                         className={`btn ${
                           activeElement?.fontStyle === "italic"
                             ? "btn-primary"
-                            : "btn-outline-primary"
+                            : ""
                         } props-btn`}
+                        style={{ border: `1px solid ${text_clrL}` }}
                         onClick={() =>
                           handleChange(
                             activeElement?.id,
@@ -548,15 +624,20 @@ const CanvasVibeEditor = () => {
                           )
                         }
                       >
-                        <FontAwesomeIcon icon={faItalic} fontSize={12} />
+                        <FontAwesomeIcon
+                          icon={faItalic}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
                       </button>
 
                       <button
                         className={`btn ${
                           activeElement?.textDecoration === "underline"
                             ? "btn-primary"
-                            : "btn-outline-primary"
+                            : ""
                         } props-btn`}
+                        style={{ border: `1px solid ${text_clrL}` }}
                         onClick={() =>
                           handleChange(
                             activeElement?.id,
@@ -567,19 +648,74 @@ const CanvasVibeEditor = () => {
                           )
                         }
                       >
-                        <FontAwesomeIcon icon={faUnderline} fontSize={12} />
+                        <FontAwesomeIcon
+                          icon={faUnderline}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
                       </button>
 
                       <button
                         className="btn btn-warning p-0 props-btn"
                         onClick={() => bringToFront(activeElement?.id)}
                       >
-                        <FontAwesomeIcon icon={faArrowUp} />
+                        <FontAwesomeIcon icon={faArrowUp} color={text_clrL} />
+                      </button>
+
+                      <button
+                        className="btn props-btn "
+                        onClick={() => setActiveId(null)}
+                        style={{ border: `1px solid ${text_clrL}` }}
+                      >
+                        <b style={{ color: text_clrM }}>--</b>
+                      </button>
+
+                      <button
+                        className={`btn  props-btn ${
+                          activeElement?.textAlign === "left"
+                            ? "btn-primary"
+                            : ""
+                        }`}
+                        style={{ border: `1px solid ${text_clrL}` }}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "left")
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAlignLeft} />
+                      </button>
+
+                      <button
+                        className={`btn props-btn ${
+                          activeElement?.textAlign === "center"
+                            ? "btn-primary"
+                            : ""
+                        }`}
+                        style={{ border: `1px solid ${text_clrL}` }}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "center")
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAlignCenter} />
+                      </button>
+
+                      <button
+                        className={`btn props-btn ${
+                          activeElement?.textAlign === "right"
+                            ? "btn-primary"
+                            : ""
+                        }`}
+                        style={{ border: `1px solid ${text_clrL}` }}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "right")
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAlignRight} />
                       </button>
 
                       <button className="btn overflow-hidden btn-success props-btn rounded-0 p-0">
                         <label className="btn btn-success props-btn gap-2 rounded-0">
-                          Add <FontAwesomeIcon icon={faImage} />
+                          Add{" "}
+                          <FontAwesomeIcon icon={faImage} color={text_clrH} />
                           <input
                             type="file"
                             className="d-none"
@@ -602,14 +738,28 @@ const CanvasVibeEditor = () => {
                         </div>
                       </button>
 
-                      <div className="props-btn">
-                        <div className="btn overflow-hidden btn-outline-primary d-flex align-items-center p-0 ps-1 gap-1 rounded-0">
-                          <small>Background</small>
-                          <div className="btn overflow-hidden props-btn rounded-0 p-0">
+                      <div
+                        className="props-btn"
+                        style={{
+                          border: `1px solid ${text_clrL}`,
+                          width: "120px",
+                        }}
+                      >
+                        <div
+                          className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between"
+                          style={{ translate: "6px" }}
+                        >
+                          <small
+                            className="flex-grow-1"
+                            style={{ color: text_clrM }}
+                          >
+                            Background
+                          </small>
+                          <div className="btn overflow-hidden flex-grow-1 props-btn rounded-0 p-0">
                             <input
                               type="color"
-                              className="form-control form-control-color w-100 props-btn border-0"
-                              style={{ scale: 2 }}
+                              className="form-control form-control-color w-100 props-btn border"
+                              style={{ scale: 3 }}
                               value={canvasBgColor}
                               onChange={(e) => setCanvasBgColor(e.target.value)}
                             />
@@ -617,66 +767,35 @@ const CanvasVibeEditor = () => {
                         </div>
                       </div>
 
-                      <div className="d-flex gap-2 btn p-0 btn-outline-primary rounded-0">
-                        <label className="small d-flex align-items-center flex-grow-1 ps-2">
+                      <div
+                        className="d-flex gap-2 btn p-0 rounded-0"
+                        style={{
+                          border: `1px solid ${text_clrL}`,
+                          width: "120px",
+                        }}
+                      >
+                        <label
+                          className="small d-flex align-items-center flex-grow-1 ps-2"
+                          style={{
+                            color: text_clrM,
+                          }}
+                        >
                           Height{" "}
                         </label>
                         <input
                           type="number"
                           className=" props-btn ps-2 p-0 border-0"
-                          style={{ width: "50px" }}
+                          style={{
+                            minWidth: "50px",
+                            background: mainbg,
+                            color: text_clrM,
+                          }}
                           value={canvasHeight}
                           onChange={(e) =>
                             setCanvasHeight(parseInt(e.target.value))
                           }
                         />
                       </div>
-
-                      <button
-                        className="btn props-btn btn-outline-primary"
-                        onClick={() => setActiveId(null)}
-                      >
-                        <b>--</b>
-                      </button>
-
-                      {/* <button
-                        className={`btn ${
-                          activeElement?.textAlign === "left"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "left")
-                        }
-                      >
-                      <FontAwesomeIcon icon={faAlignLeft} />
-                      </button>
-
-                      <button
-                        className={`btn ${
-                          activeElement?.textAlign === "center"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "center")
-                        }
-                      >
-                        <FontAwesomeIcon icon={faAlignCenter} />
-                      </button>
-
-                      <button
-                        className={`btn ${
-                          activeElement?.textAlign === "right"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "right")
-                        }
-                      >
-                        <FontAwesomeIcon icon={faAlignRight} />
-                      </button> */}
                     </div>
 
                     {/* 
@@ -705,6 +824,11 @@ const CanvasVibeEditor = () => {
                     <textarea
                       className="form-control h-100 w-100"
                       value={activeElement?.content}
+                      style={{
+                        background: mainbg,
+                        color: text_clrM,
+                        border: `1px solid ${text_clrL}`,
+                      }}
                       placeholder="Click Add Text and then write Here !"
                       onChange={(e) =>
                         handleChange(
@@ -719,7 +843,14 @@ const CanvasVibeEditor = () => {
               </div>
 
               <div>
-                <div className="card-body p-0">
+                <div
+                  className="card-body p-0"
+                  style={{
+                    maxWidth: "600px",
+                    margin: "auto",
+                    background: mainbg,
+                  }}
+                >
                   <div
                     ref={canvasRef}
                     className="canvas-container"
@@ -747,12 +878,19 @@ const CanvasVibeEditor = () => {
                               ? "0 0 10px rgba(13, 110, 253, 0.5)"
                               : "none",
                           cursor: "move",
-                          overflow: "hidden",
+                          // overflow: "hidden",
                           // transition: "all 100ms ease",
                         }}
                         onClick={() => setActiveId(el.id)}
+                        onTouchStart={() => setActiveId(el.id)}
+                        onDoubleClick={() => {
+                          setActiveId(el.id);
+                        }}
                       >
-                        <div className="w-100 h-100 position-relative">
+                        <div
+                          className="w-100 h-100 position-relative"
+                          onClick={() => setActiveId(el.id)}
+                        >
                           {activeId === el.id && (
                             <>
                               <button
@@ -763,7 +901,7 @@ const CanvasVibeEditor = () => {
                                   deleteElement(el.id);
                                 }}
                               >
-                                <FontAwesomeIcon icon={faTrash} />
+                                <FontAwesomeIcon icon={faTrash} color="red" />
                               </button>
 
                               {/* Resize handles */}
@@ -779,21 +917,83 @@ const CanvasVibeEditor = () => {
                           )}
 
                           {el.type === "text" ? (
-                            <div
-                              className="text-element w-100 h-100 d-flex align-items-center justify-content-center p-2"
-                              style={{
-                                fontSize: `${el.fontSize}px`,
-                                color: el.color,
-                                fontFamily: el.fontFamily,
-                                textShadow: el.shadow,
-                                fontWeight: el.fontWeight,
-                                fontStyle: el.fontStyle,
-                                textDecoration: el.textDecoration,
-                                textAlign: el.textAlign,
-                              }}
-                            >
-                              {el.content}
-                            </div>
+                            <>
+                              <div
+                                className="text-element w-100 h-100 none-scroller p-2"
+                                style={{
+                                  fontSize: `${el.fontSize}px`,
+                                  color: el.color,
+                                  fontFamily: el.fontFamily,
+                                  textShadow: el.shadow,
+                                  fontWeight: el.fontWeight,
+                                  fontStyle: el.fontStyle,
+                                  textDecoration: el.textDecoration,
+                                  textAlign: el.textAlign,
+                                  overflow: "auto",
+                                  // wordBreak: "break-word",
+                                  // wordWrap: "pre-wrap",
+                                  whiteSpace: "pre-wrap",
+                                }}
+                                ref={outerDivRef}
+                                contentEditable={true}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    document.execCommand(
+                                      "insertHTML",
+                                      false,
+                                      "<br><br>"
+                                    );
+                                  }
+                                }}
+                              >
+                                {el.content}
+                              </div>
+
+                              {/* <textarea
+                                ref={txtareaRef}
+                                className="none-scroller d-none position-absolute border-0 h-100 w-100 p-0"
+                                style={{
+                                  background: "transparent",
+                                  color: "transparent",
+                                  left: 0,
+                                  right: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  textAlign: el.textAlign,
+                                  caretColor: "red",
+                                  fontSize: `${el.fontSize}px`,
+                                  fontFamily: el.fontFamily,
+                                  textShadow: el.shadow,
+                                  fontWeight: el.fontWeight,
+                                  fontStyle: el.fontStyle,
+                                  textDecoration: el.textDecoration,
+                                  textAlign: el.textAlign,
+                                  resize: "none",
+                                  overflow: "auto",
+                                }}
+                                onChange={(e) => {
+                                  handleChange(
+                                    activeElement?.id,
+                                    "content",
+                                    e.target.value
+                                  );
+
+                                  const ta = textareaRef.current;
+                                  const dv = outerDivRef.current;
+                                  if (ta && dv) {
+                                    ta.scrollTop = ta.scrollHeight;
+                                    dv.scrollTop = dv.scrollHeight;
+                                  }
+                                }}
+                                onScroll={() =>
+                                  syncScroll(
+                                    textareaRef.current,
+                                    outerDivRef.current
+                                  )
+                                }
+                              /> */}
+                            </>
                           ) : (
                             <div className="overflow-hidden h-100 w-100">
                               <img
@@ -880,8 +1080,8 @@ const CanvasVibeEditor = () => {
           </div> */}
         </div>
 
-        {elements.length <= 0 && (
-          <div className="row mt-3">
+        {/* {elements.length <= 0 && (
+          <div className="row mt-3 p-2">
             <div className="col-12">
               <div className="alert alert-info text-center">
                 <p className="mb-0">
@@ -890,7 +1090,7 @@ const CanvasVibeEditor = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
 
       <div
@@ -922,32 +1122,35 @@ const CanvasVibeEditor = () => {
       <div className="d-flex gap-3 p-2">
         <button
           className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-            activeBtn3Profile === "public" ? "btn-dark text-white" : ""
+            activeBtn3Profile === "public" ? "btn-dark" : ""
           }`}
           onClick={() => setActiveBtn3Profile("public")}
+          style={{ color: text_clrM }}
         >
           For Public
         </button>
         <button
           className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-            activeBtn3Profile === "Follower" ? "btn-dark text-white" : ""
+            activeBtn3Profile === "Follower" ? "btn-dark" : ""
           }`}
           onClick={() => setActiveBtn3Profile("Follower")}
+          style={{ color: text_clrM }}
         >
           For Follower
         </button>
         <button
           className={`btn border p-1 ps-3 pe-3 rounded-5 ${
-            activeBtn3Profile === "Paid" ? "btn-dark text-white" : ""
+            activeBtn3Profile === "Paid" ? "btn-dark" : ""
           }`}
           onClick={() => setActiveBtn3Profile("Paid")}
           disabled={true}
+          style={{ color: text_clrM }}
         >
           Paid Only
         </button>
       </div>
 
-      <div className="border-top">
+      <div className="">
         <div className="d-flex gap-2 align-items-center  pb-0 pt-3">
           <div
             className="d-flex fw-semibold ms-1 text-white rounded-5 align-items-center justify-content-center"
@@ -966,27 +1169,37 @@ const CanvasVibeEditor = () => {
             {/* <small style={{ color: "#888" }}>Visibility: Public</small> */}
           </div>
         </div>
-        <div className="ps1">
+        <div className="mt-2">
           <textarea
             ref={textareaRef}
             value={text}
             onChange={(e) => {
               handleInput(0, e, "text");
             }}
-            className={`form-control rounded-0 shadow-none ps-2 pe-2 border-0 bg-light`}
+            className={`form-control rounded-0 shadow-none ps-2 pe-2`}
             placeholder="Write about post here . . ."
-            style={{ overflow: "hidden", resize: "none" }}
+            style={{
+              overflow: "hidden",
+              resize: "none",
+              background: mainbg,
+              color: text_clrM,
+              border: `0px solid ${text_clrL}`,
+            }}
             spellCheck="false"
             required
           />
         </div>
       </div>
 
-      <div className="d-flex gap-3 p-2 pt-0 justify-content-end p-0 pb-5 mb-4">
+      <div className="d-flex gap-3 pt-2 justify-content-end p-0 pb-5 mb-4">
         <label
           htmlFor="images"
-          className="btn btn-outline-primary ps-3 pe-3 rounded-0 p-2"
-          style={{ height: "42px" }}
+          className="btn  ps-3 pe-3 rounded-0 p-2"
+          style={{
+            height: "42px",
+            border: `1px solid ${text_clrL}`,
+            color: text_clrM,
+          }}
           disabled={true}
         >
           Set as Status

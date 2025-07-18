@@ -12,16 +12,21 @@ import SuggetionSlip, {
 } from "./maincomponents/NewUserUpdate";
 import axios from "axios";
 const API = import.meta.env.VITE_API_URL;
-
-import CanvasVibeEditor from "./maincomponents/CanvasEditor";
+import { useTheme } from "./context/Theme";
 
 function All_Post_Section() {
   const [visiblePosts, setVisiblePosts] = useState(5);
   const [loading, setLoading] = useState(false);
   const [lazyLoading, setlazyLoading] = useState(true);
 
-  const { all_user, all_posts, sm_break_point, all_post_loading, Errors } =
-    useQuote();
+  const {
+    all_user,
+    all_posts,
+    sm_break_point,
+    all_post_loading,
+    Errors,
+    lgbreakPoint,
+  } = useQuote();
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const postId = params.get("postId");
@@ -85,28 +90,26 @@ function All_Post_Section() {
   // useEffect(() => {
   //   getImg();
   // }, []);
+
+  const { mainbg } = useTheme();
+
   return (
     <>
-      {/* <CanvasEditor /> */}
-      {/* <CanvasVibeEditor /> */}
-      {/* <div className="p-3 m-2">
-        <p>
-          {" "}http://localhost:5173/home#
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium
-          dolorum tempore inventore optio odio aut quo ea deserunt ratione
-          officiis distinctio id dolorem nobis magni possimus consequatur a,
-          quis ipsam!
-        </p>
-        <div style={{ width: "220px", aspectRatio: "2/3" }}>
-          <img src={img} alt="" className="w-100" />
-        </div>
-      </div> */}
-      <div className="" style={{ margin: "auto" }}>
+      <div
+        className="position-relative"
+        style={{
+          background: mainbg,
+          zIndex: 10,
+        }}
+      >
         <section
           style={{
-            marginBottom: "84px",
-            // border: "1px solid red",
+            marginBottom: "90px",
+            margin: "auto",
           }}
+          className={`d-flex justify-content-${
+            !lgbreakPoint ? "center" : "evenly"
+          }`}
         >
           {Errors ? (
             <div
@@ -116,62 +119,42 @@ function All_Post_Section() {
               {Errors.message} . . .try leter !
             </div>
           ) : (
-            <div
-              className="d-flex gap-4 justify-content-evenly"
-              style={
-                {
-                  // border: "2px solid blue",
-                }
-              }
-            >
-              <section
-                className={`${
-                  sm_break_point ? "p-0" : "p-0"
-                } d-flex flex-column`}
-                style={{
-                  // margin: "auto",
-                  maxWidth: "600px",
-                  // border: "2px solid blue",
-                }}
-              >
-                {all_post_loading ? (
-                  <div className="d-flex justify-content-center ">
-                    <Loading dm={34} />
-                  </div>
-                ) : (
-                  <>
-                    {visiblePostComponents.map(
-                      ({ post, user }, idx) =>
-                        user &&
-                        post && (
-                          <div
-                            key={`comment-${idx}`}
-                            id={post?._id}
-                            className="d-flex flex-column gap-5"
-                          >
-                            <EachPost user={user} comment={post} />
-                            {/* {rn + 1 > idx && idx > rn - 1 && (
+            <div style={{ maxWidth: "600px" }}>
+              {all_post_loading ? (
+                <div className="d-flex justify-content-center ">
+                  <Loading dm={34} />
+                </div>
+              ) : (
+                <div className="d-flex flex-column gap-5 p-1" style={{}}>
+                  {visiblePostComponents.map(
+                    ({ post, user }, idx) =>
+                      user &&
+                      post && (
+                        <div key={`comment-${idx}`} id={post?._id} style={{}}>
+                          <EachPost user={user} comment={post} />
+                          {/* {rn + 1 > idx && idx > rn - 1 && (
                               <div className="mt-5">
                                 <SuggetionSlipInPost />
                               </div>
                             )} */}
-                          </div>
-                        )
-                    )}
-                  </>
-                )}
-
-                <div
-                  className="d-flex justify-content-center p-3"
-                  style={{ height: "44px" }}
-                >
-                  {loading && <Loading dm={34} />}
+                        </div>
+                      )
+                  )}
                 </div>
-              </section>
+              )}
 
-              <SuggetionSlip />
+              <div
+                className="d-flex justify-content-center p-3"
+                style={{ height: "44px" }}
+              >
+                {loading && <Loading dm={34} />}
+              </div>
             </div>
           )}
+
+          <div className="mt-4">
+            <SuggetionSlip />
+          </div>
         </section>
       </div>
     </>

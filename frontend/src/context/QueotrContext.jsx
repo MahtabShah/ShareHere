@@ -32,13 +32,13 @@ export const QuoteProvider = ({ children }) => {
   const [duration, setDuration] = useState(3000);
   const [isPaused, setIsPaused] = useState(false);
   const [admin_user, setadmin_user] = useState(null);
-  const [user, set_user] = useState(null);
+  // const [user, set_user] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [all_statuses, setall_statuses] = useState([]);
   const [all_posts, set_all_posts] = useState([]);
   const [sorted_posts, set_sorted_posts] = useState([]);
-  const [followings, setFollowings] = useState([]);
+  // const [followings, setFollowings] = useState([]);
   const [uploadClicked, setUploadClicked] = useState(false);
   const [all_post_loading, setAll_post_loading] = useState(false);
   const [Errors, setErrors] = useState(null);
@@ -50,47 +50,43 @@ export const QuoteProvider = ({ children }) => {
   const token = localStorage.getItem("token");
 
   const fetch_admin_user = async () => {
-    const token = localStorage.getItem("token");
-
     try {
-      const res = await axios.get(`${API}/api/crud/crud`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // setLoading(false);
-      res.data?.length === 0 ? "" : setadmin_user(res.data);
+      if (token) {
+        const res = await axios.get(`${API}/api/crud/crud`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        res.data?.length === 0 ? "" : setadmin_user(res.data);
+      }
     } catch (err) {
-      // navigate("/login") || navigate("/signup");
-      // setadmin_user(null);
       console.log("Failed to fetch admin see err in console 34 context", err);
     }
   };
 
   const fetch_user_byId = async (id) => {
-    const token = localStorage.getItem("token");
-
     try {
-      const res = await axios.get(`${API}/api/crud/get_userbyId/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // setLoading(false);
-      if (res.data?.length !== 0) {
-        return res.data;
+      if (id) {
+        const res = await axios.get(`${API}/api/crud/get_userbyId/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data?.length !== 0) {
+          return res.data;
+        }
       }
     } catch (err) {
-      // nevigate("/signup");
       console.log("Failed to fetch admin see err in console 34 context", err);
     }
   };
 
   const fetch_user_statuses = async () => {
     try {
-      const res = await axios.get(`${API}/api/crud/all_status`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Optional, if protected
-        },
-      });
-      setall_statuses(res.data);
-      // console.log("Status------------", res.data);
+      if (token) {
+        const res = await axios.get(`${API}/api/crud/all_status`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Optional, if protected
+          },
+        });
+        setall_statuses(res.data);
+      }
     } catch (error) {
       console.error("Failed to fetch all_statuses:", error);
     }
@@ -101,15 +97,14 @@ export const QuoteProvider = ({ children }) => {
       setAll_post_loading(true);
 
       await axios.get(`${API}/api/auth/home`).then((res) => {
-        // console.log("response at Home.jsx setall_user", res.data);
         setall_user(res.data);
       });
-
-      setAll_post_loading(false);
     } catch (error) {
       console.error("error : ", error);
       setErrors(error);
     }
+
+    setAll_post_loading(false);
   };
 
   const fetch_all_posts = async () => {
@@ -117,9 +112,7 @@ export const QuoteProvider = ({ children }) => {
     setAll_post_loading(true);
 
     try {
-      const res = await axios.get(`${API}/api/auth/all_sentence`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(`${API}/api/auth/all_sentence`);
       // setLoading(false);
       res.data?.length === 0 ? "" : set_all_posts(res.data);
     } catch (err) {
@@ -151,12 +144,13 @@ export const QuoteProvider = ({ children }) => {
 
   const fetch_all_notifications = async () => {
     try {
-      const res = await axios.get(`${API}/api/crud/all_notifications`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      // setLoading(false);
-      console.log("setcurr_all_notifications---->", res.data);
-      setcurr_all_notifications(res.data);
+      if (token) {
+        const res = await axios.get(`${API}/api/crud/all_notifications`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("setcurr_all_notifications---->", res.data);
+        setcurr_all_notifications(res.data);
+      }
     } catch (error) {
       console.log("erriorrr in notify", error);
     }
@@ -193,7 +187,9 @@ export const QuoteProvider = ({ children }) => {
   const all_followings = admin_user?.following;
 
   useEffect(() => {
-    fetch_admin_user();
+    if (token) {
+      fetch_admin_user();
+    }
     fetch_all_users();
     fetch_all_posts();
   }, []);
@@ -307,7 +303,7 @@ export const QuoteProvider = ({ children }) => {
     }
   }, [all_posts, hasSorted]);
 
-  useEffect(async () => {
+  useEffect(() => {
     // setInterval(async () => {
     //   try {
     //     const res = await axios.delete(`${API}/api/crud/del_status`);

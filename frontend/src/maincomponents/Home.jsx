@@ -8,33 +8,37 @@ export const CommentSection = ({ post }) => {
   return (
     <>
       <div className=" pb-3">
-        {post?.comments?.map((pc, idx) => {
-          return (
-            <div className="d-flex gap-1 mt-3" key={`idx-post-${idx}`}>
-              <div
-                className="d-flex align-items-center justify-content-center rounded-crcle text-white"
-                style={{
-                  minWidth: "30px",
-                  height: "30px",
-                  borderRadius: "20px",
-                  background: `${pc?.userId?.bg_clr}`,
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  nevigate(`/api/user/${pc?.userId?._id}`);
-                }}
-              >
-                <span>{pc?.userId?.username?.charAt(0).toUpperCase()}</span>
-              </div>
-              <div className="small">
-                <small className="fw-semibold">@{pc?.userId?.username}</small>
-                <div key={idx} className="fs-6">
-                  {pc?.text}
+        {post?.comments?.length > 0 ? (
+          post?.comments?.map((pc, idx) => {
+            return (
+              <div className="d-flex gap-1 mt-3" key={`idx-post-${idx}`}>
+                <div
+                  className="d-flex align-items-center justify-content-center rounded-crcle text-white"
+                  style={{
+                    minWidth: "40px",
+                    height: "40px",
+                    borderRadius: "20px",
+                    background: `${pc?.userId?.bg_clr}`,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    nevigate(`/api/user/${pc?.userId?._id}`);
+                  }}
+                >
+                  <span>{pc?.userId?.username?.charAt(0).toUpperCase()}</span>
+                </div>
+                <div className="small">
+                  <small className="fw-semibold">@{pc?.userId?.username}</small>
+                  <div key={idx} className="fs-6">
+                    {pc?.text}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <p>No comment</p>
+        )}
       </div>
     </>
   );

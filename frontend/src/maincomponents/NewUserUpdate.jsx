@@ -2,15 +2,21 @@ import { useEffect, useState } from "react";
 import { useQuote } from "../context/QueotrContext";
 import { UserRing, FollowBtn } from "./EachPost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTheme } from "../context/Theme";
 
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { random } from "lodash";
 const SuggetionSlip = () => {
   const { all_user, admin_user, lgbreakPoint } = useQuote();
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
   return (
     <>
       {lgbreakPoint && (
-        <div className="user-update" style={{ position: "sticky", top: "0" }}>
+        <div
+          className="user-update"
+          style={{ position: "sticky", top: "0", color: text_clrM }}
+        >
           {admin_user && (
             <div className="d-flex flex-column gap-2">
               <div

@@ -116,14 +116,8 @@ textarea {
 }
 
 @keyframes rotateBtn {
-  0% {
-    transform: rotateZ(0deg);
-  }
   50% {
-    transform: rotateZ(0deg) scale(2.6);
-  }
-  100% {
-    transform: rotateZ(0deg);
+    transform: scale(2);
   }
 }
 

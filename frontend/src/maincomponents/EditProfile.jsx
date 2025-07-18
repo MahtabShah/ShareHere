@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuote } from "../context/QueotrContext";
 import axios from "axios";
 import { Loading } from "../../TinyComponent/LazyLoading";
-
+import { useTheme } from "../context/Theme";
 const API = import.meta.env.VITE_API_URL;
 
 const token = localStorage.getItem("token");
@@ -115,11 +115,13 @@ const EditUserProfile = () => {
     setLoading(false);
   };
 
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
   return (
-    <section className="p-3">
+    <section className="mb-5 pb-5">
       <div
         className="photoHeader w-100 position-relative border"
-        style={{ height: "calc(120px + 16dvw)", maxHeight: "300px" }}
+        style={{ height: "calc(140px + 16dvw)", maxHeight: "300px" }}
       >
         <div className="position-absolute w-100 h-100">
           <img
@@ -146,7 +148,7 @@ const EditUserProfile = () => {
 
         <div
           className="text-center position-absolute ps-3"
-          style={{ bottom: "calc(-50px)" }}
+          style={{ bottom: "calc(-80px)" }}
         >
           <img
             src={profile_pic}
@@ -173,10 +175,10 @@ const EditUserProfile = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="needs-validation mt-5 pt-4">
+      <form onSubmit={handleSubmit} className="needs-validation mt-5 pt-5">
         <div
           className="d-flex flex-column p-2 gap-3"
-          style={{ border: "1px solid #555" }}
+          // style={{ border: "1px solid #555" }}
         >
           <div
             className="d-flex align-items-center p-0 m-0 ps-2"
@@ -184,7 +186,7 @@ const EditUserProfile = () => {
           >
             <div
               className="pe-2 form-lable"
-              style={{ borderRight: "1px solid #555" }}
+              style={{ borderRight: "1px solid #555", color: text_clrM }}
             >
               Name
             </div>
@@ -195,20 +197,27 @@ const EditUserProfile = () => {
               onChange={(e) => setName(e.target.value)}
               required
               spellCheck={false}
+              style={{ background: mainbg, color: text_clrM }}
               // placeholder={user?.username}
             />
           </div>
 
           <div className="d-flex flex-column ps-0">
-            <div className="p-2 pt-2 pb-0 border border-bottom pb-2">Bio</div>
+            <div className="p-2 pt-2 pb-0 pb-2" style={{ color: text_clrM }}>
+              Bio
+            </div>
             <textarea
               rows={4}
               className="w-100 h-100 p-2"
-              style={{ border: "1px solid #555" }}
               value={bio || user?.bio}
               onChange={(e) => setBio(e.target.value)}
               required
               spellCheck={false}
+              style={{
+                background: mainbg,
+                color: text_clrM,
+                border: `1px solid ${text_clrL}`,
+              }}
             />
           </div>
 

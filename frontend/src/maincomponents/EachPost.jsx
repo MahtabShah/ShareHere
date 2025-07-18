@@ -19,6 +19,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
+import { useTheme } from "../context/Theme";
+
 export const EachPost = ({ user, comment }) => {
   // comment parameter is besiaclly post
   const [open_comment, setopen_comment] = useState(false);
@@ -127,212 +129,212 @@ export const EachPost = ({ user, comment }) => {
     }
   }, [admin_user?.followers]);
 
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
   return (
-    <>
-      {
-        <>
-          <div className="mb-5">
-            <div
-              className="d-flex flex-column p-1 gap-2 position-relative"
-              style={{
-                background: "#eee",
-                width: "100%",
-                // maxWidth: "600px",
-                margin: "auto",
-              }}
-              key={comment?._id}
-            >
-              {/*--------------------- user ring and follow btn ----------------------- */}
-              <div className="d-flex gap-2 ps-1 align-items-center">
-                <UserRing user={user} />
+    <div className="p-2" style={{ border: `0px solid ${text_clrL}` }}>
+      <div
+        className="d-flex flex-column gap-2 position-relative bglight"
+        key={comment?._id}
+        style={{ background: mainbg }}
+      >
+        {/*--------------------- user ring and follow btn ----------------------- */}
+        <div className="d-flex gap-2 align-items-center justify-content-between flex-grow-1">
+          <div className="d-flex">
+            <UserRing user={user} />
+          </div>
 
-                <div className="d-flex flex-column align-items-end">
-                  {user?._id !== admin_user?._id && (
-                    <FollowBtn
-                      user={user}
-                      cls="btn ps-2 pe-2 me-2 rounded-0 small"
-                      style={{ fontSize: "14px" }}
-                    />
-                  )}
-                  {user?._id === admin_user?._id && (
-                    <div className="pe-3 small">
-                      <StatusBtn post={comment} />
-                    </div>
-                  )}
-                  <div className="pe-3" style={{ fontSize: "12px" }}>
-                    {user?.followers?.length} followers
-                  </div>
-                </div>
-              </div>
+          <div className="d-flex flex-column justify-content-start align-items-end">
+            {user?._id !== admin_user?._id && (
+              <FollowBtn
+                user={user}
+                cls="btn rounded-0 small pe-0"
+                style={{ fontSize: "14px" }}
+              />
+            )}
 
-              <div>
-                <ul style={{ listStyle: "none" }} className="p-0 m-0">
-                  <div
-                    className={`d-flex align-items-center  m-${
-                      isDisplayedLeftNav ? "0" : "1"
-                    }`}
-                    style={{
-                      overflow: "hidden",
-
-                      background: mode == "public" ? "" : "#ddd",
-                    }}
-                  >
-                    <div
-                      className="p-0 w-100 position-relative"
-                      // style={{ border: "1px solid red" }}
-                    >
-                      <div
-                        className="h-100  bg-image d-flex align-items-center flex-column"
-                        style={
-                          {
-                            // maxWidth: "600px",
-                            // aspectRatio: "6/7",
-                          }
-                        }
-                      >
-                        {mode == "public" && (
-                          <img
-                            src={`${comment?.images[0]}`}
-                            loading="lazy"
-                            className="w-100 h-100"
-                            style={{
-                              objectFit: "cover",
-                            }}
-                          />
-                        )}
-
-                        {mode == "Follower" && (
-                          <div
-                            className="d-flex align-items-center flex-column h-100"
-                            // style={{ border: "1px solid red" }}
-                          >
-                            <div style={{ width: "180px" }}>
-                              <img
-                                src={follow_us}
-                                alt=""
-                                className="h-100 w-100"
-                                style={{
-                                  objectFit: "cover",
-                                  opacity: "0.4",
-                                }}
-                              />
-                            </div>
-                            <p className="p-2 fs-5">
-                              This is for <b>Followers only</b>. Follow{" "}
-                              <b>@{user?.username}</b> to access this.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <li className="p-2 ps-1 w-100 flex-grow-1 rounded-3 ms-1">
-                    {comment && (
-                      <div key={comment.text.slice(0, -1)}>{comment.text}</div>
-                    )}
-                  </li>
-                </ul>
-              </div>
-
-              <div
-                className="pt-2 border-top d-flex flex-column"
-                style={{ padding: "0 0.575rem" }}
-              >
-                <small>{dayjs(comment?.createdAt).fromNow()}</small>
-                {/* <small>{comment.likes.length} </small> */}
-              </div>
-
-              <div
-                className="d-flex justify-content-between like-comment-share"
-                style={{ padding: "0.5rem 0.45rem" }}
-              >
-                <LikeBtn post={comment} size={22} />
-                <span
-                  className="fw-semibold d-flex align-items-center gap-1"
-                  onClick={() => {
-                    setopen_comment(!open_comment);
-                  }}
-                >
-                  <span style={{ marginTop: "0.2rem" }}>
-                    <BiChat size={20} /> {comment?.comments?.length || 0}&nbsp;
-                  </span>
-                </span>
-                <span className="fw-semibold" onClick={HandleShare}>
-                  <BiShare size={20} />
-                </span>
-
-                <span
-                  onClick={() => {
-                    setdotClicked(!isdotClicked);
-                  }}
-                  className=""
-                >
-                  <BsThreeDotsVertical size={18} />
-                </span>
-              </div>
-            </div>
-            {isdotClicked && (
-              <div
-                className="small fw-medium d-flex flex-wrap p-3 gap-3"
-                style={{
-                  background: "#ddf",
-                }}
-              >
-                <SlipDotinPost user={user} post={comment} />
+            {user?._id === admin_user?._id && (
+              <div className="small">
+                <StatusBtn post={comment} />
               </div>
             )}
-            {open_comment && (
-              <section className="pe-2" style={{ background: "#ddf" }}>
-                <div
-                  className="gap-1 pt-2 d-flex flex-column position-relative"
-                  style={{ background: "#ddf" }}
-                >
-                  <div
-                    className="d-flex gap-1 ms-2 pb-2"
-                    style={{ borderBottom: "1px solid #aaa" }}
-                  >
-                    <div
-                      className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2 "
-                      style={{
-                        minWidth: "30px",
-                        height: "30px",
-                        borderRadius: "20px",
-                        background: `${admin_user?.bg_clr || "#2a1"}`,
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        nevigate(`/api/user/${admin_user?._id}`);
-                      }}
-                    >
-                      <span>
-                        {admin_user?.username.charAt(0).toUpperCase() || "#!"}
-                      </span>
-                    </div>
+            <div
+              className="d-flex gap-2"
+              style={{ fontSize: "12px", color: text_clrM }}
+            >
+              <small style={{ color: text_clrM }}>
+                {dayjs(comment?.createdAt).fromNow()}
+              </small>
+              <small>{user?.followers?.length} followers</small>
+            </div>
+          </div>
+        </div>
 
-                    <textarea
-                      required
-                      className="w-100 shadow-none border-0 rounded-0 ps-0 pt-1 fs-0 small"
-                      placeholder="Write your sentence here . . . . . ."
-                      onChange={(e) => {
-                        Handlecomment(e);
-                      }}
-                      onInput={(e) => {
-                        e.target.style.height = "30px"; // reset height
-                        e.target.style.height = `${e.target.scrollHeight}px`; // set new height
-                      }}
-                      value={new_comment || ""}
+        <div className="">
+          <ul style={{ listStyle: "none" }} className="p-0 m-0 rounded-1">
+            <div
+              className={`d-flex align-items-center`}
+              style={{
+                overflow: "hidden",
+                // background: mode == "public" ? "" : "#ddd",
+              }}
+            >
+              <div
+                className="p-0 w-100 rounded-1 position-relative"
+                // style={{ border: "1px solid red" }}
+              >
+                <div
+                  className="bg-image rounded-1 d-flex align-items-center flex-column"
+                  // style={{ border: `1px solid ${text_clrL}` }}
+                >
+                  {mode == "public" && (
+                    <img
+                      src={`${comment?.images[0]}`}
+                      loading="lazy"
+                      className="w-100 h-100 rounded-1"
                       style={{
-                        marginTop: "0.1rem",
-                        background: "#ddf",
+                        objectFit: "cover",
                       }}
                     />
+                  )}
 
+                  {mode == "Follower" && (
                     <div
-                      className="d-flex gap-3"
-                      style={{ alignSelf: "end", bottom: "0.5rem" }}
+                      className="d-flex align-items-center flex-column rounded-1 h-100"
+                      style={{ background: text_clrM }}
                     >
-                      {/* <button
+                      <div style={{ width: "180px" }}>
+                        <img
+                          src={follow_us}
+                          alt=""
+                          className="h-100 w-100 rounded-1"
+                          style={{
+                            objectFit: "cover",
+                            opacity: "0.4",
+                          }}
+                        />
+                      </div>
+                      <p className="p-2 fs-5">
+                        This is for <b>Followers only</b>. Follow{" "}
+                        <b>@{user?.username}</b> to access this.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <li
+              className="w-100 flex-grow-1 rounded-3 mt-2"
+              style={{ color: text_clrM }}
+            >
+              {comment && (
+                <div key={comment.text.slice(0, -1)}>{comment.text}</div>
+              )}
+            </li>
+          </ul>
+        </div>
+
+        <div
+          className="d-flex py-2 justify-content-between like-comment-share"
+          style={{ color: text_clrM, borderBottom: `1px solid ${text_clrL}` }}
+        >
+          <div className="d-flex gap-4">
+            {/* <div style={{ translate: "-1px 1px" }}> */}
+            <LikeBtn post={comment} size={32} />
+            {/* </div> */}
+            <span
+              className="fw-semibold d-flex align-items-center gap-1"
+              onClick={() => {
+                setopen_comment(!open_comment);
+              }}
+            >
+              <span
+                style={{
+                  marginTop: "0.2rem",
+                  color: open_comment ? "#ed5" : "",
+                }}
+              >
+                <BiChat size={32} color={open_comment ? "#ed5" : ""} />{" "}
+                {comment?.comments?.length || 0}&nbsp;
+              </span>
+            </span>
+            <span className="fw-semibold" onClick={HandleShare}>
+              <BiShare size={32} />
+            </span>
+          </div>
+
+          <span
+            onClick={() => {
+              setdotClicked(!isdotClicked);
+            }}
+            className=""
+            style={{ rotate: isdotClicked ? "-45deg" : "", translate: "7px" }}
+          >
+            <BsThreeDotsVertical size={24} />
+          </span>
+        </div>
+      </div>
+      {isdotClicked && (
+        <div
+          className="small fw-medium d-flex flex-wrap gap-3 my-2"
+          style={{ color: text_clrM }}
+        >
+          <SlipDotinPost user={user} post={comment} />
+        </div>
+      )}
+      <section
+        className="pe-2 pt-2"
+        style={{ background: mainbg, color: text_clrM }}
+      >
+        <div className="gap-1 pt-2 d-flex flex-column position-relative">
+          <div className="d-flex gap-1 pb-2">
+            <div
+              className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2  overflow-hidden"
+              style={{
+                maxWidth: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                background: `${admin_user?.bg_clr || "#2a1"}`,
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                nevigate(`/api/user/${admin_user?._id}`);
+              }}
+            >
+              {(
+                <img
+                  src={admin_user?.profile_pic}
+                  className="h-100 w-100"
+                  style={{ objectFit: "cover" }}
+                />
+              ) || "#!"}
+            </div>
+
+            <textarea
+              required
+              className="w-100 shadow-none border-0 rounded-0 ps-0 mt-2 fs-0 small"
+              placeholder="Write your sentence here . . . . . ."
+              onChange={(e) => {
+                Handlecomment(e);
+              }}
+              onInput={(e) => {
+                e.target.style.height = "30px"; // reset height
+                e.target.style.height = `${e.target.scrollHeight}px`; // set new height
+              }}
+              value={new_comment || ""}
+              style={{
+                marginTop: "0.1rem",
+                background: mainbg,
+                color: text_clrM,
+              }}
+            />
+
+            <div
+              className="d-flex gap-3"
+              style={{ alignSelf: "end", bottom: "0.5rem" }}
+            >
+              {/* <button
                       className="btn btn-outline-dark ps-3 pe-3 p-1 rounded-0"
                       style={{ alignSelf: "end", bottom: "0.5rem" }}
                       onClick={(e) => {
@@ -342,47 +344,57 @@ export const EachPost = ({ user, comment }) => {
                       Cancel
                     </button> */}
 
-                      <button
-                        className="btn text-danger p-1 ps-3 rounded-0"
-                        onClick={(e) => {
-                          SubmitComment(e, comment?._id);
-                        }}
-                      >
-                        {LazyLoading ? (
-                          <Loading clr={"light"} />
-                        ) : (
-                          <MdSend size={20} />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="ps-2 pt-2">
-                  <CommentSection post={comment} />
-                </div>
-              </section>
-            )}
+              <button
+                className="btn border-0 p-1 ps-3 pe-0 rounded-0"
+                onClick={(e) => {
+                  SubmitComment(e, comment?._id);
+                }}
+              >
+                {LazyLoading ? (
+                  <Loading clr={"light"} />
+                ) : (
+                  <MdSend size={22} color={text_clrM} />
+                )}
+              </button>
+            </div>
           </div>
-        </>
-      }
-    </>
+        </div>
+        {open_comment && (
+          <div
+            className="pt-2"
+            style={{
+              borderBottom: `${open_comment ? `0px solid ${text_clrL}` : ""}`,
+            }}
+          >
+            <CommentSection post={comment} />
+          </div>
+        )}
+      </section>
+    </div>
   );
 };
 
-export const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
+export const UserRing = ({
+  onlyphoto = false,
+  user,
+  style = { borderEndEndRadius: "0" },
+}) => {
   const nevigate = useNavigate();
+  const { text_clrH, text_clrL, text_clrM } = useTheme();
+
   return (
     <>
       <div className="d-flex gap-2 flex-grow-1 align-items-center">
         <div
-          className="d-flex align-items-center w-100 justify-content-center rounded-crcle text-white overflow-hidden vibe-ring"
+          className="d-flex align-items-center w-100 justify-content-center rounded-crcle overflow-hidden vibe-ring"
           style={{
             maxWidth: "40px",
+            minWidth: "40px",
             height: "40px",
             background: `${user?.bg_clr}`,
             cursor: "pointer",
             ...style,
+            color: text_clrH,
           }}
           onClick={() => {
             nevigate(`/api/user/${user?._id}`);
@@ -403,17 +415,22 @@ export const UserRing = ({ user, style = { borderEndEndRadius: "0" } }) => {
           </div>
         </div>
 
-        <div className=" d-flex flex-column small align-item">
-          <small
-            className="small on-hover-userid"
-            onClick={() => {
-              nevigate(`/api/user/${user?._id}`);
-            }}
+        {!onlyphoto && (
+          <div
+            className=" d-flex flex-column small align-item"
+            style={{ color: text_clrM }}
           >
-            @{user?.username}
-          </small>
-          <small className="small">{user?.bio?.slice(0, 24)} . . . .</small>
-        </div>
+            <small
+              className="small fw-medium on-hover-userid"
+              onClick={() => {
+                nevigate(`/api/user/${user?._id}`);
+              }}
+            >
+              @{user?.username}
+            </small>
+            <small className="small">{user?.bio?.slice(0, 24)} . . . .</small>
+          </div>
+        )}
       </div>
     </>
   );
@@ -431,6 +448,8 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
   const [isFollowed, setIsFollowed] = useState(
     user?.followers?.includes(admin_user?._id)
   );
+
+  const { text_clrH, text_clrL, text_clrM } = useTheme();
 
   const navigate = useNavigate();
 
@@ -468,7 +487,7 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
     <div
       className={cls}
       onClick={handleClick}
-      style={{ ...style, minWidth: "max-content" }}
+      style={{ ...style, minWidth: "max-content", color: text_clrH }}
     >
       {isFollowed ? "Unfollow" : "Follow"}
     </div>
@@ -585,7 +604,7 @@ export const LikeBtn = ({ post, size = 18 }) => {
     <>
       <span
         className={`pe-3 gap-1 fw-semibold d-flex align-items-center`}
-        style={{ color: `${isliked ? "#ff6600" : ""}`, width: "40px" }}
+        style={{ color: `${isliked ? "#d50202ff" : ""}`, width: "40px" }}
         onClick={() => {
           HandleLike(post?._id);
         }}

@@ -12,6 +12,7 @@ import { useQuote } from "../context/QueotrContext";
 import axios from "axios";
 import { SearchBaar } from "../../TinyComponent/SearchBaar";
 const API = import.meta.env.VITE_API_URL;
+import { useTheme } from "../context/Theme";
 
 function MainHeader({}) {
   const [VisibleNotification, setVisibleNotification] = useState(false);
@@ -82,6 +83,8 @@ function MainHeader({}) {
     });
   }, [smbreakPoint]);
 
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+
   return (
     <>
       {["sm"].map((expand) => (
@@ -89,15 +92,19 @@ function MainHeader({}) {
           key={`expand${expand}`}
           expand={expand}
           className="mb-0 ps-2"
-          bg="light"
+          // bg="light"
           variant="light"
           fixed="top"
-          style={{ borderBottom: "1px solid var(--light-clr)", zIndex: 10 }}
+          style={{
+            // borderBottom: "1px solid var(--light-clr)",
+            background: mainbg,
+            zIndex: 100000,
+          }}
         >
           <Container fluid>
             <div href="/Explore" className="fw-bold fs-6 pb-0 mb-0 flex-grow-1">
               <div className="d-flex justify-content-between w-100 flex-grow-1">
-                <div className="mt-2 d-flex align-items-center">
+                <div className="mt-2 ms-1 d-flex align-items-center">
                   <Logo />
                 </div>
 
@@ -118,7 +125,7 @@ function MainHeader({}) {
                           className="d-flex align-items-center justify-content-center"
                           style={{ width: "24px", height: "24px" }}
                         >
-                          <FontAwesomeIcon icon={faBell} />
+                          <FontAwesomeIcon icon={faBell} color={text_clrH} />
                         </div>
                         <span
                           className={`fw-semibold pe-5 ${
@@ -143,8 +150,9 @@ function MainHeader({}) {
                         <div
                           className="d-flex align-items-center justify-content-center"
                           style={{
-                            background: "#3333",
+                            background: text_clrL,
                             padding: "4px 6px 6px",
+                            color: text_clrH,
                           }}
                         >
                           create
