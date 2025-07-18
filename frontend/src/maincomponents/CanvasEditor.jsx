@@ -229,6 +229,16 @@ const CanvasVibeEditor = () => {
     );
   };
 
+  set[(count, setCount)] = useState(0);
+
+  const setContinuousActiveId = () => {
+    const len = elements.length();
+    if (len > 0) {
+      setActiveId(count % len);
+      setCount(count + 1);
+    }
+  };
+
   const deleteElement = (id) => {
     setElements((prev) => prev.filter((el) => el.id !== id));
     setActiveId(null);
@@ -796,6 +806,14 @@ const CanvasVibeEditor = () => {
                           }
                         />
                       </div>
+
+                      <button
+                        className="btn props-btn "
+                        onClick={() => setContinuousActiveId}
+                        style={{ border: `1px solid ${text_clrL}` }}
+                      >
+                        <b style={{ color: text_clrM }}>Active</b>
+                      </button>
                     </div>
 
                     {/* 
