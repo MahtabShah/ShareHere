@@ -1,0 +1,823 @@
+import React, { useState, useRef, useEffect } from "react";
+import { toPng } from "html-to-image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Rnd } from "react-rnd";
+import { useQuote } from "../context/QueotrContext";
+import { Loading } from "../../TinyComponent/LazyLoading";
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const API = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("token");
+
+import {
+  faTextHeight,
+  faImage,
+  faTrash,
+  faArrowUp,
+  faBold,
+  faItalic,
+  faUnderline,
+  faAlignLeft,
+  faAlignCenter,
+  faAlignRight,
+  faDownload,
+  faExpand,
+} from "@fortawesome/free-solid-svg-icons";
+
+const CanvasVibeEditor = () => {
+  const [elements, setElements] = useState([]);
+  const [activeId, setActiveId] = useState(null);
+  const [canvasHeight, setCanvasHeight] = useState(500);
+  const [canvasBgColor, setCanvasBgColor] = useState("#222222");
+  const [exporting, setExporting] = useState(false);
+  const [exportUrl, setExportUrl] = useState(null);
+  const canvasRef = useRef(null);
+  const nevigate = useNavigate();
+
+  let idCounter =
+    elements.length > 0 ? Math.max(...elements.map((el) => el.id)) + 1 : 1;
+
+  const addTextBox = () => {
+    const newText = {
+      id: idCounter++,
+      type: "text",
+      content: "Edit me!",
+      x: 50,
+      y: 50,
+      width: 100,
+      height: 60,
+      fontSize: 28,
+      fontFamily: "Arial",
+      color: "#ffffff",
+      shadow: "2px 2px 4px rgba(0,0,0,0.5)",
+      zIndex: elements.length + 1,
+      fontWeight: "normal",
+      fontStyle: "normal",
+      textDecoration: "none",
+      textAlign: "center",
+    };
+    setElements([...elements, newText]);
+    setActiveId(newText.id);
+  };
+
+  const addImageBox = (file) => {
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    const newImage = {
+      id: idCounter++,
+      type: "image",
+      src: url,
+      x: 10,
+      y: 10,
+      width: 40,
+      height: 10,
+      zIndex: elements.length + 1,
+    };
+    setElements([...elements, newImage]);
+    setActiveId(newImage.id);
+  };
+
+  const handleChange = (id, key, value) => {
+    setElements((prev) =>
+      prev.map((el) => (el.id === id ? { ...el, [key]: value } : el))
+    );
+  };
+
+  const handleResizeOrDrag = (id, size, position) => {
+    setElements((prev) =>
+      prev.map((el) => (el.id === id ? { ...el, ...size, ...position } : el))
+    );
+  };
+
+  const deleteElement = (id) => {
+    setElements((prev) => prev.filter((el) => el.id !== id));
+    setActiveId(null);
+  };
+
+  const bringToFront = (id) => {
+    setElements((prev) => {
+      const maxZIndex = Math.max(...prev.map((el) => el.zIndex), 0);
+      return prev.map((el) =>
+        el.id === id ? { ...el, zIndex: maxZIndex + 1 } : el
+      );
+    });
+  };
+
+  const applyFontStyle = (id, style, value) => {
+    setElements((prev) =>
+      prev.map((el) => (el.id === id ? { ...el, [style]: value } : el))
+    );
+  };
+
+  const DragcanvasRef = useRef(null);
+
+  function base64ToBlob(base64, contentType = "image/png") {
+    const byteCharacters = atob(base64.split(",")[1]); // Remove data:image/png;base64, part
+    const byteArrays = [];
+
+    for (let i = 0; i < byteCharacters.length; i += 512) {
+      const slice = byteCharacters.slice(i, i + 512);
+      const byteNumbers = new Array(slice.length);
+      for (let j = 0; j < slice.length; j++) {
+        byteNumbers[j] = slice.charCodeAt(j);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, { type: contentType });
+  }
+
+  const exportAsImage = async () => {
+    if (!canvasRef.current) return;
+
+    try {
+      setExporting(true);
+      const dataUrl = await toPng(canvasRef.current, {
+        backgroundColor: canvasBgColor,
+        pixelRatio: 2, // Higher quality
+      });
+
+      const blob = base64ToBlob(dataUrl, "image/png");
+      const blobUrl = URL.createObjectURL(blob);
+      setExportUrl(dataUrl); // This is now a shorter blob URL
+
+      setExporting(false);
+
+      console.log("blob ", `blob:${blobUrl}`);
+      return dataUrl;
+    } catch (error) {
+      console.error("Error exporting image:", error);
+      setExporting(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        DragcanvasRef.current &&
+        !DragcanvasRef.current.contains(event.target)
+      ) {
+        setActiveId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const activeElement = elements.find((el) => el.id === activeId);
+
+  // -----------------------------------posting-----------------------------
+  const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
+  const textareaRef = useRef(null);
+  const [text, setText] = useState("");
+  const [LazyLoading, setLazyLoading] = useState(false);
+
+  const { style, admin_user, uploadClicked, setUploadClicked, sm_break_point } =
+    useQuote();
+
+  const handleCapture = async () => {
+    const dataURL = await exportAsImage();
+
+    const formData = new FormData();
+    formData.append("file", dataURL);
+    formData.append("upload_preset", "page_Image");
+    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
+
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      formData
+    );
+
+    console.log("Uploaded URL:", res.data.secure_url);
+    return res.data.secure_url;
+  };
+
+  const handleInput = (idx, e, key) => {
+    if (key === "text") {
+      setText(e.target.value);
+    } else {
+      const txt = e.currentTarget.textContent;
+
+      // Force update to plain text (remove extra nodes) // for better styling u can active node like some text bold some text color
+      if (divRef.current) {
+        divRef.current.textContent = txt || "Type here....";
+      }
+    }
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!admin_user) {
+      nevigate("/login") || nevigate("/signup");
+    }
+    setLazyLoading(true);
+
+    try {
+      const ready_url = await handleCapture();
+      console.log("ready url ", ready_url);
+
+      if (ready_url) {
+        const res = await axios.post(
+          `${API}/api/sentence/post`,
+          { ready_url: ready_url, text: text, mode: activeBtn3Profile },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUploadClicked(false);
+        nevigate("/home");
+      }
+    } catch (err) {
+      alert(
+        "Failed to save sentence: " +
+          (err.response?.data?.message || err.message)
+      );
+      // setErrors(err.response?.data?.message || err.message);
+      console.error("Error saving sentence", err);
+    }
+    setLazyLoading(false);
+  };
+
+  return (
+    <>
+      <div className=" pt-4">
+        <div className="row">
+          <div className="col-12 text-center mb-4">
+            <h1 className="display-5 fw-bold text-primary">
+              <FontAwesomeIcon icon={faExpand} className="me-2" />
+              Canva-Style Editor
+            </h1>
+            <p className="lead">
+              Create stunning social media posts and export them as images
+            </p>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-9">
+            <div className="card border-0 shadow-sm mb-4">
+              <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <span>Design Canvas</span>
+                <button
+                  className="btn btn-light btn-sm"
+                  onClick={exportAsImage}
+                  disabled={exporting}
+                >
+                  {exporting ? (
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    ></span>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faDownload} className="me-1" />
+                      Export as Image
+                    </>
+                  )}
+                </button>
+              </div>
+              <div>
+                <div className="card-body p-0">
+                  <div
+                    ref={canvasRef}
+                    className="canvas-container"
+                    style={{
+                      height: `${canvasHeight}px`,
+                      backgroundColor: canvasBgColor,
+                      position: "relative",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {elements.map((el) => (
+                      <Rnd
+                        key={el.id}
+                        style={{
+                          position: "absolute",
+                          left: `${el.x}px`,
+                          top: `${el.y}px`,
+                          width: `${el.width}px`,
+                          height: `${el.height}px`,
+                          zIndex: el.zIndex,
+                          border:
+                            activeId === el.id ? "2px dashed #0d6efd" : "none",
+                          boxShadow:
+                            activeId === el.id
+                              ? "0 0 10px rgba(13, 110, 253, 0.5)"
+                              : "none",
+                          cursor: "move",
+                          // transition: "all 100ms ease",
+                        }}
+                        onClick={() => setActiveId(el.id)}
+                      >
+                        <div className="w-100 h-100 position-relative">
+                          {activeId === el.id && (
+                            <>
+                              <button
+                                className="btn text-danger btn-sm p-0 position-absolute top-0 end-0 rounded"
+                                style={{ zIndex: 1000, width: "20px" }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteElement(el.id);
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </button>
+
+                              {/* Resize handles */}
+                              <div
+                                className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
+                                style={{
+                                  width: "12px",
+                                  height: "12px",
+                                  cursor: "nwse-resize",
+                                }}
+                              ></div>
+                            </>
+                          )}
+
+                          {el.type === "text" ? (
+                            <div
+                              className="text-element w-100 h-100 d-flex align-items-center justify-content-center p-2"
+                              style={{
+                                fontSize: `${el.fontSize}px`,
+                                color: el.color,
+                                fontFamily: el.fontFamily,
+                                textShadow: el.shadow,
+                                fontWeight: el.fontWeight,
+                                fontStyle: el.fontStyle,
+                                textDecoration: el.textDecoration,
+                                textAlign: el.textAlign,
+                              }}
+                            >
+                              {el.content}
+                            </div>
+                          ) : (
+                            <div className="overflow-hidden h-100 w-100">
+                              <img
+                                src={el.src}
+                                alt="uploaded"
+                                className="image-element w-100"
+                                draggable={false}
+                                style={{ objectFit: "contain" }}
+                              />
+                            </div>
+                            // </div>
+                          )}
+                        </div>
+                      </Rnd>
+                    ))}
+
+                    {elements.length === 0 && (
+                      <div className="empty-canvas w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
+                        <h4>Add text or images to get started</h4>
+                        <p className="text-center">
+                          Click the buttons below to add elements
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* {activeElement && ( */}
+                <div className="card border-0 shadow-sm">
+                  <div className="card-header d-flex justify-content-between align-items-center bg-info text-white rounded-0">
+                    <strong>
+                      {activeElement?.type === "text"
+                        ? "Text Properties"
+                        : "Image Properties"}
+                    </strong>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => deleteElement(activeElement?.id)}
+                      disabled={!activeElement}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                  <div className="card-body">
+                    <>
+                      <div className="d-flex mb-3 gap-3">
+                        <button
+                          className={`btn ${
+                            activeElement?.fontWeight === "bold"
+                              ? "btn-primary"
+                              : "btn-outline-primary"
+                          }`}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "fontWeight",
+                              activeElement?.fontWeight === "bold"
+                                ? "normal"
+                                : "bold"
+                            )
+                          }
+                        >
+                          <FontAwesomeIcon icon={faBold} />
+                        </button>
+
+                        <button
+                          className={`btn ${
+                            activeElement?.fontStyle === "italic"
+                              ? "btn-primary"
+                              : "btn-outline-primary"
+                          }`}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "fontStyle",
+                              activeElement?.fontStyle === "italic"
+                                ? "normal"
+                                : "italic"
+                            )
+                          }
+                        >
+                          <FontAwesomeIcon icon={faItalic} />
+                        </button>
+
+                        <button
+                          className={`btn ${
+                            activeElement?.textDecoration === "underline"
+                              ? "btn-primary"
+                              : "btn-outline-primary"
+                          }`}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "textDecoration",
+                              activeElement?.textDecoration === "underline"
+                                ? "none"
+                                : "underline"
+                            )
+                          }
+                        >
+                          <FontAwesomeIcon icon={faUnderline} />
+                        </button>
+
+                        {/* <button
+                        className={`btn ${
+                          activeElement?.textAlign === "left"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "left")
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAlignLeft} />
+                      </button>
+
+                      <button
+                        className={`btn ${
+                          activeElement?.textAlign === "center"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "center")
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAlignCenter} />
+                      </button>
+
+                      <button
+                        className={`btn ${
+                          activeElement?.textAlign === "right"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "right")
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAlignRight} />
+                      </button> */}
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label">Text Content</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={activeElement?.content}
+                          onChange={(e) =>
+                            handleChange(
+                              activeElement?.id,
+                              "content",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className="d-flex gap-2 small flex-wrap">
+                        <div className="mb-3 flex-grow-1">
+                          <label className="form-label">Font Size</label>
+                          <div className="input-group">
+                            <input
+                              type="number"
+                              className="form-control"
+                              min="8"
+                              max="120"
+                              value={activeElement?.fontSize}
+                              onChange={(e) =>
+                                handleChange(
+                                  activeElement?.id,
+                                  "fontSize",
+                                  parseInt(e.target.value)
+                                )
+                              }
+                            />
+                            <span className="input-group-text">px</span>
+                          </div>
+                        </div>
+
+                        <div className="mb-3 flex-grow-1">
+                          <label className="form-label">Font Color</label>
+                          <input
+                            type="color"
+                            className="form-control form-control-color w-100"
+                            value={activeElement?.color}
+                            onChange={(e) =>
+                              handleChange(
+                                activeElement?.id,
+                                "color",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </div>
+
+                        <div className="mb-3 flex-grow-1">
+                          <label className="form-label">Font Family</label>
+                          <select
+                            className="form-select"
+                            value={activeElement?.fontFamily}
+                            onChange={(e) =>
+                              handleChange(
+                                activeElement?.id,
+                                "fontFamily",
+                                e.target.value
+                              )
+                            }
+                          >
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Times New Roman">
+                              Times New Roman
+                            </option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Impact">Impact</option>
+                          </select>
+                        </div>
+
+                        <div className="mb-3 flex-grow-1">
+                          <label className="form-label">Text Shadow</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="e.g. 2px 2px 4px #000"
+                            value={activeElement?.shadow}
+                            onChange={(e) =>
+                              handleChange(
+                                activeElement?.id,
+                                "shadow",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </div>
+                      </div>
+                    </>
+
+                    <>
+                      <div className="mb-3">
+                        <label className="form-label">Replace Image</label>
+                        <input
+                          type="file"
+                          className="form-control"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files[0]) {
+                              URL.revokeObjectURL(activeElement?.src);
+                              const url = URL.createObjectURL(
+                                e.target.files[0]
+                              );
+                              handleChange(activeElement?.id, "src", url);
+                            }
+                          }}
+                        />
+                      </div>
+                    </>
+
+                    {/* {activeElement?.type === "image" && (
+                    
+                  )} */}
+
+                    <div className="d-grid">
+                      <button
+                        className="btn btn-warning"
+                        onClick={() => bringToFront(activeElement?.id)}
+                      >
+                        <FontAwesomeIcon icon={faArrowUp} className="me-2" />
+                        Bring to Front
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {/* )} */}
+              </div>
+            </div>
+
+            {exportUrl && (
+              <div className="card border-0 shadow-sm">
+                <div className="card-header bg-success text-white">
+                  Export Preview
+                </div>
+                <div className="card-body text-center">
+                  <img
+                    src={exportUrl}
+                    alt="Exported design"
+                    className="img-fluid mb-3 border rounded"
+                    style={{ maxHeight: "300px" }}
+                  />
+                  <div>
+                    <a
+                      href={exportUrl}
+                      download="canvas-design.png"
+                      className="btn btn-success"
+                    >
+                      <FontAwesomeIcon icon={faDownload} className="me-2" />
+                      Download Image
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="col-md-3">
+            <div className="card border-0 shadow-sm mb-4">
+              <div className="card-header bg-primary text-white">
+                <strong>Canvas Settings</strong>
+              </div>
+              <div className="card-body">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Canvas Height: {canvasHeight}px
+                  </label>
+                  <input
+                    type="range"
+                    className="form-range"
+                    min="300"
+                    max="800"
+                    value={canvasHeight}
+                    onChange={(e) => setCanvasHeight(parseInt(e.target.value))}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Background Color</label>
+                  <input
+                    type="color"
+                    className="form-control form-control-color w-100"
+                    value={canvasBgColor}
+                    onChange={(e) => setCanvasBgColor(e.target.value)}
+                  />
+                </div>
+
+                <div className="d-grid gap-2">
+                  <button className="btn btn-primary" onClick={addTextBox}>
+                    <FontAwesomeIcon icon={faTextHeight} className="me-2" />
+                    Add Text Box
+                  </button>
+
+                  <div className="mb-3">
+                    <label className="btn btn-success w-100">
+                      <FontAwesomeIcon icon={faImage} className="me-2" />
+                      Add Image
+                      <input
+                        type="file"
+                        className="d-none"
+                        accept="image/*"
+                        onChange={(e) => addImageBox(e.target.files[0])}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {!activeElement && elements.length > 0 && (
+          <div className="row mt-3">
+            <div className="col-12">
+              <div className="alert alert-info text-center">
+                <p className="mb-0">
+                  Select an element to customize its properties
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="d-flex gap-3 py-2 ">
+        <button
+          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+            activeBtn3Profile === "public" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => setActiveBtn3Profile("public")}
+        >
+          For Public
+        </button>
+        <button
+          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+            activeBtn3Profile === "Follower" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => setActiveBtn3Profile("Follower")}
+        >
+          For Follower
+        </button>
+        <button
+          className={`btn border p-1 ps-3 pe-3 rounded-5 ${
+            activeBtn3Profile === "Paid" ? "btn-dark text-white" : ""
+          }`}
+          onClick={() => setActiveBtn3Profile("Paid")}
+          disabled={true}
+        >
+          Paid Only
+        </button>
+      </div>
+
+      <div className="border-top">
+        <div className="d-flex gap-2 align-items-center  pb-0 pt-3">
+          <div
+            className="d-flex fw-semibold ms-1 text-white rounded-5 align-items-center justify-content-center"
+            style={{
+              width: "40px",
+              height: "40px",
+              backgroundColor: `${admin_user?.bg_clr}`,
+            }}
+          >
+            {admin_user?.username?.charAt(0) || "M"}
+          </div>
+          <div>
+            <div style={{ fontWeight: "bold" }}>
+              @{admin_user?.username || "Mahtab"}
+            </div>
+            {/* <small style={{ color: "#888" }}>Visibility: Public</small> */}
+          </div>
+        </div>
+        <div className="ps1">
+          <textarea
+            ref={textareaRef}
+            value={text}
+            onChange={(e) => {
+              handleInput(0, e, "text");
+            }}
+            className={`form-control rounded-0 shadow-none ps-2 pe-2 border-0 bg-light`}
+            placeholder="Write about post here . . ."
+            style={{ overflow: "hidden", resize: "none" }}
+            spellCheck="false"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="d-flex gap-3 p-2 pt-0 justify-content-end p-0 pb-5 mb-4">
+        <label
+          htmlFor="images"
+          className="btn btn-outline-primary ps-3 pe-3 rounded-0 p-2"
+          style={{ height: "42px" }}
+          disabled={true}
+        >
+          Set as Status
+        </label>
+
+        <button
+          type={LazyLoading ? "button" : "submit"}
+          className="btn btn-danger flex-grow-1 rounded-0"
+          style={{ height: "42px" }}
+          disabled={LazyLoading}
+          onClick={handleSubmit}
+        >
+          {LazyLoading ? <Loading clr={"white"} /> : "Post"}
+        </button>
+      </div>
+    </>
+  );
+};
+
+export default CanvasVibeEditor;

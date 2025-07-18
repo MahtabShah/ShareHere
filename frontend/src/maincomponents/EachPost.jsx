@@ -131,206 +131,208 @@ export const EachPost = ({ user, comment }) => {
     <>
       {
         <>
-          <div
-            className="d-flex flex-column position-relative mb-5"
-            style={{
-              background: "#eee",
-              width: "100%",
-              maxWidth: "600px",
-              aspectRatio: "6/7",
-              margin: "auto",
-            }}
-            key={comment?._id}
-          >
-            {/*--------------------- user ring and follow btn ----------------------- */}
-            <div className="d-flex gap-2 ps-1 align-items-center">
-              <UserRing user={user} />
+          <div className="mb-5">
+            <div
+              className="d-flex flex-column p-1 gap-2 position-relative"
+              style={{
+                background: "#eee",
+                width: "100%",
+                // maxWidth: "600px",
+                margin: "auto",
+              }}
+              key={comment?._id}
+            >
+              {/*--------------------- user ring and follow btn ----------------------- */}
+              <div className="d-flex gap-2 ps-1 align-items-center">
+                <UserRing user={user} />
 
-              <div className="d-flex flex-column align-items-end">
-                {user?._id !== admin_user?._id && (
-                  <FollowBtn
-                    user={user}
-                    cls="btn ps-2 pe-2 me-2 rounded-0 small"
-                    style={{ fontSize: "14px" }}
-                  />
-                )}
-                {user?._id === admin_user?._id && (
-                  <div className="pe-3 small">
-                    <StatusBtn post={comment} />
+                <div className="d-flex flex-column align-items-end">
+                  {user?._id !== admin_user?._id && (
+                    <FollowBtn
+                      user={user}
+                      cls="btn ps-2 pe-2 me-2 rounded-0 small"
+                      style={{ fontSize: "14px" }}
+                    />
+                  )}
+                  {user?._id === admin_user?._id && (
+                    <div className="pe-3 small">
+                      <StatusBtn post={comment} />
+                    </div>
+                  )}
+                  <div className="pe-3" style={{ fontSize: "12px" }}>
+                    {user?.followers?.length} followers
                   </div>
-                )}
-                <div className="pe-3" style={{ fontSize: "12px" }}>
-                  {user?.followers?.length} followers
                 </div>
               </div>
-            </div>
 
-            <div>
-              <ul style={{ listStyle: "none" }} className="p-0 m-0">
-                <div
-                  className={`d-flex align-items-center  m-${
-                    isDisplayedLeftNav ? "0" : "1"
-                  }`}
-                  style={{
-                    overflow: "hidden",
-
-                    background: mode == "public" ? "" : "#ddd",
-                  }}
-                >
+              <div>
+                <ul style={{ listStyle: "none" }} className="p-0 m-0">
                   <div
-                    className="p-0 w-100 position-relative"
-                    // style={{ border: "1px solid red" }}
+                    className={`d-flex align-items-center  m-${
+                      isDisplayedLeftNav ? "0" : "1"
+                    }`}
+                    style={{
+                      overflow: "hidden",
+
+                      background: mode == "public" ? "" : "#ddd",
+                    }}
                   >
                     <div
-                      className="h-100  bg-image d-flex align-items-center flex-column"
-                      style={{
-                        maxWidth: "600px",
-                        aspectRatio: "6/7",
-                      }}
+                      className="p-0 w-100 position-relative"
+                      // style={{ border: "1px solid red" }}
                     >
-                      {mode == "public" && (
-                        <img
-                          src={`${comment?.images[0]}`}
-                          loading="lazy"
-                          className="h-100 w-100"
-                          style={{
-                            objectFit: "cover",
-                          }}
-                        />
-                      )}
+                      <div
+                        className="h-100  bg-image d-flex align-items-center flex-column"
+                        style={
+                          {
+                            // maxWidth: "600px",
+                            // aspectRatio: "6/7",
+                          }
+                        }
+                      >
+                        {mode == "public" && (
+                          <img
+                            src={`${comment?.images[0]}`}
+                            loading="lazy"
+                            className="w-100 h-100"
+                            style={{
+                              objectFit: "cover",
+                            }}
+                          />
+                        )}
 
-                      {mode == "Follower" && (
-                        <div
-                          className="d-flex align-items-center flex-column h-100"
-                          // style={{ border: "1px solid red" }}
-                        >
-                          <div style={{ width: "180px" }}>
-                            <img
-                              src={follow_us}
-                              alt=""
-                              className="h-100 w-100"
-                              style={{
-                                objectFit: "cover",
-                                opacity: "0.4",
-                              }}
-                            />
+                        {mode == "Follower" && (
+                          <div
+                            className="d-flex align-items-center flex-column h-100"
+                            // style={{ border: "1px solid red" }}
+                          >
+                            <div style={{ width: "180px" }}>
+                              <img
+                                src={follow_us}
+                                alt=""
+                                className="h-100 w-100"
+                                style={{
+                                  objectFit: "cover",
+                                  opacity: "0.4",
+                                }}
+                              />
+                            </div>
+                            <p className="p-2 fs-5">
+                              This is for <b>Followers only</b>. Follow{" "}
+                              <b>@{user?.username}</b> to access this.
+                            </p>
                           </div>
-                          <p className="p-2 fs-5">
-                            This is for <b>Followers only</b>. Follow{" "}
-                            <b>@{user?.username}</b> to access this.
-                          </p>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <li className="p-2 ps-1 w-100 flex-grow-1 rounded-3 ms-1">
-                  {comment && (
-                    <div key={comment.text.slice(0, -1)}>{comment.text}</div>
-                  )}
-                </li>
-              </ul>
-            </div>
+                  <li className="p-2 ps-1 w-100 flex-grow-1 rounded-3 ms-1">
+                    {comment && (
+                      <div key={comment.text.slice(0, -1)}>{comment.text}</div>
+                    )}
+                  </li>
+                </ul>
+              </div>
 
-            <div
-              className="pt-2 border-top d-flex flex-column"
-              style={{ padding: "0 0.575rem" }}
-            >
-              <small>{dayjs(comment?.createdAt).fromNow()}</small>
-              {/* <small>{comment.likes.length} </small> */}
-            </div>
-
-            <div
-              className="d-flex justify-content-between like-comment-share"
-              style={{ padding: "0.5rem 0.45rem" }}
-            >
-              <LikeBtn post={comment} size={22} />
-              <span
-                className="fw-semibold d-flex align-items-center gap-1"
-                onClick={() => {
-                  setopen_comment(!open_comment);
-                }}
-              >
-                <span style={{ marginTop: "0.2rem" }}>
-                  <BiChat size={20} /> {comment?.comments?.length || 0}&nbsp;
-                </span>
-              </span>
-              <span className="fw-semibold" onClick={HandleShare}>
-                <BiShare size={20} />
-              </span>
-
-              <span
-                onClick={() => {
-                  setdotClicked(!isdotClicked);
-                }}
-                className=""
-              >
-                <BsThreeDotsVertical size={18} />
-              </span>
-            </div>
-          </div>
-          {isdotClicked && (
-            <div
-              className="small fw-medium d-flex flex-wrap p-3 gap-3"
-              style={{
-                background: "#ddf",
-              }}
-            >
-              <SlipDotinPost user={user} post={comment} />
-            </div>
-          )}
-          {open_comment && (
-            <section className="pe-2" style={{ background: "#ddf" }}>
               <div
-                className="gap-1 pt-2 d-flex flex-column position-relative"
-                style={{ background: "#ddf" }}
+                className="pt-2 border-top d-flex flex-column"
+                style={{ padding: "0 0.575rem" }}
               >
+                <small>{dayjs(comment?.createdAt).fromNow()}</small>
+                {/* <small>{comment.likes.length} </small> */}
+              </div>
+
+              <div
+                className="d-flex justify-content-between like-comment-share"
+                style={{ padding: "0.5rem 0.45rem" }}
+              >
+                <LikeBtn post={comment} size={22} />
+                <span
+                  className="fw-semibold d-flex align-items-center gap-1"
+                  onClick={() => {
+                    setopen_comment(!open_comment);
+                  }}
+                >
+                  <span style={{ marginTop: "0.2rem" }}>
+                    <BiChat size={20} /> {comment?.comments?.length || 0}&nbsp;
+                  </span>
+                </span>
+                <span className="fw-semibold" onClick={HandleShare}>
+                  <BiShare size={20} />
+                </span>
+
+                <span
+                  onClick={() => {
+                    setdotClicked(!isdotClicked);
+                  }}
+                  className=""
+                >
+                  <BsThreeDotsVertical size={18} />
+                </span>
+              </div>
+            </div>
+            {isdotClicked && (
+              <div
+                className="small fw-medium d-flex flex-wrap p-3 gap-3"
+                style={{
+                  background: "#ddf",
+                }}
+              >
+                <SlipDotinPost user={user} post={comment} />
+              </div>
+            )}
+            {open_comment && (
+              <section className="pe-2" style={{ background: "#ddf" }}>
                 <div
-                  className="d-flex gap-1 ms-2 pb-2"
-                  style={{ borderBottom: "1px solid #aaa" }}
+                  className="gap-1 pt-2 d-flex flex-column position-relative"
+                  style={{ background: "#ddf" }}
                 >
                   <div
-                    className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2 "
-                    style={{
-                      minWidth: "30px",
-                      height: "30px",
-                      borderRadius: "20px",
-                      background: `${admin_user?.bg_clr || "#2a1"}`,
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      nevigate(`/api/user/${admin_user?._id}`);
-                    }}
+                    className="d-flex gap-1 ms-2 pb-2"
+                    style={{ borderBottom: "1px solid #aaa" }}
                   >
-                    <span>
-                      {admin_user?.username.charAt(0).toUpperCase() || "#!"}
-                    </span>
-                  </div>
+                    <div
+                      className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2 "
+                      style={{
+                        minWidth: "30px",
+                        height: "30px",
+                        borderRadius: "20px",
+                        background: `${admin_user?.bg_clr || "#2a1"}`,
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        nevigate(`/api/user/${admin_user?._id}`);
+                      }}
+                    >
+                      <span>
+                        {admin_user?.username.charAt(0).toUpperCase() || "#!"}
+                      </span>
+                    </div>
 
-                  <textarea
-                    required
-                    className="w-100 shadow-none border-0 rounded-0 ps-0 pt-1 fs-0 small"
-                    placeholder="Write your sentence here . . . . . ."
-                    onChange={(e) => {
-                      Handlecomment(e);
-                    }}
-                    onInput={(e) => {
-                      e.target.style.height = "30px"; // reset height
-                      e.target.style.height = `${e.target.scrollHeight}px`; // set new height
-                    }}
-                    value={new_comment || ""}
-                    style={{
-                      marginTop: "0.1rem",
-                      background: "#ddf",
-                    }}
-                  />
+                    <textarea
+                      required
+                      className="w-100 shadow-none border-0 rounded-0 ps-0 pt-1 fs-0 small"
+                      placeholder="Write your sentence here . . . . . ."
+                      onChange={(e) => {
+                        Handlecomment(e);
+                      }}
+                      onInput={(e) => {
+                        e.target.style.height = "30px"; // reset height
+                        e.target.style.height = `${e.target.scrollHeight}px`; // set new height
+                      }}
+                      value={new_comment || ""}
+                      style={{
+                        marginTop: "0.1rem",
+                        background: "#ddf",
+                      }}
+                    />
 
-                  <div
-                    className="d-flex gap-3"
-                    style={{ alignSelf: "end", bottom: "0.5rem" }}
-                  >
-                    {/* <button
+                    <div
+                      className="d-flex gap-3"
+                      style={{ alignSelf: "end", bottom: "0.5rem" }}
+                    >
+                      {/* <button
                       className="btn btn-outline-dark ps-3 pe-3 p-1 rounded-0"
                       style={{ alignSelf: "end", bottom: "0.5rem" }}
                       onClick={(e) => {
@@ -340,27 +342,28 @@ export const EachPost = ({ user, comment }) => {
                       Cancel
                     </button> */}
 
-                    <button
-                      className="btn text-danger p-1 ps-3 rounded-0"
-                      onClick={(e) => {
-                        SubmitComment(e, comment?._id);
-                      }}
-                    >
-                      {LazyLoading ? (
-                        <Loading clr={"light"} />
-                      ) : (
-                        <MdSend size={20} />
-                      )}
-                    </button>
+                      <button
+                        className="btn text-danger p-1 ps-3 rounded-0"
+                        onClick={(e) => {
+                          SubmitComment(e, comment?._id);
+                        }}
+                      >
+                        {LazyLoading ? (
+                          <Loading clr={"light"} />
+                        ) : (
+                          <MdSend size={20} />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="ps-2 pt-2">
-                <CommentSection post={comment} />
-              </div>
-            </section>
-          )}
+                <div className="ps-2 pt-2">
+                  <CommentSection post={comment} />
+                </div>
+              </section>
+            )}
+          </div>
         </>
       }
     </>

@@ -30,6 +30,7 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
       images:[ready_url],
       userId:userId,
       mode: mode,
+      createdAt: Date.now()
       // pages: finalPages,
     });
 

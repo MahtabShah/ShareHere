@@ -7,7 +7,6 @@ import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-import { Accordion } from "react-bootstrap";
 
 const pre_images = [
   "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
@@ -176,6 +175,8 @@ const pre_color = [
   "#2B580C",
 ];
 
+import { Rnd } from "react-rnd";
+
 const PostSentence = ({ type = "post" }) => {
   const [text, setText] = useState("");
   const [Errors, setErrors] = useState("");
@@ -237,31 +238,37 @@ const PostSentence = ({ type = "post" }) => {
     );
   };
 
-  // return becouse of many times img generating
+  const waitForImagesToLoad = (container) => {
+    const images = container.querySelectorAll("img");
+    const promises = Array.from(images).map(
+      (img) =>
+        new Promise((resolve) => {
+          if (img.complete) resolve();
+          else img.onload = img.onerror = resolve;
+        })
+    );
+    return Promise.all(promises);
+  };
+
   const handleCapture = async () => {
-    // return;
     if (!document.body.contains(containerRef.current)) {
       alert("Element is not attached to DOM");
       return;
     }
 
+    await waitForImagesToLoad(containerRef.current);
+
     const canvas = await html2canvas(containerRef.current, {
       useCORS: true,
-      scale: 5,
-      logging: true,
-      backgroundColor: null,
-      ignoreElements: (el) => {
-        return el.tagName === "IMG"; // Skip <img> if it causes CORS error
-      },
+      scale: window.devicePixelRatio || 2,
     });
 
     const dataURL = canvas.toDataURL("image/png");
 
-    // Optionally upload to Cloudinary
     const formData = new FormData();
     formData.append("file", dataURL);
-    formData.append("upload_preset", "page_Image"); // Replace this
-    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME); // Replace this
+    formData.append("upload_preset", "page_Image");
+    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
 
     const res = await axios.post(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -343,43 +350,110 @@ const PostSentence = ({ type = "post" }) => {
 
   // console.log("admin_usernnnn", admin_user);
 
+  const [elements, setElements] = useState([]);
+  const [activeId, setActiveId] = useState(null);
+  const [canvasHeight, setCanvasHeight] = useState(200);
+  const [imageUpload, setImageUpload] = useState(null);
+  const editorRef = useRef(null);
+
+  let idCounter =
+    elements.length > 0 ? Math.max(...elements.map((el) => el.id)) + 1 : 1;
+
+  const addTextBox = () => {
+    const newText = {
+      id: idCounter++,
+      type: "text",
+      content: "Edit me!",
+      x: Math.random() * 300,
+      y: Math.random() * 200,
+      width: 200,
+      height: 60,
+      fontSize: 18,
+      fontFamily: "Arial",
+      color: "#d10000",
+      shadow: "2px 2px 4px rgba(0,0,0,0.5)",
+      zIndex: elements.length + 1,
+    };
+    setElements([...elements, newText]);
+    setActiveId(newText.id);
+  };
+
+  const addImageBox = (file) => {
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    const newImage = {
+      id: idCounter++,
+      type: "image",
+      src: url,
+      x: Math.random() * 400,
+      y: Math.random() * 200,
+      width: 200,
+      height: 150,
+      zIndex: elements.length + 1,
+    };
+    setElements([...elements, newImage]);
+    setActiveId(newImage.id);
+    setImageUpload(null);
+  };
+
+  const handleChange = (id, key, value) => {
+    setElements((prev) =>
+      prev.map((el) => (el.id === id ? { ...el, [key]: value } : el))
+    );
+  };
+
+  const handleResizeOrDrag = (id, size, position) => {
+    setElements((prev) =>
+      prev.map((el) => (el.id === id ? { ...el, ...size, ...position } : el))
+    );
+  };
+
+  const deleteElement = (id) => {
+    setElements((prev) => {
+      const updated = prev.filter((el) => el.id !== id);
+      // Set active ID to first remaining element if any
+      if (updated.length > 0) {
+        setActiveId(updated[0].id);
+      } else {
+        setActiveId(null);
+      }
+      return updated;
+    });
+  };
+
+  const bringToFront = (id) => {
+    setElements((prev) => {
+      const maxZIndex = Math.max(...prev.map((el) => el.zIndex), 0);
+      return prev.map((el) =>
+        el.id === id ? { ...el, zIndex: maxZIndex + 1 } : el
+      );
+    });
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (editorRef.current && !editorRef.current.contains(event.target)) {
+        setActiveId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const activeElement = elements.find((el) => el.id === activeId);
+
   return (
     <section
-      className="p-0 pb-5 mb-5 pt-2  overflow-y-auto w-100 none-scroller"
+      className="p-0 pb-5 mb-5  overflow-y-auto w-100 none-scroller"
       style={{
         height: "calc(100dvh - 54px)",
         zIndex: uploadClicked ? 10000 : -100,
         // border: "1px solid red",
       }}
     >
-      <div className="d-flex gap-3 mb-2">
-        <button
-          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-            activeBtn3Profile === "public" ? "btn-dark text-white" : ""
-          }`}
-          onClick={() => setActiveBtn3Profile("public")}
-        >
-          For Public
-        </button>
-        <button
-          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-            activeBtn3Profile === "Follower" ? "btn-dark text-white" : ""
-          }`}
-          onClick={() => setActiveBtn3Profile("Follower")}
-        >
-          For Follower
-        </button>
-        <button
-          className={`btn border p-1 ps-3 pe-3 rounded-5 ${
-            activeBtn3Profile === "Paid" ? "btn-dark text-white" : ""
-          }`}
-          onClick={() => setActiveBtn3Profile("Paid")}
-          disabled={true}
-        >
-          Paid Only
-        </button>
-      </div>
-      <div className="p-0 m-0 border">
+      <div className="p-0 m-0">
         {/* <div
           className="d-flex justify-content-between"
           style={{ maxWidth: "614px", margin: "auto" }}
@@ -398,7 +472,7 @@ const PostSentence = ({ type = "post" }) => {
           onSubmit={handleSubmit}
           className="w-100"
           style={{
-            maxWidth: "601px",
+            // maxWidth: "601px",
             margin: "auto",
           }}
         >
@@ -407,12 +481,6 @@ const PostSentence = ({ type = "post" }) => {
               className=" position-relative rounded-0 border-bottom-0"
               style={{ right: 0, minHeight: "230px" }}
             >
-              <div className="d-flex align-items-center justify-content-between">
-                <div className="d-flex  flex-grow-1 flex-column align-center p-2 w-100">
-                  <QuoteStyler />
-                </div>
-              </div>
-
               <div
                 className="position-absolute bg-light rounded- pt-1 d-flex align-items-center"
                 style={{ right: "0" }}
@@ -427,32 +495,290 @@ const PostSentence = ({ type = "post" }) => {
                 />
               </div>
 
-              <div
-                className="d-flex  mt-0 position-relative overflow-hidden  bg-for-readyUrl"
-                style={{
-                  width: "calc(100% - 0rem)",
-                  maxWidth: "600px",
-                  aspectRatio: "6/7",
-                  background: `${bg_clr}`,
-                }}
-                ref={containerRef}
-              >
-                <div
-                  className="rounded-0 w-100 p-2 h-100 bg-for-readyUrl"
-                  ref={divRef}
-                  src={images ? images : ""}
-                  style={{
-                    ...style,
-                    background: `${images ? `url(${images})` : bg_clr}`,
-                  }}
-                  spellCheck={false}
-                  contentEditable={true}
-                />
+              <div className="border">
+                <div className="canvas-editor w-100" ref={editorRef}>
+                  <div className="">
+                    <h2>INK Style Editor 🎨</h2>
+                    <p>
+                      Add and customize text and images to create beautiful
+                      designs
+                    </p>
+                  </div>
+
+                  <div className="d-flex gap-2 w-100">
+                    <label>Canvas Height</label>
+                    <div className="range-container">
+                      <input
+                        type="range"
+                        min="200"
+                        max="800"
+                        value={canvasHeight}
+                        onChange={(e) =>
+                          setCanvasHeight(parseInt(e.target.value))
+                        }
+                      />
+                      <span>{canvasHeight}px</span>
+                    </div>
+                  </div>
+
+                  <div className="canvas-area" ref={containerRef}>
+                    <div
+                      ref={divRef}
+                      className="canvas-container"
+                      style={{
+                        height: `${canvasHeight}px`,
+                        background: bg_clr,
+                      }}
+                    >
+                      <div>
+                        {elements.map((el) => (
+                          <Rnd
+                            key={el.id}
+                            size={{ width: el.width, height: el.height }}
+                            position={{ x: el.x, y: el.y }}
+                            onDragStop={(e, d) =>
+                              handleResizeOrDrag(el.id, {}, { x: d.x, y: d.y })
+                            }
+                            onResizeStop={(
+                              e,
+                              direction,
+                              ref,
+                              delta,
+                              position
+                            ) => {
+                              handleResizeOrDrag(
+                                el.id,
+                                {
+                                  width: parseInt(ref.style.width),
+                                  height: parseInt(ref.style.height),
+                                },
+                                position
+                              );
+                            }}
+                            onClick={() => setActiveId(el.id)}
+                            // bounds=".canvas-container"
+                            style={{
+                              zIndex: el.zIndex,
+                              border:
+                                activeId === el.id
+                                  ? "3px dashed #4CAF50"
+                                  : "none",
+                              boxShadow:
+                                activeId === el.id
+                                  ? "0 0 10px rgba(76, 175, 80, 0.5)"
+                                  : "none",
+                            }}
+                            className="element-wrapper overflow-hidden"
+                          >
+                            <div className="element-content" key={`el${el.id}`}>
+                              {el.type === "text" ? (
+                                <div
+                                  className="text-element"
+                                  style={{
+                                    fontSize: `${el.fontSize}px`,
+                                    color: el.color,
+                                    fontFamily: el.fontFamily,
+                                    textShadow: el.shadow,
+                                  }}
+                                >
+                                  {el.content}
+                                </div>
+                              ) : (
+                                <img
+                                  src={el.src}
+                                  className="overflow-none bg-element image-element"
+                                />
+                              )}
+                            </div>
+                          </Rnd>
+                        ))}
+                      </div>
+
+                      {elements.length === 0 && (
+                        <div className="empty-canvas">
+                          <i className="fas fa-plus-circle"></i>
+                          <p>Add text or images to get started</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-2">
+                    <div className="add-elements">
+                      <button
+                        className="add-btn btn btn-primary rounded-0"
+                        onClick={addTextBox}
+                      >
+                        <i className="fas fa-font"></i> Add Text
+                      </button>
+                      <div className="image-upload">
+                        <label className="add-btn btn btn-primary rounded-0">
+                          <i className="fas fa-image"></i> Add Image
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => addImageBox(e.target.files[0])}
+                            style={{ display: "none" }}
+                          />
+                        </label>
+                      </div>
+
+                      <div>
+                        <button
+                          className="btn btn-primary rounded-0"
+                          onClick={() => bringToFront(activeElement.id)}
+                        >
+                          <i className="fas fa-arrow-up me-1"></i> Bring to
+                          Front
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {activeElement && (
+                    <div className="border p-2 mb-2 mt-2 bg-light rounded">
+                      <h5 className="d-flex justify-content-between align-items-center">
+                        {activeElement.type === "text"
+                          ? "Text Properties"
+                          : "Image Properties"}
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => {
+                            deleteElement(activeElement.id);
+                          }}
+                        >
+                          <i className="fas fa-trash me-1"></i> Delete
+                        </button>
+                      </h5>
+
+                      {activeElement.type === "text" && (
+                        <div>
+                          <div className="d-flex gap-2">
+                            <div className="col-md-6 mb-3">
+                              <label className="form-label">Font Size:</label>
+                              <input
+                                type="number"
+                                min="8"
+                                max="120"
+                                className="form-control"
+                                value={activeElement.fontSize}
+                                onChange={(e) =>
+                                  handleChange(
+                                    activeElement.id,
+                                    "fontSize",
+                                    parseInt(e.target.value)
+                                  )
+                                }
+                              />
+                            </div>
+
+                            <div className="col-md-6 mb-3">
+                              <label className="form-label">Color:</label>
+                              <input
+                                type="color"
+                                className="form-control form-control-color"
+                                value={activeElement.color}
+                                onChange={(e) =>
+                                  handleChange(
+                                    activeElement.id,
+                                    "color",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+
+                            <div className="d-flex gap-2">
+                              <div className="col-md-6 mb-3">
+                                <label className="form-label">Font:</label>
+                                <select
+                                  className="form-select"
+                                  value={activeElement.fontFamily}
+                                  onChange={(e) =>
+                                    handleChange(
+                                      activeElement.id,
+                                      "fontFamily",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option value="Arial">Arial</option>
+                                  <option value="Georgia">Georgia</option>
+                                  <option value="Courier New">
+                                    Courier New
+                                  </option>
+                                  <option value="Times New Roman">
+                                    Times New Roman
+                                  </option>
+                                  <option value="Verdana">Verdana</option>
+                                  <option value="Impact">Impact</option>
+                                </select>
+                              </div>
+
+                              <div className="col-md-6 mb-3">
+                                <label className="form-label">Shadow:</label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="e.g. 2px 2px 4px #000"
+                                  value={activeElement.shadow}
+                                  onChange={(e) =>
+                                    handleChange(
+                                      activeElement.id,
+                                      "shadow",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mb-3">
+                            <label className="form-label">Text Content:</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={activeElement.content}
+                              onChange={(e) =>
+                                handleChange(
+                                  activeElement.id,
+                                  "content",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {activeElement.type === "image" && (
+                        <div className="mb-3">
+                          <label className="form-label">Replace Image:</label>
+                          <input
+                            type="file"
+                            className="form-control"
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (e.target.files[0]) {
+                                URL.revokeObjectURL(activeElement.src);
+                                const url = URL.createObjectURL(
+                                  e.target.files[0]
+                                );
+                                handleChange(activeElement.id, "src", url);
+                              }
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* controller --------------------bgcolor */}
               <div
-                className="d-flex gap-2 me-3 m-2 ms-3 none-scroller overflow-x-auto overflow-y-hidden"
+                className="d-flex gap-2 pt-2 none-scroller overflow-x-auto overflow-y-hidden"
                 style={{ maxHeight: "80px", maxWidth: "100%" }}
               >
                 {pre_bg_color.map((c, idx) => {
@@ -481,7 +807,7 @@ const PostSentence = ({ type = "post" }) => {
 
             {type === "post" && (
               <div className="border-top">
-                <div className="d-flex gap-2 align-items-center  p-2 pb-0 pt-2">
+                <div className="d-flex gap-2 align-items-center  pb-0 pt-3">
                   <div
                     className="d-flex fw-semibold ms-1 text-white rounded-5 align-items-center justify-content-center"
                     style={{
@@ -499,7 +825,7 @@ const PostSentence = ({ type = "post" }) => {
                     {/* <small style={{ color: "#888" }}>Visibility: Public</small> */}
                   </div>
                 </div>
-                <div className="ps-1">
+                <div className="ps1">
                   <textarea
                     ref={textareaRef}
                     value={text}
@@ -524,6 +850,34 @@ const PostSentence = ({ type = "post" }) => {
               </small>
             )}
             <br />
+
+            <div className="d-flex gap-3 ps-2 mb-2">
+              <button
+                className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+                  activeBtn3Profile === "public" ? "btn-dark text-white" : ""
+                }`}
+                onClick={() => setActiveBtn3Profile("public")}
+              >
+                For Public
+              </button>
+              <button
+                className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+                  activeBtn3Profile === "Follower" ? "btn-dark text-white" : ""
+                }`}
+                onClick={() => setActiveBtn3Profile("Follower")}
+              >
+                For Follower
+              </button>
+              <button
+                className={`btn border p-1 ps-3 pe-3 rounded-5 ${
+                  activeBtn3Profile === "Paid" ? "btn-dark text-white" : ""
+                }`}
+                onClick={() => setActiveBtn3Profile("Paid")}
+                disabled={true}
+              >
+                Paid Only
+              </button>
+            </div>
 
             {/* {browsssss imggggg} */}
             <div className="d-flex gap-3 p-2 pt-0 justify-content-end p-0 pb-5 mb-4">

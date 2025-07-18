@@ -31,6 +31,7 @@ import { Notification } from "../../TinyComponent/Notification";
 import PostSentence from "./PostSentance";
 const API = import.meta.env.VITE_API_URL;
 const inputtxtclr = "#777";
+import CanvasVibeEditor from "./CanvasEditor";
 
 const menuItems = [
   { icon: faExternalLinkAlt, label: "Connect", herf: "Home" },
@@ -117,7 +118,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
           <h5 className="d-flex align-items-center gap-3">
             {ref} Upload Your Thought Here
           </h5>
-          <PostSentence />
+          <CanvasVibeEditor />
         </>
       );
     }
@@ -371,7 +372,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
         )}
         {openSlidWin && (
           <div
-            className="p-2"
+            className="p-2 overflow-y-auto none-scroller"
             style={{
               zIndex: 222000000,
               width: `clamp(100px, calc(100% - ${

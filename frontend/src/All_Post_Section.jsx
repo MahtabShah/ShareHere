@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import "./App.css";
 import { Loading } from "../TinyComponent/LazyLoading";
 import { useLocation } from "react-router-dom";
@@ -12,6 +12,8 @@ import SuggetionSlip, {
 } from "./maincomponents/NewUserUpdate";
 import axios from "axios";
 const API = import.meta.env.VITE_API_URL;
+
+import CanvasVibeEditor from "./maincomponents/CanvasEditor";
 
 function All_Post_Section() {
   const [visiblePosts, setVisiblePosts] = useState(5);
@@ -85,9 +87,11 @@ function All_Post_Section() {
   // }, []);
   return (
     <>
+      {/* <CanvasEditor /> */}
+      {/* <CanvasVibeEditor /> */}
       {/* <div className="p-3 m-2">
         <p>
-          {" "}
+          {" "}http://localhost:5173/home#
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium
           dolorum tempore inventore optio odio aut quo ea deserunt ratione
           officiis distinctio id dolorem nobis magni possimus consequatur a,
@@ -131,7 +135,7 @@ function All_Post_Section() {
                 }}
               >
                 {all_post_loading ? (
-                  <div className="d-flex justify-content-center p-3">
+                  <div className="d-flex justify-content-center ">
                     <Loading dm={34} />
                   </div>
                 ) : (
@@ -140,7 +144,11 @@ function All_Post_Section() {
                       ({ post, user }, idx) =>
                         user &&
                         post && (
-                          <div key={`comment-${idx}`} id={post?._id}>
+                          <div
+                            key={`comment-${idx}`}
+                            id={post?._id}
+                            className="d-flex flex-column gap-5"
+                          >
                             <EachPost user={user} comment={post} />
                             {/* {rn + 1 > idx && idx > rn - 1 && (
                               <div className="mt-5">
