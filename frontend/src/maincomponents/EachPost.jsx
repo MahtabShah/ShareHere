@@ -292,6 +292,7 @@ export const EachPost = ({ user, comment }) => {
             <div
               className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2  overflow-hidden"
               style={{
+                minWidth: "40px",
                 maxWidth: "40px",
                 height: "40px",
                 borderRadius: "50%",

@@ -862,96 +862,103 @@ const CanvasVibeEditor = () => {
                     }}
                   >
                     {elements.map((el) => (
-                      <Rnd
-                        key={el.id}
-                        style={{
-                          position: "absolute",
-                          left: `${el.x}px`,
-                          top: `${el.y}px`,
-                          width: `${el.width}px`,
-                          height: `${el.height}px`,
-                          zIndex: el.zIndex,
-                          border:
-                            activeId === el.id ? "2px dashed #0d6efd" : "none",
-                          boxShadow:
-                            activeId === el.id
-                              ? "0 0 10px rgba(13, 110, 253, 0.5)"
-                              : "none",
-                          cursor: "move",
-                          // overflow: "hidden",
-                          // transition: "all 100ms ease",
-                        }}
-                        onDoubleClick={() => {
+                      <div
+                        onClick={() => {
                           setActiveId(el.id);
                         }}
                       >
-                        <div
-                          className="w-100 h-100 position-relative"
+                        <Rnd
+                          key={el.id}
+                          style={{
+                            position: "absolute",
+                            left: `${el.x}px`,
+                            top: `${el.y}px`,
+                            width: `${el.width}px`,
+                            height: `${el.height}px`,
+                            zIndex: el.zIndex,
+                            border:
+                              activeId === el.id
+                                ? "2px dashed #0d6efd"
+                                : "none",
+                            boxShadow:
+                              activeId === el.id
+                                ? "0 0 10px rgba(13, 110, 253, 0.5)"
+                                : "none",
+                            cursor: "move",
+                            // overflow: "hidden",
+                            // transition: "all 100ms ease",
+                          }}
                           onDoubleClick={() => {
                             setActiveId(el.id);
                           }}
                         >
-                          {activeId === el.id && (
-                            <>
-                              <button
-                                className="btn text-danger btn-sm p-0 position-absolute top-0 end-0 rounded"
-                                style={{ zIndex: 1000, width: "20px" }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteElement(el.id);
-                                }}
-                              >
-                                <FontAwesomeIcon icon={faTrash} color="red" />
-                              </button>
+                          <div
+                            className="w-100 h-100 position-relative"
+                            onDoubleClick={() => {
+                              setActiveId(el.id);
+                            }}
+                          >
+                            {activeId === el.id && (
+                              <>
+                                <button
+                                  className="btn text-danger btn-sm p-0 position-absolute top-0 end-0 rounded"
+                                  style={{ zIndex: 1000, width: "20px" }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    deleteElement(el.id);
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon={faTrash} color="red" />
+                                </button>
 
-                              {/* Resize handles */}
-                              <div
-                                className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
-                                style={{
-                                  width: "12px",
-                                  height: "12px",
-                                  cursor: "nwse-resize",
-                                }}
-                              ></div>
-                            </>
-                          )}
+                                {/* Resize handles */}
+                                <div
+                                  className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
+                                  style={{
+                                    width: "12px",
+                                    height: "12px",
+                                    cursor: "nwse-resize",
+                                  }}
+                                ></div>
+                              </>
+                            )}
 
-                          {el.type === "text" ? (
-                            <>
-                              <div
-                                className="text-element w-100 h-100 none-scroller p-2"
-                                style={{
-                                  fontSize: `${el.fontSize}px`,
-                                  color: el.color,
-                                  fontFamily: el.fontFamily,
-                                  textShadow: el.shadow,
-                                  fontWeight: el.fontWeight,
-                                  fontStyle: el.fontStyle,
-                                  textDecoration: el.textDecoration,
-                                  textAlign: el.textAlign,
-                                  overflow: "auto",
-                                  // wordBreak: "break-word",
-                                  // wordWrap: "pre-wrap",
-                                  whiteSpace: "pre-wrap",
-                                }}
-                                ref={outerDivRef}
-                                contentEditable
-                                suppressContentEditableWarning={true}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    e.preventDefault();
-                                    document.execCommand(
-                                      "insertHTML",
-                                      false,
-                                      "<br><br>"
-                                    );
-                                  }
-                                }}
-                              >
-                                {el.content}
-                              </div>
+                            {el.type === "text" ? (
+                              <>
+                                <div
+                                  className="text-element w-100 h-100 none-scroller p-2"
+                                  style={{
+                                    fontSize: `${el.fontSize}px`,
+                                    color: el.color,
+                                    fontFamily: el.fontFamily,
+                                    textShadow: el.shadow,
+                                    fontWeight: el.fontWeight,
+                                    fontStyle: el.fontStyle,
+                                    textDecoration: el.textDecoration,
+                                    textAlign: el.textAlign,
+                                    overflow: "auto",
+                                    // wordBreak: "break-word",
+                                    // wordWrap: "pre-wrap",
+                                    whiteSpace: "pre-wrap",
+                                  }}
+                                  ref={outerDivRef}
+                                  contentEditable
+                                  suppressContentEditableWarning={true}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      document.execCommand(
+                                        "insertHTML",
+                                        false,
+                                        "<br><br>"
+                                      );
+                                    }
+                                  }}
+                                >
+                                  {el.content}
+                                </div>
 
-                              {/* <textarea
+                                {/* <textarea
                                 ref={txtareaRef}
                                 className="none-scroller d-none position-absolute border-0 h-100 w-100 p-0"
                                 style={{
@@ -994,21 +1001,22 @@ const CanvasVibeEditor = () => {
                                   )
                                 }
                               /> */}
-                            </>
-                          ) : (
-                            <div className="overflow-hidden h-100 w-100">
-                              <img
-                                src={el.src}
-                                alt="uploaded"
-                                className="image-element w-100"
-                                draggable={false}
-                                style={{ objectFit: "contain" }}
-                              />
-                            </div>
-                            // </div>
-                          )}
-                        </div>
-                      </Rnd>
+                              </>
+                            ) : (
+                              <div className="overflow-hidden h-100 w-100">
+                                <img
+                                  src={el.src}
+                                  alt="uploaded"
+                                  className="image-element w-100"
+                                  draggable={false}
+                                  style={{ objectFit: "contain" }}
+                                />
+                              </div>
+                              // </div>
+                            )}
+                          </div>
+                        </Rnd>
+                      </div>
                     ))}
 
                     {elements.length === 0 && (
