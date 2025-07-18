@@ -148,7 +148,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
       <div
         className="LeftNavbar d-flex h-100 pt-0 position-fixed"
         style={{
-          zIndex: `${openSlidWin ? 10000 : 100000}`,
+          zIndex: `${openSlidWin ? 100000 : 100000}`,
           width: `${openSlidWin ? "100%" : "0"}`,
           background: mainbg,
           borderRight: `${mobile_break_point ? "" : `1px solid ${text_clrL}`}`,

@@ -389,9 +389,9 @@ const CanvasVibeEditor = () => {
 
   const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
 
-  // useEffect(() => {
-  //   addTextBox();
-  // }, []);
+  useEffect(() => {
+    addTextBox();
+  }, []);
 
   const outerDivRef = useRef(null);
   const txtareaRef = useRef(null);
@@ -474,7 +474,7 @@ const CanvasVibeEditor = () => {
                   </strong>
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => deleteElement(activeElement?.id)}
+                    onPointerDown={() => deleteElement(activeElement?.id)}
                     disabled={!activeElement}
                   >
                     <FontAwesomeIcon icon={faTrash} />
@@ -881,15 +881,15 @@ const CanvasVibeEditor = () => {
                           // overflow: "hidden",
                           // transition: "all 100ms ease",
                         }}
-                        onClick={() => setActiveId(el.id)}
-                        onTouchStart={() => setActiveId(el.id)}
                         onDoubleClick={() => {
                           setActiveId(el.id);
                         }}
                       >
                         <div
                           className="w-100 h-100 position-relative"
-                          onClick={() => setActiveId(el.id)}
+                          onDoubleClick={() => {
+                            setActiveId(el.id);
+                          }}
                         >
                           {activeId === el.id && (
                             <>
@@ -935,7 +935,8 @@ const CanvasVibeEditor = () => {
                                   whiteSpace: "pre-wrap",
                                 }}
                                 ref={outerDivRef}
-                                contentEditable={true}
+                                contentEditable
+                                suppressContentEditableWarning={true}
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter") {
                                     e.preventDefault();

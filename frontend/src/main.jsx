@@ -56,11 +56,16 @@ const Main = () => {
     window.innerWidth < 540
   );
 
-  window.addEventListener("resize", () => {
+  const breakPoint = () => {
     setsm_break_point(window.innerWidth < 768);
     setlgbreakPoint(window.innerWidth > 1224);
     setmobile_break_point(window.innerWidth < 540);
-  });
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", breakPoint);
+    window.addEventListener("onload", breakPoint);
+  }, []);
 
   return (
     <BrowserRouter>
@@ -173,8 +178,7 @@ const Main = () => {
                   <div
                     style={{
                       marginTop: `${mobile_break_point ? "50px" : "0"}`,
-                      // maxWidth: "601px",
-                      margin: "auto",
+                      maxWidth: "601px",
                     }}
                     className="w-100"
                   >
