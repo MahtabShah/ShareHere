@@ -372,14 +372,16 @@ export default function LeftNavbar({ onActiveChange = "" }) {
         )}
         {openSlidWin && (
           <div
-            className="p-2 overflow-y-auto none-scroller"
+            className="p-2 overflow-y-auto position-relative none-scroller"
             style={{
-              zIndex: 222000000,
+              zIndex: 22200,
               width: `clamp(100px, calc(100% - ${
                 mobile_break_point ? "0px" : sm_break_point ? "84px" : "280px"
               }), 700px)`,
 
-              marginTop: `${mobile_break_point ? "54px" : ""}`,
+              top: 0,
+
+              // marginTop: `${mobile_break_point ? "54px" : ""}`,
             }}
           >
             {GiveComponent(

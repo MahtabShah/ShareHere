@@ -25,10 +25,143 @@ import {
   faExpand,
 } from "@fortawesome/free-solid-svg-icons";
 
+import {
+  FaBold,
+  FaItalic,
+  FaImage,
+  FaUnderline,
+  FaStrikethrough,
+  FaSuperscript,
+  FaSubscript,
+  FaFont,
+  FaHighlighter,
+  FaTextHeight,
+  FaTextWidth,
+  FaAlignLeft,
+  FaAlignCenter,
+  FaAlignRight,
+  FaAlignJustify,
+  FaListUl,
+  FaListOl,
+  FaSortAlphaDown,
+  FaParagraph,
+} from "react-icons/fa";
+
+const pre_bg_color = [
+  // 🌇 LINEAR GRADIENTS
+  "linear-gradient(to right, #ff7e5f, #feb47b)", // Sunset
+  "linear-gradient(to right, #4facfe, #00f2fe)", // Sky blue
+  "linear-gradient(to right, #43e97b, #38f9d7)", // Green mint
+  "linear-gradient(to right, #f7971e, #ffd200)", // Orange yellow
+  "linear-gradient(to right, #c33764, #1d2671)", // Purple blue
+  "linear-gradient(45deg, #ff9a9e, #fad0c4)", // Diagonal pink
+  "linear-gradient(to top, #a18cd1, #fbc2eb)", // Lavender pink
+  "linear-gradient(to right, #e0c3fc, #8ec5fc)", // Soft purple-blue
+  "linear-gradient(to right, #ffecd2, #fcb69f)", // Warm peach
+  "linear-gradient(to right, #ff8177, #ff867a, #ff8c7f)", // Pink burst
+  "linear-gradient(to right, #00c3ff, #ffff1c)", // Blue to yellow
+  "linear-gradient(to right, #00f260, #0575e6)", // Green to blue
+  "linear-gradient(to right, #fc00ff, #00dbde)", // Violet to aqua
+  "linear-gradient(to right, #e1eec3, #f05053)", // Soft green red
+  "linear-gradient(to right, #74ebd5, #9face6)", // Light sea
+  "linear-gradient(to right, #ff6a00, #ee0979)", // Fire vibes
+  "linear-gradient(to right, #fdfc47, #24fe41)", // Lime sun
+  "linear-gradient(to right, #12c2e9, #c471ed, #f64f59)", // Rainbow mix
+  "linear-gradient(to right, #ff9a9e, #fecfef)", // Sweet pink
+  "linear-gradient(to right, #a1c4fd, #c2e9fb)", // Sky morning
+
+  // 🌌 RADIAL GRADIENTS
+  "radial-gradient(circle, #ff9a9e, #fad0c4)", // Pink ripple
+  "radial-gradient(circle, #43cea2, #185a9d)", // Aqua waves
+  "radial-gradient(circle, #fbc2eb, #a6c1ee)", // Pastel splash
+  "radial-gradient(circle, #ffecd2, #fcb69f)", // Warm touch
+  "radial-gradient(circle, #d299c2, #fef9d7)", // Pink-beige
+  "radial-gradient(circle, #ffdde1, #ee9ca7)", // Peach rose
+  "radial-gradient(circle, #b7f8db, #50a7c2)", // Fresh sea
+  "radial-gradient(circle, #e0c3fc, #8ec5fc)", // Purple teal
+  "radial-gradient(circle, #fdfcfb, #e2d1c3)", // Sand cream
+  "radial-gradient(circle, #accbee, #e7f0fd)", // Calm sky
+
+  // 🎯 CONIC GRADIENTS
+  // "conic-gradient(from 0deg, #ff9a9e, #fad0c4, #ff9a9e)", // Pink spin
+  // "conic-gradient(from 90deg, #4facfe, #00f2fe, #4facfe)", // Sky swirl
+  // "conic-gradient(from 180deg, #fbc2eb, #a6c1ee)", // Soft wheel
+  // "conic-gradient(from 0deg, #f7971e, #ffd200, #f7971e)", // Sunny swirl
+  // "conic-gradient(from 0deg at center, #00dbde, #fc00ff)", // Neon ring
+  // "conic-gradient(from 45deg at center, #00c3ff, #ffff1c)", // Bright circle
+  // "conic-gradient(from 0deg, #e1eec3, #f05053, #e1eec3)", // Soft rotate
+  // "conic-gradient(from 90deg, #ff6a00, #ee0979, #ff6a00)", // Flaming twist
+  // "conic-gradient(from 0deg, #a1c4fd, #c2e9fb)", // Calm motion
+  // "conic-gradient(from 0deg, #12c2e9, #f64f59)", // Color storm
+
+  // 🎨 MIXED SPECIAL EFFECTS
+  "linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0))", // Frosted glass
+  "radial-gradient(circle at top left, #ffafbd, #ffc3a0)", // Glow corner
+  "linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)", // Aqua light
+  "radial-gradient(ellipse at center, #89f7fe 0%, #66a6ff 100%)", // Ocean eye
+  "conic-gradient(at center, #f2709c, #ff9472)", // Peach cone
+  "linear-gradient(to right, #dce35b, #45b649)", // Lemon leaf
+  "radial-gradient(circle, #fdfbfb, #ebedee)", // Gray puff
+  "linear-gradient(to right, #00b4db, #0083b0)", // Ocean breeze
+  "conic-gradient(at center, #74ebd5, #acb6e5)", // Breeze cone
+  "radial-gradient(circle, #fffbd5, #b20a2c)", // Sunset splash
+
+  "linear-gradient(to right, #ff7e5f, #feb47b)", // sunset
+  "linear-gradient(to right, #4facfe, #00f2fe)", // sky blue
+  "linear-gradient(to right, #43e97b, #38f9d7)", // green mint
+  "linear-gradient(to right, #f7971e, #ffd200)", // orange yellow
+  "linear-gradient(to right, #c33764, #1d2671)", // purple blue
+  "linear-gradient(45deg, #ff9a9e, #fad0c4)", // diagonal pink
+  "linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%)", // lavender pink
+  "linear-gradient(to right, #e0c3fc 0%, #8ec5fc 100%)", // soft purple-blue
+  "#A294F9",
+  "#F1F0E8",
+  "#89A8B2",
+  "#D91656",
+  "#640D5F",
+  "#355F2E",
+  "#441752",
+  "#F72C5B",
+  "#F0BB78",
+  "#131010",
+  "#3E5879",
+  "#C84C05",
+  "#074799",
+  "#8D0B41",
+  "#7E5CAD",
+  "#500073",
+  "#8D77AB",
+  "#FFE9D6",
+  "#D7C1E0",
+  "#EEF5FF",
+  "#7E30E1",
+  "#B0D553",
+  "#D4F6CC",
+  "#171717",
+  "#DA0037",
+  "#217756",
+  "#008DDA",
+  "#664343",
+  "#E0AB5B",
+  "#FFA6D5",
+  "#240750",
+  "#3B3030",
+  "#5FBDFF",
+  "#7B66FF",
+  "#FFF8CD",
+  "#D4D7DD",
+  "#A888B5",
+  "#000B58",
+  "#F67280",
+  "#46B7B9",
+  "#8D72E1",
+  "#2B580C",
+];
+
 const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(500);
+  const [canvasHeight, setCanvasHeight] = useState(300);
   const [canvasBgColor, setCanvasBgColor] = useState("#222222");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -49,8 +182,8 @@ const CanvasVibeEditor = () => {
       height: 60,
       fontSize: 28,
       fontFamily: "Arial",
-      color: "#ffffff",
-      shadow: "2px 2px 4px rgba(0,0,0,0.5)",
+      color: "#f40707ff",
+      // shadow: "2px 2px 4px rgba(0,0,0,0.5)",
       zIndex: elements.length + 1,
       fontWeight: "normal",
       fontStyle: "normal",
@@ -175,6 +308,7 @@ const CanvasVibeEditor = () => {
   const textareaRef = useRef(null);
   const [text, setText] = useState("");
   const [LazyLoading, setLazyLoading] = useState(false);
+  const [bg_clr, setbg_clr] = useState("#dff");
 
   const { style, admin_user, uploadClicked, setUploadClicked, sm_break_point } =
     useQuote();
@@ -249,24 +383,24 @@ const CanvasVibeEditor = () => {
   };
 
   return (
-    <>
-      <div className=" pt-4">
-        <div className="row">
-          <div className="col-12 text-center mb-4">
+    <div className="shadow-lg">
+      <div className="">
+        {/* <div className="row">
+          <div className="col-12 ms-2">
             <h1 className="display-5 fw-bold text-primary">
               <FontAwesomeIcon icon={faExpand} className="me-2" />
-              Canva-Style Editor
+              VIBE Canva Editor
             </h1>
             <p className="lead">
-              Create stunning social media posts and export them as images
+              Create stunning posts and export them as VIBE
             </p>
           </div>
-        </div>
+        </div> */}
 
         <div className="row">
           <div className="col-md-9">
-            <div className="card border-0 shadow-sm mb-4">
-              <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div className="card border-0 shadow-sm mb-2">
+              {/* <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <span>Design Canvas</span>
                 <button
                   className="btn btn-light btn-sm"
@@ -285,7 +419,305 @@ const CanvasVibeEditor = () => {
                     </>
                   )}
                 </button>
+              </div> */}
+
+              <div className="card border-0 shadow-sm position-sticky">
+                <div className="card-header d-flex justify-content-between align-items-center bg-info text-white rounded-0">
+                  <strong>
+                    {activeElement?.type === "text"
+                      ? "Text Properties acitvated"
+                      : "Image Properties acitvated"}
+                  </strong>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => deleteElement(activeElement?.id)}
+                    disabled={!activeElement}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </div>
+                <div
+                  className="p-2 positio-fixed"
+                  // style={{ border: "2px solid red" }}
+                >
+                  <>
+                    <div
+                      className="d-flex props-parent flex-wrap gap-2 overflow-x-auto"
+                      style={{
+                        height: "max-content",
+                      }}
+                    >
+                      <div>
+                        <div className="btn btn-outline-primary d-flex gap-2 align-items-center props-btn">
+                          <FontAwesomeIcon icon={faTextHeight} fontSize={12} />
+
+                          <input
+                            type="number"
+                            className="ps-1 border-0 rounded-0 flex-grow-1"
+                            name="textHeight"
+                            id="textHeight"
+                            min="8"
+                            max="120"
+                            value={activeElement?.fontSize}
+                            style={{ width: "34px", fontSize: "14px" }}
+                            onChange={(e) =>
+                              handleChange(
+                                activeElement?.id,
+                                "fontSize",
+                                parseInt(e.target.value)
+                              )
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="">
+                        <select
+                          className="form-select shadow-none border-primary props-btn"
+                          value={activeElement?.fontFamily}
+                          onChange={(e) =>
+                            handleChange(
+                              activeElement?.id,
+                              "fontFamily",
+                              e.target.value
+                            )
+                          }
+                        >
+                          <option value="Arial" className="">
+                            Arial
+                          </option>
+                          <option value="Georgia">Georgia</option>
+                          <option value="Courier New">Courier New</option>
+                          <option value="Times New Roman">
+                            Times New Roman
+                          </option>
+                          <option value="Verdana">Verdana</option>
+                          <option value="Impact">Impact</option>
+                        </select>
+                      </div>
+
+                      <div className="btn btn-outline-primary overflow-hidden p-0 props-btn">
+                        <input
+                          type="color"
+                          value={activeElement?.color}
+                          style={{
+                            scale: "2",
+                          }}
+                          onChange={(e) =>
+                            handleChange(
+                              activeElement?.id,
+                              "color",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+
+                      <button
+                        className={`btn  ${
+                          activeElement?.fontWeight === "bold"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        } props-btn`}
+                        onClick={() =>
+                          handleChange(
+                            activeElement?.id,
+                            "fontWeight",
+                            activeElement?.fontWeight === "bold"
+                              ? "normal"
+                              : "bold"
+                          )
+                        }
+                      >
+                        <FontAwesomeIcon icon={faBold} fontSize={12} />
+                      </button>
+
+                      <button
+                        className={`btn ${
+                          activeElement?.fontStyle === "italic"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        } props-btn`}
+                        onClick={() =>
+                          handleChange(
+                            activeElement?.id,
+                            "fontStyle",
+                            activeElement?.fontStyle === "italic"
+                              ? "normal"
+                              : "italic"
+                          )
+                        }
+                      >
+                        <FontAwesomeIcon icon={faItalic} fontSize={12} />
+                      </button>
+
+                      <button
+                        className={`btn ${
+                          activeElement?.textDecoration === "underline"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        } props-btn`}
+                        onClick={() =>
+                          handleChange(
+                            activeElement?.id,
+                            "textDecoration",
+                            activeElement?.textDecoration === "underline"
+                              ? "none"
+                              : "underline"
+                          )
+                        }
+                      >
+                        <FontAwesomeIcon icon={faUnderline} fontSize={12} />
+                      </button>
+
+                      <button
+                        className="btn btn-warning p-0 props-btn"
+                        onClick={() => bringToFront(activeElement?.id)}
+                      >
+                        <FontAwesomeIcon icon={faArrowUp} />
+                      </button>
+
+                      <button className="btn overflow-hidden btn-success props-btn rounded-0 p-0">
+                        <label className="btn btn-success props-btn gap-2 rounded-0">
+                          Add <FontAwesomeIcon icon={faImage} />
+                          <input
+                            type="file"
+                            className="d-none"
+                            accept="image/*"
+                            onChange={(e) => addImageBox(e.target.files[0])}
+                          />
+                        </label>
+                      </button>
+
+                      <button
+                        className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
+                        onClick={addTextBox}
+                      >
+                        <div className="props-btn rounded-0">
+                          Add Text &nbsp;
+                          <FontAwesomeIcon
+                            icon={faTextHeight}
+                            className="me-2"
+                          />
+                        </div>
+                      </button>
+
+                      <div className="props-btn">
+                        <div className="btn overflow-hidden btn-outline-primary d-flex align-items-center p-0 ps-1 gap-1 rounded-0">
+                          <small>Background</small>
+                          <div className="btn overflow-hidden props-btn rounded-0 p-0">
+                            <input
+                              type="color"
+                              className="form-control form-control-color w-100 props-btn border-0"
+                              style={{ scale: 2 }}
+                              value={canvasBgColor}
+                              onChange={(e) => setCanvasBgColor(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="d-flex gap-2 btn p-0 btn-outline-primary rounded-0">
+                        <label className="small d-flex align-items-center flex-grow-1 ps-2">
+                          Height{" "}
+                        </label>
+                        <input
+                          type="number"
+                          className=" props-btn ps-2 p-0 border-0"
+                          style={{ width: "50px" }}
+                          value={canvasHeight}
+                          onChange={(e) =>
+                            setCanvasHeight(parseInt(e.target.value))
+                          }
+                        />
+                      </div>
+
+                      <button
+                        className="btn props-btn btn-outline-primary"
+                        onClick={() => setActiveId(null)}
+                      >
+                        <b>--</b>
+                      </button>
+
+                      {/* <button
+                        className={`btn ${
+                          activeElement?.textAlign === "left"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "left")
+                        }
+                      >
+                      <FontAwesomeIcon icon={faAlignLeft} />
+                      </button>
+
+                      <button
+                        className={`btn ${
+                          activeElement?.textAlign === "center"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "center")
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAlignCenter} />
+                      </button>
+
+                      <button
+                        className={`btn ${
+                          activeElement?.textAlign === "right"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "right")
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAlignRight} />
+                      </button> */}
+                    </div>
+
+                    {/* 
+                      <div className="d-flex gap-2 small flex-wrap">
+                        <div className="mb-3 flex-grow-1">
+                          <label className="form-label">Text Shadow</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="e.g. 2px 2px 4px #000"
+                            value={activeElement?.shadow}
+                            onChange={(e) =>
+                              handleChange(
+                                activeElement?.id,
+                                "shadow",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </div>
+                      </div> */}
+                  </>
+
+                  <div className="mt-2">
+                    {/* <label className="form-label"></label> */}
+                    <textarea
+                      className="form-control h-100 w-100"
+                      value={activeElement?.content}
+                      placeholder="Click Add Text and then write Here !"
+                      onChange={(e) =>
+                        handleChange(
+                          activeElement?.id,
+                          "content",
+                          e.target.value
+                        )
+                      }
+                    ></textarea>
+                  </div>
+                </div>
               </div>
+
               <div>
                 <div className="card-body p-0">
                   <div
@@ -293,7 +725,7 @@ const CanvasVibeEditor = () => {
                     className="canvas-container"
                     style={{
                       height: `${canvasHeight}px`,
-                      backgroundColor: canvasBgColor,
+                      background: canvasBgColor,
                       position: "relative",
                       overflow: "hidden",
                     }}
@@ -315,6 +747,7 @@ const CanvasVibeEditor = () => {
                               ? "0 0 10px rgba(13, 110, 253, 0.5)"
                               : "none",
                           cursor: "move",
+                          overflow: "hidden",
                           // transition: "all 100ms ease",
                         }}
                         onClick={() => setActiveId(el.id)}
@@ -388,258 +821,27 @@ const CanvasVibeEditor = () => {
                   </div>
                 </div>
 
-                {/* {activeElement && ( */}
-                <div className="card border-0 shadow-sm">
-                  <div className="card-header d-flex justify-content-between align-items-center bg-info text-white rounded-0">
-                    <strong>
-                      {activeElement?.type === "text"
-                        ? "Text Properties"
-                        : "Image Properties"}
-                    </strong>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => deleteElement(activeElement?.id)}
-                      disabled={!activeElement}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
+                {/* <>
+                  <div className="mb-3">
+                    <label className="form-label">Replace Image</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files[0]) {
+                          URL.revokeObjectURL(activeElement?.src);
+                          const url = URL.createObjectURL(e.target.files[0]);
+                          handleChange(activeElement?.id, "src", url);
+                        }
+                      }}
+                    />
                   </div>
-                  <div className="card-body">
-                    <>
-                      <div className="d-flex mb-3 gap-3">
-                        <button
-                          className={`btn ${
-                            activeElement?.fontWeight === "bold"
-                              ? "btn-primary"
-                              : "btn-outline-primary"
-                          }`}
-                          onClick={() =>
-                            handleChange(
-                              activeElement?.id,
-                              "fontWeight",
-                              activeElement?.fontWeight === "bold"
-                                ? "normal"
-                                : "bold"
-                            )
-                          }
-                        >
-                          <FontAwesomeIcon icon={faBold} />
-                        </button>
-
-                        <button
-                          className={`btn ${
-                            activeElement?.fontStyle === "italic"
-                              ? "btn-primary"
-                              : "btn-outline-primary"
-                          }`}
-                          onClick={() =>
-                            handleChange(
-                              activeElement?.id,
-                              "fontStyle",
-                              activeElement?.fontStyle === "italic"
-                                ? "normal"
-                                : "italic"
-                            )
-                          }
-                        >
-                          <FontAwesomeIcon icon={faItalic} />
-                        </button>
-
-                        <button
-                          className={`btn ${
-                            activeElement?.textDecoration === "underline"
-                              ? "btn-primary"
-                              : "btn-outline-primary"
-                          }`}
-                          onClick={() =>
-                            handleChange(
-                              activeElement?.id,
-                              "textDecoration",
-                              activeElement?.textDecoration === "underline"
-                                ? "none"
-                                : "underline"
-                            )
-                          }
-                        >
-                          <FontAwesomeIcon icon={faUnderline} />
-                        </button>
-
-                        {/* <button
-                        className={`btn ${
-                          activeElement?.textAlign === "left"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "left")
-                        }
-                      >
-                        <FontAwesomeIcon icon={faAlignLeft} />
-                      </button>
-
-                      <button
-                        className={`btn ${
-                          activeElement?.textAlign === "center"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "center")
-                        }
-                      >
-                        <FontAwesomeIcon icon={faAlignCenter} />
-                      </button>
-
-                      <button
-                        className={`btn ${
-                          activeElement?.textAlign === "right"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "right")
-                        }
-                      >
-                        <FontAwesomeIcon icon={faAlignRight} />
-                      </button> */}
-                      </div>
-                      <div className="mb-3">
-                        <label className="form-label">Text Content</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={activeElement?.content}
-                          onChange={(e) =>
-                            handleChange(
-                              activeElement?.id,
-                              "content",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-
-                      <div className="d-flex gap-2 small flex-wrap">
-                        <div className="mb-3 flex-grow-1">
-                          <label className="form-label">Font Size</label>
-                          <div className="input-group">
-                            <input
-                              type="number"
-                              className="form-control"
-                              min="8"
-                              max="120"
-                              value={activeElement?.fontSize}
-                              onChange={(e) =>
-                                handleChange(
-                                  activeElement?.id,
-                                  "fontSize",
-                                  parseInt(e.target.value)
-                                )
-                              }
-                            />
-                            <span className="input-group-text">px</span>
-                          </div>
-                        </div>
-
-                        <div className="mb-3 flex-grow-1">
-                          <label className="form-label">Font Color</label>
-                          <input
-                            type="color"
-                            className="form-control form-control-color w-100"
-                            value={activeElement?.color}
-                            onChange={(e) =>
-                              handleChange(
-                                activeElement?.id,
-                                "color",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
-
-                        <div className="mb-3 flex-grow-1">
-                          <label className="form-label">Font Family</label>
-                          <select
-                            className="form-select"
-                            value={activeElement?.fontFamily}
-                            onChange={(e) =>
-                              handleChange(
-                                activeElement?.id,
-                                "fontFamily",
-                                e.target.value
-                              )
-                            }
-                          >
-                            <option value="Arial">Arial</option>
-                            <option value="Georgia">Georgia</option>
-                            <option value="Courier New">Courier New</option>
-                            <option value="Times New Roman">
-                              Times New Roman
-                            </option>
-                            <option value="Verdana">Verdana</option>
-                            <option value="Impact">Impact</option>
-                          </select>
-                        </div>
-
-                        <div className="mb-3 flex-grow-1">
-                          <label className="form-label">Text Shadow</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="e.g. 2px 2px 4px #000"
-                            value={activeElement?.shadow}
-                            onChange={(e) =>
-                              handleChange(
-                                activeElement?.id,
-                                "shadow",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
-                      </div>
-                    </>
-
-                    <>
-                      <div className="mb-3">
-                        <label className="form-label">Replace Image</label>
-                        <input
-                          type="file"
-                          className="form-control"
-                          accept="image/*"
-                          onChange={(e) => {
-                            if (e.target.files[0]) {
-                              URL.revokeObjectURL(activeElement?.src);
-                              const url = URL.createObjectURL(
-                                e.target.files[0]
-                              );
-                              handleChange(activeElement?.id, "src", url);
-                            }
-                          }}
-                        />
-                      </div>
-                    </>
-
-                    {/* {activeElement?.type === "image" && (
-                    
-                  )} */}
-
-                    <div className="d-grid">
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => bringToFront(activeElement?.id)}
-                      >
-                        <FontAwesomeIcon icon={faArrowUp} className="me-2" />
-                        Bring to Front
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                {/* )} */}
+                </> */}
               </div>
             </div>
 
-            {exportUrl && (
+            {/* {exportUrl && (
               <div className="card border-0 shadow-sm">
                 <div className="card-header bg-success text-white">
                   Export Preview
@@ -663,64 +865,22 @@ const CanvasVibeEditor = () => {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
-
+          {/* 
           <div className="col-md-3">
             <div className="card border-0 shadow-sm mb-4">
               <div className="card-header bg-primary text-white">
                 <strong>Canvas Settings</strong>
               </div>
               <div className="card-body">
-                <div className="mb-3">
-                  <label className="form-label">
-                    Canvas Height: {canvasHeight}px
-                  </label>
-                  <input
-                    type="range"
-                    className="form-range"
-                    min="300"
-                    max="800"
-                    value={canvasHeight}
-                    onChange={(e) => setCanvasHeight(parseInt(e.target.value))}
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Background Color</label>
-                  <input
-                    type="color"
-                    className="form-control form-control-color w-100"
-                    value={canvasBgColor}
-                    onChange={(e) => setCanvasBgColor(e.target.value)}
-                  />
-                </div>
-
-                <div className="d-grid gap-2">
-                  <button className="btn btn-primary" onClick={addTextBox}>
-                    <FontAwesomeIcon icon={faTextHeight} className="me-2" />
-                    Add Text Box
-                  </button>
-
-                  <div className="mb-3">
-                    <label className="btn btn-success w-100">
-                      <FontAwesomeIcon icon={faImage} className="me-2" />
-                      Add Image
-                      <input
-                        type="file"
-                        className="d-none"
-                        accept="image/*"
-                        onChange={(e) => addImageBox(e.target.files[0])}
-                      />
-                    </label>
-                  </div>
-                </div>
+               
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
-        {!activeElement && elements.length > 0 && (
+        {elements.length <= 0 && (
           <div className="row mt-3">
             <div className="col-12">
               <div className="alert alert-info text-center">
@@ -733,7 +893,33 @@ const CanvasVibeEditor = () => {
         )}
       </div>
 
-      <div className="d-flex gap-3 py-2 ">
+      <div
+        className="d-flex gap-2 p-2 none-scroller overflow-x-auto overflow-y-hidden"
+        style={{ maxHeight: "80px", maxWidth: "100%" }}
+      >
+        {pre_bg_color.map((c, idx) => {
+          return (
+            <span
+              key={`bg-${idx}`}
+              className="rounded-5 d-block"
+              style={{
+                minWidth: "34px",
+                minHeight: "34px",
+                background: `${c}`,
+                cursor: "pointer",
+                border: `${
+                  canvasBgColor === c ? "2px solid red" : "2px solid #f9d8df00"
+                }`,
+              }}
+              onClick={() => {
+                setCanvasBgColor(c);
+              }}
+            />
+          );
+        })}
+      </div>
+
+      <div className="d-flex gap-3 p-2">
         <button
           className={`btn border p-1 ps-2 pe-2 rounded-5 ${
             activeBtn3Profile === "public" ? "btn-dark text-white" : ""
@@ -816,7 +1002,7 @@ const CanvasVibeEditor = () => {
           {LazyLoading ? <Loading clr={"white"} /> : "Post"}
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -7,3 +7,33 @@
   translate: 0 5px;
   min-width: max-content;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+option {
+  padding: 2px !important;
+}
+
+.props-btn {
+  font-size: 12px !important;
+  padding: 4px !important;
+  height: 27px;
+  min-width: 28px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0;
+}
+
+.props-parent > div {
+  flex-grow: 1;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border: none;
+}

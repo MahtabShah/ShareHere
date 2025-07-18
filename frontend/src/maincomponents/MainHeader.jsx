@@ -92,7 +92,7 @@ function MainHeader({}) {
           bg="light"
           variant="light"
           fixed="top"
-          style={{ borderBottom: "1px solid var(--light-clr)" }}
+          style={{ borderBottom: "1px solid var(--light-clr)", zIndex: 10 }}
         >
           <Container fluid>
             <div href="/Explore" className="fw-bold fs-6 pb-0 mb-0 flex-grow-1">
