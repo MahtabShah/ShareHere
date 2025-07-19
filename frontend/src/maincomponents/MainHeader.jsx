@@ -114,29 +114,41 @@ function MainHeader({}) {
                       <Nav.Link
                         className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
                         onClick={() => {
-                          setVisibleNotification(!VisibleNotification);
-                          setCount(0);
-                          Mark_as_read_notification();
+                          if (count <= 0) {
+                            setVisibleNotification(!VisibleNotification);
+                            Mark_as_read_notification();
+                          }
                           setActiveIndex("Notifications");
                           setopenSlidWin(true);
-
                           setopenSlidWin(!openSlidWin);
+
+                          setCount(0);
                         }}
                       >
                         <div
-                          className="d-flex align-items-center justify-content-center"
+                          className="d-flex align-items-center small justify-content-center"
                           style={{ width: "24px", height: "24px" }}
                         >
-                          <FontAwesomeIcon icon={faBell} color={text_clrH} />
+                          {count > 0 && (
+                            <small
+                              className="text-light small position-absolute text-center rounded-4 fw-bold "
+                              style={{
+                                translate: "10px -4px",
+                                minWidth: "18px",
+                                height: "18px",
+                                background: "red",
+                              }}
+                            >
+                              {count > 0 ? count : ""}
+                            </small>
+                          )}
+
+                          <FontAwesomeIcon
+                            icon={faBell}
+                            color={text_clrH}
+                            fontSize={20}
+                          />
                         </div>
-                        <span
-                          className={`fw-semibold pe-5 ${
-                            sm_break_point ? "d-none" : ""
-                          }`}
-                          style={{ width: "154px" }}
-                        >
-                          Notifications
-                        </span>
                       </Nav.Link>
                     </li>
 

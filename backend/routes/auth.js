@@ -153,14 +153,26 @@ router.put("/like_this_post", verifyToken ,async (req, res) => {
         populate: { path: "userId", model: "User" },
       })
 
-    const newNotification = new Notification({
+   const newNotification = new Notification({
       recipient: post.userId,
       type: "like",
+      sender: useriid, 
       isRead: false,
       post: post._id,
     });
 
-    if (isliked) await newNotification.save();
+    if (isliked){
+      await Notification.deleteOne({
+       post: post._id,
+       type: "like",
+       sender: useriid,
+     });
+
+    }else{
+       await newNotification.save();
+
+    }
+
 
     io.emit('sentence', post.toObject());
     io.emit('Notification');

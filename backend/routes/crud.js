@@ -206,6 +206,7 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   console.log("user b -" ,  user_b)
 
   const isFollowed = user_a.followers.includes(userId);
+
   const newNotification = new Notification({
   "recipient": user_a._id,  // User B (original commenter)
   "sender": user_b._id,     // User C (who replied)
@@ -213,11 +214,18 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   "isRead": false,
   })
 
+
   console.log("new notifications - - - -- - - - -->" , newNotification)
 
   if (isFollowed) {
     user_a.followers.pop(user_b._id)
     user_b.following.pop(user_a._id)
+    await Notification.deleteOne({
+         type: "follow",
+         sender:  user_b._id,
+         recipient:user_a._id,
+       });
+  
   }else{
     user_a.followers.push(user_b._id)
     user_b.following.push(user_a._id)

@@ -156,7 +156,10 @@ export const EachPost = ({ user, comment }) => {
   }, [comment.text]);
 
   return (
-    <div className="pb-1" style={{ borderBottom: `1px solid ${text_clrL}` }}>
+    <div
+      className={`pb-1 ${mobile_break_point ? "" : "p-2"}`}
+      style={{ borderBottom: `1px solid ${text_clrL}` }}
+    >
       <div
         className="d-flex flex-column gap-2 position-relative bglight"
         key={comment?._id}
@@ -371,59 +374,60 @@ export const EachPost = ({ user, comment }) => {
           <SlipDotinPost user={user} post={comment} />
         </div>
       )}
-      <section
-        className={`${mobile_break_point ? "ps-2 pe-2" : ""}`}
-        style={{ background: mainbg, color: text_clrM }}
-      >
-        <div className="gap-1 pt-2 d-flex flex-column position-relative">
-          <div className="d-flex gap-1 pb-2">
-            <div
-              className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2  overflow-hidden"
-              style={{
-                minWidth: "40px",
-                maxWidth: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                background: `${admin_user?.bg_clr || "#2a1"}`,
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                nevigate(`/api/user/${admin_user?._id}`);
-              }}
-            >
-              {(
-                <img
-                  src={admin_user?.profile_pic}
-                  className="h-100 w-100"
-                  style={{ objectFit: "cover" }}
-                />
-              ) || "#!"}
-            </div>
+      {admin_user?._id != user?._id && (
+        <section
+          className={`${mobile_break_point ? "ps-2 pe-2" : ""}`}
+          style={{ background: mainbg, color: text_clrM }}
+        >
+          <div className="gap-1 pt-2 d-flex flex-column position-relative">
+            <div className="d-flex gap-1 pb-2">
+              <div
+                className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2  overflow-hidden"
+                style={{
+                  minWidth: "40px",
+                  maxWidth: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: `${admin_user?.bg_clr || "#2a1"}`,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  nevigate(`/api/user/${admin_user?._id}`);
+                }}
+              >
+                {(
+                  <img
+                    src={admin_user?.profile_pic}
+                    className="h-100 w-100"
+                    style={{ objectFit: "cover" }}
+                  />
+                ) || "#!"}
+              </div>
 
-            <textarea
-              required
-              className="w-100 shadow-none border-0 rounded-0 ps-0 mt-2 fs-0 small"
-              placeholder="Write your sentence here . . . . . ."
-              onChange={(e) => {
-                Handlecomment(e);
-              }}
-              onInput={(e) => {
-                e.target.style.height = "30px"; // reset height
-                e.target.style.height = `${e.target.scrollHeight}px`; // set new height
-              }}
-              value={new_comment || ""}
-              style={{
-                marginTop: "0.1rem",
-                background: mainbg,
-                color: text_clrM,
-              }}
-            />
+              <textarea
+                required
+                className="w-100 shadow-none border-0 rounded-0 ps-0 mt-2 fs-0 small"
+                placeholder="Write your sentence here . . . . . ."
+                onChange={(e) => {
+                  Handlecomment(e);
+                }}
+                onInput={(e) => {
+                  e.target.style.height = "30px"; // reset height
+                  e.target.style.height = `${e.target.scrollHeight}px`; // set new height
+                }}
+                value={new_comment || ""}
+                style={{
+                  marginTop: "0.1rem",
+                  background: mainbg,
+                  color: text_clrM,
+                }}
+              />
 
-            <div
-              className="d-flex gap-3"
-              style={{ alignSelf: "end", bottom: "0.5rem" }}
-            >
-              {/* <button
+              <div
+                className="d-flex gap-3"
+                style={{ alignSelf: "end", bottom: "0.5rem" }}
+              >
+                {/* <button
                       className="btn btn-outline-dark ps-3 pe-3 p-1 rounded-0"
                       style={{ alignSelf: "end", bottom: "0.5rem" }}
                       onClick={(e) => {
@@ -433,32 +437,33 @@ export const EachPost = ({ user, comment }) => {
                       Cancel
                     </button> */}
 
-              <button
-                className="btn border-0 p-1 ps-3 pe-0 rounded-0"
-                onClick={(e) => {
-                  SubmitComment(e, comment?._id);
-                }}
-              >
-                {LazyLoading ? (
-                  <Loading clr={"light"} />
-                ) : (
-                  <MdSend size={22} color={text_clrM} />
-                )}
-              </button>
+                <button
+                  className="btn border-0 p-1 ps-3 pe-0 rounded-0"
+                  onClick={(e) => {
+                    SubmitComment(e, comment?._id);
+                  }}
+                >
+                  {LazyLoading ? (
+                    <Loading clr={"light"} />
+                  ) : (
+                    <MdSend size={22} color={text_clrM} />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        {open_comment && (
-          <div
-            className="pt-2"
-            style={{
-              borderBottom: `${open_comment ? `0px solid ${text_clrL}` : ""}`,
-            }}
-          >
-            <CommentSection post={comment} />
-          </div>
-        )}
-      </section>
+          {open_comment && (
+            <div
+              className="pt-2"
+              style={{
+                borderBottom: `${open_comment ? `0px solid ${text_clrL}` : ""}`,
+              }}
+            >
+              <CommentSection post={comment} />
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 };
@@ -716,7 +721,7 @@ export const LikeBtn = ({ post, size = 18 }) => {
             animatingBtn === "likes" ? "animate-rotate" : ""
           } rotate`}
         >
-          {isliked ? <FaHeart size={size - 4} /> : <BiHeart size={size} />}
+          {isliked ? <FaHeart size={size} /> : <BiHeart size={size} />}
         </span>
 
         <span className="" style={{ marginTop: "0.1rem" }}>

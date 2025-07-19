@@ -165,13 +165,19 @@ export const Notification = ({ setVisibleNotification }) => {
                           <div
                             className="dpPhoto rounded-circle d-flex justify-content-center align-items-center"
                             style={{
+                              maxWidth: "37px",
                               minWidth: "37px",
                               height: "37px",
                               background: `${n?.sender?.bg_clr}`,
                             }}
                           >
-                            {/* <img src="" alt="" /> */}
-                            {n?.sender?.username?.charAt(0).toUpperCase()}
+                            <img
+                              src={n?.sender?.profile_pic}
+                              alt=""
+                              className="h-100 w-100 rounded-5"
+                              style={{ objectFit: "cover" }}
+                            />
+                            {/* {n?.sender?.username?.charAt(0).toUpperCase()} */}
                           </div>
                           <span className="small">
                             <span className="small d-block fw-light">
@@ -202,13 +208,21 @@ export const Notification = ({ setVisibleNotification }) => {
                           <div
                             className="dpPhoto rounded-circle d-flex align-items-center justify-content-center border"
                             style={{
+                              maxWidth: "37px",
                               minWidth: "37px",
                               height: "37px",
                               background: `${n?.sender?.bg_clr}`,
                               color: text_clrH,
                             }}
                           >
-                            {n?.sender?.username?.charAt(0)}
+                            {n?.sender && (
+                              <img
+                                src={n?.sender?.profile_pic}
+                                alt=""
+                                className="h-100 w-100 rounded-5"
+                                style={{ objectFit: "cover" }}
+                              />
+                            )}
                           </div>
                           <span className="small">
                             <span className="small d-block fw-light">
@@ -248,10 +262,21 @@ export const Notification = ({ setVisibleNotification }) => {
                       <div className="likeNootify" key={`like${idx}`}>
                         <div className="d-flex gap-2">
                           <div
-                            className="dpPhoto rounded-circle bg-success"
-                            style={{ minWidth: "37px", height: "37px" }}
+                            className="dpPhoto rounded-circle border"
+                            style={{
+                              maxWidth: "37px",
+                              minWidth: "37px",
+                              height: "37px",
+                            }}
                           >
-                            {/* <img src="" alt="" /> */}
+                            {n?.sender?.profile_pic && (
+                              <img
+                                src={n?.sender?.profile_pic}
+                                alt=""
+                                className="h-100 w-100 rounded-5"
+                                style={{ objectFit: "cover" }}
+                              />
+                            )}
                           </div>
                           <span className="small">
                             <span className="small d-block fw-light">

@@ -64,7 +64,7 @@ textarea::placeholder {
   display: flex;
   gap: 4px;
   padding: 8px;
-  background: #1b1b1b;
+  background: #242424;
   border: 1px solid #242424;
   border-radius: 4px;
   flex-wrap: wrap;

@@ -329,8 +329,14 @@ const CanvasVibeEditor = () => {
   const [LazyLoading, setLazyLoading] = useState(false);
   const [bg_clr, setbg_clr] = useState("#dff");
 
-  const { style, admin_user, uploadClicked, setUploadClicked, sm_break_point } =
-    useQuote();
+  const {
+    style,
+    admin_user,
+    uploadClicked,
+    setUploadClicked,
+    sm_break_point,
+    mobile_break_point,
+  } = useQuote();
 
   const handleCapture = async () => {
     const dataURL = await exportAsImage();
@@ -777,7 +783,7 @@ const CanvasVibeEditor = () => {
                         />
                       </div>
 
-                      <div className="d-flex gap-2">
+                      <div className="d-flex flex-wrap gap-2">
                         <button className="btn overflow-hidden btn-success props-btn rounded-0 p-0">
                           <label className="btn btn-success props-btn gap-2 rounded-0">
                             Add{" "}
@@ -885,28 +891,30 @@ const CanvasVibeEditor = () => {
                       </div> */}
                   </>
 
-                  {/* <div className="mt-2">
-                    <textarea
-                      className="form-control h-100 w-100"
-                      value={activeElement?.content}
-                      style={{
-                        background: mainbg,
-                        color: text_clrM,
-                        border: `1px solid ${text_clrL}`,
-                      }}
-                      placeholder="Click Add Text and then write Here !"
-                      spellCheck={false}
-                      onChange={(e) =>
-                        handleChange(
-                          activeElement?.id,
-                          "content",
-                          e.target.value
-                        )
-                      }
-                    >
-                      {activeElement.content}
-                    </textarea>
-                  </div> */}
+                  {mobile_break_point && (
+                    <div className="mt-2">
+                      <textarea
+                        className="form-control h-100 w-100"
+                        value={activeElement?.content}
+                        style={{
+                          background: mainbg,
+                          color: text_clrM,
+                          border: `1px solid ${text_clrL}`,
+                        }}
+                        placeholder="Click Add Text and then write Here !"
+                        spellCheck={false}
+                        onChange={(e) =>
+                          handleChange(
+                            activeElement?.id,
+                            "content",
+                            e.target.value
+                          )
+                        }
+                      >
+                        {activeElement.content}
+                      </textarea>
+                    </div>
+                  )}
 
                   <div className="mt-2">
                     <input
