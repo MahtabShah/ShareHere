@@ -1035,9 +1035,9 @@ const CanvasVibeEditor = () => {
                                 whiteSpace: "pre-wrap",
                               }}
                               ref={outerDivRef}
-                              contentEditable={mobile_break_point}
+                              contentEditable={!mobile_break_point}
                               suppressContentEditableWarning={
-                                mobile_break_point
+                                !mobile_break_point
                               }
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") {
