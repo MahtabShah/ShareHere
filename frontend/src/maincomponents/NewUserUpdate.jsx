@@ -76,18 +76,15 @@ export const SuggetionSlipInPost = () => {
   return (
     <>
       <section
-        className="d-flex gap-4 none-scroller overflow-x-auto"
+        className="d-flex gap-4 rounded-2 p-2 m-0 none-scroller overflow-x-auto"
         style={{
-          // border: "2px solid red",
-          width: `${
-            mobile_break_point ? "94vw" : sm_break_point ? "82vw" : "480px"
-          }`,
+          border: "1px solid #333",
         }}
       >
         {some_user?.map((u, i) => {
           return (
             <>
-              <div className="border d-flex flex-column position-relative align-items-center ps-4 pe-4  gap-3 p-2">
+              <div className="border-end border-start d-flex rounded-4 flex-column position-relative align-items-center ps-4 pe-4  gap-3 p-2">
                 <div
                   className="d-flex rounded-4 align-items-center position-absolute text-primary justify-content-center"
                   style={{
@@ -99,12 +96,7 @@ export const SuggetionSlipInPost = () => {
                   }}
                   title="follow"
                 >
-                  <FontAwesomeIcon icon={faPlus} />
-                  <FollowBtn
-                    user={u}
-                    cls={"text-primary small position-absolute"}
-                    style={{ opacity: 0 }}
-                  />
+                  {/* <FontAwesomeIcon icon={faPlus} /> */}
                 </div>
                 <div className=" p" style={{ width: "120px", height: "120px" }}>
                   <a href={`/api/user/${u?._id}`}>
@@ -116,8 +108,13 @@ export const SuggetionSlipInPost = () => {
                     />
                   </a>
                 </div>
-                <small className="d-flex fle-column gap-2 justify-content-center w-100">
+                <small className="d-flex fle-column gap-2 justify-content-center w-100 text-light">
                   <small>@{u.username.slice(0, 18)}</small>
+                  <FollowBtn
+                    user={u}
+                    cls={"text-primary small "}
+                    style={{ cursor: "pointer" }}
+                  />
                 </small>
               </div>
             </>

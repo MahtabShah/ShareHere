@@ -911,7 +911,7 @@ const CanvasVibeEditor = () => {
                           )
                         }
                       >
-                        {activeElement.content}
+                        {activeElement?.content || "Type Here"}
                       </textarea>
                     </div>
                   )}

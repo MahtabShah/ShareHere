@@ -147,15 +147,16 @@ const Main = () => {
                     }}
                   >
                     <BottomNav />
-                    <div
+                    {/* <div
                       style={{
+                        margin: "auto",
                         marginTop: `${mobile_break_point ? "50px" : "0"}`,
                         maxWidth: "600px",
                       }}
                       className="w-100 p-2"
                     >
                       <SearchBaar />
-                    </div>
+                    </div> */}
                     {/* <StatusPage /> */}
                     <All_Post_Section />
                   </main>
@@ -165,7 +166,7 @@ const Main = () => {
                 path="/home/:postId?"
                 element={
                   <main
-                    className="p-0 mb-5 me-0"
+                    className={`p-0 mb-5 ${mobile_break_point ? "" : "ps-2"}`}
                     style={{
                       marginLeft: `${
                         mobile_break_point
@@ -177,15 +178,16 @@ const Main = () => {
                     }}
                   >
                     <BottomNav />
-                    <div
+                    {/* <div
                       style={{
+                        margin: "auto",
                         marginTop: `${mobile_break_point ? "50px" : "0"}`,
                         maxWidth: "601px",
                       }}
                       className="w-100 p-2"
                     >
                       <SearchBaar />
-                    </div>
+                    </div> */}
                     {/* <StatusPage /> */}
                     <All_Post_Section />
                   </main>

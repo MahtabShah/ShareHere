@@ -13,6 +13,7 @@ import SuggetionSlip, {
 import axios from "axios";
 const API = import.meta.env.VITE_API_URL;
 import { useTheme } from "./context/Theme";
+import { SearchBaar } from "../TinyComponent/SearchBaar";
 
 function All_Post_Section() {
   const [visiblePosts, setVisiblePosts] = useState(5);
@@ -22,6 +23,7 @@ function All_Post_Section() {
   const {
     all_user,
     all_posts,
+    mobile_break_point,
     sm_break_point,
     all_post_loading,
     Errors,
@@ -106,9 +108,10 @@ function All_Post_Section() {
           style={{
             marginBottom: "90px",
             margin: "auto",
+            gap: lgbreakPoint ? "80px" : "0",
           }}
           className={`d-flex justify-content-${
-            !lgbreakPoint ? "center" : "evenly"
+            !lgbreakPoint ? "center" : "center"
           }`}
         >
           {Errors ? (
@@ -125,21 +128,53 @@ function All_Post_Section() {
                   <Loading dm={34} />
                 </div>
               ) : (
-                <div className="d-flex flex-column gap-5" style={{}}>
-                  {visiblePostComponents.map(
-                    ({ post, user }, idx) =>
-                      user &&
-                      post && (
-                        <div key={`comment-${idx}`} id={post?._id} style={{}}>
-                          <EachPost user={user} comment={post} />
-                          {/* {rn + 1 > idx && idx > rn - 1 && (
-                              <div className="mt-5">
-                                <SuggetionSlipInPost />
-                              </div>
-                            )} */}
-                        </div>
-                      )
-                  )}
+                <div className="d-flex flex-column" style={{}}>
+                  <div
+                    style={{
+                      margin: "auto",
+                      marginTop: `${mobile_break_point ? "50px" : "12px"}`,
+                      maxWidth: "600px",
+                    }}
+                    className="w-100 p-2"
+                  >
+                    <SearchBaar />
+                  </div>
+                  <div className="d-flex flex-column gap-5" style={{}}>
+                    {visiblePostComponents.map(
+                      ({ post, user }, idx) =>
+                        user &&
+                        post && (
+                          <>
+                            <div
+                              key={`comment-${idx}`}
+                              id={post?._id}
+                              style={{}}
+                            >
+                              <EachPost user={user} comment={post} />
+
+                              <>
+                                {rn + 1 > idx && idx > rn - 1 && (
+                                  <div
+                                    className="mt-5 ps-1 pe-1"
+                                    style={{
+                                      width: `${
+                                        mobile_break_point
+                                          ? "96vw"
+                                          : sm_break_point
+                                          ? "clamp(400px, 86vw, 600px)"
+                                          : "clamp(400px, 68vw, 600px)"
+                                      }`,
+                                    }}
+                                  >
+                                    <SuggetionSlipInPost />
+                                  </div>
+                                )}
+                              </>
+                            </div>
+                          </>
+                        )
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -152,7 +187,7 @@ function All_Post_Section() {
             </div>
           )}
 
-          <div className="mt-4">
+          <div className="" style={{ marginTop: "90px" }}>
             <SuggetionSlip />
           </div>
         </section>

@@ -79,8 +79,9 @@ export const SearchBaar = () => {
   return (
     <>
       <div
-        className="position-relative h-100 search-bar"
-        style={{ background: mainbg, zIndex: 1000 }}
+        className="position-relative pb-0 mb-0 h-100 search-bar
+"
+        style={{ background: mainbg, zIndex: 99999 }}
       >
         <form
           onSubmit={handleSearch}
@@ -106,7 +107,10 @@ export const SearchBaar = () => {
             Search
           </button>
         </form>
-        <div className="d-flex flex-column gap-4 mt-3">
+        <div
+          className="d-flex flex-column gap-4 position-relative mt-3"
+          style={{ background: mainbg, zIndex: 99 }}
+        >
           {Filterd_result?.map(
             (res, idx) =>
               admin_user?._id !== res?._id &&
@@ -122,7 +126,10 @@ export const SearchBaar = () => {
           )}
         </div>
 
-        <div className="d-flex flex-column gap-3 mt-4">
+        <div
+          className="d-flex flex-column gap-3 mt-4 position-relative "
+          style={{ background: mainbg, zIndex: 999 }}
+        >
           {Filterd_posts?.map((res, idx) => (
             <div
               className="d-flex flex-column"
