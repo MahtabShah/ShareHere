@@ -164,7 +164,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [canvasHeight, setCanvasHeight] = useState(400);
-  const [canvasBgColor, setCanvasBgColor] = useState("#aaffcc");
+  const [canvasBgColor, setCanvasBgColor] = useState("#303030ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
   const canvasRef = useRef(null);
@@ -187,7 +187,7 @@ const CanvasVibeEditor = () => {
       height: 60,
       fontSize: 28,
       fontFamily: "Arial",
-      color: "#f40707",
+      color: "#c6c3c3ff",
       // shadow: "2px 2px 4px rgba(0,0,0,0.5)",
       zIndex: elements.length + 1,
       fontWeight: "normal",
@@ -1035,8 +1035,10 @@ const CanvasVibeEditor = () => {
                                 whiteSpace: "pre-wrap",
                               }}
                               ref={outerDivRef}
-                              contentEditable
-                              suppressContentEditableWarning={true}
+                              contentEditable={mobile_break_point}
+                              suppressContentEditableWarning={
+                                mobile_break_point
+                              }
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                   e.preventDefault();
