@@ -336,6 +336,8 @@ const CanvasVibeEditor = () => {
     setUploadClicked,
     sm_break_point,
     mobile_break_point,
+    openSlidWin,
+    setopenSlidWin,
   } = useQuote();
 
   const handleCapture = async () => {
@@ -394,6 +396,8 @@ const CanvasVibeEditor = () => {
           }
         );
         setUploadClicked(false);
+        alert("Uploaded Successfully");
+        setopenSlidWin(false);
         nevigate("/home");
       }
     } catch (err) {
@@ -1264,7 +1268,9 @@ const CanvasVibeEditor = () => {
           className="btn btn-danger flex-grow-1 rounded-0"
           style={{ height: "42px" }}
           disabled={LazyLoading}
-          onClick={handleSubmit}
+          onClick={() => {
+            handleSubmit();
+          }}
         >
           {LazyLoading ? <Loading clr={"white"} /> : "Post"}
         </button>

@@ -29,6 +29,7 @@ export const Notification = ({ setVisibleNotification }) => {
     fetch_all_notifications,
     mobile_break_point,
     sm_break_point,
+    setopenSlidWin,
   } = useQuote();
 
   const go_to_comment = async (postId, userId) => {
@@ -134,6 +135,7 @@ export const Notification = ({ setVisibleNotification }) => {
                       style={{ width: "74px" }}
                       onClick={() => {
                         Track_post(post?._id);
+                        setopenSlidWin(false);
                       }}
                     >
                       <CardPost post={post} />
@@ -188,7 +190,7 @@ export const Notification = ({ setVisibleNotification }) => {
                                 className="on-hover-userid fw-medium"
                                 onClick={() => {
                                   setVisibleNotification(false);
-
+                                  setopenSlidWin(false);
                                   nevigate(`api/user/${n?.sender._id}`);
                                 }}
                               >
@@ -289,6 +291,7 @@ export const Notification = ({ setVisibleNotification }) => {
                                 // go_to_comment(n?.comment?.postId);
                                 // console.log("liek-----", n.comment);
                                 Track_post(n?.post);
+                                setopenSlidWin(false);
                               }}
                             >
                               @ someone liked your post{" "}

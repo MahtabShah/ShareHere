@@ -102,17 +102,17 @@ function All_Post_Section() {
         style={{
           background: mainbg,
           zIndex: 10,
+          maxWidth: "100%",
         }}
       >
         <section
           style={{
             marginBottom: "90px",
             margin: "auto",
-            gap: lgbreakPoint ? "80px" : "0",
+            gap: lgbreakPoint ? "100px" : "0",
+            maxWidth: "100%",
           }}
-          className={`d-flex justify-content-${
-            !lgbreakPoint ? "center" : "center"
-          }`}
+          className={`d-flex justify-content-center`}
         >
           {Errors ? (
             <div
@@ -122,7 +122,7 @@ function All_Post_Section() {
               {Errors.message} . . .try leter !
             </div>
           ) : (
-            <div style={{ maxWidth: "600px" }}>
+            <div style={{ maxWidth: "min(600px, 100%)" }}>
               {all_post_loading ? (
                 <div className="d-flex justify-content-center ">
                   <Loading dm={34} />
@@ -149,21 +149,17 @@ function All_Post_Section() {
                               key={`comment-${idx}`}
                               id={post?._id}
                               style={{}}
+                              className="d-flex flex-column"
                             >
                               <EachPost user={user} comment={post} />
 
                               <>
                                 {rn + 1 > idx && idx > rn - 1 && (
                                   <div
-                                    className="mt-5 ps-1 pe-1"
+                                    className="mt-5 p-2 m-1 rounded-3 d-flex gap-4  none-scroller overflow-x-auto"
                                     style={{
-                                      width: `${
-                                        mobile_break_point
-                                          ? "96vw"
-                                          : sm_break_point
-                                          ? "clamp(400px, 86vw, 600px)"
-                                          : "clamp(400px, 68vw, 600px)"
-                                      }`,
+                                      maxWidth: "100% ",
+                                      border: "1px solid #333",
                                     }}
                                   >
                                     <SuggetionSlipInPost />
@@ -187,7 +183,10 @@ function All_Post_Section() {
             </div>
           )}
 
-          <div className="" style={{ marginTop: "90px" }}>
+          <div
+            className=""
+            style={{ paddingTop: "100px", position: "sticky", top: "0" }}
+          >
             <SuggetionSlip />
           </div>
         </section>

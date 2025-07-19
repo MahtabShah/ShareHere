@@ -22,6 +22,7 @@ import LeftNavbar from "./maincomponents/LeftNavbar.jsx";
 import "./index.css";
 import { ThemeProvider, useTheme } from "./context/Theme.jsx";
 import { VibeEditorProvider } from "./context/VibeEditorContext.jsx";
+import { TrackPost } from "../TinyComponent/TrackPost.jsx";
 
 const StatusPage = () => {
   const [followings, setFollowings] = useState();
@@ -147,23 +148,15 @@ const Main = () => {
                     }}
                   >
                     <BottomNav />
-                    {/* <div
-                      style={{
-                        margin: "auto",
-                        marginTop: `${mobile_break_point ? "50px" : "0"}`,
-                        maxWidth: "600px",
-                      }}
-                      className="w-100 p-2"
-                    >
-                      <SearchBaar />
-                    </div> */}
+
                     {/* <StatusPage /> */}
                     <All_Post_Section />
                   </main>
                 }
               />
+
               <Route
-                path="/home/:postId?"
+                path="/home"
                 element={
                   <main
                     className={`p-0 mb-5 ${mobile_break_point ? "" : "ps-2"}`}
@@ -178,18 +171,30 @@ const Main = () => {
                     }}
                   >
                     <BottomNav />
-                    {/* <div
-                      style={{
-                        margin: "auto",
-                        marginTop: `${mobile_break_point ? "50px" : "0"}`,
-                        maxWidth: "601px",
-                      }}
-                      className="w-100 p-2"
-                    >
-                      <SearchBaar />
-                    </div> */}
-                    {/* <StatusPage /> */}
+
                     <All_Post_Section />
+                  </main>
+                }
+              />
+
+              <Route
+                path="/home/:postId"
+                element={
+                  <main
+                    className={`p-0 mb-5 ${mobile_break_point ? "" : "ps-2"}`}
+                    style={{
+                      marginLeft: `${
+                        mobile_break_point
+                          ? "0px"
+                          : sm_break_point
+                          ? "54px"
+                          : "228px"
+                      }`,
+                    }}
+                  >
+                    <BottomNav />
+
+                    <TrackPost />
                   </main>
                 }
               />

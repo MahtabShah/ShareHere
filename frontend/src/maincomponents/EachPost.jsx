@@ -167,7 +167,7 @@ export const EachPost = ({ user, comment }) => {
       >
         {/*--------------------- user ring and follow btn ----------------------- */}
         <div
-          className={`d-flex gap-2 align-items-center pt-2 pb-2 justify-content-between flex-grow-1 ${
+          className={`d-flex gap-2 align-items-center pt-2 justify-content-between flex-grow-1 ${
             mobile_break_point ? "pe-2 ps-2" : ""
           }`}
         >
@@ -472,25 +472,28 @@ export const UserRing = ({
   onlyphoto = false,
   user,
   style = { borderEndEndRadius: "0" },
+  dm = 44,
 }) => {
   const nevigate = useNavigate();
   const { text_clrH, text_clrL, text_clrM } = useTheme();
+  const { setopenSlidWin } = useQuote();
 
   return (
     <>
       <div className="d-flex gap-2 flex-grow-1 align-items-center">
         <div
-          className="d-flex align-items-center w-100 justify-content-center rounded-crcle overflow-hidden vibe-ring"
+          className="d-flex align-items-center w-100 justify-content-center rounded-crcle overflow-hidden vibe-ring border"
           style={{
-            maxWidth: "40px",
-            minWidth: "40px",
-            height: "40px",
+            maxWidth: `${dm}px`,
+            minWidth: `${dm}px`,
+            height: `${dm}px`,
             background: `${user?.bg_clr}`,
             cursor: "pointer",
             ...style,
             color: text_clrH,
           }}
           onClick={() => {
+            setopenSlidWin(false);
             nevigate(`/api/user/${user?._id}`);
           }}
         >
@@ -502,8 +505,9 @@ export const UserRing = ({
               className="h-100 w-100 overflow-hidden"
               style={{
                 objectFit: "cover",
-                maxWidth: "40px",
-                minHeight: "40px",
+                maxWidth: `${dm}px`,
+                minWidth: `${dm}px`,
+                minHeight: `${dm}px`,
               }}
             />
           </div>
@@ -517,6 +521,8 @@ export const UserRing = ({
             <small
               className="small fw-medium on-hover-userid"
               onClick={() => {
+                setopenSlidWin(false);
+
                 nevigate(`/api/user/${user?._id}`);
               }}
             >
@@ -627,7 +633,7 @@ export const SlipDotinPost = ({ user, post }) => {
   return (
     <>
       <Nav.Link href="/home">Home</Nav.Link>
-      <Nav.Link href="/home">Visit Post</Nav.Link>
+      <Nav.Link href={`/home/${post._id}`}>Visit Post</Nav.Link>
       {admin_user?._id !== user?._id && (
         <Nav.Link>
           <FollowBtn user={user} cls="" />

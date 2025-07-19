@@ -11,7 +11,7 @@ export const SearchBaar = () => {
   const [query, setQuery] = useState("");
   const [Filterd_result, setFilterd_result] = useState([]);
   const [Filterd_posts, setFilterd_posts] = useState([]);
-  const { all_user, all_posts, admin_user } = useQuote();
+  const { all_user, all_posts, admin_user, setopenSlidWin } = useQuote();
   const nevigate = useNavigate();
 
   // const [search_text, setSearch_text] = useState("");
@@ -79,9 +79,8 @@ export const SearchBaar = () => {
   return (
     <>
       <div
-        className="position-relative pb-0 mb-0 h-100 search-bar
-"
-        style={{ background: mainbg, zIndex: 99999 }}
+        className="position-relative pb-0 mb-0 h-100"
+        style={{ background: mainbg, zIndex: 999999 }}
       >
         <form
           onSubmit={handleSearch}
@@ -107,63 +106,69 @@ export const SearchBaar = () => {
             Search
           </button>
         </form>
-        <div
-          className="d-flex flex-column gap-4 position-relative mt-3"
-          style={{ background: mainbg, zIndex: 99 }}
-        >
-          {Filterd_result?.map(
-            (res, idx) =>
-              admin_user?._id !== res?._id &&
-              res && (
-                <div className="d-flex" key={res._id || idx}>
-                  <UserRing user={res} onlyphoto={false} />
-                  <FollowBtn
-                    user={res}
-                    cls="btn btn-outline-primary p-0 h-100 ps-3 rounded-0 pe-3 p-1"
-                  />
-                </div>
-              )
-          )}
-        </div>
 
-        <div
-          className="d-flex flex-column gap-3 mt-4 position-relative "
-          style={{ background: mainbg, zIndex: 999 }}
-        >
-          {Filterd_posts?.map((res, idx) => (
+        {Filterd_posts.length > 0 && (
+          <div className="border-bottom pb-4 ">
             <div
-              className="d-flex flex-column"
-              key={`F-post${res._id || idx}`}
-              style={{
-                color: text_clrM,
-              }}
+              className="d-flex flex-column gap-4 position-relative mt-3"
+              style={{ background: mainbg, zIndex: 909999 }}
             >
-              <div className="d-flex gap-3 mt-2 align-items-start">
-                <div className="mt-">
-                  <UserRing
-                    user={all_user?.filter((u) => u._id == res?.userId)[0]}
-                    onlyphoto={true}
-                    style={{}}
-                  />
-                </div>
-                <p className="flex-grow-1 w-100 ">{res.text}</p>
+              {Filterd_result?.map(
+                (res, idx) =>
+                  admin_user?._id !== res?._id &&
+                  res && (
+                    <div className="d-flex" key={res._id || idx}>
+                      <UserRing user={res} onlyphoto={false} />
+                      <FollowBtn
+                        user={res}
+                        cls="btn btn-outline-primary p-0 h-100 ps-3 rounded-0 pe-3 p-1"
+                      />
+                    </div>
+                  )
+              )}
+            </div>
+
+            <div
+              className="d-flex flex-column gap-3 mt-4 position-relative"
+              style={{ background: mainbg, zIndex: 999 }}
+            >
+              {Filterd_posts?.map((res, idx) => (
                 <div
-                  className=""
-                  onClick={() => {
-                    nevigate(`/home?postId=${res._id}`);
+                  className="d-flex flex-column"
+                  key={`F-post${res._id || idx}`}
+                  style={{
+                    color: text_clrM,
                   }}
                 >
-                  <CardPost
-                    post={res}
-                    style={{
-                      height: "84px",
-                    }}
-                  />
+                  <div className="d-flex gap-3 mt-2 align-items-start">
+                    <div className="mt-">
+                      <UserRing
+                        user={all_user?.filter((u) => u._id == res?.userId)[0]}
+                        onlyphoto={true}
+                        style={{}}
+                      />
+                    </div>
+                    <p className="flex-grow-1 w-100 ">{res.text}</p>
+                    <div
+                      className=""
+                      onClick={() => {
+                        setopenSlidWin(false);
+                        nevigate(`/home/${res._id}`);
+                      }}
+                    >
+                      <CardPost
+                        post={res}
+                        style={{
+                          height: "84px",
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
       {/* <div className="ms-2 d-flex gap-3 overflow-x-auto none-scroller">
         {trend.map((t, idx) => (

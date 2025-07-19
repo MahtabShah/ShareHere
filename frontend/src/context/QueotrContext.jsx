@@ -113,14 +113,13 @@ export const QuoteProvider = ({ children }) => {
 
     try {
       const res = await axios.get(`${API}/api/auth/all_sentence`);
-      // setLoading(false);
       res.data?.length === 0 ? "" : set_all_posts(res.data);
     } catch (err) {
       console.log("Failed to fetch your sentences see err", err);
       setErrors(err);
+    } finally {
+      setAll_post_loading(false);
     }
-
-    setAll_post_loading(false);
   };
 
   let curr_page = 0;
