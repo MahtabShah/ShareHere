@@ -125,7 +125,7 @@ function All_Post_Section() {
                   <Loading dm={34} />
                 </div>
               ) : (
-                <div className="d-flex flex-column gap-5 p-1" style={{}}>
+                <div className="d-flex flex-column gap-5" style={{}}>
                   {visiblePostComponents.map(
                     ({ post, user }, idx) =>
                       user &&

@@ -21,6 +21,7 @@ import SuggetionSlip from "./maincomponents/NewUserUpdate.jsx";
 import LeftNavbar from "./maincomponents/LeftNavbar.jsx";
 import "./index.css";
 import { ThemeProvider, useTheme } from "./context/Theme.jsx";
+import { VibeEditorProvider } from "./context/VibeEditorContext.jsx";
 
 const StatusPage = () => {
   const [followings, setFollowings] = useState();
@@ -70,169 +71,171 @@ const Main = () => {
   return (
     <BrowserRouter>
       <QuoteProvider>
-        <ThemeProvider>
-          <LeftNavbar />
-          {mobile_break_point && <MainHeader />}
+        <VibeEditorProvider>
+          <ThemeProvider>
+            <LeftNavbar />
+            {mobile_break_point && <MainHeader />}
 
-          <Routes>
-            <Route
-              path="/Explore"
-              element={
-                <div
-                  style={{
-                    marginLeft: `${
-                      mobile_break_point
-                        ? "0px"
-                        : sm_break_point
-                        ? "54px"
-                        : "228px"
-                    }`,
-                  }}
-                >
-                  <Explore />
-                </div>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <div
-                  style={{
-                    marginLeft: `${
-                      mobile_break_point
-                        ? "0px"
-                        : sm_break_point
-                        ? "54px"
-                        : "228px"
-                    }`,
-                  }}
-                >
-                  <Signup />
-                </div>
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <div
-                  style={{
-                    marginLeft: `${
-                      mobile_break_point
-                        ? "0px"
-                        : sm_break_point
-                        ? "54px"
-                        : "228px"
-                    }`,
-                  }}
-                >
-                  <Login />
-                </div>
-              }
-            />
-            <Route
-              path="/*"
-              element={
-                <main
-                  className="p-0 mb-5 me-0"
-                  style={{
-                    marginLeft: `${
-                      mobile_break_point
-                        ? "0px"
-                        : sm_break_point
-                        ? "54px"
-                        : "228px"
-                    }`,
-                  }}
-                >
-                  <BottomNav />
+            <Routes>
+              <Route
+                path="/Explore"
+                element={
                   <div
                     style={{
-                      marginTop: `${mobile_break_point ? "50px" : "0"}`,
-                      maxWidth: "600px",
+                      marginLeft: `${
+                        mobile_break_point
+                          ? "0px"
+                          : sm_break_point
+                          ? "54px"
+                          : "228px"
+                      }`,
                     }}
-                    className="w-100"
                   >
-                    <SearchBaar />
+                    <Explore />
                   </div>
-                  {/* <StatusPage /> */}
-                  <All_Post_Section />
-                </main>
-              }
-            />
-            <Route
-              path="/home/:postId?"
-              element={
-                <main
-                  className="p-0 mb-5 me-0"
-                  style={{
-                    marginLeft: `${
-                      mobile_break_point
-                        ? "0px"
-                        : sm_break_point
-                        ? "54px"
-                        : "228px"
-                    }`,
-                  }}
-                >
-                  <BottomNav />
+                }
+              />
+              <Route
+                path="/signup"
+                element={
                   <div
                     style={{
-                      marginTop: `${mobile_break_point ? "50px" : "0"}`,
-                      maxWidth: "601px",
+                      marginLeft: `${
+                        mobile_break_point
+                          ? "0px"
+                          : sm_break_point
+                          ? "54px"
+                          : "228px"
+                      }`,
                     }}
-                    className="w-100"
                   >
-                    <SearchBaar />
+                    <Signup />
                   </div>
-                  {/* <StatusPage /> */}
-                  <All_Post_Section />
-                </main>
-              }
-            />
-            <Route
-              path="/api/user/:id"
-              element={
-                <main
-                  className="p-0 mt-0"
-                  style={{
-                    marginLeft: `${
-                      mobile_break_point
-                        ? "0px"
-                        : sm_break_point
-                        ? "54px"
-                        : "228px"
-                    }`,
-                  }}
-                >
-                  <BottomNav />
-                  <UserProfile />
-                </main>
-              }
-            />
-            <Route
-              path="/api/user/edit/:id"
-              element={
-                <main
-                  className="p-0 pt-2"
-                  style={{
-                    marginLeft: `${
-                      mobile_break_point
-                        ? "0px"
-                        : sm_break_point
-                        ? "54px"
-                        : "228px"
-                    }`,
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <div
+                    style={{
+                      marginLeft: `${
+                        mobile_break_point
+                          ? "0px"
+                          : sm_break_point
+                          ? "54px"
+                          : "228px"
+                      }`,
+                    }}
+                  >
+                    <Login />
+                  </div>
+                }
+              />
+              <Route
+                path="/*"
+                element={
+                  <main
+                    className="p-0 mb-5 me-0"
+                    style={{
+                      marginLeft: `${
+                        mobile_break_point
+                          ? "0px"
+                          : sm_break_point
+                          ? "54px"
+                          : "228px"
+                      }`,
+                    }}
+                  >
+                    <BottomNav />
+                    <div
+                      style={{
+                        marginTop: `${mobile_break_point ? "50px" : "0"}`,
+                        maxWidth: "600px",
+                      }}
+                      className="w-100 p-2"
+                    >
+                      <SearchBaar />
+                    </div>
+                    {/* <StatusPage /> */}
+                    <All_Post_Section />
+                  </main>
+                }
+              />
+              <Route
+                path="/home/:postId?"
+                element={
+                  <main
+                    className="p-0 mb-5 me-0"
+                    style={{
+                      marginLeft: `${
+                        mobile_break_point
+                          ? "0px"
+                          : sm_break_point
+                          ? "54px"
+                          : "228px"
+                      }`,
+                    }}
+                  >
+                    <BottomNav />
+                    <div
+                      style={{
+                        marginTop: `${mobile_break_point ? "50px" : "0"}`,
+                        maxWidth: "601px",
+                      }}
+                      className="w-100 p-2"
+                    >
+                      <SearchBaar />
+                    </div>
+                    {/* <StatusPage /> */}
+                    <All_Post_Section />
+                  </main>
+                }
+              />
+              <Route
+                path="/api/user/:id"
+                element={
+                  <main
+                    className="p-0 mt-0"
+                    style={{
+                      marginLeft: `${
+                        mobile_break_point
+                          ? "0px"
+                          : sm_break_point
+                          ? "54px"
+                          : "228px"
+                      }`,
+                    }}
+                  >
+                    <BottomNav />
+                    <UserProfile />
+                  </main>
+                }
+              />
+              <Route
+                path="/api/user/edit/:id"
+                element={
+                  <main
+                    className="p-0 pt-2"
+                    style={{
+                      marginLeft: `${
+                        mobile_break_point
+                          ? "0px"
+                          : sm_break_point
+                          ? "54px"
+                          : "228px"
+                      }`,
 
-                    marginTop: `${mobile_break_point ? "44px" : "0"}`,
-                  }}
-                >
-                  <BottomNav />
-                  <EditUserProfile />
-                </main>
-              }
-            />
-          </Routes>
-        </ThemeProvider>
+                      marginTop: `${mobile_break_point ? "44px" : "0"}`,
+                    }}
+                  >
+                    <BottomNav />
+                    <EditUserProfile />
+                  </main>
+                }
+              />
+            </Routes>
+          </ThemeProvider>
+        </VibeEditorProvider>
       </QuoteProvider>
     </BrowserRouter>
   );

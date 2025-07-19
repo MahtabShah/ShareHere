@@ -6,7 +6,7 @@ import { useQuote } from "../context/QueotrContext";
 import { Loading } from "../../TinyComponent/LazyLoading";
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Route, useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("token");
 
@@ -163,7 +163,7 @@ import { useTheme } from "../context/Theme";
 const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(300);
+  const [canvasHeight, setCanvasHeight] = useState(400);
   const [canvasBgColor, setCanvasBgColor] = useState("#aaffcc");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -193,7 +193,7 @@ const CanvasVibeEditor = () => {
       fontWeight: "normal",
       fontStyle: "normal",
       textDecoration: "none",
-      textAlign: "center",
+      textAlign: "left",
     };
     setElements([...elements, newText]);
     setActiveId(newText.id);
@@ -221,6 +221,8 @@ const CanvasVibeEditor = () => {
     setElements((prev) =>
       prev.map((el) => (el.id === id ? { ...el, [key]: value } : el))
     );
+
+    console.log("val ", value);
   };
 
   const handleResizeOrDrag = (id, width, height, x, y) => {
@@ -405,6 +407,8 @@ const CanvasVibeEditor = () => {
     if (elements.length <= 0) {
       addTextBox();
     }
+
+    // handleChange(activeElement?.id, "content", outerDivRef.current.textContent);
   }, []);
 
   const outerDivRef = useRef(null);
@@ -445,19 +449,18 @@ const CanvasVibeEditor = () => {
           </div>
         </div> */}
 
-        <div className="p-2">
-          <div className="">
+        <div className="p-1 pt-0">
+          <div className="d-flex">
             <div
-              className="card border-0 shadow-sm mb-2"
+              className="card border-0 shadow-sm "
               style={{ background: mainbg }}
             >
               <div className="card border-0 shadow-sm position-sticky">
-                <div
-                  className="card-header d-flex ps-0 justify-content-between align-items-center rounded-0"
+                {/* <div
+                  className="card-header d-flex ps-0 pt-0 mt-0 justify-content-between align-items-center rounded-0"
                   style={{
                     background: mainbg,
                     color: text_clrM,
-                    // border: `1px solid ${text_clrL}`,
                   }}
                 >
                   <strong>
@@ -465,14 +468,7 @@ const CanvasVibeEditor = () => {
                       ? "Text Properties acitvated"
                       : "Image Properties acitvated"}
                   </strong>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onPointerDown={() => deleteElement(activeElement?.id)}
-                    disabled={!activeElement}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
+                </div> */}
                 <div
                   className="py-2 positio-fixed"
                   // style={{ border: "2px solid red" }}
@@ -480,14 +476,14 @@ const CanvasVibeEditor = () => {
                 >
                   <>
                     <div
-                      className="d-flex props-parent flex-wrap gap-2 overflow-x-auto"
+                      className="d-flex props-parent flex-wrap gap-2 overflow-x-auto format-toolbar"
                       style={{
                         height: "max-content",
                       }}
                     >
                       <div>
                         <div
-                          className="btn d-flex gap-2 align-items-center props-btn"
+                          className="btn d-flex gap-2 align-items-center props-btn toolbar-button"
                           style={{ border: `1px solid ${text_clrL}` }}
                         >
                           <FontAwesomeIcon
@@ -498,16 +494,16 @@ const CanvasVibeEditor = () => {
 
                           <input
                             type="number"
-                            className="ps-1 border-0 rounded-0 flex-grow-1"
+                            className="ps-1 border-0 rounded-1 flex-grow-1"
                             name="textHeight"
                             id="textHeight"
                             min="8"
                             max="120"
-                            value={activeElement?.fontSize}
+                            value={activeElement?.fontSize || 28}
                             style={{
                               width: "34px",
                               fontSize: "14px",
-                              background: mainbg,
+                              background: "transparent",
                               color: text_clrM,
                             }}
                             onChange={(e) =>
@@ -522,15 +518,15 @@ const CanvasVibeEditor = () => {
                       </div>
 
                       <div
-                        className="d-flex  props-btn overflow-hidden"
+                        className="d-flex  props-btn overflow-hidden toolbar-button"
                         style={{ border: `1px solid ${text_clrL}` }}
                       >
-                        <FaFont size={12} color={text_clrM} />
+                        {/* <FaFont size={12} color={text_clrM} /> */}
                         <select
                           className="form-select shadow-none border-0 props-btn"
                           value={activeElement?.fontFamily}
                           style={{
-                            background: mainbg,
+                            background: "transparent",
                             color: text_clrM,
                           }}
                           onChange={(e) =>
@@ -541,29 +537,175 @@ const CanvasVibeEditor = () => {
                             )
                           }
                         >
-                          <option value="Arial" className="">
+                          <option
+                            value="Arial"
+                            style={{ background: text_clrL }}
+                          >
                             Arial
                           </option>
-                          <option value="Georgia">Georgia</option>
-                          <option value="Courier New">Courier New</option>
-                          <option value="Times New Roman">
+                          <option
+                            value="Georgia"
+                            style={{ background: text_clrL }}
+                          >
+                            Georgia
+                          </option>
+                          <option
+                            value="Courier New"
+                            style={{ background: text_clrL }}
+                          >
+                            Courier New
+                          </option>
+                          <option
+                            value="Times New Roman"
+                            style={{ background: text_clrL }}
+                          >
                             Times New Roman
                           </option>
-                          <option value="Verdana">Verdana</option>
-                          <option value="Impact">Impact</option>
+                          <option
+                            value="Verdana"
+                            style={{ background: text_clrL }}
+                          >
+                            Verdana
+                          </option>
+                          <option
+                            value="Impact"
+                            style={{ background: text_clrL }}
+                          >
+                            Impact
+                          </option>
                         </select>
                       </div>
 
+                      <button
+                        className={`toolbar-button   ${
+                          activeElement?.fontWeight === "bold" ? "active" : ""
+                        }`}
+                        onClick={() =>
+                          handleChange(
+                            activeElement?.id,
+                            "fontWeight",
+                            activeElement?.fontWeight === "bold"
+                              ? "normal"
+                              : "bold"
+                          )
+                        }
+                        disabled={!activeElement}
+                      >
+                        <FontAwesomeIcon
+                          icon={faBold}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
+                      </button>
+
+                      <button
+                        className={`toolbar-button ${
+                          activeElement?.fontStyle === "italic" ? "active" : ""
+                        }`}
+                        style={{ border: `` }}
+                        onClick={() =>
+                          handleChange(
+                            activeElement?.id,
+                            "fontStyle",
+                            activeElement?.fontStyle === "italic"
+                              ? "normal"
+                              : "italic"
+                          )
+                        }
+                        disabled={!activeElement}
+                      >
+                        <FontAwesomeIcon
+                          icon={faItalic}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
+                      </button>
+
+                      <button
+                        className={`toolbar-button ${
+                          activeElement?.textDecoration === "underline"
+                            ? "active"
+                            : ""
+                        }`}
+                        style={{ border: `` }}
+                        onClick={() =>
+                          handleChange(
+                            activeElement?.id,
+                            "textDecoration",
+                            activeElement?.textDecoration === "underline"
+                              ? "none"
+                              : "underline"
+                          )
+                        }
+                        disabled={!activeElement}
+                      >
+                        <FontAwesomeIcon
+                          icon={faUnderline}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
+                      </button>
+
+                      <button
+                        className={`toolbar-button ${
+                          activeElement?.textAlign === "left" ? "active" : ""
+                        }   props-btn `}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "left")
+                        }
+                        disabled={!activeElement}
+                      >
+                        <FontAwesomeIcon
+                          icon={faAlignLeft}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
+                      </button>
+
+                      <button
+                        className={`toolbar-button ${
+                          activeElement?.textAlign === "center" ? "active" : ""
+                        }`}
+                        style={{ border: `` }}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "center")
+                        }
+                        disabled={!activeElement}
+                      >
+                        <FontAwesomeIcon
+                          icon={faAlignCenter}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
+                      </button>
+
+                      <button
+                        className={`toolbar-button ${
+                          activeElement?.textAlign === "right" ? "active" : ""
+                        }`}
+                        style={{ border: `` }}
+                        onClick={() =>
+                          handleChange(activeElement?.id, "textAlign", "right")
+                        }
+                        disabled={!activeElement}
+                      >
+                        <FontAwesomeIcon
+                          icon={faAlignRight}
+                          fontSize={12}
+                          color={text_clrM}
+                        />
+                      </button>
+
                       <div
-                        className="btn overflow-hidden p-0 props-btn"
-                        style={{ border: `1px solid ${text_clrL}` }}
+                        className="btn overflow-hidden p-0 props-btn toolbar-button"
+                        style={{ border: `` }}
                       >
                         <input
                           type="color"
                           value={activeElement?.color}
                           style={{
                             scale: "2",
-                            border: `1px solid ${text_clrL}`,
+                            border: ``,
                           }}
                           onChange={(e) =>
                             handleChange(
@@ -576,170 +718,15 @@ const CanvasVibeEditor = () => {
                         />
                       </div>
 
-                      <button
-                        className={`btn  ${
-                          activeElement?.fontWeight === "bold"
-                            ? "btn-primary"
-                            : ""
-                        } props-btn`}
-                        style={{ border: `1px solid ${text_clrL}` }}
-                        onClick={() =>
-                          handleChange(
-                            activeElement?.id,
-                            "fontWeight",
-                            activeElement?.fontWeight === "bold"
-                              ? "normal"
-                              : "bold"
-                          )
-                        }
-                      >
-                        <FontAwesomeIcon
-                          icon={faBold}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
-                      <button
-                        className={`btn ${
-                          activeElement?.fontStyle === "italic"
-                            ? "btn-primary"
-                            : ""
-                        } props-btn`}
-                        style={{ border: `1px solid ${text_clrL}` }}
-                        onClick={() =>
-                          handleChange(
-                            activeElement?.id,
-                            "fontStyle",
-                            activeElement?.fontStyle === "italic"
-                              ? "normal"
-                              : "italic"
-                          )
-                        }
-                      >
-                        <FontAwesomeIcon
-                          icon={faItalic}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
-                      <button
-                        className={`btn ${
-                          activeElement?.textDecoration === "underline"
-                            ? "btn-primary"
-                            : ""
-                        } props-btn`}
-                        style={{ border: `1px solid ${text_clrL}` }}
-                        onClick={() =>
-                          handleChange(
-                            activeElement?.id,
-                            "textDecoration",
-                            activeElement?.textDecoration === "underline"
-                              ? "none"
-                              : "underline"
-                          )
-                        }
-                      >
-                        <FontAwesomeIcon
-                          icon={faUnderline}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
-                      <button
-                        className="btn btn-warning p-0 props-btn"
-                        onClick={() => bringToFront(activeElement?.id)}
-                      >
-                        <FontAwesomeIcon icon={faArrowUp} color={text_clrL} />
-                      </button>
-
-                      <button
-                        className="btn props-btn "
-                        onClick={() => setActiveId(null)}
-                        style={{ border: `1px solid ${text_clrL}` }}
-                      >
-                        <b style={{ color: text_clrM }}>--</b>
-                      </button>
-
-                      <button
-                        className={`btn  props-btn ${
-                          activeElement?.textAlign === "left"
-                            ? "btn-primary"
-                            : ""
-                        }`}
-                        style={{ border: `1px solid ${text_clrL}` }}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "left")
-                        }
-                      >
-                        <FontAwesomeIcon icon={faAlignLeft} />
-                      </button>
-
-                      <button
-                        className={`btn props-btn ${
-                          activeElement?.textAlign === "center"
-                            ? "btn-primary"
-                            : ""
-                        }`}
-                        style={{ border: `1px solid ${text_clrL}` }}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "center")
-                        }
-                      >
-                        <FontAwesomeIcon icon={faAlignCenter} />
-                      </button>
-
-                      <button
-                        className={`btn props-btn ${
-                          activeElement?.textAlign === "right"
-                            ? "btn-primary"
-                            : ""
-                        }`}
-                        style={{ border: `1px solid ${text_clrL}` }}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "right")
-                        }
-                      >
-                        <FontAwesomeIcon icon={faAlignRight} />
-                      </button>
-
-                      <button className="btn overflow-hidden btn-success props-btn rounded-0 p-0">
-                        <label className="btn btn-success props-btn gap-2 rounded-0">
-                          Add{" "}
-                          <FontAwesomeIcon icon={faImage} color={text_clrH} />
-                          <input
-                            type="file"
-                            className="d-none"
-                            accept="image/*"
-                            onChange={(e) => addImageBox(e.target.files[0])}
-                          />
-                        </label>
-                      </button>
-
-                      <button
-                        className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
-                        onClick={addTextBox}
-                      >
-                        <div className="props-btn rounded-0">
-                          Add Text &nbsp;
-                          <FontAwesomeIcon
-                            icon={faTextHeight}
-                            className="me-2"
-                          />
-                        </div>
-                      </button>
-
                       <div
-                        className="props-btn"
+                        className="props-btn toolbar-button"
                         style={{
                           border: `1px solid ${text_clrL}`,
                           width: "120px",
                         }}
                       >
                         <div
-                          className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between"
+                          className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
                           style={{ translate: "6px" }}
                         >
                           <small
@@ -761,7 +748,7 @@ const CanvasVibeEditor = () => {
                       </div>
 
                       <div
-                        className="d-flex gap-2 btn p-0 rounded-0"
+                        className="d-flex gap-2 btn p-0 toolbar-button"
                         style={{
                           border: `1px solid ${text_clrL}`,
                           width: "120px",
@@ -779,8 +766,8 @@ const CanvasVibeEditor = () => {
                           type="number"
                           className=" props-btn ps-2 p-0 border-0"
                           style={{
-                            minWidth: "50px",
-                            background: mainbg,
+                            // minWidth: "40px",
+                            background: "transparent",
                             color: text_clrM,
                           }}
                           value={canvasHeight}
@@ -790,15 +777,91 @@ const CanvasVibeEditor = () => {
                         />
                       </div>
 
-                      <button
-                        className="btn props-btn "
-                        onClick={() => {
-                          setContinuousActiveId();
-                        }}
-                        style={{ border: `1px solid ${text_clrL}` }}
-                      >
-                        <b style={{ color: text_clrM }}>Active</b>
-                      </button>
+                      <div className="d-flex gap-2">
+                        <button className="btn overflow-hidden btn-success props-btn rounded-0 p-0">
+                          <label className="btn btn-success props-btn gap-2 rounded-0">
+                            Add{" "}
+                            <FontAwesomeIcon icon={faImage} color={text_clrH} />
+                            <input
+                              type="file"
+                              className="d-none"
+                              accept="image/*"
+                              onChange={(e) => addImageBox(e.target.files[0])}
+                            />
+                          </label>
+                        </button>
+
+                        <button
+                          className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
+                          onClick={addTextBox}
+                        >
+                          <div className="props-btn rounded-0">
+                            Add Text &nbsp;
+                            <FontAwesomeIcon
+                              icon={faTextHeight}
+                              className="me-2"
+                            />
+                          </div>
+                        </button>
+
+                        <button
+                          className="btn props-btn toolbar-button"
+                          onClick={() => {
+                            setContinuousActiveId();
+                          }}
+                          style={{ border: `1px solid ${text_clrL}` }}
+                        >
+                          <b style={{ color: text_clrM }}>Active</b>
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          onClick={() => bringToFront(activeElement?.id)}
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon icon={faArrowUp} color={text_clrM} />
+                        </button>
+
+                        <button
+                          className={`btn props-btn toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          onClick={() => setActiveId(null)}
+                          style={{ border: `1px solid ${text_clrL}` }}
+                          disabled={!activeElement}
+                        >
+                          <b style={{ color: text_clrM }}>- / -</b>
+                        </button>
+
+                        <button
+                          className={`btn  toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          onPointerDown={() => deleteElement(activeElement?.id)}
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+
+                        {/* <button
+                          // onClick={() => item.action ? item.action() : handleToggle(item)}
+                          className={`
+               
+                ${
+                  item.type === "toggle" &&
+                  formatting[item.property] === (item.value || item.activeValue)
+                    ? "active"
+                    : ""
+                }
+              `}
+                          title={item.label}
+                        >
+                          {item.icon && <FontAwesomeIcon icon={item.icon} />}
+                          {!item.icon && item.label}
+                        </button> */}
+                      </div>
                     </div>
 
                     {/* 
@@ -822,8 +885,7 @@ const CanvasVibeEditor = () => {
                       </div> */}
                   </>
 
-                  <div className="mt-2">
-                    {/* <label className="form-label"></label> */}
+                  {/* <div className="mt-2">
                     <textarea
                       className="form-control h-100 w-100"
                       value={activeElement?.content}
@@ -833,6 +895,7 @@ const CanvasVibeEditor = () => {
                         border: `1px solid ${text_clrL}`,
                       }}
                       placeholder="Click Add Text and then write Here !"
+                      spellCheck={false}
                       onChange={(e) =>
                         handleChange(
                           activeElement?.id,
@@ -840,7 +903,23 @@ const CanvasVibeEditor = () => {
                           e.target.value
                         )
                       }
-                    ></textarea>
+                    >
+                      {activeElement.content}
+                    </textarea>
+                  </div> */}
+
+                  <div className="mt-2">
+                    <input
+                      type="range"
+                      min={100}
+                      max={800}
+                      step={10}
+                      onChange={(e) =>
+                        setCanvasHeight(parseInt(e.target.value))
+                      }
+                      style={{ height: "7px" }}
+                      className="w-100 "
+                    />
                   </div>
                 </div>
               </div>
@@ -881,9 +960,8 @@ const CanvasVibeEditor = () => {
                               ? "0 0 10px rgba(13, 110, 253, 0.5)"
                               : "none",
                           cursor: "move",
-                          // overflow: "hidden",
-                          // transition: "all 100ms ease",
                         }}
+                        spellCheck={false}
                         disableDragging={
                           activeElement?.id == el.id ? false : true
                         }
@@ -910,7 +988,7 @@ const CanvasVibeEditor = () => {
                               <button
                                 className="btn text-danger btn-sm p-0 position-absolute top-0 end-0 rounded"
                                 style={{ zIndex: 1000, width: "20px" }}
-                                onClick={(e) => {
+                                onPointerDown={(e) => {
                                   e.stopPropagation();
                                   deleteElement(el.id);
                                 }}
@@ -918,7 +996,6 @@ const CanvasVibeEditor = () => {
                                 <FontAwesomeIcon icon={faTrash} color="red" />
                               </button>
 
-                              {/* Resize handles */}
                               <div
                                 className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
                                 style={{
@@ -931,38 +1008,39 @@ const CanvasVibeEditor = () => {
                           )}
 
                           {el.type === "text" ? (
-                            <>
-                              <div
-                                className="text-element outline-none w-100 h-100 none-scroller p-2"
-                                style={{
-                                  fontSize: `${el.fontSize}px`,
-                                  color: el.color,
-                                  fontFamily: el.fontFamily,
-                                  textShadow: el.shadow,
-                                  fontWeight: el.fontWeight,
-                                  fontStyle: el.fontStyle,
-                                  textDecoration: el.textDecoration,
-                                  textAlign: el.textAlign,
-                                  overflow: "auto",
-                                  whiteSpace: "pre-wrap",
-                                }}
-                                ref={outerDivRef}
-                                contentEditable
-                                suppressContentEditableWarning={true}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    e.preventDefault();
-                                    document.execCommand(
-                                      "insertHTML",
-                                      false,
-                                      "<br><br>"
-                                    );
-                                  }
-                                }}
-                              >
-                                {el.content}
-                              </div>
-                            </>
+                            <div
+                              className="text-element outline-none w-100 h-100 none-scroller p-2"
+                              style={{
+                                fontSize: `${el.fontSize}px`,
+                                color: el.color,
+                                fontFamily: el.fontFamily,
+                                textShadow: el.shadow,
+                                fontWeight: el.fontWeight,
+                                fontStyle: el.fontStyle,
+                                textDecoration: el.textDecoration,
+                                textAlign: el.textAlign,
+                                overflow: "auto",
+                                whiteSpace: "pre-wrap",
+                              }}
+                              ref={outerDivRef}
+                              contentEditable
+                              suppressContentEditableWarning={true}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  document.execCommand(
+                                    "insertHTML",
+                                    false,
+                                    "<br><br>"
+                                  );
+                                }
+                              }}
+                              onInput={(e) => {
+                                console.log(e.target.innerText);
+                              }}
+                            >
+                              {el.content}
+                            </div>
                           ) : (
                             <div className="overflow-hidden h-100 w-100">
                               <img
@@ -973,7 +1051,6 @@ const CanvasVibeEditor = () => {
                                 style={{ objectFit: "contain" }}
                               />
                             </div>
-                            // </div>
                           )}
                         </div>
                       </Rnd>

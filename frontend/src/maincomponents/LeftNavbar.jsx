@@ -99,7 +99,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
           <h5 className="d-flex align-items-center gap-3">
             {ref} Search Your Quote Here
           </h5>
-          <div className="w-100" style={{ maxWidth: "600px" }}>
+          <div className="w-100" style={{ maxWidth: "601px" }}>
             <SearchBaar />
           </div>
         </>
@@ -141,12 +141,20 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     if (onLogout) onLogout();
   };
 
+  useEffect(() => {
+    if (openSlidWin) {
+      document.documentElement.classList.add("no-scroll");
+    } else {
+      document.documentElement.classList.remove("no-scroll");
+    }
+  }, [openSlidWin]);
+
   const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
 
   return (
     <>
       <div
-        className="LeftNavbar d-flex h-100 pt-0 position-fixed"
+        className="LeftNavbar d-flex h-100 pt-0 position-fixed top-0"
         style={{
           zIndex: `${openSlidWin ? 100000 : 100000}`,
           width: `${openSlidWin ? "100%" : "0"}`,
@@ -387,9 +395,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               zIndex: 22200,
               top: 0,
               color: text_clrM,
-              // borderLeft: `1px solid ${text_clrL}`,
 
-              // marginTop: `${mobile_break_point ? "54px" : ""}`,
+              marginTop: `${mobile_break_point ? "54px" : ""}`,
+              marginBottom: `${mobile_break_point ? "48px" : ""}`,
             }}
           >
             {GiveComponent(

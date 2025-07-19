@@ -79,7 +79,7 @@ export const SearchBaar = () => {
   return (
     <>
       <div
-        className="p-2 pt-3 position-relative h-100 search-bar"
+        className="position-relative h-100 search-bar"
         style={{ background: mainbg, zIndex: 1000 }}
       >
         <form

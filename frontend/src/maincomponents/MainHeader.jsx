@@ -119,6 +119,8 @@ function MainHeader({}) {
                           Mark_as_read_notification();
                           setActiveIndex("Notifications");
                           setopenSlidWin(true);
+
+                          setopenSlidWin(!openSlidWin);
                         }}
                       >
                         <div
@@ -144,7 +146,7 @@ function MainHeader({}) {
                         onClick={() => {
                           setUploadClicked(!uploadClicked);
                           setActiveIndex("Upload");
-                          setopenSlidWin(true);
+                          setopenSlidWin(!openSlidWin);
                         }}
                       >
                         <div

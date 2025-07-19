@@ -31,7 +31,8 @@ export const EachPost = ({ user, comment }) => {
   const containerRef = useRef();
   const [fontSize, setFontSize] = useState(16); // default px
 
-  const { admin_user, HandleShare, isDisplayedLeftNav } = useQuote();
+  const { admin_user, HandleShare, isDisplayedLeftNav, mobile_break_point } =
+    useQuote();
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -131,25 +132,55 @@ export const EachPost = ({ user, comment }) => {
 
   const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
 
+  const [expanded, setExpanded] = useState(false);
+  const contentRef = useRef(null);
+  const [height, setHeight] = useState("4.5"); // approx 1 lines height
+  const [shouldTruncate, setShouldTruncate] = useState(false);
+
+  useEffect(() => {
+    if (expanded) {
+      const scrollHeight = contentRef.current.scrollHeight;
+      setHeight(`${scrollHeight}px`);
+    } else {
+      setHeight("4.5em");
+    }
+  }, [expanded]);
+
+  useEffect(() => {
+    const el = contentRef.current;
+
+    if (el) {
+      const isTruncated = el.scrollHeight > el.clientHeight + 1; // buffer for sub-pixel rounding
+      setShouldTruncate(isTruncated);
+    }
+  }, [comment.text]);
+
   return (
-    <div className="p-2" style={{ border: `0px solid ${text_clrL}` }}>
+    <div className="pb-1" style={{ borderBottom: `1px solid ${text_clrL}` }}>
       <div
         className="d-flex flex-column gap-2 position-relative bglight"
         key={comment?._id}
         style={{ background: mainbg }}
       >
         {/*--------------------- user ring and follow btn ----------------------- */}
-        <div className="d-flex gap-2 align-items-center justify-content-between flex-grow-1">
-          <div className="d-flex">
+        <div
+          className={`d-flex gap-2 align-items-center pt-2 pb-2 justify-content-between flex-grow-1 ${
+            mobile_break_point ? "pe-2 ps-2" : ""
+          }`}
+        >
+          <div className="d-flex flex-grow-1">
             <UserRing user={user} />
           </div>
 
-          <div className="d-flex flex-column justify-content-start align-items-end">
+          <div
+            className="d-flex flex-column justify-content-start align-items-end"
+            style={{ minWidth: "max-content" }}
+          >
             {user?._id !== admin_user?._id && (
               <FollowBtn
                 user={user}
-                cls="btn rounded-0 small pe-0"
-                style={{ fontSize: "14px" }}
+                cls="rounded-0 small pe-0 text-primary border-0"
+                style={{ fontSize: "14px", cursor: "pointer" }}
               />
             )}
 
@@ -170,8 +201,10 @@ export const EachPost = ({ user, comment }) => {
           </div>
         </div>
 
+        {/* ---------------------------- post img ------------------------------------ */}
+
         <div className="">
-          <ul style={{ listStyle: "none" }} className="p-0 m-0 rounded-1">
+          <ul style={{ listStyle: "none" }} className="p-0 m-0">
             <div
               className={`d-flex align-items-center`}
               style={{
@@ -180,18 +213,20 @@ export const EachPost = ({ user, comment }) => {
               }}
             >
               <div
-                className="p-0 w-100 rounded-1 position-relative"
+                className="p-0 w-100 position-relative"
                 // style={{ border: "1px solid red" }}
               >
                 <div
-                  className="bg-image rounded-1 d-flex align-items-center flex-column"
+                  className="bg-image d-flex align-items-center flex-column"
                   // style={{ border: `1px solid ${text_clrL}` }}
                 >
                   {mode == "public" && (
                     <img
                       src={`${comment?.images[0]}`}
                       loading="lazy"
-                      className="w-100 h-100 rounded-1"
+                      className={`w-100 h-100 rounded-${
+                        mobile_break_point ? "0" : "1"
+                      }`}
                       style={{
                         objectFit: "cover",
                       }}
@@ -200,14 +235,16 @@ export const EachPost = ({ user, comment }) => {
 
                   {mode == "Follower" && (
                     <div
-                      className="d-flex align-items-center flex-column rounded-1 h-100"
+                      className={`d-flex align-items-center flex-column h-100  rounded-${
+                        mobile_break_point ? "0" : "1"
+                      }`}
                       style={{ background: text_clrM }}
                     >
                       <div style={{ width: "180px" }}>
                         <img
                           src={follow_us}
                           alt=""
-                          className="h-100 w-100 rounded-1"
+                          className={`h-100 w-100`}
                           style={{
                             objectFit: "cover",
                             opacity: "0.4",
@@ -225,23 +262,69 @@ export const EachPost = ({ user, comment }) => {
             </div>
 
             <li
-              className="w-100 flex-grow-1 rounded-3 mt-2"
+              className={`w-100 flex-grow-1 d-flex rounded-3 mt-2 ${
+                mobile_break_point ? "pe-2 ps-2" : ""
+              }`}
               style={{ color: text_clrM }}
             >
               {comment && (
-                <div key={comment.text.slice(0, -1)}>{comment.text}</div>
+                <>
+                  <div
+                    key={comment.text}
+                    className="w-100"
+                    style={{
+                      overflow: "hidden",
+                      transition: "height 0.3s ease",
+                    }}
+                  >
+                    <div
+                      ref={contentRef}
+                      style={{
+                        display: expanded ? "block" : "-webkit-box",
+                        WebkitLineClamp: expanded ? "unset" : 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {comment.text}
+                    </div>
+
+                    {shouldTruncate && (
+                      <button
+                        onClick={() => setExpanded(!expanded)}
+                        aria-expanded={expanded}
+                        className=""
+                        style={{
+                          background: "none",
+                          border: "none",
+                          padding: 0,
+                          color: text_clrM,
+                          fontWeight: "bold",
+                          cursor: "pointer",
+                          fontSize: "inherit",
+                          minWidth: "10px",
+                        }}
+                      >
+                        {expanded ? " less" : " more"}
+                      </button>
+                    )}
+                  </div>
+                </>
               )}
             </li>
           </ul>
         </div>
 
         <div
-          className="d-flex py-2 justify-content-between like-comment-share"
-          style={{ color: text_clrM, borderBottom: `1px solid ${text_clrL}` }}
+          className={`d-flex py-2 justify-content-between like-comment-share  ${
+            mobile_break_point ? "pe- ps-2" : ""
+          }`}
+          style={{ color: text_clrM }}
         >
           <div className="d-flex gap-4">
             {/* <div style={{ translate: "-1px 1px" }}> */}
-            <LikeBtn post={comment} size={32} />
+            <LikeBtn post={comment} size={28} />
             {/* </div> */}
             <span
               className="fw-semibold d-flex align-items-center gap-1"
@@ -255,12 +338,12 @@ export const EachPost = ({ user, comment }) => {
                   color: open_comment ? "#ed5" : "",
                 }}
               >
-                <BiChat size={32} color={open_comment ? "#ed5" : ""} />{" "}
+                <BiChat size={28} color={open_comment ? "#ed5" : ""} />{" "}
                 {comment?.comments?.length || 0}&nbsp;
               </span>
             </span>
             <span className="fw-semibold" onClick={HandleShare}>
-              <BiShare size={32} />
+              <BiShare size={28} />
             </span>
           </div>
 
@@ -269,22 +352,27 @@ export const EachPost = ({ user, comment }) => {
               setdotClicked(!isdotClicked);
             }}
             className=""
-            style={{ rotate: isdotClicked ? "-45deg" : "", translate: "7px" }}
+            style={{
+              rotate: isdotClicked ? "-45deg" : "",
+              translate: mobile_break_point ? "0px" : "7px",
+            }}
           >
-            <BsThreeDotsVertical size={24} />
+            <BsThreeDotsVertical size={22} />
           </span>
         </div>
       </div>
       {isdotClicked && (
         <div
-          className="small fw-medium d-flex flex-wrap gap-3 my-2"
+          className={`small fw-medium d-flex flex-wrap gap-3 my-2 ${
+            mobile_break_point ? "ps-2 pe-2" : ""
+          }`}
           style={{ color: text_clrM }}
         >
           <SlipDotinPost user={user} post={comment} />
         </div>
       )}
       <section
-        className="pe-2 pt-2"
+        className={`${mobile_break_point ? "ps-2 pe-2" : ""}`}
         style={{ background: mainbg, color: text_clrM }}
       >
         <div className="gap-1 pt-2 d-flex flex-column position-relative">
@@ -429,7 +517,20 @@ export const UserRing = ({
             >
               @{user?.username}
             </small>
-            <small className="small">{user?.bio?.slice(0, 24)} . . . .</small>
+            {user && user?.bio && (
+              <small
+                className="small overflow-hidden none-scroller w-100"
+                style={{
+                  height: "18px",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: "vertical",
+                }}
+              >
+                {user?.bio}
+              </small>
+            )}
           </div>
         )}
       </div>

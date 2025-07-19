@@ -94,11 +94,12 @@ export const Notification = ({ setVisibleNotification }) => {
     <>
       {setVisibleNotification && (
         <div
-          className="list p-1 me-1"
+          className="list p-1 me-1 h-100"
           style={{
             width: `calc(100vw - ${
               mobile_break_point ? "4px" : sm_break_point ? "100px" : "265px"
             })`,
+            minHeight: "100px",
             background: mainbg,
             color: text_clrM,
           }}
