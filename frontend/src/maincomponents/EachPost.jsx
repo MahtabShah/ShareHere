@@ -345,7 +345,12 @@ export const EachPost = ({ user, comment }) => {
                 {comment?.comments?.length || 0}&nbsp;
               </span>
             </span>
-            <span className="fw-semibold" onClick={HandleShare}>
+            <span
+              className="fw-semibold"
+              onClick={() => {
+                HandleShare(comment?._id);
+              }}
+            >
               <BiShare size={28} />
             </span>
           </div>
@@ -643,7 +648,7 @@ export const SlipDotinPost = ({ user, post }) => {
         // this way is just for temporary...!!!
 
         <>
-          <Nav.Link href="/home">Edit Post</Nav.Link>
+          {/* <Nav.Link href="/home">Edit Post</Nav.Link> */}
           <Nav.Link onClick={HandleDelete} className=" pe-2 ps-2 text-danger">
             Delete
           </Nav.Link>

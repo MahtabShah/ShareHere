@@ -157,15 +157,15 @@ export const QuoteProvider = ({ children }) => {
     }
   };
 
-  const HandleShare = async () => {
-    const url = new URL(window.location.href);
-    const scrollY = window.scrollY || window.pageYOffset;
-    url.searchParams.set("scroll", scrollY);
+  const HandleShare = async (id) => {
+    // const url = new URL(window.location.href);
+    // const scrollY = window.scrollY || window.pageYOffset;
+    // url.searchParams.set("scroll", scrollY);
 
     const shareData = {
       title: document.title,
       text: "Check out this page!",
-      url: url.toString(),
+      url: `/home/${id}`,
     };
 
     if (navigator.share) {

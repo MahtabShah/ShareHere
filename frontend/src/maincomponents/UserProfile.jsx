@@ -47,6 +47,8 @@ const UserProfile = ({}) => {
     setLazyLoading(user_post.length < 0);
   }, [admin_user?.followers]);
 
+  const [ProfilePicVisble, setProfilePicVisble] = useState(false);
+
   return (
     <>
       <div
@@ -54,6 +56,8 @@ const UserProfile = ({}) => {
         style={{
           paddingTop: `${mobile_break_point ? "50px" : "0"}`,
           background: mainbg,
+          maxWidth: "1200px",
+          margin: "auto",
         }}
       >
         <div
@@ -74,7 +78,9 @@ const UserProfile = ({}) => {
                 minHeight: "100px",
                 background: `url(${user?.profile_pic})`,
                 aspectRatio: "1/1",
+                cursor: "pointer",
               }}
+              onClick={() => setProfilePicVisble(!ProfilePicVisble)}
             />
           </div>
           <img
@@ -103,7 +109,7 @@ const UserProfile = ({}) => {
 
             {id === admin_user?._id && (
               <button
-                className="btn btn-outline-dark btn-sm ms-2"
+                className="btn btn-dark btn-sm ms-2"
                 onClick={() => {
                   nevigate(`/api/user/edit/${admin_user?._id}`);
                 }}
@@ -115,27 +121,54 @@ const UserProfile = ({}) => {
           </div>
         </div>
 
+        {ProfilePicVisble && (
+          <div
+            className="p-4 position-absolute d-flex flex-column pt-5 bg-dark shadow-lg h-100"
+            style={{ zIndex: 9000000 }}
+          >
+            <div className="p-3 rounded bg-black">
+              <div
+                className="fw-bold fs-5 d-flex flex-column align-items-end"
+                style={{ color: text_clrH }}
+              >
+                <button
+                  className="btn btn-danger text-center p-1 my-2"
+                  style={{ width: "37px" }}
+                  onClick={() => setProfilePicVisble(!ProfilePicVisble)}
+                >
+                  X
+                </button>
+              </div>
+              <div className=" flex-grow-1">
+                <img
+                  src={admin_user?.profile_pic}
+                  className=" w-100"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <div
-          className="ps-3 d-flex flex-column justify-content-between"
+          className="ps-2 d-flex flex-column justify-content-between"
           style={{ color: text_clrH }}
         >
           <div className="d-flex  justify-content-between">
             <h4 className="flex-grow-1">{user?.username}</h4>
-            {/* <p className="mb-1">{User?.channel_name}</p> */}
-            {/* <p className="small">{User?.about_user}</p> */}
             <div className="d-flex gap-3 ps-3 pe-3 mt-">
-              <span className="text-center">
+              <span className="text-center small">
                 <span>Followers</span>
                 <h5>{user?.followers?.length || 0}</h5>
               </span>
-              <span className="text-center">
+              <span className="text-center small">
                 <span>Following</span>
                 <h5>{user?.following?.length || 0}</h5>
               </span>
             </div>
           </div>
 
-          <p className="small">
+          <p className="small m-0">
             <span className="fs-6 fw-semibold">
               {user?.bio?.trim().charAt(0)}
             </span>
@@ -143,7 +176,20 @@ const UserProfile = ({}) => {
           </p>
         </div>
 
-        <hr className="bg-light" />
+        {/* <hr className="bg-light" /> */}
+        <div className="m-2 d-flex gap-3" style={{ color: text_clrM }}>
+          <div>
+            <span style={{ color: text_clrH }}>{user_post?.length}</span>{" "}
+            <span> posts</span>
+          </div>
+
+          <div>
+            <span style={{ color: text_clrH }}>
+              {admin_user?.followers?.length}
+            </span>{" "}
+            <span> followers</span>
+          </div>
+        </div>
         <div className="d-flex gap-3 ps-2">
           <button
             className={`btn border p-1 ps-2 pe-2 rounded-5 ${

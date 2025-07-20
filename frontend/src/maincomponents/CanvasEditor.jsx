@@ -359,6 +359,8 @@ const CanvasVibeEditor = () => {
     return res.data.secure_url;
   };
 
+  const [error, setError] = useState("");
+
   const handleInput = (idx, e, key) => {
     if (key === "text") {
       setText(e.target.value);
@@ -374,13 +376,22 @@ const CanvasVibeEditor = () => {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
+
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!admin_user) {
-      nevigate("/login") || nevigate("/signup");
+      const confirm = window.confirm("You have to sign up or login to post");
+      if (confirm) {
+        nevigate("/login") || nevigate("/signup");
+      }
+    } else if (text == "") {
+      setError("Plese write something aboute post !");
+      return;
     }
+
     setLazyLoading(true);
 
     try {
@@ -404,7 +415,7 @@ const CanvasVibeEditor = () => {
       }
     } catch (err) {
       alert(
-        "Failed to save sentence: " +
+        "Failed to post, Connection Error or internal issue: " +
           (err.response?.data?.message || err.message)
       );
       // setErrors(err.response?.data?.message || err.message);
@@ -439,18 +450,6 @@ const CanvasVibeEditor = () => {
   return (
     <div className="shadow-lg" style={{ background: mainbg }}>
       <div className="">
-        {/* <div className="row">
-          <div className="col-12 ms-2">
-            <h1 className="display-5 fw-bold ">
-              <FontAwesomeIcon icon={faExpand} className="me-2" />
-              VIBE Canva Editor
-            </h1>
-            <p className="lead">
-              Create stunning posts and export them as VIBE
-            </p>
-          </div>
-        </div> */}
-
         <div className="pt-0">
           <div className="d-flex">
             <div
@@ -948,7 +947,7 @@ const CanvasVibeEditor = () => {
                       disableDragging={
                         activeElement?.id == el.id ? false : true
                       }
-                      onPointerDown={() => {
+                      onClick={() => {
                         setActiveId(el.id);
                       }}
                     >
@@ -1006,7 +1005,7 @@ const CanvasVibeEditor = () => {
                               textAlign: el.textAlign,
                               whiteSpace: "pre-wrap",
                             }}
-                            contentEditable
+                            contentEditable={activeElement?.id === el?.id}
                             suppressContentEditableWarning={true}
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
@@ -1060,18 +1059,6 @@ const CanvasVibeEditor = () => {
             </div>
           </div> */}
         </div>
-
-        {/* {elements.length <= 0 && (
-          <div className="row mt-3 p-2">
-            <div className="col-12">
-              <div className="alert alert-info text-center">
-                <p className="mb-0">
-                  Select an element to customize its properties
-                </p>
-              </div>
-            </div>
-          </div>
-        )} */}
       </div>
 
       <div
@@ -1147,13 +1134,16 @@ const CanvasVibeEditor = () => {
             <div style={{ fontWeight: "bold" }}>
               @{admin_user?.username || "Mahtab"}
             </div>
-            {/* <small style={{ color: "#888" }}>Visibility: Public</small> */}
+            <small style={{ color: "#888" }}>
+              Visibility: {activeBtn3Profile}
+            </small>
           </div>
         </div>
         <div className="mt-2">
           <textarea
             ref={textareaRef}
             value={text}
+            required
             onChange={(e) => {
               handleInput(0, e, "text");
             }}
@@ -1164,10 +1154,9 @@ const CanvasVibeEditor = () => {
               resize: "none",
               background: mainbg,
               color: text_clrM,
-              border: `0px solid ${text_clrL}`,
+              border: `${error ? "1px solid red" : "0"}`,
             }}
             spellCheck="false"
-            required
           />
         </div>
       </div>
@@ -1191,9 +1180,7 @@ const CanvasVibeEditor = () => {
           className="btn btn-danger flex-grow-1 rounded-0"
           style={{ height: "42px" }}
           disabled={LazyLoading}
-          onClick={() => {
-            handleSubmit();
-          }}
+          onClick={handleSubmit}
         >
           {LazyLoading ? <Loading clr={"white"} /> : "Post"}
         </button>
