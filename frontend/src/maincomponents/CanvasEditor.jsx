@@ -195,6 +195,8 @@ const CanvasVibeEditor = () => {
       fontWeight: "normal",
       fontStyle: "normal",
       textDecoration: "none",
+      background: "transparent",
+
       textAlign: "left",
     };
     setElements([...elements, newText]);
@@ -214,6 +216,7 @@ const CanvasVibeEditor = () => {
       width: 40,
       height: 10,
       zIndex: elements.length + 1,
+      background: "transparent",
     };
     setElements([...elements, newImage]);
     setActiveId(newImage.id);
@@ -500,7 +503,7 @@ const CanvasVibeEditor = () => {
                             id="textHeight"
                             min="8"
                             max="120"
-                            value={activeElement?.fontSize || 28}
+                            value={activeElement?.fontSize}
                             style={{
                               width: "34px",
                               fontSize: "14px",
@@ -741,12 +744,43 @@ const CanvasVibeEditor = () => {
                               type="color"
                               className="form-control form-control-color w-100 props-btn border"
                               style={{ scale: 3 }}
-                              value={canvasBgColor}
-                              onChange={(e) => setCanvasBgColor(e.target.value)}
+                              value={
+                                activeElement
+                                  ? activeElement.background
+                                  : canvasBgColor
+                              }
+                              onChange={(e) =>
+                                activeElement
+                                  ? handleChange(
+                                      activeId,
+                                      "background",
+                                      e.target.value
+                                    )
+                                  : setCanvasBgColor(e.target.value)
+                              }
                             />
                           </div>
                         </div>
                       </div>
+
+                      <button
+                        className="props-btn fw-medium toolbar-button"
+                        style={{
+                          border: `1px solid ${text_clrL}`,
+                        }}
+                        disabled={!activeElement}
+                        onClick={() => {
+                          activeElement
+                            ? handleChange(
+                                activeId,
+                                "background",
+                                "transparent"
+                              )
+                            : "";
+                        }}
+                      >
+                        &nbsp; reset bg&nbsp;
+                      </button>
 
                       <div
                         className="d-flex gap-2 btn p-0 toolbar-button"
@@ -935,19 +969,23 @@ const CanvasVibeEditor = () => {
                         width: `${el.width}px`,
                         height: `${el.height}px`,
                         zIndex: el.zIndex,
-                        border:
-                          activeId === el.id ? "2px dashed #0d6efd" : "none",
+                        border: activeId === el.id ? "2px dashed #0d6efd" : "",
                         boxShadow:
                           activeId === el.id
                             ? "0 0 10px rgba(13, 110, 253, 0.5)"
                             : "none",
-                        cursor: "move",
+                        cursor: activeElement ? "move" : "",
                       }}
                       spellCheck={false}
                       disableDragging={
                         activeElement?.id == el.id ? false : true
                       }
-                      onClick={() => {
+                      enableUserSelectHack={
+                        activeElement?.id == el.id ? true : false
+                      }
+                      enableResizing={activeElement?.id == el.id ? true : false}
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setActiveId(el.id);
                       }}
                     >
@@ -1003,7 +1041,9 @@ const CanvasVibeEditor = () => {
                               fontStyle: el.fontStyle,
                               textDecoration: el.textDecoration,
                               textAlign: el.textAlign,
+                              background: el.background,
                               whiteSpace: "pre-wrap",
+                              userSelect: "none",
                             }}
                             contentEditable={activeElement?.id === el?.id}
                             suppressContentEditableWarning={true}

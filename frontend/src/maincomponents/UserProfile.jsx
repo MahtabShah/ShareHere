@@ -141,7 +141,7 @@ const UserProfile = ({}) => {
               </div>
               <div className=" flex-grow-1">
                 <img
-                  src={admin_user?.profile_pic}
+                  src={user?.profile_pic}
                   className=" w-100"
                   style={{ objectFit: "cover" }}
                 />
