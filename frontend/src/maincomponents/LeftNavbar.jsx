@@ -96,7 +96,16 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     if (activeIndex == "Search") {
       return (
         <>
-          <h5 className="d-flex align-items-center gap-3">
+          <h5
+            className="d-flex align-items-center gap-2 mx-1 position-fixed  py-2"
+            style={{
+              zIndex: 9999999,
+              top: 0,
+              left: 0,
+              right: 0,
+              background: mainbg,
+            }}
+          >
             {ref} Search Your Quote Here
           </h5>
           <div className="w-100" style={{ maxWidth: "601px" }}>
@@ -108,7 +117,16 @@ export default function LeftNavbar({ onActiveChange = "" }) {
       return (
         <>
           {" "}
-          <h5 className="d-flex align-items-center gap-3">
+          <h5
+            className="d-flex align-items-center gap-2 mx-1 position-fixed py-2"
+            style={{
+              zIndex: 9999999,
+              top: 0,
+              left: 0,
+              right: 0,
+              background: mainbg,
+            }}
+          >
             {ref} All Notifications
           </h5>
           <Notification setVisibleNotification={setVisibleNotification} />
@@ -117,7 +135,16 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     } else if (activeIndex == "Upload") {
       return (
         <>
-          <h5 className="d-flex align-items-center gap-3">
+          <h5
+            className="d-flex align-items-center gap-2 mx-1 position-fixed  py-2"
+            style={{
+              zIndex: 9999999,
+              top: 0,
+              left: 0,
+              right: 0,
+              background: mainbg,
+            }}
+          >
             {ref} Upload Your Thought Here
           </h5>
           <CanvasVibeEditor />
