@@ -372,8 +372,11 @@ const CanvasVibeEditor = () => {
   };
 
   const deleteElement = (id) => {
-    setElements((prev) => prev.filter((el) => el.id !== id));
-    setContinuousActiveId();
+    const conf = window.confirm("want to delete this element !");
+    if (conf) {
+      setElements((prev) => prev.filter((el) => el.id !== id));
+      setContinuousActiveId();
+    }
   };
 
   const bringToFront = (id) => {
@@ -797,10 +800,7 @@ const CanvasVibeEditor = () => {
                     }`}
                     style={{ minWidth: "max-content" }}
                     onPointerDown={() => {
-                      const conf = window.confirm(
-                        "want to delete this element !"
-                      );
-                      if (conf) {
+                      if (activeElement) {
                         deleteElement(activeElement?.id);
                       }
                     }}
@@ -1020,7 +1020,7 @@ const CanvasVibeEditor = () => {
 
             <div
               style={{
-                marginTop: `${detailsOpen ? `310px` : "200px"}`,
+                marginTop: `${detailsOpen ? `310px` : "204px"}`,
                 width: "100%",
               }}
             >
