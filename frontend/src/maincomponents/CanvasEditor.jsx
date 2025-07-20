@@ -797,7 +797,10 @@ const CanvasVibeEditor = () => {
                     }`}
                     style={{ minWidth: "max-content" }}
                     onPointerDown={() => {
-                      if (window.confirm("want to delete this element !")) {
+                      const conf = window.confirm(
+                        "want to delete this element !"
+                      );
+                      if (conf) {
                         deleteElement(activeElement?.id);
                       }
                     }}
