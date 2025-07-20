@@ -160,7 +160,151 @@ const pre_bg_color = [
   "#2B580C",
 ];
 
+const color = [
+  "#A294F9",
+  "#F1F0E8",
+  "#89A8B2",
+  "#D91656",
+  "#640D5F",
+  "#355F2E",
+  "#441752",
+  "#F72C5B",
+  "#F0BB78",
+  "#131010",
+  "#3E5879",
+  "#C84C05",
+  "#074799",
+  "#8D0B41",
+  "#7E5CAD",
+  "#500073",
+  "#8D77AB",
+  "#FFE9D6",
+  "#D7C1E0",
+  "#EEF5FF",
+  "#7E30E1",
+  "#B0D553",
+  "#D4F6CC",
+  "#171717",
+  "#DA0037",
+  "#217756",
+  "#008DDA",
+  "#664343",
+  "#E0AB5B",
+  "#FFA6D5",
+  "#240750",
+  "#3B3030",
+  "#5FBDFF",
+  "#7B66FF",
+  "#FFF8CD",
+  "#D4D7DD",
+  "#A888B5",
+  "#000B58",
+  "#F67280",
+  "#46B7B9",
+  "#8D72E1",
+  "#2B580C",
+];
+
+const fontFamily = [
+  "Arial",
+  "Times New Roman",
+  "Courier New",
+  "Georgia",
+  "Verdana",
+  "Comic Sans MS",
+  "Tahoma",
+  "Lucida Console",
+  "Helvetica",
+  "Trebuchet MS",
+  "Impact",
+  "Palatino Linotype",
+  "Book Antiqua",
+  "Lucida Sans Unicode",
+  "Garamond",
+  "Segoe UI",
+];
+
+const fontSize = [
+  7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 22, 24, 26, 28, 30, 34, 38,
+  40, 45, 50, 55, 60, 70,
+];
+
+const letterSpacing = [
+  0.1, 0.2, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 10,
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 22, 24, 26, 28, 30, 34, 38,
+];
+
+const textDecoration = ["none", "underline", "overline", "line-through"];
+
+const textShadow = [
+  "none",
+  "1px 1px 2px black",
+  "2px 2px 4px rgba(0, 0, 0, 0.5)",
+  "0 0 3px #FF0000",
+  "0 0 5px #00FFFF",
+  "1px 0 5px #000",
+  "2px 2px 0 #999",
+  "0 1px 3px rgba(0,0,0,0.3)",
+  "1px 1px 1px rgba(255,255,255,0.8)",
+  "2px 2px 8px #444",
+  "0 0 10px #FFF, 0 0 20px #F0F, 0 0 30px #0FF",
+  "3px 3px 5px rgba(0,0,0,0.7)",
+  "1px 2px 2px #333",
+  "-1px -1px 0 #000, 1px 1px 0 #fff", // outline effect
+  "4px 4px 6px rgba(0,0,0,0.4)",
+  "0px 4px 3px rgba(0, 0, 0, 0.3)",
+];
+
+const boxShadow = [
+  "none",
+  "1px 1px 2px black",
+  "2px 2px 4px rgba(0, 0, 0, 0.5)",
+  "0 0 3px #FF0000",
+  "0 0 5px #00FFFF",
+  "1px 0 5px #000",
+  "2px 2px 0 #999",
+  "0 1px 3px rgba(0,0,0,0.3)",
+  "1px 1px 1px rgba(255,255,255,0.8)",
+  "2px 2px 8px #444",
+  "0 0 10px #FFF, 0 0 20px #F0F, 0 0 30px #0FF",
+  "3px 3px 5px rgba(0,0,0,0.7)",
+  "1px 2px 2px #333",
+  "-1px -1px 0 #000, 1px 1px 0 #fff", // outline effect
+  "4px 4px 6px rgba(0,0,0,0.4)",
+  "0px 4px 3px rgba(0, 0, 0, 0.3)",
+];
+
+const backgroundPosition = [
+  "center top",
+  "center center",
+  "center bottom",
+  "bottom",
+  "top",
+  "right",
+  "left",
+];
+
+const backgroundSize = [
+  "auto", // default
+  "cover", // scale to cover entire area
+  "contain", // scale to fit inside the area
+  "100% 100%", // stretch to fill
+  "50% 50%", // half width and height
+  "100% auto", // full width, auto height
+  "auto 100%", // auto width, full height
+];
+
 import { useTheme } from "../context/Theme";
+
+import {
+  FaRegSun, // Could represent "glow" effect
+  FaPaintBrush, // Styling/text effects
+  FaAdjust, // Used for contrast/shadow
+  FaLayerGroup, // For multi-layer effects like shadows
+  FaRegSquare, // Could be used to symbolize a backdrop or outline
+  FaMagic, // For visual effects like shadows/glow
+  FaFireAlt, // Can represent a fiery text effect (strong glow)
+} from "react-icons/fa";
 
 const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
@@ -169,6 +313,9 @@ const CanvasVibeEditor = () => {
   const [canvasBgColor, setCanvasBgColor] = useState("#303030ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
+  const [active_style, setActive_style] = useState(fontFamily);
+  const [style_type, setStyle_type] = useState("fontFamily");
+
   const canvasRef = useRef(null);
   const nevigate = useNavigate();
 
@@ -179,9 +326,6 @@ const CanvasVibeEditor = () => {
     const newText = {
       id: idCounter++,
       type: "text",
-      // content: `
-
-      //                                     `,
       content: "Type Here",
       x: 50,
       y: 50,
@@ -190,14 +334,15 @@ const CanvasVibeEditor = () => {
       fontSize: 28,
       fontFamily: "Arial",
       color: "#c6c3c3ff",
-      // shadow: "2px 2px 4px rgba(0,0,0,0.5)",
       zIndex: elements.length + 1,
       fontWeight: "normal",
       fontStyle: "normal",
       textDecoration: "none",
       background: "transparent",
-
+      letterSpacing: "1",
       textAlign: "left",
+      textShadow: "",
+      backgroundPosition: "",
     };
     setElements([...elements, newText]);
     setActiveId(newText.id);
@@ -217,6 +362,7 @@ const CanvasVibeEditor = () => {
       height: 10,
       zIndex: elements.length + 1,
       background: "transparent",
+      boxShadow: "",
     };
     setElements([...elements, newImage]);
     setActiveId(newImage.id);
@@ -377,7 +523,7 @@ const CanvasVibeEditor = () => {
     }
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}`;
     }
 
     setError("");
@@ -435,21 +581,6 @@ const CanvasVibeEditor = () => {
     }
   }, []);
 
-  const txtareaRef = useRef(null);
-
-  const isSyncing = useRef(false); // To avoid infinite loop
-
-  // Sync scrolls both ways
-  const syncScroll = (source, target) => {
-    if (!isSyncing.current) {
-      isSyncing.current = true;
-      target.scrollTop = source.scrollTop;
-      setTimeout(() => {
-        isSyncing.current = false;
-      }, 0);
-    }
-  };
-
   return (
     <div className="shadow-lg" style={{ background: mainbg }}>
       <div className="">
@@ -459,7 +590,7 @@ const CanvasVibeEditor = () => {
               className="card border-0 shadow-sm "
               style={{ background: mainbg }}
             >
-              <div className="card border-0 shadow-sm position-sticky mb-2">
+              <div className="card border-0 shadow-sm position-sticky mb-3 bg-dark">
                 <div
                   className="py-2 positio-fixed bg-dark"
                   // style={{ border: "2px solid red" }}
@@ -662,35 +793,6 @@ const CanvasVibeEditor = () => {
                         &nbsp; reset bg&nbsp;
                       </button>
 
-                      <div
-                        className="d-flex gap-2 btn p-0 toolbar-button"
-                        style={{
-                          border: `1px solid ${text_clrL}`,
-                          width: "120px",
-                        }}
-                      >
-                        <label
-                          className="small d-flex align-items-center flex-grow-1 ps-2"
-                          style={{
-                            color: text_clrM,
-                          }}
-                        >
-                          Height{" "}
-                        </label>
-                        <input
-                          type="number"
-                          className=" props-btn ps-2 p-0 border-0"
-                          style={{
-                            // minWidth: "40px",
-                            background: "transparent",
-                            color: text_clrM,
-                          }}
-                          value={canvasHeight}
-                          onChange={(e) =>
-                            setCanvasHeight(parseInt(e.target.value))
-                          }
-                        />
-                      </div>
                       <button className="btn flex-grow-1 overflow-hidden btn-success props-btn rounded-0 p-0">
                         <label className="btn btn-success props-btn gap-2 rounded-0">
                           Add{" "}
@@ -885,7 +987,13 @@ const CanvasVibeEditor = () => {
                           className={`btn  toolbar-button ${
                             activeElement ? "active" : ""
                           }`}
-                          onPointerDown={() => deleteElement(activeElement?.id)}
+                          onPointerDown={() => {
+                            if (
+                              window.confirm("want to delete this element !")
+                            ) {
+                              deleteElement(activeElement?.id);
+                            }
+                          }}
                           disabled={!activeElement}
                         >
                           <FontAwesomeIcon icon={faTrash} />
@@ -909,26 +1017,6 @@ const CanvasVibeEditor = () => {
                         </button> */}
                       </div>
                     </div>
-
-                    {/* 
-                      <div className="d-flex gap-2 small flex-wrap">
-                        <div className="mb-3 flex-grow-1">
-                          <label className="form-label">Text Shadow</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="e.g. 2px 2px 4px #000"
-                            value={activeElement?.shadow}
-                            onChange={(e) =>
-                              handleChange(
-                                activeElement?.id,
-                                "shadow",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
-                      </div> */}
                   </>
 
                   {mobile_break_point && (
@@ -956,6 +1044,175 @@ const CanvasVibeEditor = () => {
                     </div>
                   )}
                 </div>
+
+                <details className="bg-dark mx-2">
+                  <summary
+                    className="mx-1 fs-4"
+                    style={{ color: text_clrH }}
+                  ></summary>
+
+                  <div className="d-flex gap-2 btn-tool overflow-x-auto none-scroller p-2 bg-dark ">
+                    <div
+                      className="toolbar-button d-flex align-items-center rounded-0 p-0 pe-2 ps-2 fontFamily "
+                      onClick={() => {
+                        setActive_style(fontFamily);
+                        setStyle_type("fontFamily");
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        background: `${
+                          active_style === fontFamily ? "#6b0ad2" : ""
+                        }`,
+                        color: `${active_style === fontFamily ? "#fff" : ""}`,
+                      }}
+                    >
+                      <FaFont />
+                    </div>
+
+                    <div
+                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 fontSize"
+                      onClick={() => {
+                        setActive_style(fontSize);
+                        setStyle_type("fontSize");
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        background: `${
+                          active_style === fontSize ? "#6b0ad2" : ""
+                        }`,
+                        color: `${active_style === fontSize ? "#fff" : ""}`,
+                      }}
+                    >
+                      <FaTextHeight title="Increase Font Size" />
+                    </div>
+
+                    <div
+                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
+                      onClick={() => {
+                        setActive_style(textShadow);
+                        setStyle_type("textShadow");
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        background: `${
+                          active_style === textShadow ? "#6b0ad2" : ""
+                        }`,
+                        color: `${active_style === textShadow ? "#fff" : ""}`,
+                      }}
+                    >
+                      {/* <FaShadow title="FaShadow" /> */}
+                      <FaMagic title="FaShadow" />
+                    </div>
+
+                    <div
+                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
+                      onClick={() => {
+                        setActive_style(textDecoration);
+                        setStyle_type("textDecoration");
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        background: `${
+                          active_style === textDecoration ? "#6b0ad2" : ""
+                        }`,
+                        color: `${
+                          active_style === textDecoration ? "#fff" : ""
+                        }`,
+                      }}
+                    >
+                      <FaStrikethrough title="Strikethrough" />
+                    </div>
+
+                    <div
+                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
+                      onClick={() => {
+                        setActive_style(color);
+                        setStyle_type("color");
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        background: `${
+                          active_style === color ? "#6b0ad2" : ""
+                        }`,
+                        color: `${active_style === color ? "#fff" : ""}`,
+                      }}
+                    >
+                      Color
+                    </div>
+
+                    <div
+                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 letterSpacing"
+                      onClick={() => {
+                        setActive_style(letterSpacing);
+                        setStyle_type("letterSpacing");
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        background: `${
+                          active_style === letterSpacing ? "#6b0ad2" : ""
+                        }`,
+                        color: `${
+                          active_style === letterSpacing ? "#fff" : ""
+                        }`,
+                      }}
+                    >
+                      Spacing
+                    </div>
+
+                    <div
+                      className="toolbar-button d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 backgroundPosition "
+                      onClick={() => {
+                        setActive_style(boxShadow);
+                        setStyle_type("boxShadow");
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        background: `${
+                          active_style === boxShadow ? "#6b0ad2" : ""
+                        }`,
+                        color: `${active_style === boxShadow ? "#fff" : ""}`,
+                      }}
+                    >
+                      box Shadow
+                    </div>
+                  </div>
+
+                  <div className="d-flex gap-3 bg-dark text-light m-2 overflow-x-auto overflow-y-hidden none-scroller">
+                    {active_style.map((op) => (
+                      <button
+                        className={`props-btn toolbar-button ${
+                          activeElement?.[style_type] == op ? "active" : ""
+                        }`}
+                        style={{
+                          color: text_clrM,
+                          minWidth: "fit-content",
+                          minHeight: "max-height",
+                          boxShadow: `${style_type == "boxShadow" ? op : ""}`,
+                        }}
+                        onClick={() => {
+                          handleChange(activeId, style_type, op);
+                        }}
+                      >
+                        <span
+                          className="btn border-0"
+                          style={{
+                            color: text_clrM,
+                            [style_type]: `${
+                              op == "fontSize" || style_type == "boxShadow"
+                                ? ""
+                                : op
+                            }`,
+                          }}
+                        >
+                          {style_type == "textShadow" ||
+                          style_type == "boxShadow"
+                            ? "A"
+                            : op}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </details>
               </div>
 
               <div>
@@ -1021,7 +1278,7 @@ const CanvasVibeEditor = () => {
                                 width: "18px",
                                 height: "18px",
                               }}
-                              onPointerDown={(e) => {
+                              onClick={(e) => {
                                 e.stopPropagation();
                                 setActiveId(null);
                               }}
@@ -1047,7 +1304,6 @@ const CanvasVibeEditor = () => {
                               fontSize: `${el.fontSize}px`,
                               color: el.color,
                               fontFamily: el.fontFamily,
-                              textShadow: el.shadow,
                               fontWeight: el.fontWeight,
                               fontStyle: el.fontStyle,
                               textDecoration: el.textDecoration,
@@ -1055,6 +1311,9 @@ const CanvasVibeEditor = () => {
                               background: el.background,
                               whiteSpace: "pre-wrap",
                               userSelect: "none",
+                              letterSpacing: `${el.letterSpacing}px`,
+                              textShadow: el.textShadow,
+                              boxShadow: el.boxShadow,
                             }}
                             contentEditable={activeElement?.id === el?.id}
                             suppressContentEditableWarning={true}
@@ -1078,7 +1337,10 @@ const CanvasVibeEditor = () => {
                               alt="uploaded"
                               className="image-element w-100"
                               draggable={false}
-                              style={{ objectFit: "contain" }}
+                              style={{
+                                objectFit: "contain",
+                                boxShadow: el.boxShadow,
+                              }}
                             />
                           </div>
                         )}
@@ -1098,17 +1360,6 @@ const CanvasVibeEditor = () => {
               </div>
             </div>
           </div>
-          {/* 
-          <div className="col-md-3">
-            <div className="card border-0 shadow-sm mb-4">
-              <div className="card-header bg-primary text-white">
-                <strong>Canvas Settings</strong>
-              </div>
-              <div className="card-body">
-               
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
 
