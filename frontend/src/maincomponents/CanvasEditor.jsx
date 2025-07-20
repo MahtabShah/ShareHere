@@ -487,7 +487,7 @@ const CanvasVibeEditor = () => {
                     >
                       <div>
                         <div
-                          className="btn d-flex gap-2 align-items-center props-btn toolbar-button"
+                          className="btn d-flex gap-2 align-items-center props-btn toolbar-button flex-grow-1"
                           style={{ border: `1px solid ${text_clrL}` }}
                         >
                           <FontAwesomeIcon
@@ -580,126 +580,6 @@ const CanvasVibeEditor = () => {
                         </select>
                       </div>
 
-                      <button
-                        className={`toolbar-button   ${
-                          activeElement?.fontWeight === "bold" ? "active" : ""
-                        }`}
-                        onClick={() =>
-                          handleChange(
-                            activeElement?.id,
-                            "fontWeight",
-                            activeElement?.fontWeight === "bold"
-                              ? "normal"
-                              : "bold"
-                          )
-                        }
-                        disabled={!activeElement}
-                      >
-                        <FontAwesomeIcon
-                          icon={faBold}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
-                      <button
-                        className={`toolbar-button ${
-                          activeElement?.fontStyle === "italic" ? "active" : ""
-                        }`}
-                        style={{ border: `` }}
-                        onClick={() =>
-                          handleChange(
-                            activeElement?.id,
-                            "fontStyle",
-                            activeElement?.fontStyle === "italic"
-                              ? "normal"
-                              : "italic"
-                          )
-                        }
-                        disabled={!activeElement}
-                      >
-                        <FontAwesomeIcon
-                          icon={faItalic}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
-                      <button
-                        className={`toolbar-button ${
-                          activeElement?.textDecoration === "underline"
-                            ? "active"
-                            : ""
-                        }`}
-                        style={{ border: `` }}
-                        onClick={() =>
-                          handleChange(
-                            activeElement?.id,
-                            "textDecoration",
-                            activeElement?.textDecoration === "underline"
-                              ? "none"
-                              : "underline"
-                          )
-                        }
-                        disabled={!activeElement}
-                      >
-                        <FontAwesomeIcon
-                          icon={faUnderline}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
-                      <button
-                        className={`toolbar-button ${
-                          activeElement?.textAlign === "left" ? "active" : ""
-                        }   props-btn `}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "left")
-                        }
-                        disabled={!activeElement}
-                      >
-                        <FontAwesomeIcon
-                          icon={faAlignLeft}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
-                      <button
-                        className={`toolbar-button ${
-                          activeElement?.textAlign === "center" ? "active" : ""
-                        }`}
-                        style={{ border: `` }}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "center")
-                        }
-                        disabled={!activeElement}
-                      >
-                        <FontAwesomeIcon
-                          icon={faAlignCenter}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
-                      <button
-                        className={`toolbar-button ${
-                          activeElement?.textAlign === "right" ? "active" : ""
-                        }`}
-                        style={{ border: `` }}
-                        onClick={() =>
-                          handleChange(activeElement?.id, "textAlign", "right")
-                        }
-                        disabled={!activeElement}
-                      >
-                        <FontAwesomeIcon
-                          icon={faAlignRight}
-                          fontSize={12}
-                          color={text_clrM}
-                        />
-                      </button>
-
                       <div
                         className="btn overflow-hidden p-0 props-btn toolbar-button"
                         style={{ border: `` }}
@@ -764,7 +644,7 @@ const CanvasVibeEditor = () => {
                       </div>
 
                       <button
-                        className="props-btn fw-medium toolbar-button"
+                        className="props-btn fw-medium toolbar-button flex-grow-1"
                         style={{
                           border: `1px solid ${text_clrL}`,
                         }}
@@ -811,32 +691,163 @@ const CanvasVibeEditor = () => {
                           }
                         />
                       </div>
+                      <button className="btn flex-grow-1 overflow-hidden btn-success props-btn rounded-0 p-0">
+                        <label className="btn btn-success props-btn gap-2 rounded-0">
+                          Add{" "}
+                          <FontAwesomeIcon icon={faImage} color={text_clrH} />
+                          <input
+                            type="file"
+                            className="d-none"
+                            accept="image/*"
+                            onChange={(e) => addImageBox(e.target.files[0])}
+                          />
+                        </label>
+                      </button>
+
+                      <button
+                        className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
+                        onClick={addTextBox}
+                      >
+                        <div className="props-btn rounded-0">
+                          Add Text &nbsp;
+                          <FontAwesomeIcon
+                            icon={faTextHeight}
+                            className="me-2"
+                          />
+                        </div>
+                      </button>
 
                       <div className="d-flex flex-wrap gap-2">
-                        <button className="btn overflow-hidden btn-success props-btn rounded-0 p-0">
-                          <label className="btn btn-success props-btn gap-2 rounded-0">
-                            Add{" "}
-                            <FontAwesomeIcon icon={faImage} color={text_clrH} />
-                            <input
-                              type="file"
-                              className="d-none"
-                              accept="image/*"
-                              onChange={(e) => addImageBox(e.target.files[0])}
-                            />
-                          </label>
+                        <button
+                          className={`toolbar-button   ${
+                            activeElement?.fontWeight === "bold" ? "active" : ""
+                          }`}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "fontWeight",
+                              activeElement?.fontWeight === "bold"
+                                ? "normal"
+                                : "bold"
+                            )
+                          }
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon
+                            icon={faBold}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
                         </button>
 
                         <button
-                          className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
-                          onClick={addTextBox}
+                          className={`toolbar-button ${
+                            activeElement?.fontStyle === "italic"
+                              ? "active"
+                              : ""
+                          }`}
+                          style={{ border: `` }}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "fontStyle",
+                              activeElement?.fontStyle === "italic"
+                                ? "normal"
+                                : "italic"
+                            )
+                          }
+                          disabled={!activeElement}
                         >
-                          <div className="props-btn rounded-0">
-                            Add Text &nbsp;
-                            <FontAwesomeIcon
-                              icon={faTextHeight}
-                              className="me-2"
-                            />
-                          </div>
+                          <FontAwesomeIcon
+                            icon={faItalic}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.textDecoration === "underline"
+                              ? "active"
+                              : ""
+                          }`}
+                          style={{ border: `` }}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "textDecoration",
+                              activeElement?.textDecoration === "underline"
+                                ? "none"
+                                : "underline"
+                            )
+                          }
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon
+                            icon={faUnderline}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.textAlign === "left" ? "active" : ""
+                          }   props-btn `}
+                          onClick={() =>
+                            handleChange(activeElement?.id, "textAlign", "left")
+                          }
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon
+                            icon={faAlignLeft}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.textAlign === "center"
+                              ? "active"
+                              : ""
+                          }`}
+                          style={{ border: `` }}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "textAlign",
+                              "center"
+                            )
+                          }
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon
+                            icon={faAlignCenter}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.textAlign === "right" ? "active" : ""
+                          }`}
+                          style={{ border: `` }}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "textAlign",
+                              "right"
+                            )
+                          }
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon
+                            icon={faAlignRight}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
                         </button>
 
                         <button

@@ -13,7 +13,13 @@ const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   const nevigate = useNavigate();
   const { id } = useParams();
-  const { admin_user, all_posts, all_user, mobile_break_point } = useQuote();
+  const {
+    admin_user,
+    all_posts,
+    all_user,
+    mobile_break_point,
+    sm_break_point,
+  } = useQuote();
   // setUser(User);
   // setUser(User);
   const user = all_user?.find((u) => u?._id === id);
@@ -123,14 +129,25 @@ const UserProfile = ({}) => {
 
         {ProfilePicVisble && (
           <div
-            className="p-4 position-absolute d-flex flex-column pt-5 bg-dark shadow-lg h-100"
-            style={{ zIndex: 9000000 }}
+            className="p-4 position-fixed d-flex flex-column pt-5 bg-dark shadow-lg h-100"
+            style={{
+              zIndex: 900,
+              bottom: 0,
+              top: 0,
+              width: `${
+                mobile_break_point
+                  ? "100%"
+                  : sm_break_point
+                  ? "calc(100% - 50px)"
+                  : "calc(100% - 224px)"
+              }`,
+            }}
           >
-            <div className="p-3 rounded bg-black">
-              <div
-                className="fw-bold fs-5 d-flex flex-column align-items-end"
-                style={{ color: text_clrH }}
-              >
+            <div className="p-3 rounded bg-black  mt-5">
+              <div className="fw-bold d-flex  align-items-end mb-2 justify-content-between ">
+                <p className="text-center small text-warning mt-2">
+                  ! Use Square size of pic for better visiblity
+                </p>
                 <button
                   className="btn btn-danger text-center p-1 my-2"
                   style={{ width: "37px" }}
