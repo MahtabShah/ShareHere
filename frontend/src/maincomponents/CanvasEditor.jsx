@@ -375,7 +375,6 @@ const CanvasVibeEditor = () => {
     const conf = window.confirm("want to delete this element !");
     if (conf) {
       setElements((prev) => prev.filter((el) => el.id !== id));
-      setContinuousActiveId();
     }
   };
 
