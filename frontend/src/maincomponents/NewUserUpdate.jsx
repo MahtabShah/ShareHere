@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useQuote } from "../context/QueotrContext";
 import { UserRing, FollowBtn } from "./EachPost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -69,15 +69,20 @@ const SuggetionSlip = () => {
 };
 
 export const SuggetionSlipInPost = () => {
-  const { all_user, sm_break_point, mobile_break_point } = useQuote();
-  const rn = Math.random() * (all_user.length - 5) || 0;
-  const some_user = all_user.slice(rn, rn + 5);
+  const { all_user, sm_break_point, mobile_break_point, admin_user } =
+    useQuote();
+  const rn = Math.floor(Math.random() * (all_user.length - 5) || 0);
+  const some_user = all_user
+    .filter((u) => !u?.followers?.includes(admin_user?.id))
+    .slice(rn, rn + 5);
+
+  console.log(all_user, admin_user?._id);
 
   return (
     <>
       {some_user?.map((u, i) => {
         return (
-          <>
+          <Fragment key={`$i-${i}`}>
             <div className="border-end border-start d-flex rounded-4 flex-column position-relative align-items-center ps-4 pe-4  gap-2">
               <div className="p-2" style={{ width: "120px", height: "120px" }}>
                 <a href={`/api/user/${u?._id}`}>
@@ -98,7 +103,7 @@ export const SuggetionSlipInPost = () => {
                 />
               </small>
             </div>
-          </>
+          </Fragment>
         );
       })}
     </>

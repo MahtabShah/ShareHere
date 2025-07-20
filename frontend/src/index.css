@@ -95,7 +95,7 @@ textarea::placeholder {
 }
 
 .toolbar-button.active {
-  background: #000000;
+  background: #6b0ad2;
   border-color: #454545;
   color: #ffffff;
 }

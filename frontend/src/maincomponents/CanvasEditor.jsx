@@ -14,6 +14,7 @@ import {
   faTextHeight,
   faImage,
   faTrash,
+  faMinimize,
   faArrowUp,
   faBold,
   faItalic,
@@ -23,6 +24,7 @@ import {
   faAlignRight,
   faDownload,
   faExpand,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -163,7 +165,7 @@ import { useTheme } from "../context/Theme";
 const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(400);
+  const [canvasHeight, setCanvasHeight] = useState(440);
   const [canvasBgColor, setCanvasBgColor] = useState("#303030ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -417,19 +419,9 @@ const CanvasVibeEditor = () => {
     if (elements.length <= 0) {
       addTextBox();
     }
-
-    // handleChange(activeElement?.id, "content", outerDivRef.current.textContent);
   }, []);
 
-  const outerDivRef = useRef(null);
   const txtareaRef = useRef(null);
-
-  const handleScroll = (e) => {
-    const scrollTop = e.target.scrollTop;
-    if (outerDivRef.current) {
-      outerDivRef.current.scrollTop = scrollTop;
-    }
-  };
 
   const isSyncing = useRef(false); // To avoid infinite loop
 
@@ -459,32 +451,32 @@ const CanvasVibeEditor = () => {
           </div>
         </div> */}
 
-        <div className="p-1 pt-0">
+        <div className="pt-0">
           <div className="d-flex">
             <div
               className="card border-0 shadow-sm "
               style={{ background: mainbg }}
             >
-              <div className="card border-0 shadow-sm position-sticky">
-                {/* <div
-                  className="card-header d-flex ps-0 pt-0 mt-0 justify-content-between align-items-center rounded-0"
-                  style={{
-                    background: mainbg,
-                    color: text_clrM,
-                  }}
-                >
-                  <strong>
-                    {activeElement?.type === "text"
-                      ? "Text Properties acitvated"
-                      : "Image Properties acitvated"}
-                  </strong>
-                </div> */}
+              <div className="card border-0 shadow-sm position-sticky mb-2">
                 <div
-                  className="py-2 positio-fixed"
+                  className="py-2 positio-fixed bg-dark"
                   // style={{ border: "2px solid red" }}
                   style={{ background: mainbg }}
                 >
                   <>
+                    <div className="mx-2 my-0">
+                      <input
+                        type="range"
+                        min={100}
+                        max={800}
+                        step={10}
+                        onChange={(e) =>
+                          setCanvasHeight(parseInt(e.target.value))
+                        }
+                        style={{ height: "7px" }}
+                        className="w-100 "
+                      />
+                    </div>
                     <div
                       className="d-flex props-parent flex-wrap gap-2 overflow-x-auto format-toolbar"
                       style={{
@@ -896,7 +888,7 @@ const CanvasVibeEditor = () => {
                   </>
 
                   {mobile_break_point && (
-                    <div className="mt-2">
+                    <div className="mt-2 mx-2">
                       <textarea
                         className="form-control h-100 w-100"
                         value={activeElement?.content}
@@ -919,213 +911,142 @@ const CanvasVibeEditor = () => {
                       </textarea>
                     </div>
                   )}
-
-                  <div className="mt-2">
-                    <input
-                      type="range"
-                      min={100}
-                      max={800}
-                      step={10}
-                      onChange={(e) =>
-                        setCanvasHeight(parseInt(e.target.value))
-                      }
-                      style={{ height: "7px" }}
-                      className="w-100 "
-                    />
-                  </div>
                 </div>
               </div>
 
               <div>
                 <div
-                  className="card-body p-0"
+                  ref={canvasRef}
+                  className="canvas-container"
                   style={{
-                    maxWidth: "600px",
+                    height: `${canvasHeight}px`,
+                    background: canvasBgColor,
+                    position: "relative",
+                    overflow: "hidden",
+                    maxWidth: "601px",
                     margin: "auto",
-                    background: mainbg,
                   }}
                 >
-                  <div
-                    ref={canvasRef}
-                    className="canvas-container"
-                    style={{
-                      height: `${canvasHeight}px`,
-                      background: canvasBgColor,
-                      position: "relative",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {elements.map((el) => (
-                      <Rnd
-                        key={el.id}
-                        style={{
-                          // position: "absolute",
-                          left: `${el.x}px`,
-                          top: `${el.y}px`,
-                          width: `${el.width}px`,
-                          height: `${el.height}px`,
-                          zIndex: el.zIndex,
-                          border:
-                            activeId === el.id ? "2px dashed #0d6efd" : "none",
-                          boxShadow:
-                            activeId === el.id
-                              ? "0 0 10px rgba(13, 110, 253, 0.5)"
-                              : "none",
-                          cursor: "move",
+                  {elements.map((el) => (
+                    <Rnd
+                      key={el.id}
+                      style={{
+                        left: `${el.x}px`,
+                        top: `${el.y}px`,
+                        width: `${el.width}px`,
+                        height: `${el.height}px`,
+                        zIndex: el.zIndex,
+                        border:
+                          activeId === el.id ? "2px dashed #0d6efd" : "none",
+                        boxShadow:
+                          activeId === el.id
+                            ? "0 0 10px rgba(13, 110, 253, 0.5)"
+                            : "none",
+                        cursor: "move",
+                      }}
+                      spellCheck={false}
+                      disableDragging={
+                        activeElement?.id == el.id ? false : true
+                      }
+                      onPointerDown={() => {
+                        setActiveId(el.id);
+                      }}
+                    >
+                      <div
+                        className="w-100 h-100 position-relative"
+                        onDrag={() => {
+                          handleResizeOrDrag(
+                            el.id,
+                            el.width,
+                            el.height,
+                            el.x,
+                            el.y
+                          );
                         }}
-                        spellCheck={false}
-                        disableDragging={
-                          activeElement?.id == el.id ? false : true
-                        }
-                        onClick={() => {
-                          setActiveId(el.id);
-                        }}
-                        //
-                        //
                       >
-                        <div
-                          className="w-100 h-100 position-relative"
-                          onDrag={() => {
-                            handleResizeOrDrag(
-                              el.id,
-                              el.width,
-                              el.height,
-                              el.x,
-                              el.y
-                            );
-                          }}
-                        >
-                          {activeId === el.id && (
-                            <>
-                              <button
-                                className="btn text-danger btn-sm p-0 position-absolute top-0 end-0 rounded"
-                                style={{ zIndex: 1000, width: "20px" }}
-                                onPointerDown={(e) => {
-                                  e.stopPropagation();
-                                  deleteElement(el.id);
-                                }}
-                              >
-                                <FontAwesomeIcon icon={faTrash} color="red" />
-                              </button>
-
-                              <div
-                                className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
-                                style={{
-                                  width: "12px",
-                                  height: "12px",
-                                  cursor: "nwse-resize",
-                                }}
-                              ></div>
-                            </>
-                          )}
-
-                          {el.type === "text" ? (
-                            <div
-                              className="text-element outline-none w-100 h-100 none-scroller p-2"
+                        {activeId === el.id && (
+                          <>
+                            <button
+                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute top-0 end-0 rounded-1"
                               style={{
-                                fontSize: `${el.fontSize}px`,
-                                color: el.color,
-                                fontFamily: el.fontFamily,
-                                textShadow: el.shadow,
-                                fontWeight: el.fontWeight,
-                                fontStyle: el.fontStyle,
-                                textDecoration: el.textDecoration,
-                                textAlign: el.textAlign,
-                                overflow: "auto",
-                                whiteSpace: "pre-wrap",
+                                zIndex: 1000,
+                                width: "18px",
+                                height: "18px",
                               }}
-                              ref={outerDivRef}
-                              contentEditable={!mobile_break_point}
-                              suppressContentEditableWarning={
-                                !mobile_break_point
-                              }
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  document.execCommand(
-                                    "insertHTML",
-                                    false,
-                                    "<br><br>"
-                                  );
-                                }
-                              }}
-                              onInput={(e) => {
-                                console.log(e.target.innerText);
+                              onPointerDown={(e) => {
+                                e.stopPropagation();
+                                setActiveId(null);
                               }}
                             >
-                              {el.content}
-                            </div>
-                          ) : (
-                            <div className="overflow-hidden h-100 w-100">
-                              <img
-                                src={el.src}
-                                alt="uploaded"
-                                className="image-element w-100"
-                                draggable={false}
-                                style={{ objectFit: "contain" }}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </Rnd>
-                    ))}
+                              <FontAwesomeIcon icon={faMinus} />
+                            </button>
 
-                    {elements.length === 0 && (
-                      <div className="empty-canvas w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
-                        <h4>Add text or images to get started</h4>
-                        <p className="text-center">
-                          Click the buttons below to add elements
-                        </p>
+                            <div
+                              className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
+                              style={{
+                                width: "12px",
+                                height: "12px",
+                                cursor: "nwse-resize",
+                              }}
+                            ></div>
+                          </>
+                        )}
+
+                        {el.type === "text" ? (
+                          <div
+                            className="text-element overflow-hidden outline-none w-100 h-100 none-scroller p-2"
+                            style={{
+                              fontSize: `${el.fontSize}px`,
+                              color: el.color,
+                              fontFamily: el.fontFamily,
+                              textShadow: el.shadow,
+                              fontWeight: el.fontWeight,
+                              fontStyle: el.fontStyle,
+                              textDecoration: el.textDecoration,
+                              textAlign: el.textAlign,
+                              whiteSpace: "pre-wrap",
+                            }}
+                            contentEditable
+                            suppressContentEditableWarning={true}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                document.execCommand(
+                                  "insertHTML",
+                                  false,
+                                  "<br><br>"
+                                );
+                              }
+                            }}
+                          >
+                            {el.content}
+                          </div>
+                        ) : (
+                          <div className="overflow-hidden h-100 w-100">
+                            <img
+                              src={el.src}
+                              alt="uploaded"
+                              className="image-element w-100"
+                              draggable={false}
+                              style={{ objectFit: "contain" }}
+                            />
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </div>
+                    </Rnd>
+                  ))}
 
-                {/* <>
-                  <div className="mb-3">
-                    <label className="form-label">Replace Image</label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      accept="image/*"
-                      onChange={(e) => {
-                        if (e.target.files[0]) {
-                          URL.revokeObjectURL(activeElement?.src);
-                          const url = URL.createObjectURL(e.target.files[0]);
-                          handleChange(activeElement?.id, "src", url);
-                        }
-                      }}
-                    />
-                  </div>
-                </> */}
+                  {elements.length === 0 && (
+                    <div className="empty-canvas w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
+                      <h4>Add text or images to get started</h4>
+                      <p className="text-center">
+                        Click the buttons below to add elements
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-
-            {/* {exportUrl && (
-              <div className="card border-0 shadow-sm">
-                <div className="card-header bg-success text-white">
-                  Export Preview
-                </div>
-                <div className="card-body text-center">
-                  <img
-                    src={exportUrl}
-                    alt="Exported design"
-                    className="img-fluid mb-3 border rounded"
-                    style={{ maxHeight: "300px" }}
-                  />
-                  <div>
-                    <a
-                      href={exportUrl}
-                      download="canvas-design.png"
-                      className="btn btn-success"
-                    >
-                      <FontAwesomeIcon icon={faDownload} className="me-2" />
-                      Download Image
-                    </a>
-                  </div>
-                </div>
-              </div>
-            )} */}
           </div>
           {/* 
           <div className="col-md-3">

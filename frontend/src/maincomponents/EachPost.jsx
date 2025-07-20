@@ -639,8 +639,7 @@ export const SlipDotinPost = ({ user, post }) => {
           <FollowBtn user={user} cls="" />
         </Nav.Link>
       )}
-      {post?.userId === admin_user?._id ||
-      "683ca60f4d22f430952c6d01" === admin_user?._id ? (
+      {post?.userId === admin_user?._id ? (
         // this way is just for temporary...!!!
 
         <>

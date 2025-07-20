@@ -52,16 +52,18 @@ const StatusPage = () => {
 };
 
 const Main = () => {
-  const [sm_break_point, setsm_break_point] = useState(window.innerWidth < 768);
-  const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1224);
+  const [sm_break_point, setsm_break_point] = useState(
+    window.innerWidth < 1081
+  );
+  const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1200);
   const [mobile_break_point, setmobile_break_point] = useState(
-    window.innerWidth < 540
+    window.innerWidth < 600
   );
 
   const breakPoint = () => {
-    setsm_break_point(window.innerWidth < 768);
-    setlgbreakPoint(window.innerWidth > 1224);
-    setmobile_break_point(window.innerWidth < 540);
+    setsm_break_point(window.innerWidth < 1081);
+    setlgbreakPoint(window.innerWidth > 1200);
+    setmobile_break_point(window.innerWidth < 600);
   };
 
   useEffect(() => {

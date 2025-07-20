@@ -79,20 +79,7 @@ function All_Post_Section() {
     return mergedPosts.slice(0, visiblePosts);
   }, [all_posts, all_user, visiblePosts]);
 
-  const rn = 6;
-
-  // const [img, setImg] = useState("https://zenquotes.io/api/image");
-
-  // const getImg = async () => {
-  //   const res = await axios.get("https://inspirobot.me/api?generate=true");
-  //   console.log(res);
-  //   setImg(res.data);
-  // };
-
-  // useEffect(() => {
-  //   getImg();
-  // }, []);
-
+  const rn = Math.floor(Math.random() * (all_posts?.length - 3) + 1);
   const { mainbg } = useTheme();
 
   return (
@@ -112,7 +99,9 @@ function All_Post_Section() {
             gap: lgbreakPoint ? "100px" : "0",
             maxWidth: "100%",
           }}
-          className={`d-flex justify-content-center`}
+          className={`d-flex justify-content-${
+            lgbreakPoint || sm_break_point ? "center" : "evenly"
+          }`}
         >
           {Errors ? (
             <div
