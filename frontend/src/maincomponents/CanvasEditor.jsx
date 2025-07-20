@@ -317,7 +317,7 @@ const CanvasVibeEditor = () => {
       fontWeight: "normal",
       fontStyle: "normal",
       textDecoration: "none",
-      background: canvasBgColor,
+      background: "00000000",
       letterSpacing: "1",
       textAlign: "left",
       textShadow: "",
@@ -340,7 +340,7 @@ const CanvasVibeEditor = () => {
       width: 40,
       height: 10,
       zIndex: elements.length + 1,
-      background: canvasBgColor,
+      background: "00000000",
       boxShadow: "",
     };
     setElements([...elements, newImage]);
@@ -738,7 +738,7 @@ const CanvasVibeEditor = () => {
                           value={
                             activeElement
                               ? activeElement.background
-                              : canvasBgColor
+                              : "00000000"
                           }
                           onChange={(e) =>
                             activeElement
@@ -763,7 +763,7 @@ const CanvasVibeEditor = () => {
                     disabled={!activeElement}
                     onClick={() => {
                       activeElement
-                        ? handleChange(activeId, "background", canvasBgColor)
+                        ? handleChange(activeId, "background", "00000000")
                         : "";
                     }}
                   >
