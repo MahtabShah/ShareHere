@@ -1139,14 +1139,14 @@ const CanvasVibeEditor = () => {
                           {el.content}
                         </div>
                       ) : (
-                        <div className="overflow-hidden h-100 w-100">
+                        <div className="overflow-hidden d-flex align-items-center justify-content-center h-100 w-100">
                           <img
                             src={el.src}
                             alt="uploaded"
-                            className="image-element w-100"
+                            className="image-element overflow-hidden w-100"
                             draggable={false}
                             style={{
-                              objectFit: "contain",
+                              objectFit: "cover",
                               boxShadow: el.boxShadow,
                             }}
                           />
@@ -1205,7 +1205,7 @@ const CanvasVibeEditor = () => {
             }}
           >
             <button className="btn flex-grow-1 overflow-hidden btn-success props-btn rounded-0 p-0">
-              <label className="btn btn-success props-btn gap-2 rounded-0">
+              <label className="btn btn-success props-btn gap-2 rounded-0 w-100">
                 Add <FontAwesomeIcon icon={faImage} color={text_clrH} />
                 <input
                   type="file"
