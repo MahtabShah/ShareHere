@@ -93,7 +93,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
             style={{
               zIndex: 9999999,
               top: 0,
-              left: 0,
+              left: `${
+                mobile_break_point ? 0 : sm_break_point ? "56px" : "227px"
+              }`,
               right: 0,
               background: mainbg,
             }}
@@ -117,7 +119,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
             style={{
               zIndex: 9999999,
               top: 0,
-              left: 0,
+              left: `${
+                mobile_break_point ? 0 : sm_break_point ? "56px" : "227px"
+              }`,
               right: 0,
               background: mainbg,
             }}
@@ -137,7 +141,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
             style={{
               zIndex: 9999999,
               top: 0,
-              left: 0,
+              left: `${
+                mobile_break_point ? 0 : sm_break_point ? "56px" : "227px"
+              }`,
               right: 0,
               background: mainbg,
             }}

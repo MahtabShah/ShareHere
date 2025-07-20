@@ -537,6 +537,8 @@ const CanvasVibeEditor = () => {
     }
   }, []);
 
+  const [detailsOpen, setDetailsOpen] = useState(false);
+
   return (
     <div className="shadow-lg" style={{ background: mainbg }}>
       <div className="">
@@ -551,7 +553,7 @@ const CanvasVibeEditor = () => {
                 style={{
                   zIndex: 900000000000000,
                   left: `${
-                    mobile_break_point ? 0 : sm_break_point ? "56px" : "227px"
+                    mobile_break_point ? 0 : sm_break_point ? "60px" : "227px"
                   }`,
                   right: 0,
                   top: "40px",
@@ -803,23 +805,6 @@ const CanvasVibeEditor = () => {
                   >
                     <FontAwesomeIcon icon={faTrash} />
                   </button>
-
-                  {/* <button
-                          // onClick={() => item.action ? item.action() : handleToggle(item)}
-                          className={`
-               
-                ${
-                  item.type === "toggle" &&
-                  formatting[item.property] === (item.value || item.activeValue)
-                    ? "active"
-                    : ""
-                }
-              `}
-                          title={item.label}
-                        >
-                          {item.icon && <FontAwesomeIcon icon={item.icon} />}
-                          {!item.icon && item.label}
-                        </button> */}
                 </div>
 
                 <div className="d-flex gap-2 btn-tool overflow-x-auto none-scroller border-top pt-2 m-2">
@@ -976,10 +961,66 @@ const CanvasVibeEditor = () => {
                     </button>
                   ))}
                 </div>
+
+                <div className="card border-0 shadow-sm position-sticky m-2 bg-dark">
+                  <details className="bg-dark mx-2">
+                    <summary
+                      className="mx-1 fs-4"
+                      style={{ color: text_clrH }}
+                      onClick={() => {
+                        setDetailsOpen(!detailsOpen);
+                      }}
+                    ></summary>
+                    {mobile_break_point && (
+                      <div className=" mx-2">
+                        <textarea
+                          className="form-control w-100 overflow-auto none-scroller py-2"
+                          value={activeElement?.content}
+                          style={{
+                            background: mainbg,
+                            color: text_clrM,
+                            border: `1px solid ${text_clrL}`,
+                            minHeight: "80px",
+                          }}
+                          placeholder="Click Add Text and then write Here !"
+                          spellCheck={false}
+                          onChange={(e) =>
+                            handleChange(
+                              activeElement?.id,
+                              "content",
+                              e.target.value
+                            )
+                          }
+                        >
+                          {activeElement?.content || "Type Here"}
+                        </textarea>
+                      </div>
+                    )}
+
+                    <div className="mx-2 my-0">
+                      <input
+                        type="range"
+                        min={100}
+                        max={800}
+                        step={10}
+                        onChange={(e) =>
+                          setCanvasHeight(parseInt(e.target.value))
+                        }
+                        style={{ height: "6px" }}
+                        className="w-100 "
+                      />
+                    </div>
+                  </details>
+                </div>
               </div>
             </div>
 
-            <div style={{ marginTop: "170px", width: "100%" }}>
+            <div
+              style={{
+                marginTop: `${detailsOpen ? `310px` : "200px"}`,
+                width: "100%",
+              }}
+            >
               <div
                 ref={canvasRef}
                 className="canvas-container w-100"
@@ -1151,44 +1192,6 @@ const CanvasVibeEditor = () => {
             />
           );
         })}
-      </div>
-
-      <div className="card border-0 shadow-sm position-sticky mt-3 bg-dark">
-        <details className="bg-dark mx-2">
-          <summary className="mx-1 fs-4" style={{ color: text_clrH }}></summary>
-          {mobile_break_point && (
-            <div className="mt-2 mx-2">
-              <textarea
-                className="form-control h-100 w-100"
-                value={activeElement?.content}
-                style={{
-                  background: mainbg,
-                  color: text_clrM,
-                  border: `1px solid ${text_clrL}`,
-                }}
-                placeholder="Click Add Text and then write Here !"
-                spellCheck={false}
-                onChange={(e) =>
-                  handleChange(activeElement?.id, "content", e.target.value)
-                }
-              >
-                {activeElement?.content || "Type Here"}
-              </textarea>
-            </div>
-          )}
-
-          <div className="mx-2 my-0">
-            <input
-              type="range"
-              min={100}
-              max={800}
-              step={10}
-              onChange={(e) => setCanvasHeight(parseInt(e.target.value))}
-              style={{ height: "7px" }}
-              className="w-100 "
-            />
-          </div>
-        </details>
       </div>
 
       <div className="py-2" style={{ background: mainbg }}>
