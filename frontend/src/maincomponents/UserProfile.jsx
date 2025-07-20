@@ -129,7 +129,7 @@ const UserProfile = ({}) => {
 
         {ProfilePicVisble && (
           <div
-            className="p-4 position-fixed d-flex flex-column pt-5 bg-dark shadow-lg h-100"
+            className="p-4 position-fixed d-flex flex-column pt-5 bg-dark shadow-lg"
             style={{
               zIndex: 900,
               bottom: 0,
@@ -143,23 +143,29 @@ const UserProfile = ({}) => {
               }`,
             }}
           >
-            <div className="p-3 rounded bg-black  mt-5">
-              <div className="fw-bold d-flex  align-items-end mb-2 justify-content-between ">
-                <p className="text-center small text-warning mt-2">
+            <div
+              className="p-3 rounded bg-black  mt-5 overflow-hidden"
+              style={{ maxHeight: "calc(100vh - 200px)" }}
+            >
+              <div className="fw-bold d-flex gap-2 align-items-start mb-2 justify-content-between">
+                <p className="small text-warning">
                   ! Use Square size of pic for better visiblity
                 </p>
                 <button
-                  className="btn btn-danger text-center p-1 my-2"
-                  style={{ width: "37px" }}
+                  className="btn btn-danger btn-sm small text-center p-0"
+                  style={{ width: "30px" }}
                   onClick={() => setProfilePicVisble(!ProfilePicVisble)}
                 >
                   X
                 </button>
               </div>
-              <div className=" flex-grow-1">
+              <div
+                className="overflow-hidden d-flex align-items-center"
+                style={{ maxHeight: "calc(100vh - 300px)" }}
+              >
                 <img
                   src={user?.profile_pic}
-                  className=" w-100"
+                  className="w-100 h-100 overflow-hidden"
                   style={{ objectFit: "cover" }}
                 />
               </div>

@@ -11,6 +11,11 @@ export const ThemeProvider = ({ children }) => {
   const [text_clrM, setText_clrM] = useState("#bbb");
   const [text_clrL, setText_clrL] = useState("#333");
 
+  // const [mainbg, setMainBg] = useState("#eee");
+  // const [text_clrH, setText_clrH] = useState("#222");
+  // const [text_clrM, setText_clrM] = useState("#444");
+  // const [text_clrL, setText_clrL] = useState("#888");
+
   return (
     <Theme.Provider
       value={{

@@ -1,4 +1,3 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Nav from "react-bootstrap/Nav";
 
@@ -6,31 +5,24 @@ import {
   faEdit,
   faExternalLinkAlt,
   faLock,
-  faStar,
   faUser,
-  faSpinner,
   faGear,
-  faUsers,
   faHome,
   faBell,
   faBookOpen,
   faCircleInfo,
   faCircleQuestion,
   faSearch,
-  faBars,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useRef, createContext, useState, useContext } from "react";
-import { Logo } from "../../TinyComponent/Logo";
+import { useEffect, useState } from "react";
 export const btnclass = "btn btn-sm progressBtn text-white ps-4 pe-4 rounded-5";
 import { useQuote } from "../context/QueotrContext";
 import axios from "axios";
 import { SearchBaar } from "../../TinyComponent/SearchBaar";
 import { useNavigate } from "react-router-dom";
 import { Notification } from "../../TinyComponent/Notification";
-import PostSentence from "./PostSentance";
 const API = import.meta.env.VITE_API_URL;
-const inputtxtclr = "#777";
 import CanvasVibeEditor from "./CanvasEditor";
 import { useTheme } from "../context/Theme";
 const menuItems = [
@@ -108,7 +100,10 @@ export default function LeftNavbar({ onActiveChange = "" }) {
           >
             {ref} Search Your Quote Here
           </h5>
-          <div className="w-100" style={{ maxWidth: "601px" }}>
+          <div
+            className="w-100"
+            style={{ maxWidth: "601px", marginTop: "40px" }}
+          >
             <SearchBaar />
           </div>
         </>
@@ -129,7 +124,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
           >
             {ref} All Notifications
           </h5>
-          <Notification setVisibleNotification={setVisibleNotification} />
+          <div style={{ marginTop: "40px" }}>
+            <Notification setVisibleNotification={setVisibleNotification} />{" "}
+          </div>
         </>
       );
     } else if (activeIndex == "Upload") {

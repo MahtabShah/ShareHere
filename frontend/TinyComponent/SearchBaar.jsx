@@ -4,7 +4,6 @@ import { UserRing } from "../src/maincomponents/EachPost";
 import { FollowBtn } from "../src/maincomponents/EachPost";
 import { CardPost } from "../src/maincomponents/Home";
 import { useNavigate } from "react-router-dom";
-import { Loading } from "./LazyLoading";
 import { useTheme } from "../src/context/Theme";
 
 export const SearchBaar = () => {
@@ -80,7 +79,7 @@ export const SearchBaar = () => {
     <>
       <div
         className="position-relative pb-0 mb-0 h-100"
-        style={{ background: mainbg, zIndex: 999999 }}
+        style={{ background: mainbg, zIndex: 99999 }}
       >
         <form
           onSubmit={handleSearch}

@@ -1,6 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import "./App.css";
 import { Loading } from "../TinyComponent/LazyLoading";
 import { useLocation } from "react-router-dom";
@@ -10,8 +9,6 @@ import { throttle } from "lodash";
 import SuggetionSlip, {
   SuggetionSlipInPost,
 } from "./maincomponents/NewUserUpdate";
-import axios from "axios";
-const API = import.meta.env.VITE_API_URL;
 import { useTheme } from "./context/Theme";
 import { SearchBaar } from "../TinyComponent/SearchBaar";
 
@@ -79,7 +76,8 @@ function All_Post_Section() {
     return mergedPosts.slice(0, visiblePosts);
   }, [all_posts, all_user, visiblePosts]);
 
-  const rn = Math.floor(Math.random() * (all_posts?.length - 3) + 1);
+  // const rn = Math.floor(Math.random() * (all_posts?.length - 3) + 1);
+  const rn = 3;
   const { mainbg } = useTheme();
 
   return (

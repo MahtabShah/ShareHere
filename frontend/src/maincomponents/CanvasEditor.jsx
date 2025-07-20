@@ -6,7 +6,7 @@ import { useQuote } from "../context/QueotrContext";
 import { Loading } from "../../TinyComponent/LazyLoading";
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 import axios from "axios";
-import { Route, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("token");
 
@@ -14,7 +14,6 @@ import {
   faTextHeight,
   faImage,
   faTrash,
-  faMinimize,
   faArrowUp,
   faBold,
   faItalic,
@@ -22,32 +21,10 @@ import {
   faAlignLeft,
   faAlignCenter,
   faAlignRight,
-  faDownload,
-  faExpand,
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  FaBold,
-  FaItalic,
-  FaImage,
-  FaUnderline,
-  FaStrikethrough,
-  FaSuperscript,
-  FaSubscript,
-  FaFont,
-  FaHighlighter,
-  FaTextHeight,
-  FaTextWidth,
-  FaAlignLeft,
-  FaAlignCenter,
-  FaAlignRight,
-  FaAlignJustify,
-  FaListUl,
-  FaListOl,
-  FaSortAlphaDown,
-  FaParagraph,
-} from "react-icons/fa";
+import { FaStrikethrough, FaFont, FaTextHeight } from "react-icons/fa";
 
 const pre_bg_color = [
   // 🌇 LINEAR GRADIENTS
@@ -310,11 +287,13 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [canvasHeight, setCanvasHeight] = useState(440);
-  const [canvasBgColor, setCanvasBgColor] = useState("#303030ff");
+  const [canvasBgColor, setCanvasBgColor] = useState("#3c3c3c");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
   const [active_style, setActive_style] = useState(fontFamily);
   const [style_type, setStyle_type] = useState("fontFamily");
+  const [count, setCount] = useState(0);
+  const DragcanvasRef = useRef(null);
 
   const canvasRef = useRef(null);
   const nevigate = useNavigate();
@@ -333,12 +312,12 @@ const CanvasVibeEditor = () => {
       height: 60,
       fontSize: 28,
       fontFamily: "Arial",
-      color: "#c6c3c3ff",
+      color: "#a6e9f1",
       zIndex: elements.length + 1,
       fontWeight: "normal",
       fontStyle: "normal",
       textDecoration: "none",
-      background: "transparent",
+      background: canvasBgColor,
       letterSpacing: "1",
       textAlign: "left",
       textShadow: "",
@@ -361,7 +340,7 @@ const CanvasVibeEditor = () => {
       width: 40,
       height: 10,
       zIndex: elements.length + 1,
-      background: "transparent",
+      background: canvasBgColor,
       boxShadow: "",
     };
     setElements([...elements, newImage]);
@@ -384,8 +363,6 @@ const CanvasVibeEditor = () => {
     );
   };
 
-  const [count, setCount] = useState(0);
-
   const setContinuousActiveId = () => {
     const len = elements.length;
     if (len > 0) {
@@ -407,14 +384,6 @@ const CanvasVibeEditor = () => {
       );
     });
   };
-
-  const applyFontStyle = (id, style, value) => {
-    setElements((prev) =>
-      prev.map((el) => (el.id === id ? { ...el, [style]: value } : el))
-    );
-  };
-
-  const DragcanvasRef = useRef(null);
 
   function base64ToBlob(base64, contentType = "image/png") {
     const byteCharacters = atob(base64.split(",")[1]); // Remove data:image/png;base64, part
@@ -475,10 +444,8 @@ const CanvasVibeEditor = () => {
 
   // -----------------------------------posting-----------------------------
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
-  const textareaRef = useRef(null);
   const [text, setText] = useState("");
   const [LazyLoading, setLazyLoading] = useState(false);
-  const [bg_clr, setbg_clr] = useState("#dff");
 
   const {
     style,
@@ -513,17 +480,6 @@ const CanvasVibeEditor = () => {
   const handleInput = (idx, e, key) => {
     if (key === "text") {
       setText(e.target.value);
-    } else {
-      const txt = e.currentTarget.textContent;
-
-      // Force update to plain text (remove extra nodes) // for better styling u can active node like some text bold some text color
-      if (divRef.current) {
-        divRef.current.textContent = txt || "Type here....";
-      }
-    }
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}`;
     }
 
     setError("");
@@ -724,6 +680,95 @@ const CanvasVibeEditor = () => {
                   </button>
 
                   <button
+                    className={`btn props-btn toolbar-button ${
+                      activeElement ? "active" : ""
+                    }`}
+                    onClick={() => setActiveId(null)}
+                    style={{
+                      border: `1px solid ${text_clrL}`,
+                      minWidth: "max-content",
+                    }}
+                    disabled={!activeElement}
+                  >
+                    <b style={{ color: text_clrM }}>- / -</b>
+                  </button>
+
+                  <div
+                    className="btn overflow-hidden p-0 props-btn toolbar-button"
+                    style={{ border: `` }}
+                  >
+                    <input
+                      type="color"
+                      value={activeElement?.color}
+                      style={{
+                        scale: "2",
+                        border: ``,
+                      }}
+                      onChange={(e) =>
+                        handleChange(activeElement?.id, "color", e.target.value)
+                      }
+                      defaultValue={"#ff0000"}
+                    />
+                  </div>
+
+                  <div
+                    className="props-btn toolbar-button"
+                    style={{
+                      border: `1px solid ${text_clrL}`,
+                      minWidth: "120px",
+                    }}
+                  >
+                    <div
+                      className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
+                      style={{ translate: "6px" }}
+                    >
+                      <small
+                        className="flex-grow-1"
+                        style={{ color: text_clrM }}
+                      >
+                        Background
+                      </small>
+                      <div className="btn overflow-hidden flex-grow-1 props-btn rounded-0 p-0">
+                        <input
+                          type="color"
+                          className="form-control form-control-color w-100 props-btn border"
+                          style={{ scale: 3 }}
+                          value={
+                            activeElement
+                              ? activeElement.background
+                              : canvasBgColor
+                          }
+                          onChange={(e) =>
+                            activeElement
+                              ? handleChange(
+                                  activeId,
+                                  "background",
+                                  e.target.value
+                                )
+                              : setCanvasBgColor(e.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    className="props-btn fw-medium toolbar-button flex-grow-1"
+                    style={{
+                      border: `1px solid ${text_clrL}`,
+                      minWidth: "84px",
+                    }}
+                    disabled={!activeElement}
+                    onClick={() => {
+                      activeElement
+                        ? handleChange(activeId, "background", canvasBgColor)
+                        : "";
+                    }}
+                  >
+                    &nbsp; reset bg&nbsp;
+                  </button>
+
+                  <button
                     className="btn props-btn toolbar-button"
                     onClick={() => {
                       setContinuousActiveId();
@@ -742,20 +787,6 @@ const CanvasVibeEditor = () => {
                     style={{ minWidth: "34px" }}
                   >
                     <FontAwesomeIcon icon={faArrowUp} color={text_clrM} />
-                  </button>
-
-                  <button
-                    className={`btn props-btn toolbar-button ${
-                      activeElement ? "active" : ""
-                    }`}
-                    onClick={() => setActiveId(null)}
-                    style={{
-                      border: `1px solid ${text_clrL}`,
-                      minWidth: "max-content",
-                    }}
-                    disabled={!activeElement}
-                  >
-                    <b style={{ color: text_clrM }}>- / -</b>
                   </button>
 
                   <button
@@ -946,411 +977,150 @@ const CanvasVibeEditor = () => {
                   ))}
                 </div>
               </div>
+            </div>
 
-              <div style={{ marginTop: "170px" }}>
-                <div
-                  ref={canvasRef}
-                  className="canvas-container"
-                  style={{
-                    height: `${canvasHeight}px`,
-                    background: canvasBgColor,
-                    position: "relative",
-                    overflow: "hidden",
-                    maxWidth: "601px",
-                    margin: "auto",
-                  }}
-                >
-                  {elements.map((el) => (
-                    <Rnd
-                      key={el.id}
-                      style={{
-                        left: `${el.x}px`,
-                        top: `${el.y}px`,
-                        width: `${el.width}px`,
-                        height: `${el.height}px`,
-                        zIndex: el.zIndex,
-                        border: activeId === el.id ? "2px dashed #0d6efd" : "",
-                        boxShadow:
-                          activeId === el.id
-                            ? "0 0 10px rgba(13, 110, 253, 0.5)"
-                            : "none",
-                        cursor: activeElement ? "move" : "",
-                      }}
-                      spellCheck={false}
-                      disableDragging={
-                        activeElement?.id == el.id ? false : true
-                      }
-                      enableUserSelectHack={
-                        activeElement?.id == el.id ? true : false
-                      }
-                      enableResizing={activeElement?.id == el.id ? true : false}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveId(el.id);
+            <div style={{ marginTop: "170px", width: "100%" }}>
+              <div
+                ref={canvasRef}
+                className="canvas-container w-100"
+                style={{
+                  height: `${canvasHeight}px`,
+                  background: canvasBgColor,
+                  position: "relative",
+                  overflow: "hidden",
+                  maxWidth: "601px",
+
+                  margin: "auto",
+                }}
+              >
+                {elements.map((el) => (
+                  <Rnd
+                    key={el.id}
+                    style={{
+                      left: `${el.x}px`,
+                      top: `${el.y}px`,
+                      width: `${el.width}px`,
+                      height: `${el.height}px`,
+                      zIndex: el.zIndex,
+                      border: activeId === el.id ? "2px dashed #0d6efd" : "",
+                      boxShadow:
+                        activeId === el.id
+                          ? "0 0 10px rgba(13, 110, 253, 0.5)"
+                          : "none",
+                      cursor: activeElement ? "move" : "",
+                    }}
+                    spellCheck={false}
+                    disableDragging={activeElement?.id == el.id ? false : true}
+                    enableUserSelectHack={
+                      activeElement?.id == el.id ? true : false
+                    }
+                    enableResizing={activeElement?.id == el.id ? true : false}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveId(el.id);
+                    }}
+                  >
+                    <div
+                      className="w-100 h-100 position-relative"
+                      onDrag={() => {
+                        handleResizeOrDrag(
+                          el.id,
+                          el.width,
+                          el.height,
+                          el.x,
+                          el.y
+                        );
                       }}
                     >
-                      <div
-                        className="w-100 h-100 position-relative"
-                        onDrag={() => {
-                          handleResizeOrDrag(
-                            el.id,
-                            el.width,
-                            el.height,
-                            el.x,
-                            el.y
-                          );
-                        }}
-                      >
-                        {activeId === el.id && (
-                          <>
-                            <button
-                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute top-0 end-0 rounded-1"
-                              style={{
-                                zIndex: 1000,
-                                width: "18px",
-                                height: "18px",
-                              }}
-                              onPointerDown={(e) => {
-                                e.stopPropagation();
-                                setActiveId(null);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faMinus} />
-                            </button>
-
-                            <div
-                              className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
-                              style={{
-                                width: "12px",
-                                height: "12px",
-                                cursor: "nwse-resize",
-                              }}
-                            ></div>
-                          </>
-                        )}
-
-                        {el.type === "text" ? (
-                          <div
-                            className="text-element overflow-hidden outline-none w-100 h-100 none-scroller p-2"
+                      {activeId === el.id && (
+                        <>
+                          <button
+                            className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute top-0 end-0 rounded-1"
                             style={{
-                              fontSize: `${el.fontSize}px`,
-                              color: el.color,
-                              fontFamily: el.fontFamily,
-                              fontWeight: el.fontWeight,
-                              fontStyle: el.fontStyle,
-                              textDecoration: el.textDecoration,
-                              textAlign: el.textAlign,
-                              background: el.background,
-                              whiteSpace: "pre-wrap",
-                              userSelect: "none",
-                              letterSpacing: `${el.letterSpacing}px`,
-                              textShadow: el.textShadow,
+                              zIndex: 1000,
+                              width: "18px",
+                              height: "18px",
+                            }}
+                            onPointerDown={(e) => {
+                              e.stopPropagation();
+                              setActiveId(null);
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faMinus} />
+                          </button>
+
+                          <div
+                            className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
+                            style={{
+                              width: "12px",
+                              height: "12px",
+                              cursor: "nwse-resize",
+                            }}
+                          ></div>
+                        </>
+                      )}
+
+                      {el.type === "text" ? (
+                        <div
+                          className="text-element overflow-hidden outline-none w-100 h-100 none-scroller p-2"
+                          style={{
+                            fontSize: `${el.fontSize}px`,
+                            color: el.color,
+                            fontFamily: el.fontFamily,
+                            fontWeight: el.fontWeight,
+                            fontStyle: el.fontStyle,
+                            textDecoration: el.textDecoration,
+                            textAlign: el.textAlign,
+                            background: el.background,
+                            whiteSpace: "pre-wrap",
+                            userSelect: "none",
+                            letterSpacing: `${el.letterSpacing}px`,
+                            textShadow: el.textShadow,
+                            boxShadow: el.boxShadow,
+                          }}
+                          contentEditable={
+                            activeElement?.id === el?.id ? true : false
+                          }
+                          suppressContentEditableWarning={true}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              document.execCommand(
+                                "insertHTML",
+                                false,
+                                "<br><br>"
+                              );
+                            }
+                          }}
+                        >
+                          {el.content}
+                        </div>
+                      ) : (
+                        <div className="overflow-hidden h-100 w-100">
+                          <img
+                            src={el.src}
+                            alt="uploaded"
+                            className="image-element w-100"
+                            draggable={false}
+                            style={{
+                              objectFit: "contain",
                               boxShadow: el.boxShadow,
                             }}
-                            contentEditable={activeElement?.id === el?.id}
-                            suppressContentEditableWarning={true}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault();
-                                document.execCommand(
-                                  "insertHTML",
-                                  false,
-                                  "<br><br>"
-                                );
-                              }
-                            }}
-                          >
-                            {el.content}
-                          </div>
-                        ) : (
-                          <div className="overflow-hidden h-100 w-100">
-                            <img
-                              src={el.src}
-                              alt="uploaded"
-                              className="image-element w-100"
-                              draggable={false}
-                              style={{
-                                objectFit: "contain",
-                                boxShadow: el.boxShadow,
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </Rnd>
-                  ))}
-
-                  {elements.length === 0 && (
-                    <div className="empty-canvas w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
-                      <h4>Add text or images to get started</h4>
-                      <p className="text-center">
-                        Click the buttons below to add elements
-                      </p>
+                          />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+                  </Rnd>
+                ))}
 
-              <div className="card border-0 shadow-sm position-sticky mt-3 bg-dark">
-                <details className="bg-dark mx-2 border-bottom">
-                  <summary
-                    className="mx-1 fs-4"
-                    style={{ color: text_clrH }}
-                  ></summary>
-                  {mobile_break_point && (
-                    <div className="mt-2 mx-2">
-                      <textarea
-                        className="form-control h-100 w-100"
-                        value={activeElement?.content}
-                        style={{
-                          background: mainbg,
-                          color: text_clrM,
-                          border: `1px solid ${text_clrL}`,
-                        }}
-                        placeholder="Click Add Text and then write Here !"
-                        spellCheck={false}
-                        onChange={(e) =>
-                          handleChange(
-                            activeElement?.id,
-                            "content",
-                            e.target.value
-                          )
-                        }
-                      >
-                        {activeElement?.content || "Type Here"}
-                      </textarea>
-                    </div>
-                  )}
-
-                  <div className="mx-2 my-0">
-                    <input
-                      type="range"
-                      min={100}
-                      max={800}
-                      step={10}
-                      onChange={(e) =>
-                        setCanvasHeight(parseInt(e.target.value))
-                      }
-                      style={{ height: "7px" }}
-                      className="w-100 "
-                    />
+                {elements.length === 0 && (
+                  <div className="empty-canvas w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
+                    <h4>Add text or images to get started</h4>
+                    <p className="text-center">
+                      Click the buttons below to add elements
+                    </p>
                   </div>
-                </details>
-                <div
-                  className="py-2 positio-fixed bg-dark"
-                  style={{ background: mainbg }}
-                >
-                  <>
-                    <div
-                      className="d-flex props-parent flex-wrap gap-2 overflow-x-auto format-toolbar"
-                      style={{
-                        height: "max-content",
-                      }}
-                    >
-                      {/* <div>
-                        <div
-                          className="btn d-flex gap-2 align-items-center props-btn toolbar-button flex-grow-1"
-                          style={{ border: `1px solid ${text_clrL}` }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faTextHeight}
-                            color={text_clrM}
-                            fontSize={12}
-                          />
-
-                          <input
-                            type="number"
-                            className="ps-1 border-0 rounded-1 flex-grow-1"
-                            name="textHeight"
-                            id="textHeight"
-                            min="8"
-                            max="120"
-                            value={activeElement?.fontSize}
-                            style={{
-                              width: "34px",
-                              fontSize: "14px",
-                              background: "transparent",
-                              color: text_clrM,
-                            }}
-                            onChange={(e) =>
-                              handleChange(
-                                activeElement?.id,
-                                "fontSize",
-                                parseInt(e.target.value)
-                              )
-                            }
-                          />
-                        </div>
-                      </div> */}
-
-                      {/* <div
-                        className="d-flex  props-btn overflow-hidden toolbar-button"
-                        style={{ border: `1px solid ${text_clrL}` }}
-                      >
-                        <select
-                          className="form-select shadow-none border-0 props-btn"
-                          value={activeElement?.fontFamily}
-                          style={{
-                            background: "transparent",
-                            color: text_clrM,
-                          }}
-                          onChange={(e) =>
-                            handleChange(
-                              activeElement?.id,
-                              "fontFamily",
-                              e.target.value
-                            )
-                          }
-                        >
-                          <option
-                            value="Arial"
-                            style={{ background: text_clrL }}
-                          >
-                            Arial
-                          </option>
-                          <option
-                            value="Georgia"
-                            style={{ background: text_clrL }}
-                          >
-                            Georgia
-                          </option>
-                          <option
-                            value="Courier New"
-                            style={{ background: text_clrL }}
-                          >
-                            Courier New
-                          </option>
-                          <option
-                            value="Times New Roman"
-                            style={{ background: text_clrL }}
-                          >
-                            Times New Roman
-                          </option>
-                          <option
-                            value="Verdana"
-                            style={{ background: text_clrL }}
-                          >
-                            Verdana
-                          </option>
-                          <option
-                            value="Impact"
-                            style={{ background: text_clrL }}
-                          >
-                            Impact
-                          </option>
-                        </select>
-                      </div> */}
-
-                      <div
-                        className="btn overflow-hidden p-0 props-btn toolbar-button"
-                        style={{ border: `` }}
-                      >
-                        <input
-                          type="color"
-                          value={activeElement?.color}
-                          style={{
-                            scale: "2",
-                            border: ``,
-                          }}
-                          onChange={(e) =>
-                            handleChange(
-                              activeElement?.id,
-                              "color",
-                              e.target.value
-                            )
-                          }
-                          defaultValue={"#ff0000"}
-                        />
-                      </div>
-
-                      <div
-                        className="props-btn toolbar-button"
-                        style={{
-                          border: `1px solid ${text_clrL}`,
-                          width: "120px",
-                        }}
-                      >
-                        <div
-                          className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
-                          style={{ translate: "6px" }}
-                        >
-                          <small
-                            className="flex-grow-1"
-                            style={{ color: text_clrM }}
-                          >
-                            Background
-                          </small>
-                          <div className="btn overflow-hidden flex-grow-1 props-btn rounded-0 p-0">
-                            <input
-                              type="color"
-                              className="form-control form-control-color w-100 props-btn border"
-                              style={{ scale: 3 }}
-                              value={
-                                activeElement
-                                  ? activeElement.background
-                                  : canvasBgColor
-                              }
-                              onChange={(e) =>
-                                activeElement
-                                  ? handleChange(
-                                      activeId,
-                                      "background",
-                                      e.target.value
-                                    )
-                                  : setCanvasBgColor(e.target.value)
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        className="props-btn fw-medium toolbar-button flex-grow-1"
-                        style={{
-                          border: `1px solid ${text_clrL}`,
-                        }}
-                        disabled={!activeElement}
-                        onClick={() => {
-                          activeElement
-                            ? handleChange(
-                                activeId,
-                                "background",
-                                "transparent"
-                              )
-                            : "";
-                        }}
-                      >
-                        &nbsp; reset bg&nbsp;
-                      </button>
-
-                      <button className="btn flex-grow-1 overflow-hidden btn-success props-btn rounded-0 p-0">
-                        <label className="btn btn-success props-btn gap-2 rounded-0">
-                          Add{" "}
-                          <FontAwesomeIcon icon={faImage} color={text_clrH} />
-                          <input
-                            type="file"
-                            className="d-none"
-                            accept="image/*"
-                            onChange={(e) => addImageBox(e.target.files[0])}
-                          />
-                        </label>
-                      </button>
-
-                      <button
-                        className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
-                        onClick={addTextBox}
-                      >
-                        <div className="props-btn rounded-0">
-                          Add Text &nbsp;
-                          <FontAwesomeIcon
-                            icon={faTextHeight}
-                            className="me-2"
-                          />
-                        </div>
-                      </button>
-                    </div>
-                  </>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -1358,7 +1128,7 @@ const CanvasVibeEditor = () => {
       </div>
 
       <div
-        className="d-flex gap-2 p-2 none-scroller overflow-x-auto overflow-y-hidden"
+        className="d-flex gap-2 pt-2 none-scroller overflow-x-auto overflow-y-hidden"
         style={{ maxHeight: "80px", maxWidth: "100%" }}
       >
         {pre_bg_color.map((c, idx) => {
@@ -1383,15 +1153,86 @@ const CanvasVibeEditor = () => {
         })}
       </div>
 
-      <div className="d-flex gap-3 p-2">
+      <div className="card border-0 shadow-sm position-sticky mt-3 bg-dark">
+        <details className="bg-dark mx-2">
+          <summary className="mx-1 fs-4" style={{ color: text_clrH }}></summary>
+          {mobile_break_point && (
+            <div className="mt-2 mx-2">
+              <textarea
+                className="form-control h-100 w-100"
+                value={activeElement?.content}
+                style={{
+                  background: mainbg,
+                  color: text_clrM,
+                  border: `1px solid ${text_clrL}`,
+                }}
+                placeholder="Click Add Text and then write Here !"
+                spellCheck={false}
+                onChange={(e) =>
+                  handleChange(activeElement?.id, "content", e.target.value)
+                }
+              >
+                {activeElement?.content || "Type Here"}
+              </textarea>
+            </div>
+          )}
+
+          <div className="mx-2 my-0">
+            <input
+              type="range"
+              min={100}
+              max={800}
+              step={10}
+              onChange={(e) => setCanvasHeight(parseInt(e.target.value))}
+              style={{ height: "7px" }}
+              className="w-100 "
+            />
+          </div>
+        </details>
+      </div>
+
+      <div className="py-2" style={{ background: mainbg }}>
+        <>
+          <div
+            className="d-flex flex-row-reverse props-parent flex-wrap gap-2 overflow-x-auto"
+            style={{
+              height: "max-content",
+            }}
+          >
+            <button className="btn flex-grow-1 overflow-hidden btn-success props-btn rounded-0 p-0">
+              <label className="btn btn-success props-btn gap-2 rounded-0">
+                Add <FontAwesomeIcon icon={faImage} color={text_clrH} />
+                <input
+                  type="file"
+                  className="d-none"
+                  accept="image/*"
+                  onChange={(e) => addImageBox(e.target.files[0])}
+                />
+              </label>
+            </button>
+
+            <button
+              className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
+              onClick={addTextBox}
+            >
+              <div className="props-btn rounded-0">
+                Add Text &nbsp;
+                <FontAwesomeIcon icon={faTextHeight} className="me-2" />
+              </div>
+            </button>
+          </div>
+        </>
+      </div>
+
+      <div className="d-flex gap-3 pt-2 ">
         <button
-          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+          className={`btn border p-1 ps-2 pe-2 rounded-5  ${
             activeBtn3Profile === "public" ? "btn-dark" : ""
           }`}
           onClick={() => setActiveBtn3Profile("public")}
           style={{ color: text_clrM }}
         >
-          For Public
+          <small> For Public</small>
         </button>
         <button
           className={`btn border p-1 ps-2 pe-2 rounded-5 ${
@@ -1400,7 +1241,7 @@ const CanvasVibeEditor = () => {
           onClick={() => setActiveBtn3Profile("Follower")}
           style={{ color: text_clrM }}
         >
-          For Follower
+          <small> For Follower</small>
         </button>
         <button
           className={`btn border p-1 ps-3 pe-3 rounded-5 ${
@@ -1410,14 +1251,14 @@ const CanvasVibeEditor = () => {
           disabled={true}
           style={{ color: text_clrM }}
         >
-          Paid Only
+          <small>Paid Only</small>
         </button>
       </div>
 
       <div className="">
         <div className="d-flex gap-2 align-items-center  pb-0 pt-3">
           <div
-            className="d-flex fw-semibold ms-1 text-white rounded-5 align-items-center justify-content-center"
+            className="d-flex fw-semibold text-white rounded-5 align-items-center justify-content-center"
             style={{
               width: "40px",
               height: "40px",
@@ -1437,19 +1278,16 @@ const CanvasVibeEditor = () => {
         </div>
         <div className="mt-2">
           <textarea
-            ref={textareaRef}
             value={text}
-            required
             onChange={(e) => {
               handleInput(0, e, "text");
             }}
-            className={`form-control rounded-0 shadow-none ps-2 pe-2`}
+            className={`form-control rounded-0 shadow-none ps-1 pe-2`}
             placeholder="Write about post here . . ."
             style={{
-              overflow: "hidden",
-              resize: "none",
               background: mainbg,
               color: text_clrM,
+              minHeight: `${text.split("\n").length * 22}px`,
               border: `${error ? "1px solid red" : "0"}`,
             }}
             spellCheck="false"
