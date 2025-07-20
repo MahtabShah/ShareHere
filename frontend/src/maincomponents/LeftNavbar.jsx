@@ -156,7 +156,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
       <div
         className="LeftNavbar d-flex h-100 pt-0 position-fixed top-0"
         style={{
-          zIndex: `${openSlidWin ? 100000 : 100000}`,
+          zIndex: `${openSlidWin ? 100000000000 : 1000000000}`,
           width: `${openSlidWin ? "100%" : "0"}`,
           background: mainbg,
           borderRight: `${mobile_break_point ? "" : `1px solid ${text_clrL}`}`,
@@ -392,12 +392,12 @@ export default function LeftNavbar({ onActiveChange = "" }) {
           <div
             className="p-2 w-100 overflow-y-auto position-relative none-scroller"
             style={{
-              zIndex: 22200,
+              zIndex: 2000000,
               top: 0,
               color: text_clrM,
 
-              marginTop: `${mobile_break_point ? "54px" : ""}`,
-              marginBottom: `${mobile_break_point ? "48px" : ""}`,
+              // marginTop: `${mobile_break_point ? "54px" : ""}`,
+              // marginBottom: `${mobile_break_point ? "48px" : ""}`,
             }}
           >
             {GiveComponent(

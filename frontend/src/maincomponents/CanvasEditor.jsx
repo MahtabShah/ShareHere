@@ -590,26 +590,358 @@ const CanvasVibeEditor = () => {
               className="card border-0 shadow-sm "
               style={{ background: mainbg }}
             >
-              <div className="card border-0 shadow-sm position-sticky mb-3 bg-dark">
+              <div className="bg-dark mb-2">
+                <div className="d-flex gap-2 btn-tool overflow-x-auto none-scroller p-2 bg-dark ">
+                  <div
+                    className="toolbar-button d-flex align-items-center rounded-0 p-0 pe-2 ps-2 fontFamily "
+                    onClick={() => {
+                      setActive_style(fontFamily);
+                      setStyle_type("fontFamily");
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      background: `${
+                        active_style === fontFamily ? "#6b0ad2" : ""
+                      }`,
+                      color: `${active_style === fontFamily ? "#fff" : ""}`,
+                    }}
+                  >
+                    <FaFont />
+                  </div>
+
+                  <div
+                    className="toolbar-button  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 fontSize"
+                    onClick={() => {
+                      setActive_style(fontSize);
+                      setStyle_type("fontSize");
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      background: `${
+                        active_style === fontSize ? "#6b0ad2" : ""
+                      }`,
+                      color: `${active_style === fontSize ? "#fff" : ""}`,
+                    }}
+                  >
+                    <FaTextHeight title="Increase Font Size" />
+                  </div>
+
+                  <div
+                    className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
+                    onClick={() => {
+                      setActive_style(textShadow);
+                      setStyle_type("textShadow");
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      background: `${
+                        active_style === textShadow ? "#6b0ad2" : ""
+                      }`,
+                      color: `${active_style === textShadow ? "#fff" : ""}`,
+                    }}
+                  >
+                    {/* <FaShadow title="FaShadow" /> */}
+                    <FaMagic title="FaShadow" />
+                  </div>
+
+                  <div
+                    className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
+                    onClick={() => {
+                      setActive_style(textDecoration);
+                      setStyle_type("textDecoration");
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      background: `${
+                        active_style === textDecoration ? "#6b0ad2" : ""
+                      }`,
+                      color: `${active_style === textDecoration ? "#fff" : ""}`,
+                    }}
+                  >
+                    <FaStrikethrough title="Strikethrough" />
+                  </div>
+
+                  <div
+                    className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
+                    onClick={() => {
+                      setActive_style(color);
+                      setStyle_type("color");
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      background: `${active_style === color ? "#6b0ad2" : ""}`,
+                      color: `${active_style === color ? "#fff" : ""}`,
+                    }}
+                  >
+                    Color
+                  </div>
+
+                  <div
+                    className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 letterSpacing"
+                    onClick={() => {
+                      setActive_style(letterSpacing);
+                      setStyle_type("letterSpacing");
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      background: `${
+                        active_style === letterSpacing ? "#6b0ad2" : ""
+                      }`,
+                      color: `${active_style === letterSpacing ? "#fff" : ""}`,
+                    }}
+                  >
+                    Spacing
+                  </div>
+
+                  <div
+                    className="toolbar-button d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 backgroundPosition "
+                    onClick={() => {
+                      setActive_style(boxShadow);
+                      setStyle_type("boxShadow");
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      background: `${
+                        active_style === boxShadow ? "#6b0ad2" : ""
+                      }`,
+                      color: `${active_style === boxShadow ? "#fff" : ""}`,
+                    }}
+                  >
+                    box Shadow
+                  </div>
+                </div>
+
+                <div className="d-flex gap-3 bg-dark text-light mx-2 mb-2 overflow-x-auto overflow-y-hidden none-scroller">
+                  {active_style.map((op) => (
+                    <button
+                      className={`props-btn toolbar-button ${
+                        activeElement?.[style_type] == op ? "active" : ""
+                      }`}
+                      style={{
+                        color: text_clrM,
+                        minWidth: "fit-content",
+                        minHeight: "max-height",
+                        boxShadow: `${style_type == "boxShadow" ? op : ""}`,
+                      }}
+                      onClick={() => {
+                        handleChange(activeId, style_type, op);
+                      }}
+                    >
+                      <span
+                        className="btn border-0"
+                        style={{
+                          color: text_clrM,
+                          [style_type]: `${
+                            op == "fontSize" || style_type == "boxShadow"
+                              ? ""
+                              : op
+                          }`,
+                        }}
+                      >
+                        {style_type == "textShadow" || style_type == "boxShadow"
+                          ? "A"
+                          : op}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div
+                  ref={canvasRef}
+                  className="canvas-container"
+                  style={{
+                    height: `${canvasHeight}px`,
+                    background: canvasBgColor,
+                    position: "relative",
+                    overflow: "hidden",
+                    maxWidth: "601px",
+                    margin: "auto",
+                  }}
+                >
+                  {elements.map((el) => (
+                    <Rnd
+                      key={el.id}
+                      style={{
+                        left: `${el.x}px`,
+                        top: `${el.y}px`,
+                        width: `${el.width}px`,
+                        height: `${el.height}px`,
+                        zIndex: el.zIndex,
+                        border: activeId === el.id ? "2px dashed #0d6efd" : "",
+                        boxShadow:
+                          activeId === el.id
+                            ? "0 0 10px rgba(13, 110, 253, 0.5)"
+                            : "none",
+                        cursor: activeElement ? "move" : "",
+                      }}
+                      spellCheck={false}
+                      disableDragging={
+                        activeElement?.id == el.id ? false : true
+                      }
+                      enableUserSelectHack={
+                        activeElement?.id == el.id ? true : false
+                      }
+                      enableResizing={activeElement?.id == el.id ? true : false}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveId(el.id);
+                      }}
+                    >
+                      <div
+                        className="w-100 h-100 position-relative"
+                        onDrag={() => {
+                          handleResizeOrDrag(
+                            el.id,
+                            el.width,
+                            el.height,
+                            el.x,
+                            el.y
+                          );
+                        }}
+                      >
+                        {activeId === el.id && (
+                          <>
+                            <button
+                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute top-0 end-0 rounded-1"
+                              style={{
+                                zIndex: 1000,
+                                width: "18px",
+                                height: "18px",
+                              }}
+                              onPointerDown={(e) => {
+                                e.stopPropagation();
+                                setActiveId(null);
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faMinus} />
+                            </button>
+
+                            <div
+                              className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
+                              style={{
+                                width: "12px",
+                                height: "12px",
+                                cursor: "nwse-resize",
+                              }}
+                            ></div>
+                          </>
+                        )}
+
+                        {el.type === "text" ? (
+                          <div
+                            className="text-element overflow-hidden outline-none w-100 h-100 none-scroller p-2"
+                            style={{
+                              fontSize: `${el.fontSize}px`,
+                              color: el.color,
+                              fontFamily: el.fontFamily,
+                              fontWeight: el.fontWeight,
+                              fontStyle: el.fontStyle,
+                              textDecoration: el.textDecoration,
+                              textAlign: el.textAlign,
+                              background: el.background,
+                              whiteSpace: "pre-wrap",
+                              userSelect: "none",
+                              letterSpacing: `${el.letterSpacing}px`,
+                              textShadow: el.textShadow,
+                              boxShadow: el.boxShadow,
+                            }}
+                            contentEditable={activeElement?.id === el?.id}
+                            suppressContentEditableWarning={true}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                document.execCommand(
+                                  "insertHTML",
+                                  false,
+                                  "<br><br>"
+                                );
+                              }
+                            }}
+                          >
+                            {el.content}
+                          </div>
+                        ) : (
+                          <div className="overflow-hidden h-100 w-100">
+                            <img
+                              src={el.src}
+                              alt="uploaded"
+                              className="image-element w-100"
+                              draggable={false}
+                              style={{
+                                objectFit: "contain",
+                                boxShadow: el.boxShadow,
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </Rnd>
+                  ))}
+
+                  {elements.length === 0 && (
+                    <div className="empty-canvas w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
+                      <h4>Add text or images to get started</h4>
+                      <p className="text-center">
+                        Click the buttons below to add elements
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="card border-0 shadow-sm position-sticky mt-3 bg-dark">
+                <details className="bg-dark mx-2 border-bottom">
+                  <summary
+                    className="mx-1 fs-4"
+                    style={{ color: text_clrH }}
+                  ></summary>
+                  {mobile_break_point && (
+                    <div className="mt-2 mx-2">
+                      <textarea
+                        className="form-control h-100 w-100"
+                        value={activeElement?.content}
+                        style={{
+                          background: mainbg,
+                          color: text_clrM,
+                          border: `1px solid ${text_clrL}`,
+                        }}
+                        placeholder="Click Add Text and then write Here !"
+                        spellCheck={false}
+                        onChange={(e) =>
+                          handleChange(
+                            activeElement?.id,
+                            "content",
+                            e.target.value
+                          )
+                        }
+                      >
+                        {activeElement?.content || "Type Here"}
+                      </textarea>
+                    </div>
+                  )}
+
+                  <div className="mx-2 my-0">
+                    <input
+                      type="range"
+                      min={100}
+                      max={800}
+                      step={10}
+                      onChange={(e) =>
+                        setCanvasHeight(parseInt(e.target.value))
+                      }
+                      style={{ height: "7px" }}
+                      className="w-100 "
+                    />
+                  </div>
+                </details>
                 <div
                   className="py-2 positio-fixed bg-dark"
                   // style={{ border: "2px solid red" }}
                   style={{ background: mainbg }}
                 >
                   <>
-                    <div className="mx-2 my-0">
-                      <input
-                        type="range"
-                        min={100}
-                        max={800}
-                        step={10}
-                        onChange={(e) =>
-                          setCanvasHeight(parseInt(e.target.value))
-                        }
-                        style={{ height: "7px" }}
-                        className="w-100 "
-                      />
-                    </div>
                     <div
                       className="d-flex props-parent flex-wrap gap-2 overflow-x-auto format-toolbar"
                       style={{
@@ -1018,344 +1350,6 @@ const CanvasVibeEditor = () => {
                       </div>
                     </div>
                   </>
-
-                  {mobile_break_point && (
-                    <div className="mt-2 mx-2">
-                      <textarea
-                        className="form-control h-100 w-100"
-                        value={activeElement?.content}
-                        style={{
-                          background: mainbg,
-                          color: text_clrM,
-                          border: `1px solid ${text_clrL}`,
-                        }}
-                        placeholder="Click Add Text and then write Here !"
-                        spellCheck={false}
-                        onChange={(e) =>
-                          handleChange(
-                            activeElement?.id,
-                            "content",
-                            e.target.value
-                          )
-                        }
-                      >
-                        {activeElement?.content || "Type Here"}
-                      </textarea>
-                    </div>
-                  )}
-                </div>
-
-                <details className="bg-dark mx-2">
-                  <summary
-                    className="mx-1 fs-4"
-                    style={{ color: text_clrH }}
-                  ></summary>
-
-                  <div className="d-flex gap-2 btn-tool overflow-x-auto none-scroller p-2 bg-dark ">
-                    <div
-                      className="toolbar-button d-flex align-items-center rounded-0 p-0 pe-2 ps-2 fontFamily "
-                      onClick={() => {
-                        setActive_style(fontFamily);
-                        setStyle_type("fontFamily");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === fontFamily ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === fontFamily ? "#fff" : ""}`,
-                      }}
-                    >
-                      <FaFont />
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 fontSize"
-                      onClick={() => {
-                        setActive_style(fontSize);
-                        setStyle_type("fontSize");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === fontSize ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === fontSize ? "#fff" : ""}`,
-                      }}
-                    >
-                      <FaTextHeight title="Increase Font Size" />
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
-                      onClick={() => {
-                        setActive_style(textShadow);
-                        setStyle_type("textShadow");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === textShadow ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === textShadow ? "#fff" : ""}`,
-                      }}
-                    >
-                      {/* <FaShadow title="FaShadow" /> */}
-                      <FaMagic title="FaShadow" />
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
-                      onClick={() => {
-                        setActive_style(textDecoration);
-                        setStyle_type("textDecoration");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === textDecoration ? "#6b0ad2" : ""
-                        }`,
-                        color: `${
-                          active_style === textDecoration ? "#fff" : ""
-                        }`,
-                      }}
-                    >
-                      <FaStrikethrough title="Strikethrough" />
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 textDecoration"
-                      onClick={() => {
-                        setActive_style(color);
-                        setStyle_type("color");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === color ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === color ? "#fff" : ""}`,
-                      }}
-                    >
-                      Color
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-0 p-0   pe-2 ps-2 letterSpacing"
-                      onClick={() => {
-                        setActive_style(letterSpacing);
-                        setStyle_type("letterSpacing");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === letterSpacing ? "#6b0ad2" : ""
-                        }`,
-                        color: `${
-                          active_style === letterSpacing ? "#fff" : ""
-                        }`,
-                      }}
-                    >
-                      Spacing
-                    </div>
-
-                    <div
-                      className="toolbar-button d-flex align-items-center  rounded-0 p-0  pe-2 ps-2 backgroundPosition "
-                      onClick={() => {
-                        setActive_style(boxShadow);
-                        setStyle_type("boxShadow");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === boxShadow ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === boxShadow ? "#fff" : ""}`,
-                      }}
-                    >
-                      box Shadow
-                    </div>
-                  </div>
-
-                  <div className="d-flex gap-3 bg-dark text-light m-2 overflow-x-auto overflow-y-hidden none-scroller">
-                    {active_style.map((op) => (
-                      <button
-                        className={`props-btn toolbar-button ${
-                          activeElement?.[style_type] == op ? "active" : ""
-                        }`}
-                        style={{
-                          color: text_clrM,
-                          minWidth: "fit-content",
-                          minHeight: "max-height",
-                          boxShadow: `${style_type == "boxShadow" ? op : ""}`,
-                        }}
-                        onClick={() => {
-                          handleChange(activeId, style_type, op);
-                        }}
-                      >
-                        <span
-                          className="btn border-0"
-                          style={{
-                            color: text_clrM,
-                            [style_type]: `${
-                              op == "fontSize" || style_type == "boxShadow"
-                                ? ""
-                                : op
-                            }`,
-                          }}
-                        >
-                          {style_type == "textShadow" ||
-                          style_type == "boxShadow"
-                            ? "A"
-                            : op}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </details>
-              </div>
-
-              <div>
-                <div
-                  ref={canvasRef}
-                  className="canvas-container"
-                  style={{
-                    height: `${canvasHeight}px`,
-                    background: canvasBgColor,
-                    position: "relative",
-                    overflow: "hidden",
-                    maxWidth: "601px",
-                    margin: "auto",
-                  }}
-                >
-                  {elements.map((el) => (
-                    <Rnd
-                      key={el.id}
-                      style={{
-                        left: `${el.x}px`,
-                        top: `${el.y}px`,
-                        width: `${el.width}px`,
-                        height: `${el.height}px`,
-                        zIndex: el.zIndex,
-                        border: activeId === el.id ? "2px dashed #0d6efd" : "",
-                        boxShadow:
-                          activeId === el.id
-                            ? "0 0 10px rgba(13, 110, 253, 0.5)"
-                            : "none",
-                        cursor: activeElement ? "move" : "",
-                      }}
-                      spellCheck={false}
-                      disableDragging={
-                        activeElement?.id == el.id ? false : true
-                      }
-                      enableUserSelectHack={
-                        activeElement?.id == el.id ? true : false
-                      }
-                      enableResizing={activeElement?.id == el.id ? true : false}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveId(el.id);
-                      }}
-                    >
-                      <div
-                        className="w-100 h-100 position-relative"
-                        onDrag={() => {
-                          handleResizeOrDrag(
-                            el.id,
-                            el.width,
-                            el.height,
-                            el.x,
-                            el.y
-                          );
-                        }}
-                      >
-                        {activeId === el.id && (
-                          <>
-                            <button
-                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute top-0 end-0 rounded-1"
-                              style={{
-                                zIndex: 1000,
-                                width: "18px",
-                                height: "18px",
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveId(null);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faMinus} />
-                            </button>
-
-                            <div
-                              className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
-                              style={{
-                                width: "12px",
-                                height: "12px",
-                                cursor: "nwse-resize",
-                              }}
-                            ></div>
-                          </>
-                        )}
-
-                        {el.type === "text" ? (
-                          <div
-                            className="text-element overflow-hidden outline-none w-100 h-100 none-scroller p-2"
-                            style={{
-                              fontSize: `${el.fontSize}px`,
-                              color: el.color,
-                              fontFamily: el.fontFamily,
-                              fontWeight: el.fontWeight,
-                              fontStyle: el.fontStyle,
-                              textDecoration: el.textDecoration,
-                              textAlign: el.textAlign,
-                              background: el.background,
-                              whiteSpace: "pre-wrap",
-                              userSelect: "none",
-                              letterSpacing: `${el.letterSpacing}px`,
-                              textShadow: el.textShadow,
-                              boxShadow: el.boxShadow,
-                            }}
-                            contentEditable={activeElement?.id === el?.id}
-                            suppressContentEditableWarning={true}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault();
-                                document.execCommand(
-                                  "insertHTML",
-                                  false,
-                                  "<br><br>"
-                                );
-                              }
-                            }}
-                          >
-                            {el.content}
-                          </div>
-                        ) : (
-                          <div className="overflow-hidden h-100 w-100">
-                            <img
-                              src={el.src}
-                              alt="uploaded"
-                              className="image-element w-100"
-                              draggable={false}
-                              style={{
-                                objectFit: "contain",
-                                boxShadow: el.boxShadow,
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </Rnd>
-                  ))}
-
-                  {elements.length === 0 && (
-                    <div className="empty-canvas w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
-                      <h4>Add text or images to get started</h4>
-                      <p className="text-center">
-                        Click the buttons below to add elements
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
