@@ -17,7 +17,7 @@ body {
 }
 
 .active {
-  border: 1px solid #c609df;
+  border: 1px solid #c609df !important;
   background: none !important;
 }
 
