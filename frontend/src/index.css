@@ -17,8 +17,12 @@ body {
 }
 
 .active {
-  border: 1px solid #c609df !important;
-  background: none !important;
+  border: 1px solid #c609df;
+  background: none;
+}
+
+.toolbar-pr .active {
+  background: #6b0ad2;
 }
 
 .br {

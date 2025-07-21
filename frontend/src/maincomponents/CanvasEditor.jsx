@@ -551,7 +551,7 @@ const CanvasVibeEditor = () => {
               style={{ background: mainbg }}
             >
               <div
-                className="b-2 position-fixed"
+                className="b-2 position-fixed toolbar-pr"
                 style={{
                   zIndex: 9000000000000,
                   left: `${
