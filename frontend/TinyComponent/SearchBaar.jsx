@@ -152,6 +152,7 @@ export const SearchBaar = () => {
                       className=""
                       onClick={() => {
                         setopenSlidWin(false);
+                        setQuery("");
                         nevigate(`/home/${res._id}`);
                       }}
                     >

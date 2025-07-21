@@ -89,8 +89,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "54px"
-                          : "228px"
+                          ? "64px"
+                          : "234px"
                       }`,
                     }}
                   >
@@ -107,8 +107,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "54px"
-                          : "228px"
+                          ? "64px"
+                          : "234px"
                       }`,
                     }}
                   >
@@ -125,8 +125,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "54px"
-                          : "228px"
+                          ? "64px"
+                          : "234px"
                       }`,
                     }}
                   >
@@ -144,8 +144,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "54px"
-                          : "228px"
+                          ? "64px"
+                          : "234px"
                       }`,
                     }}
                   >
@@ -167,8 +167,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "54px"
-                          : "228px"
+                          ? "64px"
+                          : "234px"
                       }`,
                     }}
                   >
@@ -189,14 +189,14 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "54px"
-                          : "228px"
+                          ? "70px"
+                          : "234px"
                       }`,
                     }}
                   >
                     <BottomNav />
-
                     <TrackPost />
+                    {/* <All_Post_Section /> */}
                   </main>
                 }
               />
@@ -210,8 +210,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "54px"
-                          : "228px"
+                          ? "74px"
+                          : "244px"
                       }`,
                     }}
                   >
@@ -230,8 +230,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "54px"
-                          : "228px"
+                          ? "74px"
+                          : "234px"
                       }`,
 
                       marginTop: `${mobile_break_point ? "44px" : "0"}`,

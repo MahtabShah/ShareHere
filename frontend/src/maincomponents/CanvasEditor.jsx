@@ -553,11 +553,11 @@ const CanvasVibeEditor = () => {
               <div
                 className="b-2 position-fixed"
                 style={{
-                  zIndex: 900000000000000,
+                  zIndex: 9000000000000,
                   left: `${
-                    mobile_break_point ? 0 : sm_break_point ? "60px" : "227px"
+                    mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
                   }`,
-                  right: 0,
+                  right: "6px",
                   top: "40px",
                   background: mainbg,
                 }}

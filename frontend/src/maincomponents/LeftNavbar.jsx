@@ -94,7 +94,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               zIndex: 9999999,
               top: 0,
               left: `${
-                mobile_break_point ? 0 : sm_break_point ? "56px" : "227px"
+                mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
               background: mainbg,
@@ -120,7 +120,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               zIndex: 9999999,
               top: 0,
               left: `${
-                mobile_break_point ? 0 : sm_break_point ? "56px" : "227px"
+                mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
               background: mainbg,
@@ -142,7 +142,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               zIndex: 9999999,
               top: 0,
               left: `${
-                mobile_break_point ? 0 : sm_break_point ? "56px" : "227px"
+                mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
               background: mainbg,
@@ -194,7 +194,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
       >
         {!mobile_break_point && (
           <div
-            className="d-flex"
+            className="d-flex px-2"
             style={{
               height: "100vh",
               minWidth: "max-content",
@@ -242,8 +242,10 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link d-flex align-items-center gap-3 fs-6 `}
-                  href={`${openSlidWin ? "" : "/Home"}`}
+                  href={`${openSlidWin ? "" : "/home"}`}
+                  className={`nav-link d-flex align-items-center gap-3 fs-6  ${
+                    activeIndex == "Home" ? "active" : ""
+                  }`}
                   onClick={() => {
                     setActiveIndex("Home");
                     setopenSlidWin(false);
@@ -268,7 +270,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link d-flex align-items-center gap-3 fs-6 ${
+                    activeIndex == "Upload" ? "active" : ""
+                  }`}
                   onClick={() => {
                     setUploadClicked(!uploadClicked);
                     if (activeIndex == "Upload") {
@@ -298,7 +302,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link  d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link  d-flex align-items-center gap-3 fs-6  ${
+                    activeIndex == "Notifications" ? "active" : ""
+                  }`}
                   onClick={() => {
                     setVisibleNotification(!VisibleNotification);
                     setCount(0);
@@ -331,7 +337,9 @@ export default function LeftNavbar({ onActiveChange = "" }) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link d-flex align-items-center gap-3 fs-6 ${
+                    activeIndex == "Search" ? "active" : ""
+                  }`}
                   onClick={() => {
                     setopenSlidWin(true);
                     if (activeIndex == "Search") {
@@ -362,9 +370,14 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               {loggedIn && admin_user?._id ? (
                 <>
                   <li className="nav-item pb-2">
-                    <a
+                    <Nav.Link
                       href={`/api/user/${admin_user?._id}`}
-                      className={`nav-link d-flex align-items-center gap-3 fs-6`}
+                      className={`nav-link d-flex align-items-center gap-3 fs-6 ${
+                        activeIndex == "User" ? "active" : ""
+                      }`}
+                      onClick={() => {
+                        setActiveIndex("User");
+                      }}
                     >
                       <span
                         className={`d-flex align-items-center justify-content-center border rounded-1 text-danger`}
@@ -384,7 +397,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                       >
                         User Profile
                       </span>
-                    </a>
+                    </Nav.Link>
                   </li>
                 </>
               ) : (
@@ -392,9 +405,13 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                   <li className="nav-item">
                     <Nav.Link
                       href="/signup"
-                      className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                      className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
+                        activeIndex == "User" ? "active" : ""
+                      }
+                  `}
                       onClick={() => {
                         setopenSlidWin(false);
+                        setActiveIndex("User");
                       }}
                     >
                       <div

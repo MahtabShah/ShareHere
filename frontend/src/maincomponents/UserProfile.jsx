@@ -19,6 +19,8 @@ const UserProfile = ({}) => {
     all_user,
     mobile_break_point,
     sm_break_point,
+    setActiveIndex,
+    openSlidWin,
   } = useQuote();
   // setUser(User);
   // setUser(User);
@@ -32,7 +34,6 @@ const UserProfile = ({}) => {
   const FollowerPost = user_post?.filter((p) => p.mode == "Follower");
   const PaidPost = user_post?.filter((p) => p.mode == "Paid");
   const PublicPost = user_post?.filter((p) => p.mode == "public");
-  console.log("god");
 
   // console.log("KKKK", all_posts);
 
@@ -52,6 +53,12 @@ const UserProfile = ({}) => {
 
     setLazyLoading(user_post.length < 0);
   }, [admin_user?.followers]);
+
+  useEffect(() => {
+    if (!openSlidWin) {
+      setActiveIndex("User");
+    }
+  }, [openSlidWin]);
 
   const [ProfilePicVisble, setProfilePicVisble] = useState(false);
 

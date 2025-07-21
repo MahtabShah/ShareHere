@@ -11,6 +11,7 @@ import SuggetionSlip, {
 } from "./maincomponents/NewUserUpdate";
 import { useTheme } from "./context/Theme";
 import { SearchBaar } from "../TinyComponent/SearchBaar";
+import { TrackPost } from "../TinyComponent/TrackPost";
 
 function All_Post_Section() {
   const [visiblePosts, setVisiblePosts] = useState(5);
@@ -25,6 +26,8 @@ function All_Post_Section() {
     all_post_loading,
     Errors,
     lgbreakPoint,
+    openSlidWin,
+    setActiveIndex,
   } = useQuote();
   const { search } = useLocation();
   const params = new URLSearchParams(search);
@@ -80,6 +83,12 @@ function All_Post_Section() {
   const rn = 3;
   const { mainbg } = useTheme();
 
+  useEffect(() => {
+    if (!openSlidWin) {
+      setActiveIndex("Home");
+    }
+  }, [openSlidWin]);
+
   return (
     <>
       <div
@@ -122,10 +131,12 @@ function All_Post_Section() {
                       marginTop: `${mobile_break_point ? "50px" : "12px"}`,
                       maxWidth: "600px",
                     }}
-                    className="w-100 p-2"
+                    className="w-100 p-1"
                   >
                     <SearchBaar />
                   </div>
+                  {/* <TrackPost /> */}
+
                   <div className="d-flex flex-column gap-5" style={{}}>
                     {visiblePostComponents.map(
                       ({ post, user }, idx) =>

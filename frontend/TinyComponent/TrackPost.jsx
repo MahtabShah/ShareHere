@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { Loading } from "./LazyLoading";
 import { SearchBaar } from "./SearchBaar";
 import SuggetionSlip from "../src/maincomponents/NewUserUpdate";
+import { useNavigate } from "react-router-dom";
 
 export const TrackPost = () => {
   const { postId } = useParams();
@@ -14,12 +15,13 @@ export const TrackPost = () => {
     all_user,
     all_post_loading,
     mobile_break_point,
+    setActiveIndex,
     lgbreakPoint,
   } = useQuote();
   const [user, setUser] = useState(null);
   const [post, setPost] = useState(null);
   const [error, setError] = useState("");
-
+  const nevigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   const fetch_user_post = async () => {
@@ -44,12 +46,13 @@ export const TrackPost = () => {
   useEffect(() => {
     if (all_posts?.length > 0 && all_user?.length > 0) {
       fetch_user_post();
+      setActiveIndex("");
     }
-  }, [all_posts, all_user]);
+  }, [postId, all_posts, all_user]);
 
   return (
     <>
-      <div className="" style={{ minHeight: "90vh", marginBottom: "64px" }}>
+      <div className="mb-4" style={{}}>
         <div
           style={{
             margin: "auto",
@@ -71,7 +74,7 @@ export const TrackPost = () => {
         )}
         {error && (
           <div
-            className="w-100 d-flex flex-column justify-content-center align-items-center fs-5 "
+            className="w-100 d-flex flex-column rounded justify-content-center align-items-center fs-5 "
             style={{ color: "#777" }}
           >
             <p>{error}</p>
@@ -91,11 +94,30 @@ export const TrackPost = () => {
         )}
 
         <div
-          className="d-flex m-2 align-items-start justify-content-center "
-          style={{ gap: "104px" }}
+          className="d-flex mt-2  align-items-start rounded overflow-hidden  justify-content-center"
+          style={{
+            gap: "104px",
+
+            marginBottom: "80px",
+          }}
         >
           {user && post && (
-            <div style={{ maxWidth: "600px" }}>
+            <div
+              style={{ maxWidth: "600px", boxShadow: "0 0 5px #ddd" }}
+              className="rounded m-1 top border overflow-hidden "
+            >
+              <div className="d-flex justify-content-between overflow-hidden ">
+                <h5 className="p-2 m-0 text-light">Result : </h5>
+                <button
+                  className="btn btn-danger props-btn"
+                  onClick={() => {
+                    nevigate("/home");
+                  }}
+                >
+                  X
+                </button>
+              </div>
+
               <EachPost user={user} comment={post} />
             </div>
           )}

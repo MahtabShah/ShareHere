@@ -16,6 +16,15 @@ body {
   border: 2px solid red;
 }
 
+.active {
+  border: 1px solid #c609df;
+  background: none !important;
+}
+
+.br {
+  border: 1px solid black;
+}
+
 .user-update {
   height: 100vh;
   translate: 0 5px;

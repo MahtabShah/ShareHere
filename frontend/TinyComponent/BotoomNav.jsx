@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useQuote } from "../src/context/QueotrContext";
 export const btnclass = "btn btn-sm progressBtn text-white ps-4 pe-4 rounded-5";
 import Nav from "react-bootstrap/Nav";
+import { useNavigate } from "react-router-dom";
 import { SearchBaar } from "./SearchBaar";
 import { Notification } from "./Notification";
 import PostSentence from "../src/maincomponents/PostSentance";
@@ -40,15 +41,15 @@ export default function BottomNav({}) {
   }, []);
 
   const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
-
+  const navigate = useNavigate();
   return (
     <>
       {mobile_break_point && (
         <>
           <div
-            className="BottomNav w-100 d-sm-none position-fixed"
+            className="BottomNav py-1 w-100 d-sm-none position-fixed"
             style={{
-              zIndex: 111110011,
+              zIndex: 99999990011,
               height: "48px",
               bottom: "0",
               left: "0",
@@ -58,7 +59,9 @@ export default function BottomNav({}) {
             <ul className="nav nav-pills gap-3 mb-auto d-flex justify-content-around">
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
+                    activeIndex == "Home" ? "active" : "br"
+                  }`}
                   href={`${openSlidWin ? "" : "/Home"}`}
                   onClick={() => {
                     setActiveIndex("Home");
@@ -84,7 +87,9 @@ export default function BottomNav({}) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
+                    activeIndex == "Upload" ? "active" : "br"
+                  }`}
                   onClick={() => {
                     setUploadClicked(!uploadClicked);
                     if (activeIndex == "Upload") {
@@ -114,7 +119,9 @@ export default function BottomNav({}) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
+                    activeIndex == "Notifications" ? "active" : "br"
+                  }`}
                   onClick={() => {
                     setVisibleNotification(!VisibleNotification);
 
@@ -145,7 +152,9 @@ export default function BottomNav({}) {
 
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
+                    activeIndex == "Search" ? "active" : "br"
+                  }`}
                   onClick={() => {
                     setopenSlidWin(true);
                     if (activeIndex == "Search") {
@@ -178,7 +187,12 @@ export default function BottomNav({}) {
                   <li className="nav-item border-bottom pb-2">
                     <a
                       href={`/api/user/${admin_user?._id}`}
-                      className={`nav-link d-flex align-items-center gap-3 fs-6`}
+                      className={`nav-link d-flex align-items-center gap-3 fs-6 ${
+                        activeIndex == "User" ? "active" : "br"
+                      }`}
+                      onClick={() => {
+                        setActiveIndex("User");
+                      }}
                     >
                       <span
                         className={`d-flex align-items-center justify-content-center border rounded-1 text-danger`}
