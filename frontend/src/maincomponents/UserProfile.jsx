@@ -9,6 +9,7 @@ import { Fragment } from "react";
 import { EachPost } from "./EachPost";
 import { FollowBtn } from "./EachPost";
 import { useTheme } from "../context/Theme";
+import { UserRing } from "./EachPost";
 const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   const nevigate = useNavigate();
@@ -19,6 +20,7 @@ const UserProfile = ({}) => {
     all_user,
     mobile_break_point,
     sm_break_point,
+    lgbreakPoint,
     setActiveIndex,
     openSlidWin,
   } = useQuote();
@@ -34,6 +36,8 @@ const UserProfile = ({}) => {
   const FollowerPost = user_post?.filter((p) => p.mode == "Follower");
   const PaidPost = user_post?.filter((p) => p.mode == "Paid");
   const PublicPost = user_post?.filter((p) => p.mode == "public");
+
+  console.log("user ", user?.followers);
 
   // console.log("KKKK", all_posts);
 
@@ -61,6 +65,15 @@ const UserProfile = ({}) => {
   }, [openSlidWin]);
 
   const [ProfilePicVisble, setProfilePicVisble] = useState(false);
+  const [option, setOption] = useState(null);
+
+  useEffect(() => {
+    if (option) {
+      document.querySelector("html").classList.add("no-scroll");
+    } else {
+      document.querySelector("html")?.classList?.remove("no-scroll");
+    }
+  }, [option]);
 
   return (
     <>
@@ -187,11 +200,23 @@ const UserProfile = ({}) => {
           <div className="d-flex  justify-content-between">
             <h4 className="flex-grow-1">{user?.username}</h4>
             <div className="d-flex gap-3 ps-3 pe-3 mt-">
-              <span className="text-center small">
+              <span
+                className="text-center small"
+                onClick={() => {
+                  setOption("followers");
+                }}
+                style={{ cursor: "pointer" }}
+              >
                 <span>Followers</span>
                 <h5>{user?.followers?.length || 0}</h5>
               </span>
-              <span className="text-center small">
+              <span
+                className="text-center small"
+                onClick={() => {
+                  setOption("following");
+                }}
+                style={{ cursor: "pointer" }}
+              >
                 <span>Following</span>
                 <h5>{user?.following?.length || 0}</h5>
               </span>
@@ -342,6 +367,63 @@ const UserProfile = ({}) => {
           </div>
         )}
       </div>
+
+      {option && (
+        <div
+          className="position-absolute m-2 d-flex flex-column overflow-auto none-scroller rounded bg-dark border p-2"
+          style={{
+            top: "100px",
+            maxHeight: "calc(100% - 110px)",
+            width: `${
+              mobile_break_point
+                ? "calc(100% - 15px)"
+                : sm_break_point
+                ? "calc(100% - 90px)"
+                : "100%"
+            }`,
+            boxShadow: "0 0 3px #ddd",
+            right: `${lgbreakPoint ? "200px" : "0"}`,
+
+            maxWidth: "500px",
+
+            color: text_clrM,
+          }}
+        >
+          <div className="d-flex justify-content-between align-items-center">
+            <div>{option} list</div>
+            <div
+              className="btn btn-danger"
+              onClick={() => {
+                setOption(null);
+              }}
+            >
+              X
+            </div>
+          </div>
+
+          <div className="d-flex flex-column gap-3 mt-3 overflow-y-auto none-scroller">
+            <div className="d-flex flex-column gap-2">
+              {user?.[option]?.map((user) => (
+                <div
+                  key={user.username}
+                  className="d-flex align-items-center gap-4 pb-3 rounded"
+                >
+                  <UserRing user={user} style={{}} dm={52} />
+                  <div>
+                    <FollowBtn
+                      user={user}
+                      cls={"text-primary rounded-1 border p-1 ps-3 pe-3"}
+                      style={{ cursor: "pointer" }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {user?.[option].length <= 0 && <p>No {option}</p>}
+        </div>
+      )}
     </>
   );
 };

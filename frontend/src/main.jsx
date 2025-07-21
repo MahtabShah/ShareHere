@@ -204,7 +204,7 @@ const Main = () => {
                 path="/api/user/:id"
                 element={
                   <main
-                    className="p-0 mt-0"
+                    className="p-0 mt-0 "
                     style={{
                       marginLeft: `${
                         mobile_break_point

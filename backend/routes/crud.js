@@ -22,7 +22,7 @@ router.get('/crud', verifyToken,  async (req, res) => {
 
 
   try {
-    const user = await User.findById({_id:userId}).populate("following")
+    const user = await User.findById({_id:userId}).populate("following").populate("followers")
     // console.log("aaaaaaaaaaaaaaaaaaaaaa---> ", req.user, user)
     res.json(user)
   } catch (err) {

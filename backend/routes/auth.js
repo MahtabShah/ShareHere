@@ -74,7 +74,7 @@ router.post('/login', async (req, res) => {
 
 
 router.get("/home" , async (req, res)=>{
-      const users = await User.find();
+      const users = await User.find().populate("following").populate("followers").lean();;
 
   //  console.log("all user want ot fetching 58: auth,js routes", users);
 
