@@ -59,7 +59,7 @@ export default function BottomNav({}) {
             <ul className="nav nav-pills gap-3 mb-auto d-flex justify-content-around">
               <li className="nav-item ">
                 <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
+                  className={`nav-link text-dark d-flex ms-1 align-items-center gap-3 fs-6 ${
                     activeIndex == "Home" ? "active" : "br"
                   }`}
                   href={`${openSlidWin ? "" : "/Home"}`}
