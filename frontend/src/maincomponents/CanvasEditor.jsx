@@ -540,458 +540,501 @@ const CanvasVibeEditor = () => {
   }, []);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
 
   return (
-    <div className="shadow-lg" style={{ background: mainbg }}>
+    <div className="" style={{ background: mainbg }}>
       <div className="">
         <div className="pt-0">
           <div className="d-flex">
-            <div
-              className="card border-0 shadow-sm "
-              style={{ background: mainbg }}
-            >
+            <div className="card border-0" style={{ background: mainbg }}>
               <div
-                className="b-2 position-fixed toolbar-pr"
+                className={`position-fixed toolbar-pr ${
+                  sm_break_point || mobile_break_point ? "" : "mx-2"
+                }`}
                 style={{
                   zIndex: 9000000000000,
                   left: `${
-                    mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
+                    mobile_break_point ? 0 : sm_break_point ? "76px" : "246px"
                   }`,
                   right: "6px",
                   top: "40px",
                   background: mainbg,
                 }}
               >
-                <details className="bg-dark mx-2">
-                  <div className="d-flex overflow-x-auto none-scroller gap-2 mt-2 mx-2">
-                    <button
-                      className={`toolbar-button   ${
-                        activeElement?.fontWeight === "bold" ? "active" : ""
-                      }`}
-                      style={{ minWidth: "34px" }}
-                      onClick={() =>
-                        handleChange(
-                          activeElement?.id,
-                          "fontWeight",
-                          activeElement?.fontWeight === "bold"
-                            ? "normal"
-                            : "bold"
-                        )
-                      }
-                      disabled={!activeElement}
-                    >
-                      <FontAwesomeIcon
-                        icon={faBold}
-                        fontSize={12}
-                        color={text_clrM}
-                      />
-                    </button>
-
-                    <button
-                      className={`toolbar-button ${
-                        activeElement?.fontStyle === "italic" ? "active" : ""
-                      }`}
-                      style={{ minWidth: "34px" }}
-                      onClick={() =>
-                        handleChange(
-                          activeElement?.id,
-                          "fontStyle",
-                          activeElement?.fontStyle === "italic"
-                            ? "normal"
-                            : "italic"
-                        )
-                      }
-                      disabled={!activeElement}
-                    >
-                      <FontAwesomeIcon
-                        icon={faItalic}
-                        fontSize={12}
-                        color={text_clrM}
-                      />
-                    </button>
-
-                    <button
-                      className={`toolbar-button ${
-                        activeElement?.textDecoration === "underline"
-                          ? "active"
-                          : ""
-                      }`}
-                      style={{ minWidth: "34px" }}
-                      onClick={() =>
-                        handleChange(
-                          activeElement?.id,
-                          "textDecoration",
-                          activeElement?.textDecoration === "underline"
-                            ? "none"
-                            : "underline"
-                        )
-                      }
-                      disabled={!activeElement}
-                    >
-                      <FontAwesomeIcon
-                        icon={faUnderline}
-                        fontSize={12}
-                        color={text_clrM}
-                      />
-                    </button>
-
-                    <button
-                      className={`toolbar-button ${
-                        activeElement?.textAlign === "left" ? "active" : ""
-                      }   props-btn `}
-                      onClick={() =>
-                        handleChange(activeElement?.id, "textAlign", "left")
-                      }
-                      disabled={!activeElement}
-                      style={{ minWidth: "34px" }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faAlignLeft}
-                        fontSize={12}
-                        color={text_clrM}
-                      />
-                    </button>
-
-                    <button
-                      className={`toolbar-button ${
-                        activeElement?.textAlign === "center" ? "active" : ""
-                      }`}
-                      onClick={() =>
-                        handleChange(activeElement?.id, "textAlign", "center")
-                      }
-                      disabled={!activeElement}
-                      style={{ minWidth: "34px" }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faAlignCenter}
-                        fontSize={12}
-                        color={text_clrM}
-                      />
-                    </button>
-
-                    <button
-                      className={`toolbar-button ${
-                        activeElement?.textAlign === "right" ? "active" : ""
-                      }`}
-                      style={{ minWidth: "34px" }}
-                      onClick={() =>
-                        handleChange(activeElement?.id, "textAlign", "right")
-                      }
-                      disabled={!activeElement}
-                    >
-                      <FontAwesomeIcon
-                        icon={faAlignRight}
-                        fontSize={12}
-                        color={text_clrM}
-                      />
-                    </button>
-
-                    <button
-                      className={`btn props-btn toolbar-button ${
-                        activeElement ? "active" : ""
-                      }`}
-                      onClick={() => setActiveId(null)}
-                      style={{
-                        border: `1px solid ${text_clrL}`,
-                        minWidth: "max-content",
-                      }}
-                      disabled={!activeElement}
-                    >
-                      <b style={{ color: text_clrM }}>- / -</b>
-                    </button>
-
-                    <div
-                      className="btn overflow-hidden p-0 props-btn toolbar-button"
-                      style={{ border: `` }}
-                    >
-                      <input
-                        type="color"
-                        value={activeElement?.color}
-                        style={{
-                          scale: "2",
-                          border: ``,
-                        }}
-                        onChange={(e) =>
-                          handleChange(
-                            activeElement?.id,
-                            "color",
-                            e.target.value
-                          )
-                        }
-                        defaultValue={"#ff0000"}
-                      />
-                    </div>
-
-                    <div
-                      className="props-btn toolbar-button"
-                      style={{
-                        border: `1px solid ${text_clrL}`,
-                        minWidth: "120px",
-                      }}
+                <div>
+                  <details className="bg- ms-2 rounded">
+                    <summary
+                      className="d-flex gap-2 h-100"
+                      style={{ color: text_clrH }}
                     >
                       <div
-                        className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
-                        style={{ translate: "6px" }}
+                        onClick={() => {
+                          setStyleOpen(!styleOpen);
+                        }}
+                        className="toolbar-button props-btn"
+                        style={{
+                          wordSpacing: "pre-wrap",
+                          minWidth: "max-content",
+                        }}
                       >
-                        <small
-                          className="flex-grow-1"
-                          style={{ color: text_clrM }}
+                        &nbsp; {!styleOpen ? "open " : "close "} &nbsp;
+                      </div>
+                      <div className="d-flex overflow-x-auto h-100 none-scroller gap-2">
+                        <button
+                          className={`toolbar-button   ${
+                            activeElement?.fontWeight === "bold" ? "active" : ""
+                          }`}
+                          style={{ minWidth: "34px" }}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "fontWeight",
+                              activeElement?.fontWeight === "bold"
+                                ? "normal"
+                                : "bold"
+                            )
+                          }
+                          disabled={!activeElement}
                         >
-                          Background
-                        </small>
-                        <div className="btn overflow-hidden flex-grow-1 props-btn rounded-0 p-0">
+                          <FontAwesomeIcon
+                            icon={faBold}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.fontStyle === "italic"
+                              ? "active"
+                              : ""
+                          }`}
+                          style={{ minWidth: "34px" }}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "fontStyle",
+                              activeElement?.fontStyle === "italic"
+                                ? "normal"
+                                : "italic"
+                            )
+                          }
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon
+                            icon={faItalic}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.textDecoration === "underline"
+                              ? "active"
+                              : ""
+                          }`}
+                          style={{ minWidth: "34px" }}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "textDecoration",
+                              activeElement?.textDecoration === "underline"
+                                ? "none"
+                                : "underline"
+                            )
+                          }
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon
+                            icon={faUnderline}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.textAlign === "left" ? "active" : ""
+                          }   props-btn `}
+                          onClick={() =>
+                            handleChange(activeElement?.id, "textAlign", "left")
+                          }
+                          disabled={!activeElement}
+                          style={{ minWidth: "34px" }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faAlignLeft}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.textAlign === "center"
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "textAlign",
+                              "center"
+                            )
+                          }
+                          disabled={!activeElement}
+                          style={{ minWidth: "34px" }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faAlignCenter}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement?.textAlign === "right" ? "active" : ""
+                          }`}
+                          style={{ minWidth: "34px" }}
+                          onClick={() =>
+                            handleChange(
+                              activeElement?.id,
+                              "textAlign",
+                              "right"
+                            )
+                          }
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon
+                            icon={faAlignRight}
+                            fontSize={12}
+                            color={text_clrM}
+                          />
+                        </button>
+
+                        <button
+                          className={`btn props-btn toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          onClick={() => setActiveId(null)}
+                          style={{
+                            border: `1px solid ${text_clrL}`,
+                            minWidth: "max-content",
+                          }}
+                          disabled={!activeElement}
+                        >
+                          <b style={{ color: text_clrM }}>- / -</b>
+                        </button>
+
+                        <div
+                          className="btn overflow-hidden p-0 props-btn toolbar-button"
+                          style={{ border: `` }}
+                        >
                           <input
                             type="color"
-                            className="form-control form-control-color w-100 props-btn border"
-                            style={{ scale: 3 }}
-                            value={
-                              activeElement
-                                ? activeElement.background
-                                : "00000000"
-                            }
+                            value={activeElement?.color}
+                            style={{
+                              scale: "2",
+                              border: ``,
+                            }}
                             onChange={(e) =>
-                              activeElement
-                                ? handleChange(
-                                    activeId,
-                                    "background",
-                                    e.target.value
-                                  )
-                                : setCanvasBgColor(e.target.value)
+                              handleChange(
+                                activeElement?.id,
+                                "color",
+                                e.target.value
+                              )
                             }
+                            defaultValue={"#ff0000"}
                           />
                         </div>
+
+                        <div
+                          className="props-btn toolbar-button"
+                          style={{
+                            border: `1px solid ${text_clrL}`,
+                            minWidth: "120px",
+                          }}
+                        >
+                          <div
+                            className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
+                            style={{ translate: "6px" }}
+                          >
+                            <small
+                              className="flex-grow-1"
+                              style={{ color: text_clrM }}
+                            >
+                              Background
+                            </small>
+                            <div className="btn overflow-hidden flex-grow-1 props-btn rounded-0 p-0">
+                              <input
+                                type="color"
+                                className="form-control form-control-color w-100 props-btn border"
+                                style={{ scale: 3 }}
+                                value={
+                                  activeElement
+                                    ? activeElement.background
+                                    : "00000000"
+                                }
+                                onChange={(e) =>
+                                  activeElement
+                                    ? handleChange(
+                                        activeId,
+                                        "background",
+                                        e.target.value
+                                      )
+                                    : setCanvasBgColor(e.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          className="props-btn fw-medium toolbar-button flex-grow-1"
+                          style={{
+                            border: `1px solid ${text_clrL}`,
+                            minWidth: "84px",
+                          }}
+                          disabled={!activeElement}
+                          onClick={() => {
+                            activeElement
+                              ? handleChange(activeId, "background", "00000000")
+                              : "";
+                          }}
+                        >
+                          &nbsp; reset bg&nbsp;
+                        </button>
+
+                        <button
+                          className="btn props-btn toolbar-button"
+                          onClick={() => {
+                            setContinuousActiveId();
+                          }}
+                          style={{ minWidth: "max-content" }}
+                        >
+                          <b style={{ color: text_clrM }}>Active</b>
+                        </button>
+
+                        <button
+                          className={`toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          onClick={() => bringToFront(activeElement?.id)}
+                          disabled={!activeElement}
+                          style={{ minWidth: "34px" }}
+                        >
+                          <FontAwesomeIcon icon={faArrowUp} color={text_clrM} />
+                        </button>
+
+                        <button
+                          className={`btn  toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          style={{ minWidth: "max-content" }}
+                          onPointerDown={() => {
+                            if (activeElement) {
+                              deleteElement(activeElement?.id);
+                            }
+                          }}
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    </summary>
+
+                    <div className="d-flex gap-2 btn-tool overflow-x-auto none-scroller border-top pt-2 my-2">
+                      <div
+                        className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
+                        onClick={() => {
+                          setActive_style(fontFamily);
+                          setStyle_type("fontFamily");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === fontFamily ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === fontFamily ? "#fff" : ""}`,
+                        }}
+                      >
+                        <FaFont />
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 fontSize"
+                        onClick={() => {
+                          setActive_style(fontSize);
+                          setStyle_type("fontSize");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === fontSize ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === fontSize ? "#fff" : ""}`,
+                        }}
+                      >
+                        <FaTextHeight title="Increase Font Size" />
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                        onClick={() => {
+                          setActive_style(textShadow);
+                          setStyle_type("textShadow");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === textShadow ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === textShadow ? "#fff" : ""}`,
+                        }}
+                      >
+                        <FaMagic title="FaShadow" />
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                        onClick={() => {
+                          setActive_style(textDecoration);
+                          setStyle_type("textDecoration");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === textDecoration ? "#6b0ad2" : ""
+                          }`,
+                          color: `${
+                            active_style === textDecoration ? "#fff" : ""
+                          }`,
+                        }}
+                      >
+                        <FaStrikethrough title="Strikethrough" />
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                        onClick={() => {
+                          setActive_style(color);
+                          setStyle_type("color");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === color ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === color ? "#fff" : ""}`,
+                        }}
+                      >
+                        Color
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 letterSpacing"
+                        onClick={() => {
+                          setActive_style(letterSpacing);
+                          setStyle_type("letterSpacing");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === letterSpacing ? "#6b0ad2" : ""
+                          }`,
+                          color: `${
+                            active_style === letterSpacing ? "#fff" : ""
+                          }`,
+                        }}
+                      >
+                        Spacing
+                      </div>
+
+                      <div
+                        className="toolbar-button d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 backgroundPosition "
+                        onClick={() => {
+                          setActive_style(boxShadow);
+                          setStyle_type("boxShadow");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === boxShadow ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === boxShadow ? "#fff" : ""}`,
+                        }}
+                      >
+                        box Shadow
                       </div>
                     </div>
 
-                    <button
-                      className="props-btn fw-medium toolbar-button flex-grow-1"
-                      style={{
-                        border: `1px solid ${text_clrL}`,
-                        minWidth: "84px",
-                      }}
-                      disabled={!activeElement}
-                      onClick={() => {
-                        activeElement
-                          ? handleChange(activeId, "background", "00000000")
-                          : "";
-                      }}
-                    >
-                      &nbsp; reset bg&nbsp;
-                    </button>
-
-                    <button
-                      className="btn props-btn toolbar-button"
-                      onClick={() => {
-                        setContinuousActiveId();
-                      }}
-                      style={{ minWidth: "max-content" }}
-                    >
-                      <b style={{ color: text_clrM }}>Active</b>
-                    </button>
-
-                    <button
-                      className={`toolbar-button ${
-                        activeElement ? "active" : ""
-                      }`}
-                      onClick={() => bringToFront(activeElement?.id)}
-                      disabled={!activeElement}
-                      style={{ minWidth: "34px" }}
-                    >
-                      <FontAwesomeIcon icon={faArrowUp} color={text_clrM} />
-                    </button>
-
-                    <button
-                      className={`btn  toolbar-button ${
-                        activeElement ? "active" : ""
-                      }`}
-                      style={{ minWidth: "max-content" }}
-                      onPointerDown={() => {
-                        if (activeElement) {
-                          deleteElement(activeElement?.id);
-                        }
-                      }}
-                      disabled={!activeElement}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </div>
-
-                  <div className="d-flex gap-2 btn-tool overflow-x-auto none-scroller border-top pt-2 m-2">
-                    <div
-                      className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
-                      onClick={() => {
-                        setActive_style(fontFamily);
-                        setStyle_type("fontFamily");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === fontFamily ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === fontFamily ? "#fff" : ""}`,
-                      }}
-                    >
-                      <FaFont />
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 fontSize"
-                      onClick={() => {
-                        setActive_style(fontSize);
-                        setStyle_type("fontSize");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === fontSize ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === fontSize ? "#fff" : ""}`,
-                      }}
-                    >
-                      <FaTextHeight title="Increase Font Size" />
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                      onClick={() => {
-                        setActive_style(textShadow);
-                        setStyle_type("textShadow");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === textShadow ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === textShadow ? "#fff" : ""}`,
-                      }}
-                    >
-                      {/* <FaShadow title="FaShadow" /> */}
-                      <FaMagic title="FaShadow" />
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                      onClick={() => {
-                        setActive_style(textDecoration);
-                        setStyle_type("textDecoration");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === textDecoration ? "#6b0ad2" : ""
-                        }`,
-                        color: `${
-                          active_style === textDecoration ? "#fff" : ""
-                        }`,
-                      }}
-                    >
-                      <FaStrikethrough title="Strikethrough" />
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                      onClick={() => {
-                        setActive_style(color);
-                        setStyle_type("color");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === color ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === color ? "#fff" : ""}`,
-                      }}
-                    >
-                      Color
-                    </div>
-
-                    <div
-                      className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 letterSpacing"
-                      onClick={() => {
-                        setActive_style(letterSpacing);
-                        setStyle_type("letterSpacing");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === letterSpacing ? "#6b0ad2" : ""
-                        }`,
-                        color: `${
-                          active_style === letterSpacing ? "#fff" : ""
-                        }`,
-                      }}
-                    >
-                      Spacing
-                    </div>
-
-                    <div
-                      className="toolbar-button d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 backgroundPosition "
-                      onClick={() => {
-                        setActive_style(boxShadow);
-                        setStyle_type("boxShadow");
-                      }}
-                      style={{
-                        cursor: "pointer",
-                        background: `${
-                          active_style === boxShadow ? "#6b0ad2" : ""
-                        }`,
-                        color: `${active_style === boxShadow ? "#fff" : ""}`,
-                      }}
-                    >
-                      box Shadow
-                    </div>
-                  </div>
-
-                  <div className="d-flex gap-2 text-light mx-2 mb-2 overflow-x-auto overflow-y-hidden none-scroller">
-                    {active_style.map((op) => (
-                      <button
-                        className={`props-btn toolbar-button ${
-                          activeElement?.[style_type] == op ? "active" : ""
-                        }`}
-                        style={{
-                          color: text_clrM,
-                          minWidth: "fit-content",
-                          minHeight: "max-height",
-                          boxShadow: `${style_type == "boxShadow" ? op : ""}`,
-                        }}
-                        onClick={() => {
-                          handleChange(activeId, style_type, op);
-                        }}
-                      >
-                        <span
-                          className="btn border-0 p-2"
+                    <div className="d-flex gap-2 text-light mb-2 overflow-x-auto overflow-y-hidden none-scroller">
+                      {active_style.map((op) => (
+                        <button
+                          className={`props-btn toolbar-button ${
+                            activeElement?.[style_type] == op ? "active" : ""
+                          }`}
                           style={{
                             color: text_clrM,
-                            [style_type]: `${
-                              op == "fontSize" || style_type == "boxShadow"
-                                ? ""
-                                : op
-                            }`,
+                            minWidth: "fit-content",
+                            minHeight: "max-height",
+                            boxShadow: `${style_type == "boxShadow" ? op : ""}`,
+                          }}
+                          onClick={() => {
+                            handleChange(activeId, style_type, op);
                           }}
                         >
-                          {style_type == "textShadow" ||
-                          style_type == "boxShadow"
-                            ? "A"
-                            : op}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </details>
-
-                <div className="card border-0 shadow-sm position-sticky m-2 bg-dark">
-                  <details className="bg-dark mx-2">
+                          <span
+                            className="btn border-0 p-2"
+                            style={{
+                              color: text_clrM,
+                              [style_type]: `${
+                                op == "fontSize" || style_type == "boxShadow"
+                                  ? ""
+                                  : op
+                              }`,
+                            }}
+                          >
+                            {style_type == "textShadow" ||
+                            style_type == "boxShadow"
+                              ? "A"
+                              : op}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </details>
+                </div>
+                <div className=" border-0 position-sticky my-2 ms-2">
+                  <details
+                    className="rounded border-0"
+                    style={{ background: mainbg }}
+                  >
                     <summary
-                      className="mx-1 fs-4"
-                      style={{ color: text_clrH }}
-                      onClick={() => {
-                        setDetailsOpen(!detailsOpen);
-                      }}
-                    ></summary>
+                      className="d-flex mb-1 border-0"
+                      style={{ background: mainbg }}
+                    >
+                      <div
+                        onClick={() => {
+                          setDetailsOpen(!detailsOpen);
+                        }}
+                        className="toolbar-button props-btn"
+                        style={{
+                          wordSpacing: "pre-wrap",
+                          minWidth: "max-content",
+                        }}
+                      >
+                        &nbsp; {!detailsOpen ? "open " : "close "} &nbsp;
+                      </div>
+                    </summary>
+
                     {mobile_break_point && (
-                      <div className=" mx-2">
+                      <div className="">
                         <textarea
-                          className="form-control w-100 overflow-auto none-scroller py-2"
+                          className="form-control w-100 overflow-auto none-scroller border py-2"
                           value={activeElement?.content}
                           style={{
                             background: mainbg,
@@ -1014,7 +1057,7 @@ const CanvasVibeEditor = () => {
                       </div>
                     )}
 
-                    <div className="mx-2 my-0">
+                    <div className="my-0">
                       <input
                         type="range"
                         min={100}
@@ -1034,7 +1077,9 @@ const CanvasVibeEditor = () => {
 
             <div
               style={{
-                marginTop: `${detailsOpen ? `310px` : "204px"}`,
+                marginTop: `calc(${detailsOpen ? `157px` : "54px"} + ${
+                  styleOpen ? `145px` : "60px"
+                })`,
                 width: "100%",
               }}
             >

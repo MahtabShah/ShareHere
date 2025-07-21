@@ -89,7 +89,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
       return (
         <>
           <h5
-            className="d-flex align-items-center gap-2 mx-1 position-fixed  py-2"
+            className="d-flex align-items-center gap-2 mx-2 position-fixed  py-2"
             style={{
               zIndex: 9999999,
               top: 0,
@@ -115,7 +115,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
         <>
           {" "}
           <h5
-            className="d-flex align-items-center gap-2 mx-1 position-fixed py-2"
+            className="d-flex align-items-center gap-2 mx-2 position-fixed py-2"
             style={{
               zIndex: 9999999,
               top: 0,
@@ -137,7 +137,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
       return (
         <>
           <h5
-            className="d-flex align-items-center gap-2 mx-1 position-fixed  py-2"
+            className="d-flex align-items-center gap-2 mx-2 position-fixed  py-2"
             style={{
               zIndex: 9999999,
               top: 0,
