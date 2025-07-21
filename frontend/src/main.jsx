@@ -89,8 +89,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "64px"
-                          : "234px"
+                          ? "74px"
+                          : "246px"
                       }`,
                     }}
                   >
@@ -108,7 +108,7 @@ const Main = () => {
                           ? "0px"
                           : sm_break_point
                           ? "64px"
-                          : "234px"
+                          : "246px"
                       }`,
                     }}
                   >
@@ -126,7 +126,7 @@ const Main = () => {
                           ? "0px"
                           : sm_break_point
                           ? "64px"
-                          : "234px"
+                          : "246px"
                       }`,
                     }}
                   >
@@ -144,8 +144,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "64px"
-                          : "234px"
+                          ? "74px"
+                          : "246px"
                       }`,
                     }}
                   >
@@ -168,7 +168,7 @@ const Main = () => {
                           ? "0px"
                           : sm_break_point
                           ? "64px"
-                          : "234px"
+                          : "246px"
                       }`,
                     }}
                   >
@@ -189,8 +189,8 @@ const Main = () => {
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
-                          ? "70px"
-                          : "234px"
+                          ? "74px"
+                          : "246px"
                       }`,
                     }}
                   >
@@ -231,7 +231,7 @@ const Main = () => {
                           ? "0px"
                           : sm_break_point
                           ? "74px"
-                          : "234px"
+                          : "246px"
                       }`,
 
                       marginTop: `${mobile_break_point ? "44px" : "0"}`,

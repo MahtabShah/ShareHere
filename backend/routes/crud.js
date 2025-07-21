@@ -133,7 +133,7 @@ const userId = req.params.userId;
 
 
 
-router.delete('/del_status', async (req, res) => {
+router.delete('/del_status', verifyToken ,async (req, res) => {
   // const userId = req.user.userId || req.user.id;
   const all_users = await User.find();
 
@@ -322,7 +322,7 @@ router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
 
 // PUT: Update a status by ID
 
-router.put("/set_status_seen/:id", async (req, res) => {
+router.put("/set_status_seen/:id",async (req, res) => {
   const userId = req.params.id;
   const { user_statuses } = req.body;
 

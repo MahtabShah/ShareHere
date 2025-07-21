@@ -44,12 +44,12 @@ export default function BottomNav({}) {
   const navigate = useNavigate();
   return (
     <>
-      {mobile_break_point && (
+      {sm_break_point && (
         <>
           <div
             className="BottomNav py-1 w-100 d-sm-none position-fixed"
             style={{
-              zIndex: 99999990011,
+              zIndex: 90011,
               height: "48px",
               bottom: "0",
               left: "0",

@@ -379,11 +379,11 @@ export const EachPost = ({ user, comment }) => {
           <SlipDotinPost user={user} post={comment} />
         </div>
       )}
-      {admin_user?._id != user?._id && (
-        <section
-          className={`${mobile_break_point ? "ps-2 pe-2" : ""}`}
-          style={{ background: mainbg, color: text_clrM }}
-        >
+      <section
+        className={`${mobile_break_point ? "ps-2 pe-2" : ""}`}
+        style={{ background: mainbg, color: text_clrM }}
+      >
+        {(admin_user?._id != user?._id || open_comment) && (
           <div className="gap-1 pt-2 d-flex flex-column position-relative">
             <div className="d-flex gap-1 pb-2">
               <div
@@ -457,18 +457,19 @@ export const EachPost = ({ user, comment }) => {
               </div>
             </div>
           </div>
-          {open_comment && (
-            <div
-              className="pt-2"
-              style={{
-                borderBottom: `${open_comment ? `0px solid ${text_clrL}` : ""}`,
-              }}
-            >
-              <CommentSection post={comment} />
-            </div>
-          )}
-        </section>
-      )}
+        )}
+
+        {open_comment && (
+          <div
+            className="pt-2 border-top"
+            style={{
+              borderBottom: `${open_comment ? `0px solid ${text_clrL}` : ""}`,
+            }}
+          >
+            <CommentSection post={comment} />
+          </div>
+        )}
+      </section>
     </div>
   );
 };

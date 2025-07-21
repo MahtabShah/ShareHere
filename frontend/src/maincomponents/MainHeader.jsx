@@ -16,18 +16,16 @@ import { useTheme } from "../context/Theme";
 
 function MainHeader({}) {
   const [VisibleNotification, setVisibleNotification] = useState(false);
-  const [smbreakPoint, setsmbreakPoint] = useState(window.innerWidth < 576);
+  const [smbreakPoint, setsmbreakPoint] = useState(window.innerWidth < 600);
   const [loggedIn, setLoggedIn] = useState(false);
   const {
     admin_user,
     curr_all_notifications,
     setUploadClicked,
     uploadClicked,
-    sm_break_point,
     mobile_break_point,
     openSlidWin,
     setopenSlidWin,
-    activeIndex,
     setActiveIndex,
   } = useQuote();
 
@@ -79,7 +77,7 @@ function MainHeader({}) {
 
   useEffect(() => {
     window.addEventListener("resize", () => {
-      setsmbreakPoint(window.innerWidth < 576);
+      setsmbreakPoint(window.innerWidth < 600);
     });
   }, [smbreakPoint]);
 
@@ -98,17 +96,20 @@ function MainHeader({}) {
           style={{
             // borderBottom: "1px solid var(--light-clr)",
             background: mainbg,
-            zIndex: 100000,
+            zIndex: 10000,
           }}
         >
           <Container fluid>
-            <div href="/Explore" className="fw-bold fs-6 pb-0 mb-0 flex-grow-1">
-              <div className="d-flex justify-content-between w-100 flex-grow-1">
-                <div className="mt-2 ms-1 d-flex align-items-center">
-                  <Logo />
-                </div>
+            {mobile_break_point && (
+              <div
+                href="/Explore"
+                className="fw-bold fs-6 pb-0 mb-0 flex-grow-1"
+              >
+                <div className="d-flex justify-content-between w-100 flex-grow-1">
+                  <div className="mt-2 ms-1 d-flex align-items-center">
+                    <Logo />
+                  </div>
 
-                {smbreakPoint && (
                   <div className="d-flex align-items-center gap-3">
                     <li className="nav-item " style={{ listStyle: "none" }}>
                       <Nav.Link
@@ -174,9 +175,10 @@ function MainHeader({}) {
                       </Nav.Link>
                     </li>
                   </div>
-                )}
+                </div>
               </div>
-            </div>
+            )}
+
             {/* <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
               id={`offcanvasNavbar-expand-${expand}`}

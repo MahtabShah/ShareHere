@@ -18,7 +18,7 @@ export const QuoteProvider = ({ children }) => {
   );
   const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1200);
   const [mobile_break_point, setmobile_break_point] = useState(
-    window.innerWidth < 600
+    window.innerWidth <= 600
   );
 
   const [activeIndex, setActiveIndex] = useState("Home");

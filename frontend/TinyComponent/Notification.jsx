@@ -14,7 +14,6 @@ dayjs.extend(relativeTime);
 const API = import.meta.env.VITE_API_URL;
 
 export const Notification = ({ setVisibleNotification }) => {
-  const mahtab = "683e9c9de6a3ce43ca32c3da";
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
@@ -80,7 +79,7 @@ export const Notification = ({ setVisibleNotification }) => {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
       // If not found, navigate so it gets rendered first
-      navigate(`/home?postId=${postId}`);
+      navigate(`/home/${postId}`);
     }
     setVisibleNotification(false);
   };
@@ -270,6 +269,9 @@ export const Notification = ({ setVisibleNotification }) => {
                               minWidth: "37px",
                               height: "37px",
                             }}
+                            onClick={() => {
+                              navigate(`/api/user/${n?.sender?._id}`);
+                            }}
                           >
                             {n?.sender?.profile_pic && (
                               <img
@@ -294,7 +296,7 @@ export const Notification = ({ setVisibleNotification }) => {
                                 setopenSlidWin(false);
                               }}
                             >
-                              @ someone liked your post{" "}
+                              @{n?.sender?.username} liked your post{" "}
                             </span>
                             <span className="justify">
                               {/* You have reached {n?.post} likes */}
