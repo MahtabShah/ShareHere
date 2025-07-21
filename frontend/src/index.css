@@ -18,11 +18,11 @@ body {
 
 .active {
   border: 1px solid #c609df;
-  background: none;
+  background: none !important;
 }
 
 .toolbar-pr .active {
-  background: #6b0ad2;
+  background: #6b0ad2 !important;
 }
 
 .br {
