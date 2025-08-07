@@ -7,6 +7,7 @@ import { Loading } from "./LazyLoading";
 import { SearchBaar } from "./SearchBaar";
 import SuggetionSlip from "../src/maincomponents/NewUserUpdate";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../src/context/Theme";
 
 export const TrackPost = () => {
   const { postId } = useParams();
@@ -50,20 +51,11 @@ export const TrackPost = () => {
     }
   }, [postId, all_posts, all_user]);
 
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
+
   return (
     <>
-      <div className="mb-4" style={{}}>
-        <div
-          style={{
-            margin: "auto",
-            marginTop: `${mobile_break_point ? "50px" : "12px"}`,
-            maxWidth: "980px",
-          }}
-          className="w-100 p-2"
-        >
-          <SearchBaar />
-        </div>
-
+      <div className="none-scroller" style={{ marginTop: "56px" }}>
         {all_post_loading && (
           <div
             className="text-danger w-100 d-flex justify-content-center align-items-center fs-5 text-center"
@@ -94,20 +86,47 @@ export const TrackPost = () => {
         )}
 
         <div
-          className="d-flex mt-2  align-items-start rounded overflow-hidden  justify-content-center"
+          className="d-flex mt-2  align-items-start rounded  overflow-auto  justify-content-center"
           style={{
             gap: "104px",
-
             marginBottom: "80px",
           }}
         >
           {user && post && (
             <div
-              style={{ maxWidth: "600px", boxShadow: "0 0 5px #ddd" }}
+              style={{
+                maxWidth: "600px",
+                boxShadow: `0 0 5px ${bg1} `,
+                color: text_clrH,
+                background: mainbg,
+              }}
               className="rounded m-1 top border overflow-hidden "
             >
               <div className="d-flex justify-content-between overflow-hidden ">
-                <h5 className="p-2 m-0 text-light">Result : </h5>
+                <h5 className="p-2 m-0 d-flex align-items-start gap-3">
+                  {" "}
+                  <div
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      translate: "0 -2px",
+                      cursor: "pointer",
+                      display: "inline-block",
+                    }}
+                    onClick={() => {
+                      nevigate("/home");
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      fill={text_clrM}
+                    >
+                      <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+                    </svg>{" "}
+                  </div>
+                  <span>Result found here : </span>
+                </h5>
                 <button
                   className="btn btn-danger props-btn"
                   onClick={() => {

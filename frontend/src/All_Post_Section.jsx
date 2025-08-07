@@ -81,7 +81,7 @@ function All_Post_Section() {
 
   // const rn = Math.floor(Math.random() * (all_posts?.length - 3) + 1);
   const rn = 3;
-  const { mainbg } = useTheme();
+  const { bg2, text_clrL, bg1 } = useTheme();
 
   useEffect(() => {
     if (!openSlidWin) {
@@ -92,11 +92,12 @@ function All_Post_Section() {
   return (
     <>
       <div
-        className="position-relative"
+        className="position-relative pt-3 vh-100"
         style={{
-          background: mainbg,
           zIndex: 10,
           maxWidth: "100%",
+          marginTop: "48px",
+          background: bg2,
         }}
       >
         <section
@@ -120,24 +121,14 @@ function All_Post_Section() {
           ) : (
             <div style={{ maxWidth: "min(600px, 100%)" }}>
               {all_post_loading ? (
-                <div className="d-flex justify-content-center ">
+                <div className="d-flex justify-content-center mt-5">
                   <Loading dm={34} />
                 </div>
               ) : (
                 <div className="d-flex flex-column" style={{}}>
-                  <div
-                    style={{
-                      margin: "auto",
-                      marginTop: `${mobile_break_point ? "50px" : "12px"}`,
-                      maxWidth: "600px",
-                    }}
-                    className="w-100 p-1"
-                  >
-                    <SearchBaar />
-                  </div>
                   {/* <TrackPost /> */}
 
-                  <div className="d-flex flex-column gap-5" style={{}}>
+                  <div className="d-flex flex-column gap-3" style={{}}>
                     {visiblePostComponents.map(
                       ({ post, user }, idx) =>
                         user &&
@@ -154,10 +145,11 @@ function All_Post_Section() {
                               <>
                                 {rn + 1 > idx && idx > rn - 1 && (
                                   <div
-                                    className="mt-5 p-2 m-1 rounded-3 d-flex gap-4  none-scroller overflow-x-auto"
+                                    className="mt-4 p-2 m-1 rounded-3 d-flex gap-4  none-scroller overflow-x-auto"
                                     style={{
                                       maxWidth: "100% ",
-                                      border: "1px solid #333",
+                                      // border: `1px solid ${text_clrL}`,
+                                      // background: bg1,
                                     }}
                                   >
                                     <SuggetionSlipInPost />
@@ -173,7 +165,7 @@ function All_Post_Section() {
               )}
 
               <div
-                className="d-flex justify-content-center p-3"
+                className="d-flex justify-content-center p-3 my-3"
                 style={{ height: "44px" }}
               >
                 {loading && <Loading dm={34} />}
@@ -181,12 +173,18 @@ function All_Post_Section() {
             </div>
           )}
 
-          <div
-            className=""
-            style={{ paddingTop: "100px", position: "sticky", top: "0" }}
-          >
-            <SuggetionSlip />
-          </div>
+          {lgbreakPoint && (
+            <div
+              className=""
+              style={{
+                position: "sticky",
+                top: "0",
+                width: "320px",
+              }}
+            >
+              <SuggetionSlip />
+            </div>
+          )}
         </section>
       </div>
     </>

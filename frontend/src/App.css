@@ -15,6 +15,14 @@ body {
   /* border: 2px solid red; */
 }
 
+body {
+  background: rgb(0, 0, 0);
+}
+
+.dark {
+  background: #e3ecf1;
+}
+
 .like-comment-share :hover {
   cursor: pointer;
   /* background: #c8dffb; */
@@ -159,4 +167,18 @@ textarea {
   white-space: pre-wrap;
   resize: none;
   background-repeat: no-repeat !important;
+}
+
+.active_search:focus {
+  outline: none;
+  border: 1px solid #76b4e8 !important;
+}
+
+.theme-icon {
+  transition: opacity 0.4s ease-in-out;
+  opacity: 1;
+}
+
+.theme-icon.fade-out {
+  opacity: 0.2;
 }

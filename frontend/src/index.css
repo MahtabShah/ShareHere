@@ -1,8 +1,3 @@
-html,
-body {
-  background: #000;
-}
-
 /* Hide scrollbar when active */
 .no-scroll::-webkit-scrollbar {
   width: 0 !important;
@@ -26,7 +21,7 @@ body {
 }
 
 .br {
-  border: 1px solid black;
+  border: 1px solid rgba(0, 0, 0, 0);
 }
 
 .user-update {
@@ -92,8 +87,8 @@ textarea::placeholder {
 
 .toolbar-button {
   padding: 6px 10px;
-  border: 1px solid #2f2f2f;
-  background: rgb(28, 28, 28);
+  border: 1px solid #1e1e1e;
+  background: rgb(35, 35, 35);
   cursor: pointer;
   border-radius: 3px;
   display: flex;

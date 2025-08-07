@@ -531,7 +531,7 @@ const CanvasVibeEditor = () => {
     setLazyLoading(false);
   };
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
 
   useEffect(() => {
     if (elements.length <= 0) {
@@ -541,6 +541,10 @@ const CanvasVibeEditor = () => {
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
+
+  const preventToggle = (e) => {
+    e.preventDefault(); // prevent summary default toggle
+  };
 
   return (
     <div className="" style={{ background: mainbg }}>
@@ -563,19 +567,24 @@ const CanvasVibeEditor = () => {
                 }}
               >
                 <div>
-                  <details className="bg- ms-2 rounded">
+                  <details
+                    className="bg- ms-2 rounded"
+                    onClick={preventToggle}
+                    open={styleOpen}
+                  >
                     <summary
                       className="d-flex gap-2 h-100"
-                      style={{ color: text_clrH }}
+                      style={{ color: "#ededed" }}
                     >
                       <div
-                        onClick={() => {
-                          setStyleOpen(!styleOpen);
-                        }}
                         className="toolbar-button props-btn"
                         style={{
                           wordSpacing: "pre-wrap",
                           minWidth: "max-content",
+                        }}
+                        onClick={() => {
+                          // e.stopPropagation();
+                          setStyleOpen(!styleOpen);
                         }}
                       >
                         &nbsp; {!styleOpen ? "open " : "close "} &nbsp;
@@ -600,7 +609,7 @@ const CanvasVibeEditor = () => {
                           <FontAwesomeIcon
                             icon={faBold}
                             fontSize={12}
-                            color={text_clrM}
+                            color={"#ededed"}
                           />
                         </button>
 
@@ -625,7 +634,7 @@ const CanvasVibeEditor = () => {
                           <FontAwesomeIcon
                             icon={faItalic}
                             fontSize={12}
-                            color={text_clrM}
+                            color={"#ededed"}
                           />
                         </button>
 
@@ -650,7 +659,7 @@ const CanvasVibeEditor = () => {
                           <FontAwesomeIcon
                             icon={faUnderline}
                             fontSize={12}
-                            color={text_clrM}
+                            color={"#ededed"}
                           />
                         </button>
 
@@ -667,7 +676,7 @@ const CanvasVibeEditor = () => {
                           <FontAwesomeIcon
                             icon={faAlignLeft}
                             fontSize={12}
-                            color={text_clrM}
+                            color={"#ededed"}
                           />
                         </button>
 
@@ -690,7 +699,7 @@ const CanvasVibeEditor = () => {
                           <FontAwesomeIcon
                             icon={faAlignCenter}
                             fontSize={12}
-                            color={text_clrM}
+                            color={"#ededed"}
                           />
                         </button>
 
@@ -711,7 +720,7 @@ const CanvasVibeEditor = () => {
                           <FontAwesomeIcon
                             icon={faAlignRight}
                             fontSize={12}
-                            color={text_clrM}
+                            color={"#ededed"}
                           />
                         </button>
 
@@ -721,12 +730,12 @@ const CanvasVibeEditor = () => {
                           }`}
                           onClick={() => setActiveId(null)}
                           style={{
-                            border: `1px solid ${text_clrL}`,
+                            border: `1px solid ${"#ededed"}`,
                             minWidth: "max-content",
                           }}
                           disabled={!activeElement}
                         >
-                          <b style={{ color: text_clrM }}>- / -</b>
+                          <b style={{ color: "#ededed" }}>- / -</b>
                         </button>
 
                         <div
@@ -754,7 +763,7 @@ const CanvasVibeEditor = () => {
                         <div
                           className="props-btn toolbar-button"
                           style={{
-                            border: `1px solid ${text_clrL}`,
+                            border: `1px solid ${"#ededed"}`,
                             minWidth: "120px",
                           }}
                         >
@@ -764,7 +773,7 @@ const CanvasVibeEditor = () => {
                           >
                             <small
                               className="flex-grow-1"
-                              style={{ color: text_clrM }}
+                              style={{ color: "#ededed" }}
                             >
                               Background
                             </small>
@@ -795,7 +804,7 @@ const CanvasVibeEditor = () => {
                         <button
                           className="props-btn fw-medium toolbar-button flex-grow-1"
                           style={{
-                            border: `1px solid ${text_clrL}`,
+                            border: `1px solid ${"#ededed"}`,
                             minWidth: "84px",
                           }}
                           disabled={!activeElement}
@@ -815,7 +824,7 @@ const CanvasVibeEditor = () => {
                           }}
                           style={{ minWidth: "max-content" }}
                         >
-                          <b style={{ color: text_clrM }}>Active</b>
+                          <b style={{ color: "#ededed" }}>Active</b>
                         </button>
 
                         <button
@@ -826,7 +835,7 @@ const CanvasVibeEditor = () => {
                           disabled={!activeElement}
                           style={{ minWidth: "34px" }}
                         >
-                          <FontAwesomeIcon icon={faArrowUp} color={text_clrM} />
+                          <FontAwesomeIcon icon={faArrowUp} color={"#ededed"} />
                         </button>
 
                         <button
@@ -978,7 +987,7 @@ const CanvasVibeEditor = () => {
                             activeElement?.[style_type] == op ? "active" : ""
                           }`}
                           style={{
-                            color: text_clrM,
+                            color: "#ededed",
                             minWidth: "fit-content",
                             minHeight: "max-height",
                             boxShadow: `${style_type == "boxShadow" ? op : ""}`,
@@ -990,7 +999,7 @@ const CanvasVibeEditor = () => {
                           <span
                             className="btn border-0 p-2"
                             style={{
-                              color: text_clrM,
+                              color: "#ededed",
                               [style_type]: `${
                                 op == "fontSize" || style_type == "boxShadow"
                                   ? ""
@@ -1008,17 +1017,20 @@ const CanvasVibeEditor = () => {
                     </div>
                   </details>
                 </div>
+
                 <div className=" border-0 position-sticky my-2 ms-2">
                   <details
                     className="rounded border-0"
                     style={{ background: mainbg }}
+                    onClick={preventToggle}
                   >
                     <summary
                       className="d-flex mb-1 border-0"
                       style={{ background: mainbg }}
                     >
                       <div
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setDetailsOpen(!detailsOpen);
                         }}
                         className="toolbar-button props-btn"
@@ -1037,9 +1049,9 @@ const CanvasVibeEditor = () => {
                           className="form-control w-100 overflow-auto none-scroller border py-2"
                           value={activeElement?.content}
                           style={{
-                            background: mainbg,
-                            color: text_clrM,
-                            border: `1px solid ${text_clrL}`,
+                            background: bg1,
+                            color: text_clrH,
+                            border: `1px solid ${text_clrH}`,
                             minHeight: "80px",
                           }}
                           placeholder="Click Add Text and then write Here !"
@@ -1291,11 +1303,12 @@ const CanvasVibeEditor = () => {
 
       <div className="d-flex gap-3 pt-2 ">
         <button
-          className={`btn border p-1 ps-2 pe-2 rounded-5  ${
-            activeBtn3Profile === "public" ? "btn-dark" : ""
-          }`}
+          className={`btn border p-1 ps-2 pe-2 rounded-5 `}
           onClick={() => setActiveBtn3Profile("public")}
-          style={{ color: text_clrM }}
+          style={{
+            color: activeBtn3Profile === "public" ? bg1 : "",
+            background: activeBtn3Profile === "public" ? text_clrM : "",
+          }}
         >
           <small> For Public</small>
         </button>
@@ -1304,7 +1317,10 @@ const CanvasVibeEditor = () => {
             activeBtn3Profile === "Follower" ? "btn-dark" : ""
           }`}
           onClick={() => setActiveBtn3Profile("Follower")}
-          style={{ color: text_clrM }}
+          style={{
+            color: activeBtn3Profile === "Follower" ? bg1 : "",
+            background: activeBtn3Profile === "Follower" ? text_clrM : "",
+          }}
         >
           <small> For Follower</small>
         </button>
@@ -1314,7 +1330,10 @@ const CanvasVibeEditor = () => {
           }`}
           onClick={() => setActiveBtn3Profile("Paid")}
           disabled={true}
-          style={{ color: text_clrM }}
+          style={{
+            color: activeBtn3Profile === "Paid" ? text_clrH : "",
+            background: activeBtn3Profile === "Paid" ? text_clrM : "",
+          }}
         >
           <small>Paid Only</small>
         </button>
@@ -1351,7 +1370,7 @@ const CanvasVibeEditor = () => {
             placeholder="Write about post here . . ."
             style={{
               background: mainbg,
-              color: text_clrM,
+              color: text_clrH,
               minHeight: `${text.split("\n").length * 22}px`,
               border: `${error ? "1px solid red" : "0"}`,
             }}
@@ -1366,8 +1385,8 @@ const CanvasVibeEditor = () => {
           className="btn  ps-3 pe-3 rounded-0 p-2"
           style={{
             height: "42px",
-            border: `1px solid ${text_clrL}`,
-            color: text_clrM,
+            border: `1px solid ${"#959595ff"}`,
+            // color: "#ededed",
           }}
           disabled={true}
         >

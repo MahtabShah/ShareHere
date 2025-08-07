@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import { useQuote } from "../src/context/QueotrContext";
 import { UserRing } from "../src/maincomponents/EachPost";
 import { FollowBtn } from "../src/maincomponents/EachPost";
@@ -56,10 +56,33 @@ export const SearchBaar = () => {
       .slice(0, 3); // Return only top 3 matches
   };
 
+  const [isTouched, setIsTouched] = useState(false);
+  const elementRef = useRef(null);
+
   useEffect(() => {
     const f_res = filter_posts(all_posts, query);
     setFilterd_posts(f_res);
+    setIsTouched(f_res.length > 0 || Filterd_result.length > 0);
   }, [query]);
+
+  const handleTouchOutside = (event) => {
+    if (elementRef.current && !elementRef.current.contains(event.target)) {
+      setIsTouched(false); // touched outside
+    } else {
+      setIsTouched(true); // touched inside
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("touchstart", handleTouchOutside);
+    document.addEventListener("mousedown", handleTouchOutside); // for mouse click
+
+    return () => {
+      document.removeEventListener("touchstart", handleTouchOutside);
+      document.removeEventListener("mousedown", handleTouchOutside);
+    };
+  }, []);
+
   // SearchBaar.jsx
 
   const trend = [
@@ -73,115 +96,144 @@ export const SearchBaar = () => {
     "Willone",
   ];
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
 
   return (
-    <>
-      <div
-        className="position-relative pb-0 mb-0 h-100"
-        style={{ background: mainbg, zIndex: 99999 }}
-      >
-        <form
-          onSubmit={handleSearch}
-          className="input-group rounded-5"
-          style={{ border: `1px solid ${text_clrL}` }}
-        >
+    <div className="position-relative" ref={elementRef}>
+      <div className=" p-0 m-0 h-100">
+        <form onSubmit={handleSearch} className="input-group rounded-5 bg-none">
           <input
             type="text"
-            className="form-control border-0 rounded-5"
-            placeholder="Search..."
+            className="form-control p-1 ps-3 rounded-5 active_search"
+            placeholder="Search vibe here. . . ."
             value={query}
             style={{
-              background: mainbg,
+              background: "transparent",
               color: text_clrM,
+              border: `1px solid ${bg3}`,
             }}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button
-            className="btn border-0"
-            style={{ color: text_clrM }}
-            type="submit"
-          >
-            Search
-          </button>
         </form>
+      </div>
 
-        {Filterd_posts.length > 0 && (
-          <div className="border-bottom pb-4 ">
+      {Filterd_posts.length > 0 && isTouched && (
+        <div
+          className="rounded-3 w-100 position-absolute overflow-auto none-scroller"
+          style={{
+            zIndex: 9998,
+            background: bg1,
+            maxHeight: "84vh",
+            marginTop: "10px",
+            boxShadow: "0 0 4px #4d4d4d",
+          }}
+        >
+          <div
+            className="d-flex gap-3 p-2 position-sticky top-0"
+            style={{ background: bg1 }}
+          >
             <div
-              className="d-flex flex-column gap-4 position-relative mt-3"
-              style={{ background: mainbg, zIndex: 909999 }}
+              className="d-flex flex-column gap-2"
+              style={{
+                color: text_clrM,
+                fontSize: "14px",
+                marginTop: "6px",
+                minWidth: "18px",
+                cursor: "pointer",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                setIsTouched(false);
+              }}
             >
-              {Filterd_result?.map(
-                (res, idx) =>
-                  admin_user?._id !== res?._id &&
-                  res && (
-                    <div className="d-flex" key={res._id || idx}>
-                      <UserRing user={res} onlyphoto={false} />
-                      <FollowBtn
-                        user={res}
-                        cls="btn btn-outline-primary p-0 h-100 ps-3 rounded-0 pe-3 p-1"
-                      />
-                    </div>
-                  )
-              )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                fill={text_clrH}
+              >
+                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+              </svg>
             </div>
-
             <div
-              className="d-flex flex-column gap-3 mt-4 position-relative"
-              style={{ background: mainbg, zIndex: 999 }}
+              className="gap-2 fs-5 fw-medium "
+              style={{
+                color: text_clrH,
+                fontStyle: "italic",
+              }}
             >
-              {Filterd_posts?.map((res, idx) => (
-                <div
-                  className="d-flex flex-column"
-                  key={`F-post${res._id || idx}`}
-                  style={{
-                    color: text_clrM,
-                  }}
-                >
-                  <div className="d-flex gap-3 mt-2 align-items-start">
-                    <div className="mt-">
-                      <UserRing
-                        user={all_user?.filter((u) => u._id == res?.userId)[0]}
-                        onlyphoto={true}
-                        style={{}}
-                      />
-                    </div>
-                    <p className="flex-grow-1 w-100 ">{res.text}</p>
-                    <div
-                      className=""
-                      onClick={() => {
-                        setopenSlidWin(false);
-                        setQuery("");
-                        nevigate(`/home/${res._id}`);
+              {" "}
+              Result for {query}
+            </div>
+          </div>
+          <div className="d-flex flex-column gap-4 p-2">
+            {Filterd_result?.map(
+              (res, idx) =>
+                admin_user?._id !== res?._id &&
+                res && (
+                  <div className="d-flex" key={res._id || idx}>
+                    <Fragment>
+                      <UserRing user={res} onlyphoto={false} />
+                    </Fragment>
+                    <FollowBtn
+                      user={res}
+                      cls="btn btn-outline-primary p-0 h-100 ps-3 rounded-0 pe-3 p-1"
+                    />
+                  </div>
+                )
+            )}
+          </div>
+
+          <div className="d-flex flex-column gap-4 p-2 position-relative">
+            {Filterd_posts?.map((res, idx) => (
+              <div
+                className="d-flex flex-column"
+                key={`F-post${res._id || idx}`}
+                style={{
+                  color: text_clrM,
+                }}
+              >
+                <div className="d-flex gap-3 align-items-start">
+                  <div className="mt-">
+                    <UserRing
+                      user={all_user?.filter((u) => u._id == res?.userId)[0]}
+                      onlyphoto={true}
+                      style={{}}
+                    />
+                  </div>
+                  <small
+                    className="flex-grow-1 w-100 fw-medium overflow-hidden"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 5,
+                      WebkitBoxOrient: "vertical",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {res.text}
+                  </small>
+                  <div
+                    className=""
+                    onClick={() => {
+                      setopenSlidWin(false);
+                      setQuery("");
+                      nevigate(`/home/${res._id}`);
+                    }}
+                  >
+                    <CardPost
+                      post={res}
+                      style={{
+                        width: "84px",
+                        borderRadius: "3px",
                       }}
-                    >
-                      <CardPost
-                        post={res}
-                        style={{
-                          height: "84px",
-                        }}
-                      />
-                    </div>
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
-      {/* <div className="ms-2 d-flex gap-3 overflow-x-auto none-scroller">
-        {trend.map((t, idx) => (
-          <div key={`idx-trend-${idx}`}>
-            <button
-              className="btn btn-outline-dark rounded-0"
-              style={{ minWidth: "max-content" }}
-            >
-              {t}
-            </button>
-          </div>
-        ))}
-      </div> */}
-    </>
+        </div>
+      )}
+    </div>
   );
 };

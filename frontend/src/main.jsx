@@ -77,7 +77,7 @@ const Main = () => {
         <VibeEditorProvider>
           <ThemeProvider>
             <LeftNavbar />
-            {mobile_break_point && <MainHeader />}
+            <MainHeader />
 
             <Routes>
               <Route
@@ -90,7 +90,7 @@ const Main = () => {
                           ? "0px"
                           : sm_break_point
                           ? "74px"
-                          : "246px"
+                          : "236px"
                       }`,
                     }}
                   >
@@ -108,7 +108,7 @@ const Main = () => {
                           ? "0px"
                           : sm_break_point
                           ? "64px"
-                          : "246px"
+                          : "236px"
                       }`,
                     }}
                   >
@@ -126,7 +126,7 @@ const Main = () => {
                           ? "0px"
                           : sm_break_point
                           ? "64px"
-                          : "246px"
+                          : "236px"
                       }`,
                     }}
                   >
@@ -138,14 +138,14 @@ const Main = () => {
                 path="/*"
                 element={
                   <main
-                    className="p-0 mb-5 me-0"
+                    className="p-0 me-0"
                     style={{
                       marginLeft: `${
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
                           ? "74px"
-                          : "246px"
+                          : "236px"
                       }`,
                     }}
                   >
@@ -161,14 +161,14 @@ const Main = () => {
                 path="/home"
                 element={
                   <main
-                    className={`p-0 mb-5 ${mobile_break_point ? "" : "ps-2"}`}
+                    className={`p-0 ${mobile_break_point ? " mb-5" : "ps-2"}`}
                     style={{
                       marginLeft: `${
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
                           ? "64px"
-                          : "246px"
+                          : "236px"
                       }`,
                     }}
                   >
@@ -183,14 +183,14 @@ const Main = () => {
                 path="/home/:postId"
                 element={
                   <main
-                    className={`p-0 mb-5 ${mobile_break_point ? "" : "ps-2"}`}
+                    className={`p-0 ${mobile_break_point ? " mb-5" : "ps-2"}`}
                     style={{
                       marginLeft: `${
                         mobile_break_point
                           ? "0px"
                           : sm_break_point
                           ? "74px"
-                          : "246px"
+                          : "236px"
                       }`,
                     }}
                   >
@@ -231,7 +231,7 @@ const Main = () => {
                           ? "0px"
                           : sm_break_point
                           ? "74px"
-                          : "246px"
+                          : "236px"
                       }`,
 
                       marginTop: `${mobile_break_point ? "44px" : "0"}`,

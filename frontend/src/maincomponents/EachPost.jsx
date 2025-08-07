@@ -156,20 +156,15 @@ export const EachPost = ({ user, comment }) => {
   }, [comment.text]);
 
   return (
-    <div
-      className={`pb-1 ${mobile_break_point ? "" : "p-2"}`}
-      style={{ borderBottom: `1px solid ${text_clrL}` }}
-    >
+    <div>
       <div
-        className="d-flex flex-column gap-2 position-relative bglight"
+        className="d-flex flex-column gap-2 position-relative bglight p-2"
         key={comment?._id}
         style={{ background: mainbg }}
       >
         {/*--------------------- user ring and follow btn ----------------------- */}
         <div
-          className={`d-flex gap-2 align-items-center pt-2 justify-content-between flex-grow-1 ${
-            mobile_break_point ? "pe-2 ps-2" : ""
-          }`}
+          className={`d-flex gap-2 align-items-center pt-2 justify-content-between flex-grow-1`}
         >
           <div className="d-flex flex-grow-1">
             <UserRing user={user} />
@@ -241,7 +236,7 @@ export const EachPost = ({ user, comment }) => {
                       className={`d-flex align-items-center flex-column h-100  rounded-${
                         mobile_break_point ? "0" : "1"
                       }`}
-                      style={{ background: text_clrM }}
+                      style={{ background: text_clrL }}
                     >
                       <div style={{ width: "180px" }}>
                         <img
@@ -320,12 +315,10 @@ export const EachPost = ({ user, comment }) => {
         </div>
 
         <div
-          className={`d-flex py-2 justify-content-between like-comment-share  ${
-            mobile_break_point ? "pe- ps-2" : ""
-          }`}
+          className={`d-flex py-2 justify-content-between like-comment-share`}
           style={{ color: text_clrM }}
         >
-          <div className="d-flex gap-4">
+          <div className="d-flex gap-4 ">
             {/* <div style={{ translate: "-1px 1px" }}> */}
             <LikeBtn post={comment} size={28} />
             {/* </div> */}
@@ -362,7 +355,7 @@ export const EachPost = ({ user, comment }) => {
             className=""
             style={{
               rotate: isdotClicked ? "-45deg" : "",
-              translate: mobile_break_point ? "0px" : "7px",
+              translate: mobile_break_point ? "4px" : "7px",
             }}
           >
             <BsThreeDotsVertical size={22} />
@@ -380,7 +373,7 @@ export const EachPost = ({ user, comment }) => {
         </div>
       )}
       <section
-        className={`${mobile_break_point ? "ps-2 pe-2" : ""}`}
+        className={`px-2`}
         style={{ background: mainbg, color: text_clrM }}
       >
         {(admin_user?._id != user?._id || open_comment) && (

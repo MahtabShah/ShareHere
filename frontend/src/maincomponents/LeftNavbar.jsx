@@ -179,7 +179,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     }
   }, [openSlidWin]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1 } = useTheme();
 
   return (
     <>
@@ -188,7 +188,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
         style={{
           zIndex: `${openSlidWin ? 100000000000 : 1000000000}`,
           width: `${openSlidWin ? "100%" : "0"}`,
-          background: mainbg,
+          background: bg1,
           borderRight: `${mobile_break_point ? "" : `1px solid ${text_clrL}`}`,
         }}
       >
@@ -198,13 +198,13 @@ export default function LeftNavbar({ onActiveChange = "" }) {
             style={{
               height: "100vh",
               minWidth: "max-content",
-              background: mainbg,
+              background: bg1,
               borderRight: `1px solid ${text_clrL}`,
             }}
           >
             {/* <div className="mb-2 fw-bold text-uppercase fs-5">Menu</div> */}
             <ul className="nav nav-pills flex-column gap-3 mb-auto">
-              <li className="nav-item  pt-3">
+              <li className="nav-item  pt-1">
                 <a
                   href="/home"
                   className={`nav-link d-flex align-items-center gap-3 fs-6`}

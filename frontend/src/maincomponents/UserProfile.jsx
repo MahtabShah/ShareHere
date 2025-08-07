@@ -45,7 +45,7 @@ const UserProfile = ({}) => {
 
   const [mode, setMode] = useState();
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
 
   useEffect(() => {
     if (user && user?.followers && admin_user) {
@@ -78,10 +78,10 @@ const UserProfile = ({}) => {
   return (
     <>
       <div
-        className="d-flex flex-column mb-5 pb-3"
+        className="d-flex flex-column mb-5 pb-3 "
         style={{
-          paddingTop: `${mobile_break_point ? "50px" : "0"}`,
-          background: mainbg,
+          paddingTop: `50px`,
+          background: bg1,
           maxWidth: "1200px",
           margin: "auto",
         }}
@@ -247,11 +247,12 @@ const UserProfile = ({}) => {
         </div>
         <div className="d-flex gap-3 ps-2">
           <button
-            className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-              activeBtn3Profile === "public" ? "btn-dark" : ""
-            }`}
+            className={`btn border p-1 ps-2 pe-2 rounded-5`}
             onClick={() => setActiveBtn3Profile("public")}
-            style={{ color: text_clrH }}
+            style={{
+              color: activeBtn3Profile === "public" ? bg1 : text_clrH,
+              background: activeBtn3Profile === "public" ? text_clrH : bg1,
+            }}
           >
             Public
           </button>
@@ -259,7 +260,10 @@ const UserProfile = ({}) => {
             className={`btn border p-1 ps-2 pe-2 rounded-5 ${
               activeBtn3Profile === "Follower" ? "btn-dark" : ""
             }`}
-            style={{ color: text_clrH }}
+            style={{
+              color: activeBtn3Profile === "Follower" ? bg1 : text_clrH,
+              background: activeBtn3Profile === "Follower" ? text_clrH : bg1,
+            }}
             onClick={() => {
               setActiveBtn3Profile("Follower");
 

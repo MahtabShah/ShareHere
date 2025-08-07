@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arrow Game</title>
+    <style>
+      canvas {
+        background: #000;
+        display: block;
+        margin: 0 auto;
+      }
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+    <script>
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const playerWidth = 40;
+      const playerHeight = 40;
+
+      const arrowWidth = 5;
+      const arrowHeight = 20;
+
+      const lineCount = 13;
+      const lineHeight = 3;
+      const lineSpeed = 10;
+
+      let arrows = [];
+
+      const lines = [];
+      for (let i = 0; i < lineCount; i++) {
+        lines.push({
+          y: 70 + i * 50,
+          x: i * Math.floor(Math.random() * (canvas.width - 400)),
+          width: Math.floor(Math.random() * 100) + 20,
+          direction: 1,
+          lineSpeed: lineSpeed + Math.floor(Math.random() * 10),
+        });
+      }
+
+      const playerA = {
+        x: canvas.width / 2 - playerWidth / 2,
+        y: 10,
+        color: "red",
+        shootDir: 1,
+      };
+
+      const playerB = {
+        x: canvas.width / 2 - playerWidth / 2,
+        y: canvas.height - playerHeight - 10,
+        color: "green",
+        shootDir: -1,
+      };
+
+      canvas.addEventListener("click", function (e) {
+        const rect = canvas.getBoundingClientRect();
+        const y = e.clientY - rect.top;
+
+        if (e.altKey) {
+          shootArrow(playerA);
+        }
+
+        if (e.shiftKey) {
+          shootArrow(playerB);
+        }
+      });
+
+      window.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowUp") {
+          shootArrow(playerA);
+        } else if (e.key === "ArrowDown") {
+          shootArrow(playerB);
+        } else if (e.key === "w") {
+          shootArrow(playerA);
+        } else if (e.key === "s") {
+          shootArrow(playerB);
+        }
+      });
+
+      function shootArrow(player) {
+        arrows.push({
+          x: player.x + playerWidth / 2 - arrowWidth / 2,
+          y: player.y + (player === playerA ? playerHeight : 0),
+          dir: player.shootDir,
+          active: true,
+        });
+      }
+
+      function update() {
+        // Move lines
+        for (let line of lines) {
+          line.x += line.lineSpeed * line.direction;
+          if (line.x + line.width > canvas.width || line.x < 0) {
+            line.direction *= -1;
+          }
+        }
+
+        // Move arrows
+        for (let arrow of arrows) {
+          if (!arrow.active) continue;
+          arrow.y += arrow.dir * 5;
+
+          // Check collision with horizontal lines
+          for (let line of lines) {
+            if (
+              arrow.y < line.y + lineHeight &&
+              arrow.y + arrowHeight > line.y &&
+              arrow.x < line.x + line.width &&
+              arrow.x + arrowWidth > line.x
+            ) {
+              arrow.active = false;
+            }
+          }
+
+          // Check if arrow hits opponent
+          const target = arrow.dir === 1 ? playerB : playerA;
+          if (
+            arrow.x < target.x + playerWidth &&
+            arrow.x + arrowWidth > target.x &&
+            arrow.y < target.y + playerHeight &&
+            arrow.y + arrowHeight > target.y
+          ) {
+            alert(`${arrow.dir === 1 ? "Player A" : "Player B"} wins!`);
+            arrows = [];
+            document.location.reload();
+          }
+
+          // Remove if out of screen
+          if (arrow.y < 0 || arrow.y > canvas.height) {
+            arrow.active = false;
+          }
+        }
+
+        arrows = arrows.filter((a) => a.active);
+      }
+
+      function drawPlayer(player) {
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x, player.y, playerWidth, playerHeight);
+      }
+
+      function drawArrow(arrow) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(arrow.x, arrow.y, arrowWidth, arrowHeight);
+      }
+
+      function drawLine(line) {
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(line.x, line.y, line.width, lineHeight);
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPlayer(playerA);
+        drawPlayer(playerB);
+        for (let arrow of arrows) {
+          drawArrow(arrow);
+        }
+        for (let line of lines) {
+          drawLine(line);
+        }
+      }
+
+      function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+      }
+
+      gameLoop();
+    </script>
+  </body>
+</html>
