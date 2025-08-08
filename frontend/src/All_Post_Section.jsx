@@ -28,6 +28,7 @@ function All_Post_Section() {
     lgbreakPoint,
     openSlidWin,
     setActiveIndex,
+    fetch_all_posts,
   } = useQuote();
   const { search } = useLocation();
   const params = new URLSearchParams(search);
@@ -45,12 +46,11 @@ function All_Post_Section() {
 
   // Scroll listener with throttling
   useEffect(() => {
-    const handleScroll = throttle(() => {
+    const handleScroll = throttle(async () => {
       if (
         window.innerHeight + window.scrollY >=
         document.body.offsetHeight - 100
       ) {
-        // if (visiblePosts < all_posts?.length) {
         setLoading(true);
         // }
         setTimeout(() => {
@@ -92,12 +92,13 @@ function All_Post_Section() {
   return (
     <>
       <div
-        className="position-relative pt-3 vh-100"
+        className="position-relative pt-3"
         style={{
           zIndex: 10,
           maxWidth: "100%",
           marginTop: "48px",
           background: bg2,
+          minHeight: "100vh",
         }}
       >
         <section
@@ -145,7 +146,7 @@ function All_Post_Section() {
                               <>
                                 {rn + 1 > idx && idx > rn - 1 && (
                                   <div
-                                    className="mt-4 p-2 m-1 rounded-3 d-flex gap-4  none-scroller overflow-x-auto"
+                                    className="mt-4 mb-3 rounded-3 d-flex gap-4  none-scroller overflow-x-auto"
                                     style={{
                                       maxWidth: "100% ",
                                       // border: `1px solid ${text_clrL}`,

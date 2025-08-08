@@ -15,14 +15,6 @@ body {
   /* border: 2px solid red; */
 }
 
-body {
-  background: rgb(0, 0, 0);
-}
-
-.dark {
-  background: #e3ecf1;
-}
-
 .like-comment-share :hover {
   cursor: pointer;
   /* background: #c8dffb; */

@@ -24,6 +24,9 @@ export const ThemeProvider = ({ children }) => {
   const [text_clrH, setText_clrH] = useState("#000911ff");
   const [text_clrM, setText_clrM] = useState("#222222ff");
   const [text_clrL, setText_clrL] = useState("#bbbbbbff");
+  useEffect(() => {
+    document.body.style.background = bg2;
+  }, []);
 
   useEffect(() => {
     if (themeType === "dark") {
@@ -43,6 +46,8 @@ export const ThemeProvider = ({ children }) => {
       setText_clrM("#222222ff");
       setText_clrL("#bbbbbbff");
     }
+
+    document.body.style.background = bg2;
   }, [themeType]);
 
   return (

@@ -115,10 +115,10 @@ const EditUserProfile = () => {
     setLoading(false);
   };
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, bg2, bg1 } = useTheme();
 
   return (
-    <section className="mb-5 pb-5">
+    <section className="mb-5 pb-5" style={{ background: bg1 }}>
       <div
         className="photoHeader w-100 position-relative border"
         style={{ height: "calc(140px + 16dvw)", maxHeight: "300px" }}
@@ -182,11 +182,14 @@ const EditUserProfile = () => {
         >
           <div
             className="d-flex align-items-center p-0 m-0 ps-2"
-            style={{ border: "1px solid #555" }}
+            style={{ border: `1px solid ${text_clrL}` }}
           >
             <div
               className="pe-2 form-lable"
-              style={{ borderRight: "1px solid #555", color: text_clrM }}
+              style={{
+                borderRight: `1px solid ${text_clrL}`,
+                color: text_clrM,
+              }}
             >
               Name
             </div>
@@ -197,7 +200,7 @@ const EditUserProfile = () => {
               onChange={(e) => setName(e.target.value)}
               required
               spellCheck={false}
-              style={{ background: mainbg, color: text_clrM }}
+              style={{ background: bg1, color: text_clrM }}
               // placeholder={user?.username}
             />
           </div>
@@ -214,7 +217,7 @@ const EditUserProfile = () => {
               required
               spellCheck={false}
               style={{
-                background: mainbg,
+                background: bg1,
                 color: text_clrM,
                 border: `1px solid ${text_clrL}`,
               }}

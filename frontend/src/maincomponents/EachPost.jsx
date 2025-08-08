@@ -130,7 +130,7 @@ export const EachPost = ({ user, comment }) => {
     }
   }, [admin_user?.followers]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1 } = useTheme();
 
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
@@ -331,10 +331,10 @@ export const EachPost = ({ user, comment }) => {
               <span
                 style={{
                   marginTop: "0.2rem",
-                  color: open_comment ? "#ed5" : "",
+                  color: open_comment ? "#a0a" : "",
                 }}
               >
-                <BiChat size={28} color={open_comment ? "#ed5" : ""} />{" "}
+                <BiChat size={28} color={open_comment ? "#a0a" : ""} />{" "}
                 {comment?.comments?.length || 0}&nbsp;
               </span>
             </span>
@@ -364,10 +364,10 @@ export const EachPost = ({ user, comment }) => {
       </div>
       {isdotClicked && (
         <div
-          className={`small fw-medium d-flex flex-wrap gap-3 my-2 ${
+          className={`small fw-medium d-flex flex-wrap gap-3 py-2 ${
             mobile_break_point ? "ps-2 pe-2" : ""
           }`}
-          style={{ color: text_clrM }}
+          style={{ color: text_clrM, background: bg1 }}
         >
           <SlipDotinPost user={user} post={comment} />
         </div>

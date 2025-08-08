@@ -48,7 +48,8 @@ export const QuoteProvider = ({ children }) => {
   const [curr_all_notifications, setcurr_all_notifications] = useState([]);
   const [all_user, setall_user] = useState([]);
   const [VisibleNotification, setVisibleNotification] = useState(false);
-
+  const limit = 50; // how many items per page
+  const [page, setPage] = useState(0);
   const token = localStorage.getItem("token");
 
   const fetch_admin_user = async () => {
@@ -114,8 +115,14 @@ export const QuoteProvider = ({ children }) => {
     setAll_post_loading(true);
 
     try {
-      const res = await axios.get(`${API}/api/auth/all_sentence`);
-      res.data?.length === 0 ? "" : set_all_posts(res.data);
+      const res = await axios.get(`${API}/api/auth/all_sentence`, {
+        params: { page, limit },
+      });
+      res.data?.length === 0
+        ? ""
+        : set_all_posts((prev) => [...prev, ...res.data]);
+      setPage((prev) => prev + 1); // Increment page for next fetch
+      return res.data;
     } catch (err) {
       console.log("Failed to fetch your sentences see err", err);
       setErrors(err);

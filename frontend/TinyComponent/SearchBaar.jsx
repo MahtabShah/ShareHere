@@ -99,7 +99,7 @@ export const SearchBaar = () => {
   const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
 
   return (
-    <div className="position-relative" ref={elementRef}>
+    <div className="" ref={elementRef}>
       <div className=" p-0 m-0 h-100">
         <form onSubmit={handleSearch} className="input-group rounded-5 bg-none">
           <input
@@ -119,18 +119,19 @@ export const SearchBaar = () => {
 
       {Filterd_posts.length > 0 && isTouched && (
         <div
-          className="rounded-3 w-100 position-absolute overflow-auto none-scroller"
+          className="rounded-3 position-absolute overflow-auto none-scroller"
           style={{
-            zIndex: 9998,
             background: bg1,
-            maxHeight: "84vh",
+            maxHeight: "74vh",
             marginTop: "10px",
+            right: "4vw",
+            left: "4vw",
             boxShadow: "0 0 4px #4d4d4d",
           }}
         >
           <div
             className="d-flex gap-3 p-2 position-sticky top-0"
-            style={{ background: bg1 }}
+            style={{ background: bg1, zIndex: 1000 }}
           >
             <div
               className="d-flex flex-column gap-2"

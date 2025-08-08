@@ -40,7 +40,7 @@ export default function BottomNav({}) {
     setLoggedIn(!!token);
   }, []);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, bg1 } = useTheme();
   const navigate = useNavigate();
   return (
     <>
@@ -49,11 +49,11 @@ export default function BottomNav({}) {
           <div
             className="BottomNav py-1 w-100 d-sm-none position-fixed"
             style={{
-              zIndex: 90011,
+              zIndex: 90019991,
               height: "48px",
               bottom: "0",
               left: "0",
-              background: mainbg,
+              background: bg1,
             }}
           >
             <ul className="nav nav-pills gap-3 mb-auto d-flex justify-content-around">
@@ -150,7 +150,7 @@ export default function BottomNav({}) {
                 </Nav.Link>
               </li>
 
-              <li className="nav-item ">
+              {/* <li className="nav-item ">
                 <Nav.Link
                   className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
                     activeIndex == "Search" ? "active" : "br"
@@ -180,7 +180,7 @@ export default function BottomNav({}) {
                     Search
                   </span>
                 </Nav.Link>
-              </li>
+              </li> */}
 
               {loggedIn && admin_user?._id ? (
                 <>

@@ -87,25 +87,27 @@ router.get("/home" , async (req, res)=>{
 })
 
 
-router.get("/all_sentence" , async (req, res)=>{
-  const limit = parseInt(req.query.limit);
-  const page = parseInt(req.query.page)  || 0;
-  const all_posts = await Sentence.find().sort({ createdAt: -1 }) // or use a `rank` field
-  .skip(page * limit)
-  .limit(limit).populate({
-    path: 'comments',
-    populate: { path: 'userId', model: 'User' },
-    // populate: { path: 'postId', model: 'Sentence' },
-  })
-  //  console.log("all user want ot fetching 77----: auth,js routes", all_sentence)
+router.get("/all_sentence", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 5; // default 10
+    const page = parseInt(req.query.page) || 0;
 
-   try {
-      res.json(all_posts)
-   } catch (error) {
-    console.error("error in auth " , error)
-   }
- 
-})
+    const all_posts = await Sentence.find()
+      .sort({ createdAt: -1 }) // newest first
+      .skip(page * limit)
+      .limit(limit)
+      .populate({
+        path: "comments",
+        populate: { path: "userId", model: "User" },
+      });
+
+    res.json(all_posts);
+  } catch (error) {
+    console.error("Error fetching sentences:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 
 

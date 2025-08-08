@@ -78,224 +78,230 @@ const UserProfile = ({}) => {
   return (
     <>
       <div
-        className="d-flex flex-column mb-5 pb-3 "
+        className="d-flex flex-column mb-5 pb-3"
         style={{
           paddingTop: `50px`,
-          background: bg1,
+          background: bg2,
           maxWidth: "1200px",
           margin: "auto",
         }}
       >
-        <div
-          className="photoHeader w-100 position-relative border"
-          style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}
-        >
+        <div className="pb-3" style={{ background: bg1 }}>
           <div
-            className="text-center position-absolute ps-2 overflow-hodden bg-image"
-            style={{
-              bottom: "calc(-50px)",
-            }}
+            className="photoHeader w-100 position-relative border"
+            style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}
           >
             <div
-              className="rounded-circle bg-image"
+              className="text-center position-absolute ps-2 overflow-hodden bg-image"
               style={{
-                background: user?.bg_clr,
-                minWidth: "100px",
-                minHeight: "100px",
-                background: `url(${user?.profile_pic})`,
-                aspectRatio: "1/1",
-                cursor: "pointer",
+                bottom: "calc(-50px)",
               }}
-              onClick={() => setProfilePicVisble(!ProfilePicVisble)}
+            >
+              <div
+                className="rounded-circle bg-image"
+                style={{
+                  background: user?.bg_clr,
+                  minWidth: "100px",
+                  minHeight: "100px",
+                  background: `url(${user?.profile_pic})`,
+                  aspectRatio: "1/1",
+                  cursor: "pointer",
+                }}
+                onClick={() => setProfilePicVisble(!ProfilePicVisble)}
+              />
+            </div>
+            <img
+              src={user?.cover_pic}
+              alt="cover"
+              className="w-100 h-100"
+              style={{
+                objectFit: "cover",
+              }}
             />
           </div>
-          <img
-            src={user?.cover_pic}
-            alt="cover"
-            className="w-100 h-100"
-            style={{
-              objectFit: "cover",
-            }}
-          />
-        </div>
 
-        <div
-          className="text-end pe-3 pt-3"
-          style={{ height: "60px", color: text_clrH }}
-        >
-          <div className="d-flex justify-content-end align-items-center">
-            {id !== admin_user?._id && (
-              <>
-                <FollowBtn
-                  user={user}
-                  cls={"btn btn-outline-dark btn-sm ps-2 pe-2"}
-                />
-              </>
-            )}
-
-            {id === admin_user?._id && (
-              <button
-                className="btn btn-dark btn-sm ms-2"
-                onClick={() => {
-                  nevigate(`/api/user/edit/${admin_user?._id}`);
-                }}
-                style={{ color: text_clrH }}
-              >
-                Edit Profile
-              </button>
-            )}
-          </div>
-        </div>
-
-        {ProfilePicVisble && (
           <div
-            className="p-4 position-fixed d-flex flex-column pt-5 bg-dark shadow-lg"
-            style={{
-              zIndex: 900,
-              bottom: 0,
-              top: 0,
-              width: `${
-                mobile_break_point
-                  ? "100%"
-                  : sm_break_point
-                  ? "calc(100% - 50px)"
-                  : "calc(100% - 224px)"
-              }`,
-            }}
+            className="text-end pe-3 pt-3"
+            style={{ height: "60px", color: text_clrH }}
           >
-            <div
-              className="p-3 rounded bg-black  mt-5 overflow-hidden"
-              style={{ maxHeight: "calc(100vh - 200px)" }}
-            >
-              <div className="fw-bold d-flex gap-2 align-items-start mb-2 justify-content-between">
-                <p className="small text-warning">
-                  ! Use Square size of pic for better visiblity
-                </p>
+            <div className="d-flex justify-content-end align-items-center">
+              {id !== admin_user?._id && (
+                <>
+                  <FollowBtn
+                    user={user}
+                    cls={"btn btn-outline-dark btn-sm ps-2 pe-2"}
+                  />
+                </>
+              )}
+
+              {id === admin_user?._id && (
                 <button
-                  className="btn btn-danger btn-sm small text-center p-0"
-                  style={{ width: "30px" }}
-                  onClick={() => setProfilePicVisble(!ProfilePicVisble)}
+                  className="btn btn-sm ms-2"
+                  onClick={() => {
+                    nevigate(`/api/user/edit/${admin_user?._id}`);
+                  }}
+                  style={{ color: bg1, background: text_clrH }}
                 >
-                  X
+                  Edit Profile
                 </button>
-              </div>
+              )}
+            </div>
+          </div>
+
+          {ProfilePicVisble && (
+            <div
+              className="p-4 position-fixed d-flex flex-column pt-5 bg-dark shadow-lg"
+              style={{
+                zIndex: 900,
+                bottom: 0,
+                top: 0,
+                width: `${
+                  mobile_break_point
+                    ? "100%"
+                    : sm_break_point
+                    ? "calc(100% - 50px)"
+                    : "calc(100% - 224px)"
+                }`,
+              }}
+            >
               <div
-                className="overflow-hidden d-flex align-items-center"
-                style={{ maxHeight: "calc(100vh - 300px)" }}
+                className="p-3 rounded bg-black  mt-5 overflow-hidden"
+                style={{ maxHeight: "calc(100vh - 200px)" }}
               >
-                <img
-                  src={user?.profile_pic}
-                  className="w-100 h-100 overflow-hidden"
-                  style={{ objectFit: "cover" }}
-                />
+                <div className="fw-bold d-flex gap-2 align-items-start mb-2 justify-content-between">
+                  <p className="small text-warning">
+                    ! Use Square size of pic for better visiblity
+                  </p>
+                  <button
+                    className="btn btn-danger btn-sm small text-center p-0"
+                    style={{ width: "30px" }}
+                    onClick={() => setProfilePicVisble(!ProfilePicVisble)}
+                  >
+                    X
+                  </button>
+                </div>
+                <div
+                  className="overflow-hidden d-flex align-items-center"
+                  style={{ maxHeight: "calc(100vh - 300px)" }}
+                >
+                  <img
+                    src={user?.profile_pic}
+                    className="w-100 h-100 overflow-hidden"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div
-          className="ps-2 d-flex flex-column justify-content-between"
-          style={{ color: text_clrH }}
-        >
-          <div className="d-flex  justify-content-between">
-            <h4 className="flex-grow-1">{user?.username}</h4>
-            <div className="d-flex gap-3 ps-3 pe-3 mt-">
-              <span
-                className="text-center small"
-                onClick={() => {
-                  setOption("followers");
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                <span>Followers</span>
-                <h5>{user?.followers?.length || 0}</h5>
-              </span>
-              <span
-                className="text-center small"
-                onClick={() => {
-                  setOption("following");
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                <span>Following</span>
-                <h5>{user?.following?.length || 0}</h5>
-              </span>
-            </div>
-          </div>
-
-          <p className="small m-0">
-            <span className="fs-6 fw-semibold">
-              {user?.bio?.trim().charAt(0)}
-            </span>
-            {user?.bio?.trim().slice(1)}
-          </p>
-        </div>
-
-        {/* <hr className="bg-light" /> */}
-        <div className="m-2 d-flex gap-3" style={{ color: text_clrM }}>
-          <div>
-            <span style={{ color: text_clrH }}>{user_post?.length}</span>{" "}
-            <span> posts</span>
-          </div>
-
-          <div>
-            <span style={{ color: text_clrH }}>
-              {admin_user?.followers?.length}
-            </span>{" "}
-            <span> followers</span>
-          </div>
-        </div>
-        <div className="d-flex gap-3 ps-2">
-          <button
-            className={`btn border p-1 ps-2 pe-2 rounded-5`}
-            onClick={() => setActiveBtn3Profile("public")}
-            style={{
-              color: activeBtn3Profile === "public" ? bg1 : text_clrH,
-              background: activeBtn3Profile === "public" ? text_clrH : bg1,
-            }}
-          >
-            Public
-          </button>
-          <button
-            className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-              activeBtn3Profile === "Follower" ? "btn-dark" : ""
-            }`}
-            style={{
-              color: activeBtn3Profile === "Follower" ? bg1 : text_clrH,
-              background: activeBtn3Profile === "Follower" ? text_clrH : bg1,
-            }}
-            onClick={() => {
-              setActiveBtn3Profile("Follower");
-
-              if (mode != "public") {
-                setfollowMSG(true);
-              }
-            }}
-          >
-            Follower
-          </button>
-          <button
-            className={`btn border p-1 ps-3 pe-3 rounded-5 ${
-              activeBtn3Profile === "Paid" ? "btn-dark" : ""
-            }`}
-            onClick={() => setActiveBtn3Profile("Paid")}
-            disabled={true}
+          <div
+            className="ps-2 d-flex flex-column justify-content-between"
             style={{ color: text_clrH }}
           >
-            Paid
-          </button>
+            <div className="d-flex  justify-content-between">
+              <h4 className="flex-grow-1">{user?.username}</h4>
+              <div className="d-flex gap-3 ps-3 pe-3 mt-">
+                <span
+                  className="text-center small"
+                  onClick={() => {
+                    setOption("followers");
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <span>Followers</span>
+                  <h5>{user?.followers?.length || 0}</h5>
+                </span>
+                <span
+                  className="text-center small"
+                  onClick={() => {
+                    setOption("following");
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <span>Following</span>
+                  <h5>{user?.following?.length || 0}</h5>
+                </span>
+              </div>
+            </div>
+
+            <p className="small m-0">
+              <span className="fs-6 fw-semibold">
+                {user?.bio?.trim().charAt(0)}
+              </span>
+              {user?.bio?.trim().slice(1)}
+            </p>
+          </div>
+
+          <div className="m-2 d-flex gap-3" style={{ color: text_clrM }}>
+            <div>
+              <span style={{ color: text_clrH }}>{user_post?.length}</span>{" "}
+              <span> posts</span>
+            </div>
+
+            <div>
+              <span style={{ color: text_clrH }}>
+                {admin_user?.followers?.length}
+              </span>{" "}
+              <span> followers</span>
+            </div>
+          </div>
+          <div className="d-flex gap-3 ps-2">
+            <button
+              className={`btn border p-1 ps-2 pe-2 rounded-5`}
+              onClick={() => setActiveBtn3Profile("public")}
+              style={{
+                color: activeBtn3Profile === "public" ? bg1 : text_clrH,
+                background: activeBtn3Profile === "public" ? text_clrH : bg1,
+              }}
+            >
+              Public
+            </button>
+            <button
+              className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+                activeBtn3Profile === "Follower" ? "btn-dark" : ""
+              }`}
+              style={{
+                color: activeBtn3Profile === "Follower" ? bg1 : text_clrH,
+                background: activeBtn3Profile === "Follower" ? text_clrH : bg1,
+              }}
+              onClick={() => {
+                setActiveBtn3Profile("Follower");
+
+                if (mode != "public") {
+                  setfollowMSG(true);
+                }
+              }}
+            >
+              Follower
+            </button>
+            <button
+              className={`btn border p-1 ps-3 pe-3 rounded-5 ${
+                activeBtn3Profile === "Paid" ? "btn-dark" : ""
+              }`}
+              onClick={() => setActiveBtn3Profile("Paid")}
+              disabled={true}
+              style={{ color: text_clrH }}
+            >
+              Paid
+            </button>
+          </div>
         </div>
 
-        <div className="d-flex flex-column gap-5 mt-2">
+        <div className="d-flex flex-column gap-5" style={{ background: bg2 }}>
           {
-            <section style={{ margin: "auto", maxWidth: "600px" }}>
+            <section
+              style={{
+                margin: "auto",
+                maxWidth: "600px",
+              }}
+            >
               {LazyLoading ? (
                 <div className="p-3 d-flex justify-content-start">
                   {" "}
                   <Loading dm={34} />
                 </div>
               ) : (
-                <div className="d-flex flex-column gap-5 mt-4">
+                <div className="d-flex flex-column gap-4 my-4">
                   {activeBtn3Profile == "public" &&
                     PublicPost?.map((ps, idx) => {
                       return (
@@ -333,6 +339,7 @@ const UserProfile = ({}) => {
             </section>
           }
         </div>
+
         {all_posts ? (
           followMSG && (
             <div

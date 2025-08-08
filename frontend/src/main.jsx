@@ -196,7 +196,6 @@ const Main = () => {
                   >
                     <BottomNav />
                     <TrackPost />
-                    {/* <All_Post_Section /> */}
                   </main>
                 }
               />
@@ -204,7 +203,7 @@ const Main = () => {
                 path="/api/user/:id"
                 element={
                   <main
-                    className="p-0 mt-0 "
+                    className="p-0 m-0 "
                     style={{
                       marginLeft: `${
                         mobile_break_point
@@ -224,7 +223,7 @@ const Main = () => {
                 path="/api/user/edit/:id"
                 element={
                   <main
-                    className="p-0 pt-2"
+                    className="p-0"
                     style={{
                       marginLeft: `${
                         mobile_break_point
