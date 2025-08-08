@@ -27,6 +27,48 @@ import {
 import { FaStrikethrough, FaFont, FaTextHeight } from "react-icons/fa";
 
 const pre_bg_color = [
+  "#A294F9",
+  "#6b3ac4",
+  "#89A8B2",
+  "#D91656",
+  "#640D5F",
+  "#355F2E",
+  "#441752",
+  "#F72C5B",
+  "#F0BB78",
+  "#131010",
+  "#3E5879",
+  "#C84C05",
+  "#074799",
+  "#8D0B41",
+  "#7E5CAD",
+  "#500073",
+  "#8D77AB",
+  "#FFE9D6",
+  "#D7C1E0",
+  "#EEF5FF",
+  "#7E30E1",
+  "#B0D553",
+  "#D4F6CC",
+  "#171717",
+  "#DA0037",
+  "#217756",
+  "#008DDA",
+  "#664343",
+  "#E0AB5B",
+  "#FFA6D5",
+  "#240750",
+  "#3B3030",
+  "#5FBDFF",
+  "#7B66FF",
+  "#FFF8CD",
+  "#D4D7DD",
+  "#A888B5",
+  "#000B58",
+  "#F67280",
+  "#46B7B9",
+  "#8D72E1",
+  "#2B580C",
   // 🌇 LINEAR GRADIENTS
   "linear-gradient(to right, #ff7e5f, #feb47b)", // Sunset
   "linear-gradient(to right, #4facfe, #00f2fe)", // Sky blue
@@ -93,48 +135,6 @@ const pre_bg_color = [
   "linear-gradient(45deg, #ff9a9e, #fad0c4)", // diagonal pink
   "linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%)", // lavender pink
   "linear-gradient(to right, #e0c3fc 0%, #8ec5fc 100%)", // soft purple-blue
-  "#A294F9",
-  "#F1F0E8",
-  "#89A8B2",
-  "#D91656",
-  "#640D5F",
-  "#355F2E",
-  "#441752",
-  "#F72C5B",
-  "#F0BB78",
-  "#131010",
-  "#3E5879",
-  "#C84C05",
-  "#074799",
-  "#8D0B41",
-  "#7E5CAD",
-  "#500073",
-  "#8D77AB",
-  "#FFE9D6",
-  "#D7C1E0",
-  "#EEF5FF",
-  "#7E30E1",
-  "#B0D553",
-  "#D4F6CC",
-  "#171717",
-  "#DA0037",
-  "#217756",
-  "#008DDA",
-  "#664343",
-  "#E0AB5B",
-  "#FFA6D5",
-  "#240750",
-  "#3B3030",
-  "#5FBDFF",
-  "#7B66FF",
-  "#FFF8CD",
-  "#D4D7DD",
-  "#A888B5",
-  "#000B58",
-  "#F67280",
-  "#46B7B9",
-  "#8D72E1",
-  "#2B580C",
 ];
 
 const color = [
@@ -589,7 +589,7 @@ const CanvasVibeEditor = () => {
                       >
                         &nbsp; {!styleOpen ? "open " : "close "} &nbsp;
                       </div>
-                      <div className="d-flex overflow-x-auto h-100 none-scroller gap-2">
+                      <div className="d-flex overflow-x-auto h-100 none-scroller gap-2 mb-1">
                         <button
                           className={`toolbar-button   ${
                             activeElement?.fontWeight === "bold" ? "active" : ""
@@ -724,6 +724,142 @@ const CanvasVibeEditor = () => {
                           />
                         </button>
 
+                        <div
+                          className="d-flex gap-2 btn-tool overflow-x-auto none-scroller"
+                          style={{ minWidth: "max-content" }}
+                        >
+                          <div
+                            className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
+                            onClick={() => {
+                              setActive_style(fontFamily);
+                              setStyle_type("fontFamily");
+                            }}
+                            style={{
+                              cursor: "pointer",
+                              background: `${
+                                active_style === fontFamily ? "#6b0ad2" : ""
+                              }`,
+                              color: `${
+                                active_style === fontFamily ? "#fff" : ""
+                              }`,
+                            }}
+                          >
+                            <FaFont />
+                          </div>
+
+                          <div
+                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 fontSize"
+                            onClick={() => {
+                              setActive_style(fontSize);
+                              setStyle_type("fontSize");
+                            }}
+                            style={{
+                              cursor: "pointer",
+                              background: `${
+                                active_style === fontSize ? "#6b0ad2" : ""
+                              }`,
+                              color: `${
+                                active_style === fontSize ? "#fff" : ""
+                              }`,
+                            }}
+                          >
+                            <FaTextHeight title="Increase Font Size" />
+                          </div>
+
+                          <div
+                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                            onClick={() => {
+                              setActive_style(textShadow);
+                              setStyle_type("textShadow");
+                            }}
+                            style={{
+                              cursor: "pointer",
+                              background: `${
+                                active_style === textShadow ? "#6b0ad2" : ""
+                              }`,
+                              color: `${
+                                active_style === textShadow ? "#fff" : ""
+                              }`,
+                            }}
+                          >
+                            <FaMagic title="FaShadow" />
+                          </div>
+
+                          <div
+                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                            onClick={() => {
+                              setActive_style(textDecoration);
+                              setStyle_type("textDecoration");
+                            }}
+                            style={{
+                              cursor: "pointer",
+                              background: `${
+                                active_style === textDecoration ? "#6b0ad2" : ""
+                              }`,
+                              color: `${
+                                active_style === textDecoration ? "#fff" : ""
+                              }`,
+                            }}
+                          >
+                            <FaStrikethrough title="Strikethrough" />
+                          </div>
+
+                          <div
+                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                            onClick={() => {
+                              setActive_style(color);
+                              setStyle_type("color");
+                            }}
+                            style={{
+                              cursor: "pointer",
+                              background: `${
+                                active_style === color ? "#6b0ad2" : ""
+                              }`,
+                              color: `${active_style === color ? "#fff" : ""}`,
+                            }}
+                          >
+                            Color
+                          </div>
+
+                          <div
+                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 letterSpacing"
+                            onClick={() => {
+                              setActive_style(letterSpacing);
+                              setStyle_type("letterSpacing");
+                            }}
+                            style={{
+                              cursor: "pointer",
+                              background: `${
+                                active_style === letterSpacing ? "#6b0ad2" : ""
+                              }`,
+                              color: `${
+                                active_style === letterSpacing ? "#fff" : ""
+                              }`,
+                            }}
+                          >
+                            Spacing
+                          </div>
+
+                          <div
+                            className="toolbar-button d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 backgroundPosition "
+                            onClick={() => {
+                              setActive_style(boxShadow);
+                              setStyle_type("boxShadow");
+                            }}
+                            style={{
+                              cursor: "pointer",
+                              background: `${
+                                active_style === boxShadow ? "#6b0ad2" : ""
+                              }`,
+                              color: `${
+                                active_style === boxShadow ? "#fff" : ""
+                              }`,
+                            }}
+                          >
+                            box Shadow
+                          </div>
+                        </div>
+
                         <button
                           className={`btn props-btn toolbar-button ${
                             activeElement ? "active" : ""
@@ -738,7 +874,7 @@ const CanvasVibeEditor = () => {
                           <b style={{ color: "#ededed" }}>- / -</b>
                         </button>
 
-                        <div
+                        {/* <div
                           className="btn overflow-hidden p-0 props-btn toolbar-button"
                           style={{ border: `` }}
                         >
@@ -799,7 +935,7 @@ const CanvasVibeEditor = () => {
                               />
                             </div>
                           </div>
-                        </div>
+                        </div> */}
 
                         <button
                           className="props-btn fw-medium toolbar-button flex-grow-1"
@@ -855,131 +991,6 @@ const CanvasVibeEditor = () => {
                       </div>
                     </summary>
 
-                    <div className="d-flex gap-2 btn-tool overflow-x-auto none-scroller border-top pt-2 my-2">
-                      <div
-                        className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
-                        onClick={() => {
-                          setActive_style(fontFamily);
-                          setStyle_type("fontFamily");
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          background: `${
-                            active_style === fontFamily ? "#6b0ad2" : ""
-                          }`,
-                          color: `${active_style === fontFamily ? "#fff" : ""}`,
-                        }}
-                      >
-                        <FaFont />
-                      </div>
-
-                      <div
-                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 fontSize"
-                        onClick={() => {
-                          setActive_style(fontSize);
-                          setStyle_type("fontSize");
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          background: `${
-                            active_style === fontSize ? "#6b0ad2" : ""
-                          }`,
-                          color: `${active_style === fontSize ? "#fff" : ""}`,
-                        }}
-                      >
-                        <FaTextHeight title="Increase Font Size" />
-                      </div>
-
-                      <div
-                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                        onClick={() => {
-                          setActive_style(textShadow);
-                          setStyle_type("textShadow");
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          background: `${
-                            active_style === textShadow ? "#6b0ad2" : ""
-                          }`,
-                          color: `${active_style === textShadow ? "#fff" : ""}`,
-                        }}
-                      >
-                        <FaMagic title="FaShadow" />
-                      </div>
-
-                      <div
-                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                        onClick={() => {
-                          setActive_style(textDecoration);
-                          setStyle_type("textDecoration");
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          background: `${
-                            active_style === textDecoration ? "#6b0ad2" : ""
-                          }`,
-                          color: `${
-                            active_style === textDecoration ? "#fff" : ""
-                          }`,
-                        }}
-                      >
-                        <FaStrikethrough title="Strikethrough" />
-                      </div>
-
-                      <div
-                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                        onClick={() => {
-                          setActive_style(color);
-                          setStyle_type("color");
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          background: `${
-                            active_style === color ? "#6b0ad2" : ""
-                          }`,
-                          color: `${active_style === color ? "#fff" : ""}`,
-                        }}
-                      >
-                        Color
-                      </div>
-
-                      <div
-                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 letterSpacing"
-                        onClick={() => {
-                          setActive_style(letterSpacing);
-                          setStyle_type("letterSpacing");
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          background: `${
-                            active_style === letterSpacing ? "#6b0ad2" : ""
-                          }`,
-                          color: `${
-                            active_style === letterSpacing ? "#fff" : ""
-                          }`,
-                        }}
-                      >
-                        Spacing
-                      </div>
-
-                      <div
-                        className="toolbar-button d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 backgroundPosition "
-                        onClick={() => {
-                          setActive_style(boxShadow);
-                          setStyle_type("boxShadow");
-                        }}
-                        style={{
-                          cursor: "pointer",
-                          background: `${
-                            active_style === boxShadow ? "#6b0ad2" : ""
-                          }`,
-                          color: `${active_style === boxShadow ? "#fff" : ""}`,
-                        }}
-                      >
-                        box Shadow
-                      </div>
-                    </div>
-
                     <div className="d-flex gap-2 text-light mb-2 overflow-x-auto overflow-y-hidden none-scroller">
                       {active_style.map((op) => (
                         <button
@@ -1025,7 +1036,7 @@ const CanvasVibeEditor = () => {
                     onClick={preventToggle}
                   >
                     <summary
-                      className="d-flex mb-1 border-0"
+                      className="d-flex gap-2 mb-1 border-0"
                       style={{ background: mainbg }}
                     >
                       <div
@@ -1040,6 +1051,34 @@ const CanvasVibeEditor = () => {
                         }}
                       >
                         &nbsp; {!detailsOpen ? "open " : "close "} &nbsp;
+                      </div>
+
+                      <div
+                        className="d-flex gap-2 w-100 none-scroller overflow-x-auto overflow-y-hidden"
+                        style={{ maxHeight: "40px" }}
+                      >
+                        {pre_bg_color.map((c, idx) => {
+                          return (
+                            <span
+                              key={`bg-${idx}`}
+                              className="rounded-5 d-block"
+                              style={{
+                                minWidth: "30px",
+                                minHeight: "30px",
+                                background: `${c}`,
+                                cursor: "pointer",
+                                border: `${
+                                  canvasBgColor === c
+                                    ? "2px solid red"
+                                    : "2px solid #f9d8df00"
+                                }`,
+                              }}
+                              onClick={() => {
+                                setCanvasBgColor(c);
+                              }}
+                            />
+                          );
+                        })}
                       </div>
                     </summary>
 
@@ -1090,7 +1129,7 @@ const CanvasVibeEditor = () => {
             <div
               style={{
                 marginTop: `calc(${detailsOpen ? `157px` : "54px"} + ${
-                  styleOpen ? `145px` : "60px"
+                  styleOpen ? `95px` : "60px"
                 })`,
                 width: "100%",
               }}
@@ -1117,7 +1156,10 @@ const CanvasVibeEditor = () => {
                       width: `${el.width}px`,
                       height: `${el.height}px`,
                       zIndex: el.zIndex,
-                      border: activeId === el.id ? "2px dashed #0d6efd" : "",
+                      border:
+                        activeId === el.id
+                          ? "2px dashed #0d6efd"
+                          : "2px solid transparent",
                       boxShadow:
                         activeId === el.id
                           ? "0 0 10px rgba(13, 110, 253, 0.5)"
@@ -1243,32 +1285,9 @@ const CanvasVibeEditor = () => {
       </div>
 
       <div
-        className="d-flex gap-2 pt-2 none-scroller overflow-x-auto overflow-y-hidden"
-        style={{ maxHeight: "80px", maxWidth: "100%" }}
+        className="py-2"
+        style={{ background: mainbg, minWidth: "max-content" }}
       >
-        {pre_bg_color.map((c, idx) => {
-          return (
-            <span
-              key={`bg-${idx}`}
-              className="rounded-5 d-block"
-              style={{
-                minWidth: "34px",
-                minHeight: "34px",
-                background: `${c}`,
-                cursor: "pointer",
-                border: `${
-                  canvasBgColor === c ? "2px solid red" : "2px solid #f9d8df00"
-                }`,
-              }}
-              onClick={() => {
-                setCanvasBgColor(c);
-              }}
-            />
-          );
-        })}
-      </div>
-
-      <div className="py-2" style={{ background: mainbg }}>
         <>
           <div
             className="d-flex flex-row-reverse props-parent flex-wrap gap-2 overflow-x-auto"
@@ -1283,7 +1302,11 @@ const CanvasVibeEditor = () => {
                   type="file"
                   className="d-none"
                   accept="image/*"
-                  onChange={(e) => addImageBox(e.target.files[0])}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    addImageBox(e.target.files[0]);
+                  }}
                 />
               </label>
             </button>
