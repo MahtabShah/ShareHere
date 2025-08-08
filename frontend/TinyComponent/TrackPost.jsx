@@ -96,11 +96,11 @@ export const TrackPost = () => {
             <div
               style={{
                 maxWidth: "600px",
-                boxShadow: `0 0 5px ${bg1} `,
+                boxShadow: `0 1px 3px ${text_clrL} `,
                 color: text_clrH,
                 background: mainbg,
               }}
-              className="rounded m-1 top border overflow-hidden "
+              className="rounded m-1 top overflow-hidden "
             >
               <div className="d-flex justify-content-between overflow-hidden ">
                 <h5 className="p-2 m-0 d-flex align-items-start gap-3">

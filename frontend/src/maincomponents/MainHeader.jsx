@@ -89,20 +89,19 @@ function MainHeader({}) {
 
   const { text_clrH, text_clrL, text_clrM, mainbg, bg1, setThemeType } =
     useTheme();
-  const [darkMode, setDarkMode] = useState(false);
   const [fading, setFading] = useState(false);
+  const theme = localStorage.getItem("theme");
 
   const toggleTheme = () => {
     setFading(true); // start fade out
 
     setTimeout(() => {
-      setDarkMode(!darkMode); // switch icon
       setFading(false); // fade back in
     }, 400);
 
     setTimeout(() => {
-      setThemeType(darkMode ? "light" : "dark");
-      document.body.classList.toggle("dark");
+      setThemeType(theme === "dark" ? "light" : "dark");
+      document.body.classList.toggle(theme);
     }, 440);
   };
 
@@ -188,7 +187,7 @@ function MainHeader({}) {
                 }}
               >
                 <FontAwesomeIcon
-                  icon={darkMode ? faSun : faMoon}
+                  icon={theme == "dark" ? faSun : faMoon}
                   className={`theme-icon ${fading ? "fade-out" : ""}`}
                   style={{ fontSize: "20px" }}
                 />

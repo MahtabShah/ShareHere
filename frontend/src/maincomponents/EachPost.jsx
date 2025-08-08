@@ -21,6 +21,19 @@ dayjs.extend(relativeTime);
 
 import { useTheme } from "../context/Theme";
 
+function formatNumber(num) {
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+  }
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+  }
+  return num.toString();
+}
+
 export const EachPost = ({ user, comment }) => {
   // comment parameter is besiaclly post
   const [open_comment, setopen_comment] = useState(false);
@@ -65,20 +78,20 @@ export const EachPost = ({ user, comment }) => {
   };
 
   const { search } = useLocation();
-  const postId = new URLSearchParams(search).get("postId");
+  const postId = comment?._id;
 
-  useEffect(() => {
-    if (postId) {
-      const el = document.getElementById(postId);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        el.style.backgroundColor = "#ffffcc"; // highlight
-        setTimeout(() => {
-          el.style.backgroundColor = "transparent"; // remove after delay
-        }, 2000);
-      }
-    }
-  }, [postId]);
+  // useEffect(() => {
+  //   if (postId) {
+  //     const el = document.getElementById(postId);
+  //     if (el) {
+  //       el.scrollIntoView({ behavior: "smooth", block: "start" });
+  //       el.style.backgroundColor = "#ffffcc"; // highlight
+  //       setTimeout(() => {
+  //         el.style.backgroundColor = "transparent"; // remove after delay
+  //       }, 2000);
+  //     }
+  //   }
+  // }, [postId]);
 
   const SubmitComment = async (e, id) => {
     e.preventDefault();
@@ -130,7 +143,7 @@ export const EachPost = ({ user, comment }) => {
     }
   }, [admin_user?.followers]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1 } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
 
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
@@ -155,10 +168,26 @@ export const EachPost = ({ user, comment }) => {
     }
   }, [comment.text]);
 
+  // Mark post as seen when component mounts
+  const seenRef = useRef(null);
+
+  useEffect(() => {
+    // if (seenRef.current || !postId) return; // Prevent multiple calls
+    // Check if post is in viewport
+
+    const rect = seenRef.current?.getBoundingClientRect();
+
+    if (postId && rect.top < window.innerHeight && rect.bottom >= 0) {
+      axios
+        .post(`${API}/api/crud/post_seen/${postId}`)
+        .catch((err) => console.error("Error marking as seen:", err));
+    }
+  }, [postId]);
+
   return (
-    <div>
+    <div ref={seenRef} className="">
       <div
-        className="d-flex flex-column gap-2 position-relative bglight p-2"
+        className="d-flex flex-column gap-2 position-relative bglight px-2"
         key={comment?._id}
         style={{ background: mainbg }}
       >
@@ -260,9 +289,7 @@ export const EachPost = ({ user, comment }) => {
             </div>
 
             <li
-              className={`w-100 flex-grow-1 d-flex rounded-3 mt-2 ${
-                mobile_break_point ? "pe-2 ps-2" : ""
-              }`}
+              className={`w-100 flex-grow-1 d-flex rounded-3 mt-2`}
               style={{ color: text_clrM }}
             >
               {comment && (
@@ -313,61 +340,64 @@ export const EachPost = ({ user, comment }) => {
             </li>
           </ul>
         </div>
-
-        <div
-          className={`d-flex py-2 justify-content-between like-comment-share`}
-          style={{ color: text_clrM }}
-        >
-          <div className="d-flex gap-4 ">
-            {/* <div style={{ translate: "-1px 1px" }}> */}
-            <LikeBtn post={comment} size={28} />
-            {/* </div> */}
-            <span
-              className="fw-semibold d-flex align-items-center gap-1"
-              onClick={() => {
-                setopen_comment(!open_comment);
-              }}
-            >
+        <div className="d-flex flex-column">
+          <div
+            className={`d-flex pt-1 justify-content-between like-comment-share`}
+            style={{ color: text_clrM }}
+          >
+            <div className="d-flex gap-4 ">
+              {/* <div style={{ translate: "-1px 1px" }}> */}
+              <LikeBtn post={comment} size={20} />
+              {/* </div> */}
               <span
-                style={{
-                  marginTop: "0.2rem",
-                  color: open_comment ? "#a0a" : "",
+                className="fw-semibold d-flex align-items-center gap-1"
+                onClick={() => {
+                  setopen_comment(!open_comment);
                 }}
               >
-                <BiChat size={28} color={open_comment ? "#a0a" : ""} />{" "}
-                {comment?.comments?.length || 0}&nbsp;
+                <span
+                  style={{
+                    marginTop: "0.2rem",
+                    color: open_comment ? "#a0a" : "",
+                  }}
+                >
+                  <BiChat size={20} color={open_comment ? "#a0a" : ""} />{" "}
+                  {comment?.comments?.length || 0}&nbsp;
+                </span>
               </span>
-            </span>
+              <span
+                className="fw-semibold"
+                onClick={() => {
+                  HandleShare(comment?._id);
+                }}
+              >
+                <BiShare size={20} />
+              </span>
+            </div>
+
             <span
-              className="fw-semibold"
               onClick={() => {
-                HandleShare(comment?._id);
+                setdotClicked(!isdotClicked);
+              }}
+              className=""
+              style={{
+                rotate: isdotClicked ? "-45deg" : "",
+                translate: mobile_break_point ? "4px" : "7px",
               }}
             >
-              <BiShare size={28} />
+              <BsThreeDotsVertical size={18} />
             </span>
           </div>
 
-          <span
-            onClick={() => {
-              setdotClicked(!isdotClicked);
-            }}
-            className=""
-            style={{
-              rotate: isdotClicked ? "-45deg" : "",
-              translate: mobile_break_point ? "4px" : "7px",
-            }}
-          >
-            <BsThreeDotsVertical size={22} />
-          </span>
+          <small className="pb-1" style={{ color: text_clrM }}>
+            {formatNumber(comment?.views || 1)} views
+          </small>
         </div>
       </div>
       {isdotClicked && (
         <div
-          className={`small fw-medium d-flex flex-wrap gap-3 py-2 ${
-            mobile_break_point ? "ps-2 pe-2" : ""
-          }`}
-          style={{ color: text_clrM, background: bg1 }}
+          className={`small fw-medium d-flex flex-wrap gap-3 py-2 px-2`}
+          style={{ color: text_clrM, background: mainbg }}
         >
           <SlipDotinPost user={user} post={comment} />
         </div>

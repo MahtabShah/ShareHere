@@ -6,7 +6,8 @@ const Theme = createContext();
 export const useTheme = () => useContext(Theme) || {};
 
 export const ThemeProvider = ({ children }) => {
-  const [themeType, setThemeType] = useState("light");
+  const theme = localStorage.getItem("theme") || "light"; // Default to light theme if not set
+  const [themeType, setThemeType] = useState(theme);
   const [themeObj, setThemeObj] = useState({
     mbg: "#000000",
     bg1: "#030303",
@@ -24,19 +25,21 @@ export const ThemeProvider = ({ children }) => {
   const [text_clrH, setText_clrH] = useState("#000911ff");
   const [text_clrM, setText_clrM] = useState("#222222ff");
   const [text_clrL, setText_clrL] = useState("#bbbbbbff");
-  useEffect(() => {
-    document.body.style.background = bg2;
-  }, []);
+  // useEffect(() => {
+  //   document.body.style.background = bg2;
+  // }, []);
 
   useEffect(() => {
     if (themeType === "dark") {
-      setMainBg("#000000");
-      setBg1("#030303");
-      setBg2("#0a0a0aff");
+      setMainBg("#0d0d0dff");
+      setBg1("#070707ff");
+      setBg2("#000000ff");
       setBg3("#2f2f2fff");
       setText_clrH("#eeeeee");
       setText_clrM("#aaaaaa");
       setText_clrL("#777777");
+      document.body.style.background = "#0d0d0dff";
+      localStorage.setItem("theme", "dark");
     } else {
       setMainBg("#f2f8ffff");
       setBg1("#eff5ffff");
@@ -45,10 +48,10 @@ export const ThemeProvider = ({ children }) => {
       setText_clrH("#000911ff");
       setText_clrM("#222222ff");
       setText_clrL("#bbbbbbff");
+      document.body.style.background = "#d5dce3ff";
+      localStorage.setItem("theme", "light");
     }
-
-    document.body.style.background = bg2;
-  }, [themeType]);
+  }, [themeType, theme]);
 
   return (
     <Theme.Provider
