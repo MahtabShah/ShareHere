@@ -88,7 +88,7 @@ export const Notification = ({ setVisibleNotification }) => {
     fetch_all_notifications();
   }, []);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1 } = useTheme();
 
   return (
     <>
@@ -100,7 +100,7 @@ export const Notification = ({ setVisibleNotification }) => {
               mobile_break_point ? "4px" : sm_break_point ? "100px" : "265px"
             })`,
             minHeight: "100px",
-            background: mainbg,
+            background: bg1,
             color: text_clrM,
           }}
         >
@@ -111,7 +111,7 @@ export const Notification = ({ setVisibleNotification }) => {
               maxHeight: "80vh",
               // width: "calc(100% - 5px)",
               zIndex: "100",
-              background: mainbg,
+              background: bg1,
               color: text_clrM,
             }}
           >

@@ -547,11 +547,11 @@ const CanvasVibeEditor = () => {
   };
 
   return (
-    <div className="" style={{ background: mainbg }}>
+    <div className="">
       <div className="">
         <div className="pt-0">
           <div className="d-flex">
-            <div className="card border-0" style={{ background: mainbg }}>
+            <div className="card border-0">
               <div
                 className={`position-fixed toolbar-pr ${
                   sm_break_point || mobile_break_point ? "" : "mx-2"
@@ -563,7 +563,7 @@ const CanvasVibeEditor = () => {
                   }`,
                   right: "6px",
                   top: "40px",
-                  background: mainbg,
+                  background: bg1,
                 }}
               >
                 <div>
@@ -1032,12 +1032,12 @@ const CanvasVibeEditor = () => {
                 <div className=" border-0 position-sticky my-2 ms-2">
                   <details
                     className="rounded border-0"
-                    style={{ background: mainbg }}
+                    style={{ background: bg1 }}
                     onClick={preventToggle}
                   >
                     <summary
                       className="d-flex gap-2 mb-1 border-0"
-                      style={{ background: mainbg }}
+                      style={{ background: bg1 }}
                     >
                       <div
                         onClick={(e) => {
@@ -1128,8 +1128,8 @@ const CanvasVibeEditor = () => {
 
             <div
               style={{
-                marginTop: `calc(${detailsOpen ? `157px` : "54px"} + ${
-                  styleOpen ? `95px` : "60px"
+                marginTop: `calc(${detailsOpen ? `160px` : "54px"} + ${
+                  styleOpen ? `96px` : "62px"
                 })`,
                 width: "100%",
               }}
@@ -1286,7 +1286,7 @@ const CanvasVibeEditor = () => {
 
       <div
         className="py-2"
-        style={{ background: mainbg, minWidth: "max-content" }}
+        style={{ background: bg1, minWidth: "max-content" }}
       >
         <>
           <div
@@ -1329,7 +1329,7 @@ const CanvasVibeEditor = () => {
           className={`btn border p-1 ps-2 pe-2 rounded-5 `}
           onClick={() => setActiveBtn3Profile("public")}
           style={{
-            color: activeBtn3Profile === "public" ? bg1 : "",
+            color: activeBtn3Profile === "public" ? bg1 : text_clrM,
             background: activeBtn3Profile === "public" ? text_clrM : "",
           }}
         >
@@ -1341,7 +1341,7 @@ const CanvasVibeEditor = () => {
           }`}
           onClick={() => setActiveBtn3Profile("Follower")}
           style={{
-            color: activeBtn3Profile === "Follower" ? bg1 : "",
+            color: activeBtn3Profile === "Follower" ? bg1 : text_clrM,
             background: activeBtn3Profile === "Follower" ? text_clrM : "",
           }}
         >
@@ -1378,7 +1378,7 @@ const CanvasVibeEditor = () => {
             <div style={{ fontWeight: "bold" }}>
               @{admin_user?.username || "Mahtab"}
             </div>
-            <small style={{ color: "#888" }}>
+            <small style={{ color: text_clrM }}>
               Visibility: {activeBtn3Profile}
             </small>
           </div>
@@ -1392,7 +1392,7 @@ const CanvasVibeEditor = () => {
             className={`form-control rounded-0 shadow-none ps-1 pe-2`}
             placeholder="Write about post here . . ."
             style={{
-              background: mainbg,
+              background: bg1,
               color: text_clrH,
               minHeight: `${text.split("\n").length * 22}px`,
               border: `${error ? "1px solid red" : "0"}`,
@@ -1409,7 +1409,7 @@ const CanvasVibeEditor = () => {
           style={{
             height: "42px",
             border: `1px solid ${"#959595ff"}`,
-            // color: "#ededed",
+            color: text_clrM,
           }}
           disabled={true}
         >

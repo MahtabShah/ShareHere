@@ -31,19 +31,19 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     if (themeType === "dark") {
-      setMainBg("#0d0d0dff");
-      setBg1("#070707ff");
+      setMainBg("#080808ff");
+      setBg1("#050505ff");
       setBg2("#000000ff");
-      setBg3("#2f2f2fff");
+      setBg3("#282828ff");
       setText_clrH("#eeeeee");
       setText_clrM("#aaaaaa");
       setText_clrL("#777777");
       document.body.style.background = "#0d0d0dff";
       localStorage.setItem("theme", "dark");
     } else {
-      setMainBg("#f2f8ffff");
+      setMainBg("#f6fafeff");
       setBg1("#eff5ffff");
-      setBg2("#d5dce3ff");
+      setBg2("#e5ebf1ff");
       setBg3("#b9c1c6ff");
       setText_clrH("#000911ff");
       setText_clrM("#222222ff");

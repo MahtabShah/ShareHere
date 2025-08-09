@@ -1,15 +1,30 @@
 const API = import.meta.env.VITE_API_URL;
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { usePost } from "../context/PostContext";
+import { useEffect } from "react";
+import { useState } from "react";
+import { Loading } from "../../TinyComponent/LazyLoading";
 
 export const CommentSection = ({ post }) => {
   const nevigate = useNavigate();
-  console.log("post 1", post);
+  const { fetch_comments_postId } = usePost();
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const CommentFn = async () => {
+    const postComment = await fetch_comments_postId(post?._id);
+    setComments(postComment);
+    setLoading(false);
+  };
+  useEffect(() => {
+    CommentFn();
+  });
 
   return (
     <>
       <div className=" pb-3">
-        {post?.comments?.length > 0 ? (
-          post?.comments?.map((pc, idx) => {
+        {comments.length > 0 ? (
+          comments?.map((pc, idx) => {
             return (
               <div className="d-flex gap-1 mt-3" key={`idx-post-${idx}`}>
                 <div
@@ -37,7 +52,9 @@ export const CommentSection = ({ post }) => {
             );
           })
         ) : (
-          <p>No comment</p>
+          <div className="px-2">
+            {loading ? <Loading /> : <p>no comment </p>}
+          </div>
         )}
       </div>
     </>

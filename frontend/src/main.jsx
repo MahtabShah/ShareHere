@@ -23,6 +23,7 @@ import "./index.css";
 import { ThemeProvider, useTheme } from "./context/Theme.jsx";
 import { VibeEditorProvider } from "./context/VibeEditorContext.jsx";
 import { TrackPost } from "../TinyComponent/TrackPost.jsx";
+import { PostProvider } from "./context/PostContext.jsx";
 
 const StatusPage = () => {
   const [followings, setFollowings] = useState();
@@ -74,176 +75,178 @@ const Main = () => {
   return (
     <BrowserRouter>
       <QuoteProvider>
-        <VibeEditorProvider>
-          <ThemeProvider>
-            <LeftNavbar />
-            <MainHeader />
+        <PostProvider>
+          <VibeEditorProvider>
+            <ThemeProvider>
+              <LeftNavbar />
+              <MainHeader />
 
-            <Routes>
-              <Route
-                path="/Explore"
-                element={
-                  <div
-                    style={{
-                      marginLeft: `${
-                        mobile_break_point
-                          ? "0px"
-                          : sm_break_point
-                          ? "74px"
-                          : "236px"
-                      }`,
-                    }}
-                  >
-                    <Explore />
-                  </div>
-                }
-              />
-              <Route
-                path="/signup"
-                element={
-                  <div
-                    style={{
-                      marginLeft: `${
-                        mobile_break_point
-                          ? "0px"
-                          : sm_break_point
-                          ? "64px"
-                          : "236px"
-                      }`,
-                    }}
-                  >
-                    <Signup />
-                  </div>
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  <div
-                    style={{
-                      marginLeft: `${
-                        mobile_break_point
-                          ? "0px"
-                          : sm_break_point
-                          ? "64px"
-                          : "236px"
-                      }`,
-                    }}
-                  >
-                    <Login />
-                  </div>
-                }
-              />
-              <Route
-                path="/*"
-                element={
-                  <main
-                    className="p-0 me-0"
-                    style={{
-                      marginLeft: `${
-                        mobile_break_point
-                          ? "0px"
-                          : sm_break_point
-                          ? "74px"
-                          : "236px"
-                      }`,
-                    }}
-                  >
-                    <BottomNav />
+              <Routes>
+                <Route
+                  path="/Explore"
+                  element={
+                    <div
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "74px"
+                            : "236px"
+                        }`,
+                      }}
+                    >
+                      <Explore />
+                    </div>
+                  }
+                />
+                <Route
+                  path="/signup"
+                  element={
+                    <div
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "64px"
+                            : "236px"
+                        }`,
+                      }}
+                    >
+                      <Signup />
+                    </div>
+                  }
+                />
+                <Route
+                  path="/login"
+                  element={
+                    <div
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "64px"
+                            : "236px"
+                        }`,
+                      }}
+                    >
+                      <Login />
+                    </div>
+                  }
+                />
+                <Route
+                  path="/*"
+                  element={
+                    <main
+                      className="p-0 me-0"
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "74px"
+                            : "236px"
+                        }`,
+                      }}
+                    >
+                      <BottomNav />
 
-                    {/* <StatusPage /> */}
-                    <All_Post_Section />
-                  </main>
-                }
-              />
+                      {/* <StatusPage /> */}
+                      <All_Post_Section />
+                    </main>
+                  }
+                />
 
-              <Route
-                path="/home"
-                element={
-                  <main
-                    className={`p-0 ${mobile_break_point ? " mb-5" : "ps-2"}`}
-                    style={{
-                      marginLeft: `${
-                        mobile_break_point
-                          ? "0px"
-                          : sm_break_point
-                          ? "64px"
-                          : "236px"
-                      }`,
-                    }}
-                  >
-                    <BottomNav />
+                <Route
+                  path="/home"
+                  element={
+                    <main
+                      className={`p-0 ${mobile_break_point ? " mb-5" : "ps-2"}`}
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "64px"
+                            : "236px"
+                        }`,
+                      }}
+                    >
+                      <BottomNav />
 
-                    <All_Post_Section />
-                  </main>
-                }
-              />
+                      <All_Post_Section />
+                    </main>
+                  }
+                />
 
-              <Route
-                path="/home/:postId"
-                element={
-                  <main
-                    className={`p-0 ${mobile_break_point ? " mb-5" : "ps-2"}`}
-                    style={{
-                      marginLeft: `${
-                        mobile_break_point
-                          ? "0px"
-                          : sm_break_point
-                          ? "74px"
-                          : "236px"
-                      }`,
-                    }}
-                  >
-                    <BottomNav />
-                    <TrackPost />
-                  </main>
-                }
-              />
-              <Route
-                path="/api/user/:id"
-                element={
-                  <main
-                    className="p-0 "
-                    style={{
-                      marginLeft: `${
-                        mobile_break_point
-                          ? "0px"
-                          : sm_break_point
-                          ? "74px"
-                          : "244px"
-                      }`,
-                    }}
-                  >
-                    <BottomNav />
-                    <UserProfile />
-                  </main>
-                }
-              />
-              <Route
-                path="/api/user/edit/:id"
-                element={
-                  <main
-                    className="p-0"
-                    style={{
-                      marginLeft: `${
-                        mobile_break_point
-                          ? "0px"
-                          : sm_break_point
-                          ? "74px"
-                          : "236px"
-                      }`,
+                <Route
+                  path="/home/:postId"
+                  element={
+                    <main
+                      className={`p-0 ${mobile_break_point ? " mb-5" : "ps-2"}`}
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "74px"
+                            : "236px"
+                        }`,
+                      }}
+                    >
+                      <BottomNav />
+                      <TrackPost />
+                    </main>
+                  }
+                />
+                <Route
+                  path="/api/user/:id"
+                  element={
+                    <main
+                      className="p-0 "
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "74px"
+                            : "244px"
+                        }`,
+                      }}
+                    >
+                      <BottomNav />
+                      <UserProfile />
+                    </main>
+                  }
+                />
+                <Route
+                  path="/api/user/edit/:id"
+                  element={
+                    <main
+                      className="p-0"
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "74px"
+                            : "236px"
+                        }`,
 
-                      marginTop: `${mobile_break_point ? "44px" : "0"}`,
-                    }}
-                  >
-                    <BottomNav />
-                    <EditUserProfile />
-                  </main>
-                }
-              />
-            </Routes>
-          </ThemeProvider>
-        </VibeEditorProvider>
+                        marginTop: `${mobile_break_point ? "44px" : "0"}`,
+                      }}
+                    >
+                      <BottomNav />
+                      <EditUserProfile />
+                    </main>
+                  }
+                />
+              </Routes>
+            </ThemeProvider>
+          </VibeEditorProvider>
+        </PostProvider>
       </QuoteProvider>
     </BrowserRouter>
   );

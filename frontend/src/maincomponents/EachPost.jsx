@@ -135,7 +135,7 @@ export const EachPost = ({ user, comment }) => {
     if (user && user?.followers && admin_user) {
       const isFollower = user?.followers?.includes(admin_user?._id);
 
-      console.log(isFollower);
+      // console.log(isFollower);
       setIs_i_am_follower(isFollower);
       setMode(
         isFollower || admin_user?._id == user?._id ? "public" : comment?.mode
@@ -143,7 +143,7 @@ export const EachPost = ({ user, comment }) => {
     }
   }, [admin_user?.followers]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
 
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
@@ -184,8 +184,14 @@ export const EachPost = ({ user, comment }) => {
     }
   }, [postId]);
 
+  // console.log("eeeeeeeeeeee", comment);
+
   return (
-    <div ref={seenRef} className="">
+    <div
+      ref={seenRef}
+      className=""
+      style={{ borderBottom: `1px solid ${bg3}` }}
+    >
       <div
         className="d-flex flex-column gap-2 position-relative bglight px-2"
         key={comment?._id}
@@ -389,9 +395,9 @@ export const EachPost = ({ user, comment }) => {
             </span>
           </div>
 
-          <small className="pb-1" style={{ color: text_clrM }}>
+          <span className="pb-1" style={{ color: text_clrM, fontSize: "12px" }}>
             {formatNumber(comment?.views || 1)} views
-          </small>
+          </span>
         </div>
       </div>
       {isdotClicked && (
@@ -595,7 +601,8 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
 
   const navigate = useNavigate();
 
-  const handleClick = async () => {
+  const handleClick = async (e) => {
+    e.stopProgation();
     try {
       // Flip follow status locally first
 
@@ -620,7 +627,7 @@ export const FollowBtn = ({ user, cls, style = {} }) => {
   useEffect(() => {
     const isFollowed = user?.followers?.includes(admin_user?._id);
     setIsFollowed(isFollowed);
-    console.log("isfollows", isFollowed);
+    // console.log("isfollows", isFollowed);
   }, [user]);
 
   // if (admin_user?._id === user?._id) return null;

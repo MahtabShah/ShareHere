@@ -27,7 +27,7 @@
 .user-update {
   height: 100vh;
   translate: 0 5px;
-  min-width: max-content;
+  /* min-width: fit-content; */
 }
 
 input::-webkit-outer-spin-button,

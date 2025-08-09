@@ -31,7 +31,7 @@ const SuggetionSlip = () => {
             </div>
           )}
 
-          <p className="m-0 small">Suggest For You</p>
+          <p className="my-3 pb-2 small">Suggest For You</p>
 
           {all_user?.length > 0 && (
             <div className="d-flex flex-column gap-3 mt-2">
@@ -79,7 +79,7 @@ export const SuggetionSlipInPost = () => {
     .filter((u) => !u?.followers?.includes(admin_user?.id))
     .slice(rn, rn + 5);
 
-  console.log(all_user, admin_user?._id);
+  // console.log(all_user, admin_user?._id);
 
   return (
     <>

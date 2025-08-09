@@ -97,7 +97,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
-              background: mainbg,
+              background: bg1,
             }}
           >
             {ref} Search Your Quote Here
@@ -123,12 +123,12 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
-              background: mainbg,
+              background: bg1,
             }}
           >
             {ref} All Notifications
           </h5>
-          <div style={{ marginTop: "40px" }}>
+          <div style={{ marginTop: "40px", background: bg1 }}>
             <Notification setVisibleNotification={setVisibleNotification} />{" "}
           </div>
         </>
@@ -145,7 +145,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
-              background: mainbg,
+              background: bg1,
             }}
           >
             {ref} Upload Your Thought Here
@@ -335,7 +335,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 </Nav.Link>
               </li>
 
-              <li className="nav-item ">
+              {/* <li className="nav-item ">
                 <Nav.Link
                   className={`nav-link d-flex align-items-center gap-3 fs-6 ${
                     activeIndex == "Search" ? "active" : ""
@@ -365,7 +365,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                     Search
                   </span>
                 </Nav.Link>
-              </li>
+              </li> */}
 
               {loggedIn && admin_user?._id ? (
                 <>

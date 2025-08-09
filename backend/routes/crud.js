@@ -92,21 +92,18 @@ router.get("/user_status/:userId", async (req, res) => {
   }
 });
 
-router.get("/each_post_comments", async (req, res) => {
-  const postId = req.query.postId;
-  console.log("postID", postId)
+router.get("/comments/:postId", async (req, res) => {
+  const postId = req.params.postId;
   try {
 
     const all_sentences = await Sentence.findById(postId)
-      .populate({
-        path: "comments",
-        populate: {
-          path: "userId",
-        },
-      })
-      .sort({ createdAt: -1 }); // optional: newest posts first
+      .populate("comments") // first populate Comment IDs into objects
+  .populate({
+    path: "comments",
+    populate: { path: "userId", model: "User" }
+  }).sort({ createdAt: -1 }); // optional: newest posts first
 
-    res.status(200).json(all_sentences);
+    res.status(200).send(all_sentences.comments);
   } catch (error) {
     console.error("Error in /each_post_comments:", error);
     res.status(500).json({ message: "Server Error", error });
@@ -128,7 +125,6 @@ const userId = req.params.userId;
     res.status(500).json({ message: "Server Error", error });
   }
 });
-
 
 
 

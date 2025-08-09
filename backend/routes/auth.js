@@ -89,25 +89,46 @@ router.get("/home" , async (req, res)=>{
 
 router.get("/all_sentence", async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit) || 5; // default 10
+    const limit = parseInt(req.query.limit) || 2; // default 10
     const page = parseInt(req.query.page) || 0;
 
-    const all_posts = await Sentence.find()
+    const posts = await Sentence.find()
       .sort({ createdAt: -1 }) // newest first
-      .skip(page * limit)
+      .skip(limit * page)
       .limit(limit)
-      .populate({
-        path: "comments",
-        populate: { path: "userId", model: "User" },
-      });
+      .populate("comments")
+      .populate(
+    {
+      path: "comments",
+      populate: { path: "userId", model: "User" },
+    }
+  );
 
-    res.json(all_posts);
+    res.json(posts);
   } catch (error) {
     console.error("Error fetching sentences:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
+
+router.get("/all_post/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const posts = await Sentence.find({ userId }) // find all posts for that user
+      .sort({ createdAt: -1 }) // newest first
+      .populate({
+        path: "comments",
+        populate: { path: "userId", model: "User" },
+      });
+
+    res.json(posts);
+  } catch (error) {
+    console.error("Error fetching sentences:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 
@@ -176,7 +197,7 @@ router.put("/like_this_post", verifyToken ,async (req, res) => {
     }
 
 
-    io.emit('sentence', post.toObject());
+    io.emit('sentence' , post);
     io.emit('Notification');
     console.log("notification - -- - - - -" , newNotification)
     res.json(post);
@@ -226,10 +247,10 @@ router.put("/set_comment_this_post", verifyToken ,async (req, res) => {
         populate: { path: "userId", model: "User" },
       })
 
-    io.emit('sentence', populatedPost.toObject());
+    io.emit('sentence', populatedPost);
     io.emit('Notification');
 
-    res.json(populatedPost);
+    res.send(populatedPost);
 
   } catch (error) {
     console.error("error in set_comment_this_post:", error);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +10,7 @@ import { EachPost } from "./EachPost";
 import { FollowBtn } from "./EachPost";
 import { useTheme } from "../context/Theme";
 import { UserRing } from "./EachPost";
+import { usePost } from "../context/PostContext";
 const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   const nevigate = useNavigate();
@@ -24,25 +25,34 @@ const UserProfile = ({}) => {
     setActiveIndex,
     openSlidWin,
   } = useQuote();
-  // setUser(User);
-  // setUser(User);
+  const [user_post, setUser_post] = useState([]);
+  const { fetch_posts_by_user } = usePost();
+
   const user = all_user?.find((u) => u?._id === id);
   // fetchUser();
   const [LazyLoading, setLazyLoading] = useState(true); // to track which button is animating
 
-  const user_post = all_posts.filter((el) => el.userId === id);
+  const func = async () => {
+    const userpost = await fetch_posts_by_user(id);
+    // console.log("user ", userpost);
+    setUser_post(userpost);
+  };
+
+  useEffect(() => {
+    func();
+  }, [id]);
+
+  console.log(user_post);
+
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
 
   const FollowerPost = user_post?.filter((p) => p.mode == "Follower");
   const PaidPost = user_post?.filter((p) => p.mode == "Paid");
   const PublicPost = user_post?.filter((p) => p.mode == "public");
 
-  console.log("user ", user?.followers);
-
   // console.log("KKKK", all_posts);
 
   const [followMSG, setfollowMSG] = useState(false);
-
   const [mode, setMode] = useState();
 
   const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
@@ -75,6 +85,24 @@ const UserProfile = ({}) => {
     }
   }, [option]);
 
+  const outRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (outRef.current && !outRef.current.contains(event.target)) {
+        setOption(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside); // For mobile
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       <div
@@ -82,7 +110,7 @@ const UserProfile = ({}) => {
         style={{
           paddingTop: `50px`,
           background: bg2,
-          maxWidth: "1200px",
+          // maxWidth: "1200px",
           margin: "auto",
         }}
       >
@@ -340,7 +368,7 @@ const UserProfile = ({}) => {
           }
         </div>
 
-        {all_posts ? (
+        {user_post ? (
           followMSG && (
             <div
               className="position-fixed shadow-lg border d-flex flex-column justify-content-center align-items-center gap-3 p-4 bg-white rounded"
@@ -381,7 +409,7 @@ const UserProfile = ({}) => {
 
       {option && (
         <div
-          className="position-absolute m-2 d-flex flex-column overflow-auto none-scroller rounded bg-dark border p-2"
+          className="position-absolute m-2 d-flex flex-column overflow-auto none-scroller rounded border p-2"
           style={{
             top: "100px",
             maxHeight: "calc(100% - 110px)",
@@ -396,9 +424,10 @@ const UserProfile = ({}) => {
             right: `${lgbreakPoint ? "200px" : "0"}`,
 
             maxWidth: "500px",
-
+            background: bg2,
             color: text_clrM,
           }}
+          ref={outRef}
         >
           <div className="d-flex justify-content-between align-items-center">
             <div>{option} list</div>
@@ -413,13 +442,23 @@ const UserProfile = ({}) => {
           </div>
 
           <div className="d-flex flex-column gap-3 mt-3 overflow-y-auto none-scroller">
-            <div className="d-flex flex-column gap-2">
+            <div
+              className="d-flex flex-column gap-2"
+              style={{ background: bg2 }}
+            >
               {user?.[option]?.map((user) => (
                 <div
                   key={user.username}
                   className="d-flex align-items-center gap-4 pb-3 rounded"
                 >
-                  <UserRing user={user} style={{}} dm={52} />
+                  <span
+                    className="w-100"
+                    onClick={() => {
+                      setOption(false);
+                    }}
+                  >
+                    <UserRing user={user} dm={52} />
+                  </span>
                   <div>
                     <FollowBtn
                       user={user}

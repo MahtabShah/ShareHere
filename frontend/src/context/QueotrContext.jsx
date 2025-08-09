@@ -1,6 +1,6 @@
 // Quote Context.js
 import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import axios, { all } from "axios";
 const QuoteContext = createContext();
 const API = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
@@ -48,8 +48,8 @@ export const QuoteProvider = ({ children }) => {
   const [curr_all_notifications, setcurr_all_notifications] = useState([]);
   const [all_user, setall_user] = useState([]);
   const [VisibleNotification, setVisibleNotification] = useState(false);
-  const limit = 50; // how many items per page
-  const [page, setPage] = useState(0);
+  const limit = 2; // how many items per page
+  let page = 1;
   const token = localStorage.getItem("token");
 
   const fetch_admin_user = async () => {
@@ -110,46 +110,6 @@ export const QuoteProvider = ({ children }) => {
     setAll_post_loading(false);
   };
 
-  const fetch_all_posts = async () => {
-    setLoading(true);
-    setAll_post_loading(true);
-
-    try {
-      const res = await axios.get(`${API}/api/auth/all_sentence`, {
-        params: { page, limit },
-      });
-      res.data?.length === 0
-        ? ""
-        : set_all_posts((prev) => [...prev, ...res.data]);
-      setPage((prev) => prev + 1); // Increment page for next fetch
-      return res.data;
-    } catch (err) {
-      console.log("Failed to fetch your sentences see err", err);
-      setErrors(err);
-    } finally {
-      setAll_post_loading(false);
-    }
-  };
-
-  let curr_page = 0;
-
-  const fetch_n_posts = async () => {
-    try {
-      const res = await axios.get(
-        `${API}/api/auth/all_sentence?_limit=5&_page=${curr_page}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      // setLoading(false);
-      curr_page++;
-      res.data?.length === 0 ? "" : set_all_posts(res.data);
-    } catch (err) {
-      console.log("Failed to fetch your sentences see err", err);
-      setErrors(err);
-    }
-  };
-
   const fetch_all_notifications = async () => {
     try {
       if (token) {
@@ -199,7 +159,6 @@ export const QuoteProvider = ({ children }) => {
       fetch_admin_user();
     }
     fetch_all_users();
-    fetch_all_posts();
   }, []);
 
   const [style, setStyle] = useState({
@@ -247,31 +206,6 @@ export const QuoteProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const handleNewOrUpdatedSentence = (sentence) => {
-      set_all_posts((prevPosts) => {
-        const index = prevPosts.findIndex((p) => p?._id === sentence?._id);
-
-        if (index !== -1) {
-          const updatedPosts = [...prevPosts];
-          updatedPosts[index] = {
-            ...updatedPosts[index], // keep old data like `user`
-            ...sentence, // overwrite updated fields
-          };
-          return updatedPosts;
-        } else {
-          return [...prevPosts, sentence];
-        }
-      });
-    };
-
-    socket.on("sentence", handleNewOrUpdatedSentence);
-
-    return () => {
-      socket.off("sentence", handleNewOrUpdatedSentence);
-    };
-  }, []);
-
-  useEffect(() => {
     const handleUserUpdate = (updatedUser) => {
       setall_user((prevUsers) =>
         prevUsers.map((user) =>
@@ -281,7 +215,6 @@ export const QuoteProvider = ({ children }) => {
     };
 
     socket.on("userUpdated", handleUserUpdate);
-    socket.on("update", fetch_all_posts);
     socket.on("status", () => {
       fetch_user_statuses();
       fetch_admin_user();
@@ -291,25 +224,9 @@ export const QuoteProvider = ({ children }) => {
     return () => {
       socket.off("userUpdated", handleUserUpdate);
       socket.off("Notification", fetch_all_notifications);
-      socket.off("update", fetch_all_posts);
       socket.off("status", fetch_user_statuses);
     };
   }, []);
-
-  useEffect(() => {
-    if (!hasSorted && all_posts?.length > 0) {
-      const sorted = all_posts
-        .map((post) => ({
-          ...post,
-          rank: Rank_Calculation(post),
-        }))
-        .sort((a, b) => b.rank - a.rank);
-
-      set_all_posts(sorted);
-      setHasSorted(true);
-      // console.log("Deep cloned & sorted posts:", sorted);
-    }
-  }, [all_posts, hasSorted]);
 
   useEffect(() => {
     // setInterval(async () => {
@@ -337,7 +254,6 @@ export const QuoteProvider = ({ children }) => {
         setSelectedUserId,
         fetch_user_statuses,
         fetch_all_notifications,
-        fetch_all_posts,
         fetch_all_users,
         setall_statuses,
         HandleShare,
@@ -349,6 +265,9 @@ export const QuoteProvider = ({ children }) => {
         openSlidWin,
         setopenSlidWin,
         activeIndex,
+        limit,
+        page,
+        set_all_posts,
         setActiveIndex,
         setUploadClicked,
         uploadClicked,
