@@ -70,6 +70,36 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  const fetch_user_by_Id = async (id) => {
+    try {
+      if (id) {
+        const res = await axios.get(`${API}/api/crud/get_userbyId/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data?.length !== 0) {
+          return res.data;
+        }
+      }
+    } catch (err) {
+      console.log("Failed to fetch admin see err in console 34 context", err);
+    }
+  };
+
+  const fetch_post_by_Id = async (id) => {
+    try {
+      if (id) {
+        const res = await axios.get(`${API}/api/crud/post_id/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.data?.length !== 0) {
+          return res.data;
+        }
+      }
+    } catch (err) {
+      console.log("Failed to fetch admin see err in console 34 context", err);
+    }
+  };
+
   // Initial load
   useEffect(() => {
     fetch_n_posts(limit, 0).then((data) => {
@@ -89,7 +119,7 @@ export const PostProvider = ({ children }) => {
 
   useEffect(() => {
     const handleSentence = (data) => {
-      console.log("Received new sentence:", data);
+      // console.log("Received new sentence:", data);
       // You can update state here
       setPosts((prev) => {
         const index = prev.findIndex((post) => post._id === data._id);
@@ -117,15 +147,17 @@ export const PostProvider = ({ children }) => {
     <PostContext.Provider
       value={{
         posts,
+        page,
         post_loading,
         setPost_loading,
-        page,
         setPosts,
         setPage,
         fetch_n_posts,
         limit,
         fetch_posts_by_user,
         fetch_comments_postId,
+        fetch_user_by_Id,
+        fetch_post_by_Id,
       }}
     >
       {children}

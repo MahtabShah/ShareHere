@@ -9,12 +9,12 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { clamp } from "lodash";
 import { useTheme } from "../src/context/Theme";
+import { usePost } from "../src/context/PostContext";
 dayjs.extend(relativeTime);
 
 const API = import.meta.env.VITE_API_URL;
 
 export const Notification = ({ setVisibleNotification }) => {
-  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [user, setUser] = useState(null);
@@ -24,12 +24,21 @@ export const Notification = ({ setVisibleNotification }) => {
 
   const {
     curr_all_notifications,
-    admin_user,
-    fetch_all_notifications,
     mobile_break_point,
+    token,
     sm_break_point,
     setopenSlidWin,
   } = useQuote();
+
+  const [comments, setComments] = useState(post?.comments || []); // store comments here
+  const { fetch_comments_postId, fetch_post_by_Id } = usePost();
+
+  const CommentFn = async (id) => {
+    const postComment = await fetch_comments_postId(id);
+    const Fetchpost = await fetch_post_by_Id(id);
+    setPost(Fetchpost);
+    setComments(postComment);
+  };
 
   const go_to_comment = async (postId, userId) => {
     // navigate(`/home?postId=${post}`);
@@ -37,19 +46,8 @@ export const Notification = ({ setVisibleNotification }) => {
     setLazyLoading(true);
 
     console.log("postId", postId);
-    try {
-      const res = await axios.get(
-        `${API}/api/crud/each_post_comments`,
 
-        { params: { postId }, headers: { Authorization: `Bearer ${token}` } }
-      );
-      // setLoading(false);
-      setPost(res?.data);
-      console.log("al  comment of ach post---->res ", res?.data?.userId);
-      // setcurr_all_notifications(res.data);
-    } catch (error) {
-      console.log("erriorrr in notify", error);
-    }
+    CommentFn(postId);
 
     // console.log(post, userId);
     try {
@@ -70,7 +68,7 @@ export const Notification = ({ setVisibleNotification }) => {
     setLazyLoading(false);
   };
 
-  console.log(curr_all_notifications);
+  // console.log(curr_all_notifications);
   const Track_post = (postId) => {
     const target = document.getElementById(postId);
 
@@ -84,11 +82,8 @@ export const Notification = ({ setVisibleNotification }) => {
     setVisibleNotification(false);
   };
 
-  useEffect(() => {
-    fetch_all_notifications();
-  }, []);
-
   const { text_clrH, text_clrL, text_clrM, mainbg, bg1 } = useTheme();
+  console.log("----->", post);
 
   return (
     <>
@@ -112,7 +107,7 @@ export const Notification = ({ setVisibleNotification }) => {
               // width: "calc(100% - 5px)",
               zIndex: "100",
               background: bg1,
-              color: text_clrM,
+              color: text_clrH,
             }}
           >
             {/* <i className="fa-solid fa-arrow-left"></i> */}
@@ -123,10 +118,10 @@ export const Notification = ({ setVisibleNotification }) => {
               <div className="">
                 <div
                   className="p-1 d-flex gap-3 justify-content-between"
-                  style={{ background: mainbg, color: text_clrM }}
+                  style={{ background: bg1, color: text_clrM }}
                 >
                   <>
-                    <div className="flex-grow-1 w-100 ps-2">
+                    <div className="flex-grow-1 w-100">
                       {post?.text.split(" ").slice(0, 40).join(" ")} . . .
                     </div>
                     <div
@@ -141,15 +136,14 @@ export const Notification = ({ setVisibleNotification }) => {
                     </div>
                   </>
                 </div>
-                <div className="w-100 border">
-                  <section
-                    className="ps-3"
-                    style={{
-                      background: "#ddf",
-                      borderTop: "1px solid #bbd",
-                    }}
-                  >
-                    <CommentSection post={post} />
+                <div className="w-100">
+                  <section className="">
+                    <CommentSection
+                      postId={post?._id}
+                      comments={comments}
+                      setComments={setComments}
+                      user={user}
+                    />
                   </section>
                 </div>
               </div>
@@ -204,10 +198,14 @@ export const Notification = ({ setVisibleNotification }) => {
                     )}
 
                     {n?.type === "comment" && (
-                      <div className="commentNotify" key={`cmnt${idx}`}>
+                      <div
+                        className="commentNotify"
+                        key={`cmnt${idx}`}
+                        style={{ background: bg1 }}
+                      >
                         <div className="d-flex gap-2">
                           <div
-                            className="dpPhoto rounded-circle d-flex align-items-center justify-content-center border"
+                            className="dpPhoto rounded-circle d-flex align-items-center justify-content-center"
                             style={{
                               maxWidth: "37px",
                               minWidth: "37px",
@@ -271,6 +269,7 @@ export const Notification = ({ setVisibleNotification }) => {
                             }}
                             onClick={() => {
                               navigate(`/api/user/${n?.sender?._id}`);
+                              setopenSlidWin(false);
                             }}
                           >
                             {n?.sender?.profile_pic && (
@@ -289,9 +288,6 @@ export const Notification = ({ setVisibleNotification }) => {
                             <span
                               className="fw-medium d-block on-hover-userid"
                               onClick={() => {
-                                // setPostId(n?.comment?.postId);
-                                // go_to_comment(n?.comment?.postId);
-                                // console.log("liek-----", n.comment);
                                 Track_post(n?.post);
                                 setopenSlidWin(false);
                               }}

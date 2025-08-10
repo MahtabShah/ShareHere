@@ -17,7 +17,6 @@ const UserProfile = ({}) => {
   const { id } = useParams();
   const {
     admin_user,
-    all_posts,
     all_user,
     mobile_break_point,
     sm_break_point,
@@ -29,20 +28,18 @@ const UserProfile = ({}) => {
   const { fetch_posts_by_user } = usePost();
 
   const user = all_user?.find((u) => u?._id === id);
-  // fetchUser();
   const [LazyLoading, setLazyLoading] = useState(true); // to track which button is animating
 
   const func = async () => {
     const userpost = await fetch_posts_by_user(id);
-    // console.log("user ", userpost);
     setUser_post(userpost);
   };
 
   useEffect(() => {
     func();
-  }, [id]);
+  }, []);
 
-  console.log(user_post);
+  // console.log(user_post);
 
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
 
@@ -55,7 +52,7 @@ const UserProfile = ({}) => {
   const [followMSG, setfollowMSG] = useState(false);
   const [mode, setMode] = useState();
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
+  const { text_clrH, text_clrM, bg1, bg2 } = useTheme();
 
   useEffect(() => {
     if (user && user?.followers && admin_user) {
@@ -102,6 +99,23 @@ const UserProfile = ({}) => {
       document.removeEventListener("touchstart", handleClickOutside);
     };
   }, []);
+
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  // Fetch followers
+
+  const fetchFollowerFollowing = () => {
+    axios.get(`${API}/api/crud/${id}/followers?page=1&limit=10`).then((res) => {
+      console.log(res.data.followers);
+      setFollowers(res.data.followers);
+    });
+
+    // Fetch following
+    axios.get(`${API}/api/crud/${id}/following?page=1&limit=10`).then((res) => {
+      console.log(res.data.following);
+      setFollowing(res.data.following);
+    });
+  };
 
   return (
     <>
@@ -156,8 +170,9 @@ const UserProfile = ({}) => {
               {id !== admin_user?._id && (
                 <>
                   <FollowBtn
-                    user={user}
-                    cls={"btn btn-outline-dark btn-sm ps-2 pe-2"}
+                    id={id}
+                    cls={"btn btn-sm ps-2 pe-2"}
+                    style={{ background: text_clrM, color: bg1 }}
                   />
                 </>
               )}
@@ -233,6 +248,7 @@ const UserProfile = ({}) => {
                   className="text-center small"
                   onClick={() => {
                     setOption("followers");
+                    fetchFollowerFollowing();
                   }}
                   style={{ cursor: "pointer" }}
                 >
@@ -243,6 +259,7 @@ const UserProfile = ({}) => {
                   className="text-center small"
                   onClick={() => {
                     setOption("following");
+                    fetchFollowerFollowing();
                   }}
                   style={{ cursor: "pointer" }}
                 >
@@ -268,7 +285,7 @@ const UserProfile = ({}) => {
 
             <div>
               <span style={{ color: text_clrH }}>
-                {admin_user?.followers?.length}
+                {user?.followers?.length}
               </span>{" "}
               <span> followers</span>
             </div>
@@ -333,11 +350,9 @@ const UserProfile = ({}) => {
                   {activeBtn3Profile == "public" &&
                     PublicPost?.map((ps, idx) => {
                       return (
-                        <>
-                          <Fragment key={idx}>
-                            <EachPost user={user} comment={ps} />
-                          </Fragment>
-                        </>
+                        <Fragment key={idx}>
+                          <EachPost user={user} comment={ps} />
+                        </Fragment>
                       );
                     })}
 
@@ -397,7 +412,10 @@ const UserProfile = ({}) => {
               </small>
 
               {/* Follow Button */}
-              <FollowBtn user={user} cls="btn btn-primary rounded-pill px-4" />
+              <FollowBtn
+                id={user?._id}
+                cls="btn btn-primary rounded-pill px-4"
+              />
             </div>
           )
         ) : (
@@ -446,28 +464,53 @@ const UserProfile = ({}) => {
               className="d-flex flex-column gap-2"
               style={{ background: bg2 }}
             >
-              {user?.[option]?.map((user) => (
-                <div
-                  key={user.username}
-                  className="d-flex align-items-center gap-4 pb-3 rounded"
-                >
-                  <span
-                    className="w-100"
-                    onClick={() => {
-                      setOption(false);
-                    }}
+              {option == "followers" &&
+                followers?.map((user, idx) => (
+                  <div
+                    key={`${user}${idx}`}
+                    className="d-flex align-items-center gap-4 pb-3 rounded"
                   >
-                    <UserRing user={user} dm={52} />
-                  </span>
-                  <div>
-                    <FollowBtn
-                      user={user}
-                      cls={"text-primary rounded-1 border p-1 ps-3 pe-3"}
-                      style={{ cursor: "pointer" }}
-                    />
+                    <span
+                      className="w-100"
+                      onClick={() => {
+                        setOption(false);
+                      }}
+                    >
+                      <UserRing user={user} dm={52} />
+                    </span>
+                    <div>
+                      <FollowBtn
+                        user={user}
+                        cls={"text-primary rounded-1 border p-1 ps-3 pe-3"}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+
+              {option == "following" &&
+                following?.map((user, idx) => (
+                  <div
+                    key={`${user}${idx}`}
+                    className="d-flex align-items-center gap-4 pb-3 rounded"
+                  >
+                    <span
+                      className="w-100"
+                      onClick={() => {
+                        setOption(false);
+                      }}
+                    >
+                      <UserRing user={user} dm={52} />
+                    </span>
+                    <div>
+                      <FollowBtn
+                        id={user?._id}
+                        cls={"text-primary rounded-1 border p-1 ps-3 pe-3"}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </div>
+                  </div>
+                ))}
             </div>
           </div>
 

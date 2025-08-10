@@ -8,55 +8,53 @@ import { SearchBaar } from "./SearchBaar";
 import SuggetionSlip from "../src/maincomponents/NewUserUpdate";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../src/context/Theme";
+import { usePost } from "../src/context/PostContext";
 
 export const TrackPost = () => {
   const { postId } = useParams();
-  const {
-    all_posts,
-    all_user,
-    all_post_loading,
-    mobile_break_point,
-    setActiveIndex,
-    lgbreakPoint,
-  } = useQuote();
+  const { all_user, all_post_loading, setActiveIndex, lgbreakPoint } =
+    useQuote();
   const [user, setUser] = useState(null);
   const [post, setPost] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const nevigate = useNavigate();
-  const [loading, setLoading] = useState(true);
 
-  const fetch_user_post = async () => {
+  const { fetch_post_by_Id, fetch_user_by_Id } = usePost();
+
+  const CommentFn = async (id) => {
+    setError("");
+
     setLoading(true);
-
-    const u_post = all_posts?.filter((p) => p._id == postId);
-    const u_user = all_user?.filter((u) => u._id == u_post?.[0]?.userId);
-
-    console.log("userId ", u_post, u_user);
-
-    if (u_post?.length > 0 && u_user) {
-      setUser(u_user[0]);
-      setPost(u_post[0]);
-      setLoading(false);
-      setError("");
-    } else {
-      setLoading(false);
-      setError("Connection issue or Invalid request , Try Again");
+    const Fetchpost = await fetch_post_by_Id(id);
+    const FetchUser = await fetch_user_by_Id(Fetchpost?.userId);
+    if (!FetchUser || !Fetchpost) {
+      setTimeout(() => {
+        setLoading(false);
+        setError("No vibe for this route");
+      }, 1000);
     }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    setPost(Fetchpost);
+    setUser(FetchUser);
+    console.log(post);
   };
 
   useEffect(() => {
-    if (all_posts?.length > 0 && all_user?.length > 0) {
-      fetch_user_post();
-      setActiveIndex("");
-    }
-  }, [postId, all_posts, all_user]);
+    CommentFn(postId);
+    setActiveIndex("");
+  }, [postId]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
 
   return (
     <>
       <div className="none-scroller" style={{ marginTop: "56px" }}>
-        {all_post_loading && (
+        {loading && (
           <div
             className="text-danger w-100 d-flex justify-content-center align-items-center fs-5 text-center"
             style={{ color: "red" }}
@@ -73,7 +71,9 @@ export const TrackPost = () => {
             <div className="d-flex gap-2">
               <button
                 className="btn btn-danger pe-4 ps-4 ms-3"
-                onClick={fetch_user_post}
+                onClick={() => {
+                  CommentFn(postId);
+                }}
               >
                 Try again
               </button>
@@ -86,7 +86,7 @@ export const TrackPost = () => {
         )}
 
         <div
-          className="d-flex mt-2  align-items-start rounded  overflow-auto  justify-content-center"
+          className="d-flex mt-2  align-items-start rounded  justify-content-center"
           style={{
             gap: "104px",
             marginBottom: "80px",
@@ -144,7 +144,12 @@ export const TrackPost = () => {
           {lgbreakPoint && (
             <div
               className=""
-              style={{ marginTop: "64px", position: "sticky", top: 0 }}
+              style={{
+                marginTop: "0px",
+                position: "sticky",
+                top: "64px",
+                width: "340px",
+              }}
             >
               <SuggetionSlip />
             </div>

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Sentence} = require('../models/Sentence');
+const {Sentence , Comment} = require('../models/Sentence');
 const Status = require("../models/Status");
 const User = require("../models/User")
 const jwt = require('jsonwebtoken');
@@ -66,12 +66,28 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
   }
 });
 
+// 686e092731c47733a033aa51
 
-router.get('/fix-sentences', async (req, res) => {
+router.get("/fix-sentences", async (req, res) => {
   try {
-    const result = await Sentence.updateMany(
-      {views: {$exists: false}},
-      {$set: {views:  1}}
+    const result = await Comment.updateMany(
+      { dislikes: { $exists: false } }, // only docs missing the field
+      { $set: { dislikes: [] } } // set to an empty array
+    );
+    res.json({ message: "Reports field added to comments without it", result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update comments" });
+  }
+});
+
+
+router.get('/user_update/:user_id', async (req, res) => {
+  const id = req.params.user_id;
+  try {
+    const result = await User.updateMany(
+      {followers: {$exists: true}},
+      {$set: {followers:  []}}
     );
     res.json({ message: 'Sentences updated', result });
   } catch (err) {

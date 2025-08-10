@@ -74,7 +74,7 @@ router.post('/login', async (req, res) => {
 
 
 router.get("/home" , async (req, res)=>{
-      const users = await User.find().populate("following").populate("followers").lean();;
+      const users = await User.find();
 
   //  console.log("all user want ot fetching 58: auth,js routes", users);
 
@@ -118,12 +118,13 @@ router.get("/all_post/:id", async (req, res) => {
 
     const posts = await Sentence.find({ userId }) // find all posts for that user
       .sort({ createdAt: -1 }) // newest first
+      .populate("comments")
       .populate({
         path: "comments",
         populate: { path: "userId", model: "User" },
       });
 
-    res.json(posts);
+    res.send(posts);
   } catch (error) {
     console.error("Error fetching sentences:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -137,7 +138,7 @@ router.get("/all_post_comments" , async (req, res)=>{
     const all_sentence = await Sentence.find().populate({
     path: 'comments',
     populate: { path: 'userId', model: 'User' }
-  })
+  }).sort({ createdAt: -1 }) // newest first
 
   //  console.log("all user want ot fetching 58: auth,js routes", all_sentence);
 
@@ -165,16 +166,20 @@ router.put("/like_this_post", verifyToken ,async (req, res) => {
 
     let post = await Sentence.findById(id); // no populate yet
 
+
     const isliked = post.likes.includes(useriid)
     isliked ? post.likes.pop(useriid) : post.likes.push(useriid)
     await post.save();
 
+    console.log(post)
+
+
     // ✅ Re-fetch with populate after saving
-    post = await Sentence.findById(id)
-      .populate({
-        path: "comments",
-        populate: { path: "userId", model: "User" },
-      })
+    // post = await Sentence.findById(id)
+      // .populate({
+      //   path: "comments",
+      //   populate: { path: "userId", model: "User" },
+      // })
 
    const newNotification = new Notification({
       recipient: post.userId,
@@ -223,6 +228,7 @@ router.put("/set_comment_this_post", verifyToken ,async (req, res) => {
       text: new_comment,
       userId: useriid,
       postId: id,
+      createdAt:Date.now()
     });
 
     await update_new_comment.save();

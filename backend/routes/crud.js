@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const {Sentence} = require('../models/Sentence');
+const {Sentence, Comment} = require('../models/Sentence');
 const Notification = require("../models/Notification")
 const User = require("../models/User")
 const Status = require("../models/Status")
@@ -18,12 +18,9 @@ const mongoose = require("mongoose");
 router.get('/crud', verifyToken,  async (req, res) => {
  
   const userId = req.user.userId || req.user.id;
-  // console.log("backend response 16 crud" ,userId)
-
 
   try {
-    const user = await User.findById({_id:userId}).populate("following").populate("followers")
-    // console.log("aaaaaaaaaaaaaaaaaaaaaa---> ", req.user, user)
+    const user = await User.findById({_id:userId});
     res.json(user)
   } catch (err) {
     console.error('Error deleting sentence:', err);
@@ -116,13 +113,88 @@ const userId = req.params.userId;
   console.log("userId", userId)
   try {
 
-    const user = await User.findById(userId)
+    const user = await User.findById(userId).populate("following").populate("followers")
     
 
     res.status(200).json(user);
   } catch (error) {
     console.error("Error in /each_post_comments:", error);
     res.status(500).json({ message: "Server Error", error });
+  }
+});
+
+router.get("/post_id/:id", async (req, res) => {
+const id = req.params.id;
+  console.log("userId", id)
+  try {
+
+    const post = await Sentence.findById(id);
+    
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error in /each_post_comments:", error);
+    res.status(500).json({ message: "Server Error", error });
+  }
+});
+
+
+router.get("/:id/followers", async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const userId = req.params.id;
+
+    const user = await User.findById(userId)
+      .populate({
+        path: "followers",
+        select: "_id name username bio profile_pic ", // fields to send
+        options: {
+          skip: (page - 1) * limit,
+          limit: parseInt(limit),
+        },
+      }).populate("followers")
+      .select("followers");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      followers: user.followers,
+      page: parseInt(page),
+      limit: parseInt(limit),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+router.get("/:id/following", async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const userId = req.params.id;
+
+    const user = await User.findById(userId)
+      .populate({
+        path: "following",
+        select: "_id name username bio profile_pic",
+        options: {
+          skip: (page - 1) * limit,
+          limit: parseInt(limit),
+        },
+      })
+      .select("following");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      following: user.following,
+      page: parseInt(page),
+      limit: parseInt(limit),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -190,6 +262,45 @@ router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
   }
 });
 
+router.delete("/:commentId", verifyToken, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    if (comment.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized to delete this comment" });
+    }
+
+    await Comment.findByIdAndDelete(req.params.commentId);
+    res.json({ message: "Comment deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+router.post("/report/:commentId", verifyToken, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    if (comment.reports.includes(req.user.id)) {
+      return res.status(400).json({ message: "You already reported this comment" });
+    }
+
+    comment.reports.push(req.user.id);
+    await comment.save();
+
+    res.json({ message: "Comment reported" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
 
 router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   const { id } = req.body;
@@ -199,7 +310,7 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   try {
   const user_a = await User.findById(id); // post owener
   const user_b = await User.findById(userId); // curr user
-  console.log("user b -" ,  user_b)
+  // console.log("user b -" ,  user_b)
 
   const isFollowed = user_a.followers.includes(userId);
 
@@ -211,12 +322,12 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   })
 
 
-  console.log("new notifications - - - -- - - - -->" , newNotification)
+  // console.log("new notifications - - - -- - - - -->" , newNotification)
 
   if (isFollowed) {
     user_a.followers.pop(user_b._id)
     user_b.following.pop(user_a._id)
-    await Notification.deleteOne({
+    await Notification.deleteMany({
          type: "follow",
          sender:  user_b._id,
          recipient:user_a._id,
@@ -344,6 +455,56 @@ router.put("/set_status_seen/:id",async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+
+router.put("/like/:commentId", verifyToken, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    const userId = req.user.id;
+    const isLiked = comment.likes.includes(userId);
+
+    if (isLiked) {
+      comment.likes = comment.likes.filter(id => id.toString() !== userId);
+    } else {
+      comment.likes.push(userId);
+    }
+
+    await comment.save();
+    res.json({ message: isLiked ? "Unliked" : "Liked", likes: comment.likes });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.put("/dislike/:commentId", verifyToken, async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    const userId = req.user.id;
+    const hasLiked = comment.likes.includes(userId);
+    const hasDisliked = comment.dislikes.includes(userId);
+
+    if (hasDisliked) {
+      comment.dislikes = comment.dislikes.filter(id => id.toString() !== userId);
+    } else {
+      comment.dislikes.push(userId);
+      if (hasLiked) {
+        comment.likes = comment.likes.filter(id => id.toString() !== userId);
+      }
+    }
+
+    await comment.save();
+    res.json({ likes: comment.likes, dislikes: comment.dislikes });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
 

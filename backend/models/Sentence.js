@@ -41,8 +41,14 @@ const commentSchema = new mongoose.Schema({
   text: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Sentence' },
-  likes: { type: Number , default:0}
-});
+  reports: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] ,// 👎
+  createdAt:{
+    type: Date,
+    default: Date.now()
+  }
+}, {timestamps: true});
 
 const Comment = mongoose.model('Comment', commentSchema);
 const Sentence = mongoose.model('Sentence', sentenceSchema);

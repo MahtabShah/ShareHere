@@ -4,8 +4,6 @@ import { UserRing, FollowBtn } from "./EachPost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "../context/Theme";
 
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { random } from "lodash";
 const SuggetionSlip = () => {
   const { all_user, admin_user, lgbreakPoint } = useQuote();
   const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
@@ -49,11 +47,14 @@ const SuggetionSlip = () => {
                           <UserRing user={user} style={{}} dm={52} />
                           <div>
                             <FollowBtn
-                              user={user}
+                              id={user?._id}
                               cls={
-                                "text-primary rounded-1 border p-1 ps-3 pe-3"
+                                "btn btn-outline-primary text-center rounded-1 p-1 ps-3 pe-3"
                               }
-                              style={{ cursor: "pointer" }}
+                              style={{
+                                cursor: "pointer",
+                                width: "104px",
+                              }}
                             />
                           </div>
                         </div>
@@ -69,17 +70,23 @@ const SuggetionSlip = () => {
 };
 
 export const SuggetionSlipInPost = () => {
-  const { all_user, sm_break_point, mobile_break_point, admin_user } =
-    useQuote();
-
+  const { all_user, admin_user, token } = useQuote();
+  const [some_user, setsome_user] = useState(null);
   const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
 
-  const rn = Math.floor(Math.random() * (all_user.length - 5) || 0);
-  const some_user = all_user
-    .filter((u) => !u?.followers?.includes(admin_user?.id))
-    .slice(rn, rn + 5);
+  useEffect(() => {
+    const rn = Math.floor(Math.random() * (all_user.length - 5) || 0);
+
+    const some_u = all_user
+      .filter((u) => !u?.followers?.includes(admin_user?.id))
+      .slice(rn, rn + 5);
+
+    setsome_user(some_u);
+  }, [token]);
 
   // console.log(all_user, admin_user?._id);
+
+  console.log(some_user);
 
   return (
     <>
@@ -118,8 +125,8 @@ export const SuggetionSlipInPost = () => {
                   @{u.username.slice(0, 10)}
                 </small>
                 <FollowBtn
-                  user={u}
-                  cls={"text-primary small "}
+                  id={u?._id}
+                  cls={"text-primary small"}
                   style={{ cursor: "pointer" }}
                 />
               </small>

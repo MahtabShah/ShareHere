@@ -65,21 +65,6 @@ export const QuoteProvider = ({ children }) => {
     }
   };
 
-  const fetch_user_byId = async (id) => {
-    try {
-      if (id) {
-        const res = await axios.get(`${API}/api/crud/get_userbyId/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.data?.length !== 0) {
-          return res.data;
-        }
-      }
-    } catch (err) {
-      console.log("Failed to fetch admin see err in console 34 context", err);
-    }
-  };
-
   const fetch_user_statuses = async () => {
     try {
       if (token) {
@@ -116,7 +101,7 @@ export const QuoteProvider = ({ children }) => {
         const res = await axios.get(`${API}/api/crud/all_notifications`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("setcurr_all_notifications---->", res.data);
+        // console.log("setcurr_all_notifications---->", res.data);
         setcurr_all_notifications(res.data);
       }
     } catch (error) {
@@ -157,6 +142,7 @@ export const QuoteProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       fetch_admin_user();
+      fetch_all_notifications();
     }
     fetch_all_users();
   }, []);
@@ -207,6 +193,7 @@ export const QuoteProvider = ({ children }) => {
 
   useEffect(() => {
     const handleUserUpdate = (updatedUser) => {
+      console.log("updatedUser", updatedUser);
       setall_user((prevUsers) =>
         prevUsers.map((user) =>
           user?._id === updatedUser?._id ? updatedUser : user
@@ -260,7 +247,7 @@ export const QuoteProvider = ({ children }) => {
         setStatusClicked,
         curr_all_notifications,
         fetch_all_notifications,
-        fetch_user_byId,
+
         setLoading,
         openSlidWin,
         setopenSlidWin,

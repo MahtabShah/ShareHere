@@ -31,7 +31,7 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     if (themeType === "dark") {
-      setMainBg("#080808ff");
+      setMainBg("#0c0c0cff");
       setBg1("#050505ff");
       setBg2("#000000ff");
       setBg3("#282828ff");
@@ -43,7 +43,7 @@ export const ThemeProvider = ({ children }) => {
     } else {
       setMainBg("#f6fafeff");
       setBg1("#eff5ffff");
-      setBg2("#e5ebf1ff");
+      setBg2("#dfe4e9ff");
       setBg3("#b9c1c6ff");
       setText_clrH("#000911ff");
       setText_clrM("#222222ff");
