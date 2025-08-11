@@ -17,6 +17,7 @@ const UserProfile = ({}) => {
   const { id } = useParams();
   const {
     admin_user,
+    token,
     all_user,
     mobile_break_point,
     sm_break_point,
@@ -37,7 +38,7 @@ const UserProfile = ({}) => {
 
   useEffect(() => {
     func();
-  }, []);
+  }, [token, admin_user, id]);
 
   // console.log(user_post);
 
@@ -69,7 +70,7 @@ const UserProfile = ({}) => {
     if (!openSlidWin) {
       setActiveIndex("User");
     }
-  }, [openSlidWin]);
+  }, [openSlidWin, token, admin_user]);
 
   const [ProfilePicVisble, setProfilePicVisble] = useState(false);
   const [option, setOption] = useState(null);
@@ -427,9 +428,9 @@ const UserProfile = ({}) => {
 
       {option && (
         <div
-          className="position-absolute m-2 d-flex flex-column overflow-auto none-scroller rounded border p-2"
+          className="position-fixed m-2 d-flex flex-column overflow-auto none-scroller rounded border p-2"
           style={{
-            top: "100px",
+            top: "120px",
             maxHeight: "calc(100% - 110px)",
             width: `${
               mobile_break_point

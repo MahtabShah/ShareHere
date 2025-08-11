@@ -55,7 +55,7 @@ const Signup = ({}) => {
           backdropFilter: "blur(30px)",
         }}
       >
-        <div className="card-body py-5 px-md-5">
+        <div className="card-body py-4 px-md-5">
           <div className="row d-flex justify-content-center">
             <div className="col-lg-8">
               <h2 className="fw-bold mb-">Sign up now</h2>
@@ -118,7 +118,7 @@ const Signup = ({}) => {
                   </div>
                   <button
                     type="submit"
-                    className="btn btn-outline-success  btn-block mb-5 rounded-0 ps-3 pe-3"
+                    className="btn btn-outline-success  btn-block mb-2 rounded-0 ps-3 pe-3"
                   >
                     {signupLoading ? (
                       <Loading dm={24} clr="light" />

@@ -199,6 +199,36 @@ router.get("/:id/following", async (req, res) => {
 });
 
 
+// GET /posts?search=keyword
+// GET /posts?search=keyword&page=1&limit=10
+router.get("/search", async (req, res) => {
+  try {
+    const search = req.query.search || "";
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const query = search
+      ? { text: { $regex: search, $options: "i" } }
+      : {};
+
+    const posts = await Sentence.find(query).populate("userId")
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total = await Sentence.countDocuments(query);
+
+    res.json({
+      posts,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 
 
 router.delete('/del_status', verifyToken ,async (req, res) => {
@@ -281,8 +311,10 @@ router.delete("/:commentId", verifyToken, async (req, res) => {
 
 
 router.post("/report/:commentId", verifyToken, async (req, res) => {
+  console.log("ic" , req.params.commentId)
   try {
     const comment = await Comment.findById(req.params.commentId);
+
     if (!comment) return res.status(404).json({ message: "Comment not found" });
 
     if (comment.reports.includes(req.user.id)) {
@@ -325,8 +357,14 @@ router.put('/crud_follow_post', verifyToken,  async (req, res) => {
   // console.log("new notifications - - - -- - - - -->" , newNotification)
 
   if (isFollowed) {
-    user_a.followers.pop(user_b._id)
-    user_b.following.pop(user_a._id)
+   user_a.followers = user_a.followers.filter(
+   id => id.toString() !== user_b._id.toString()
+   );
+
+   user_b.following = user_b.following.filter(
+    id => id.toString() !== user_a._id.toString()
+   );
+
     await Notification.deleteMany({
          type: "follow",
          sender:  user_b._id,

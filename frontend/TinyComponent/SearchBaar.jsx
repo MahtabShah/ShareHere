@@ -5,15 +5,38 @@ import { FollowBtn } from "../src/maincomponents/EachPost";
 import { CardPost } from "../src/maincomponents/Home";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../src/context/Theme";
+import axios from "axios";
 
 export const SearchBaar = () => {
   const [query, setQuery] = useState("");
   const [Filterd_result, setFilterd_result] = useState([]);
-  const [Filterd_posts, setFilterd_posts] = useState([]);
-  const { all_user, all_posts, admin_user, setopenSlidWin } = useQuote();
+  const { all_user, admin_user, setopenSlidWin, API } = useQuote();
   const nevigate = useNavigate();
 
-  // const [search_text, setSearch_text] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [Filterd_posts, setFilterd_posts] = useState([]);
+  const [pages, setPages] = useState(1);
+
+  // Fetch posts from backend (search by title only)
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const { data } = await axios.get(
+          `${API}/api/crud/search?search=${query}&page=${page}&limit=${limit}`
+        );
+        setFilterd_posts(data.posts);
+        setPages(data.pages);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+      }
+    };
+    if (query.trim()) {
+      fetchPosts();
+    } else {
+      setFilterd_posts([]);
+    }
+  }, [query, page, limit, API]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -23,18 +46,16 @@ export const SearchBaar = () => {
 
   const filter_users = (all_user, query) => {
     if (!query) return [];
-
     return all_user
       .filter((user) =>
         user.username.toLowerCase().includes(query.toLowerCase())
       )
       .sort((a, b) => {
-        // Sort by index of match (lower index = better match)
         const indexA = a.username.toLowerCase().indexOf(query.toLowerCase());
         const indexB = b.username.toLowerCase().indexOf(query.toLowerCase());
         return indexA - indexB;
       })
-      .slice(0, 3); // Return only top 3 matches
+      .slice(0, 3);
   };
 
   useEffect(() => {
@@ -42,65 +63,35 @@ export const SearchBaar = () => {
     setFilterd_result(f_res);
   }, [query, all_user]);
 
-  const filter_posts = (all_posts, query) => {
-    if (!query) return [];
-
-    return all_posts
-      .filter((post) => post.text.toLowerCase().includes(query.toLowerCase()))
-      .sort((a, b) => {
-        // Sort by index of match (lower index = better match)
-        const indexA = a.text.toLowerCase().indexOf(query.toLowerCase());
-        const indexB = b.text.toLowerCase().indexOf(query.toLowerCase());
-        return indexA - indexB;
-      })
-      .slice(0, 3); // Return only top 3 matches
-  };
-
   const [isTouched, setIsTouched] = useState(false);
   const elementRef = useRef(null);
 
   useEffect(() => {
-    const f_res = filter_posts(all_posts, query);
-    setFilterd_posts(f_res);
-    setIsTouched(f_res.length > 0 || Filterd_result.length > 0);
-  }, [query]);
+    setIsTouched(Filterd_posts.length > 0 || Filterd_result.length > 0);
+  }, [Filterd_posts, Filterd_result]);
 
   const handleTouchOutside = (event) => {
     if (elementRef.current && !elementRef.current.contains(event.target)) {
-      setIsTouched(false); // touched outside
+      setIsTouched(false);
     } else {
-      setIsTouched(true); // touched inside
+      setIsTouched(true);
     }
   };
 
   useEffect(() => {
     document.addEventListener("touchstart", handleTouchOutside);
-    document.addEventListener("mousedown", handleTouchOutside); // for mouse click
-
+    document.addEventListener("mousedown", handleTouchOutside);
     return () => {
       document.removeEventListener("touchstart", handleTouchOutside);
       document.removeEventListener("mousedown", handleTouchOutside);
     };
   }, []);
 
-  // SearchBaar.jsx
-
-  const trend = [
-    "Motivational",
-    "Parents",
-    "Study",
-    "Funney",
-    "Dosti",
-    "Life Changing",
-    "Sigma",
-    "Willone",
-  ];
-
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
+  const { text_clrH, text_clrM, bg1, bg3 } = useTheme();
 
   return (
     <div className="" ref={elementRef}>
-      <div className=" p-0 m-0 h-100">
+      <div className="p-0 m-0 h-100">
         <form onSubmit={handleSearch} className="input-group rounded-5 bg-none">
           <input
             type="text"
@@ -112,7 +103,10 @@ export const SearchBaar = () => {
               color: text_clrM,
               border: `1px solid ${bg3}`,
             }}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(1); // reset page when typing
+            }}
           />
         </form>
       </div>
@@ -162,10 +156,11 @@ export const SearchBaar = () => {
                 fontStyle: "italic",
               }}
             >
-              {" "}
               Result for {query}
             </div>
           </div>
+
+          {/* User results */}
           <div className="d-flex flex-column gap-4 p-2">
             {Filterd_result?.map(
               (res, idx) =>
@@ -184,6 +179,7 @@ export const SearchBaar = () => {
             )}
           </div>
 
+          {/* Post results */}
           <div className="d-flex flex-column gap-4 p-2 position-relative">
             {Filterd_posts?.map((res, idx) => (
               <div
@@ -196,9 +192,10 @@ export const SearchBaar = () => {
                 <div className="d-flex gap-3 align-items-start">
                   <div className="mt-">
                     <UserRing
-                      user={all_user?.filter((u) => u._id == res?.userId)[0]}
+                      user={
+                        all_user?.filter((u) => u._id === res?.userId?._id)[0]
+                      }
                       onlyphoto={true}
-                      style={{}}
                     />
                   </div>
                   <small
@@ -211,10 +208,9 @@ export const SearchBaar = () => {
                       overflow: "hidden",
                     }}
                   >
-                    {res.text}
+                    {res.text} {/* showing post title */}
                   </small>
                   <div
-                    className=""
                     onClick={() => {
                       setopenSlidWin(false);
                       setQuery("");
@@ -232,6 +228,29 @@ export const SearchBaar = () => {
                 </div>
               </div>
             ))}
+
+            {/* Pagination buttons */}
+            {pages > 1 && (
+              <div className="d-flex justify-content-between mt-3">
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                  disabled={page === 1}
+                >
+                  Prev
+                </button>
+                <span>
+                  Page {page} of {pages}
+                </span>
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => setPage((p) => Math.min(p + 1, pages))}
+                  disabled={page === pages}
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

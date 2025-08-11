@@ -36,8 +36,8 @@ export const ThemeProvider = ({ children }) => {
       setBg2("#000000ff");
       setBg3("#282828ff");
       setText_clrH("#eeeeee");
-      setText_clrM("#aaaaaa");
-      setText_clrL("#777777");
+      setText_clrM("#c3c2c2ff");
+      setText_clrL("#9b9b9bff");
       document.body.style.background = "#0d0d0dff";
       localStorage.setItem("theme", "dark");
     } else {

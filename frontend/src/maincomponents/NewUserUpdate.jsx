@@ -78,7 +78,7 @@ export const SuggetionSlipInPost = () => {
     const rn = Math.floor(Math.random() * (all_user.length - 5) || 0);
 
     const some_u = all_user
-      .filter((u) => !u?.followers?.includes(admin_user?.id))
+      .filter((u) => !u?.followers?.includes(admin_user?._id))
       .slice(rn, rn + 5);
 
     setsome_user(some_u);

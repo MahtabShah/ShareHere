@@ -124,7 +124,7 @@ export const EachPost = ({ user, comment }) => {
 
   useEffect(() => {
     CommentFn(postId);
-  }, []);
+  }, [postId]);
 
   return (
     <div ref={seenRef} style={{ borderBottom: `1px solid ${bg3}` }}>

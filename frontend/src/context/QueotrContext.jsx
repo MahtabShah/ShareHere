@@ -44,7 +44,6 @@ export const QuoteProvider = ({ children }) => {
   const [uploadClicked, setUploadClicked] = useState(false);
   const [all_post_loading, setAll_post_loading] = useState(false);
   const [Errors, setErrors] = useState(null);
-  const [hasSorted, setHasSorted] = useState(false);
   const [curr_all_notifications, setcurr_all_notifications] = useState([]);
   const [all_user, setall_user] = useState([]);
   const [VisibleNotification, setVisibleNotification] = useState(false);
@@ -285,31 +284,3 @@ export const QuoteProvider = ({ children }) => {
     </QuoteContext.Provider>
   );
 };
-
-function Rank_Calculation(post) {
-  if (!post) return 0;
-
-  const now = dayjs();
-  const createdAt = dayjs(post?.createdAt);
-  const ageInHours = now.diff(createdAt, "minute") || 1; // prevent divide by 0
-
-  const likes = post?.likes?.length || 0;
-  const comments = post?.comments?.length || 0;
-  const followers = post?.followers?.length || 1;
-  const following = post?.following?.length || 1;
-  // const isFollowed = post?.followers?.includes(u=>u._id == admin_user?._id) || 1;
-
-  // Engagement Score
-  const engagement = likes * 3 + comments * 7; // comment > like
-
-  // Network influence
-  const influence = Math.log10(followers + 2) / Math.log10(following + 2); // avoid division explosion
-
-  // Recency Bonus: newer posts get higher weight
-  const recencyFactor = 3600 / ageInHours; // decay over 1 day
-
-  // Final rank formula (tunable)
-  const rank = engagement * recencyFactor * influence;
-
-  return Math.round(rank * (Math.random() * 100 + 1) * 100) / 100; // round to 2 decimal places
-}

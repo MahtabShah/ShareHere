@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
 
     // Check if username or email already exists
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    const existingUser = await User.findOne({ $and: [{ username }, { email }] });
     if (existingUser) {
       return res.status(400).json({ message: 'Username or email already exists' });
     }
@@ -62,7 +62,7 @@ router.post('/login', async (req, res) => {
 
     // Create JWT token
     const payload = { userId: user._id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1y' });
 
     res.json({ token });
   } catch (error) {

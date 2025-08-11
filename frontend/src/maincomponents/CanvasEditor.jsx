@@ -508,7 +508,12 @@ const CanvasVibeEditor = () => {
       if (ready_url) {
         const res = await axios.post(
           `${API}/api/sentence/post`,
-          { ready_url: ready_url, text: text, mode: activeBtn3Profile },
+          {
+            ready_url: ready_url,
+            text: text,
+            mode: activeBtn3Profile,
+            id: admin_user?._id,
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,

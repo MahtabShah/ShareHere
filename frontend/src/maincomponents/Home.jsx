@@ -21,7 +21,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
   const { bg3, text_clrH, text_clrL } = useTheme();
   const { API, token, admin_user } = useQuote();
 
-  console.log(comments);
+  // console.log(comments);
 
   const CommentFn = async () => {
     setLoading(true);
@@ -42,11 +42,21 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
   };
 
   const handleReport = async (commentId) => {
+    console.log("ic", commentId);
     try {
-      await axios.post(`${API}/api/crud/report/${commentId}`);
+      await axios.post(
+        `${API}/api/crud/report/${commentId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       alert("Comment reported");
     } catch (err) {
       console.error("Report failed:", err);
+      alert("Failed to report");
     }
   };
 

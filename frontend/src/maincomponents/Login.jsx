@@ -21,6 +21,7 @@ const Login = ({}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setsignupLoading(true);
     try {
       const res = await axios.post(`${API}/api/auth/login`, formData);
       // alert("Login successful! Token: " + res.data.token);
@@ -32,6 +33,8 @@ const Login = ({}) => {
       window.location.reload();
     } catch (err) {
       alert("Login failed: " + err.response?.data?.message || err.message);
+    } finally {
+      setsignupLoading(false);
     }
   };
 
@@ -39,7 +42,7 @@ const Login = ({}) => {
     <>
       <section className="text-center">
         <div
-          className="p-5 bg-image"
+          className="p-4 bg-image"
           style={{
             backgroundImage:
               "url('https://mdbootstrap.com/img/new/textures/full/171.jpg')",
@@ -57,7 +60,7 @@ const Login = ({}) => {
           <div className="card-body py-5 px-md-5">
             <div className="row d-flex justify-content-center">
               <div className="col-lg-8">
-                <h2 className="fw-bold mb-5">Login now</h2>
+                <h2 className="fw-bold mb-3">Login now</h2>
                 <form onSubmit={handleSubmit} className="">
                   <div className="form-outline mb-4 d-flex flex-column">
                     <label className="form-label text-start" htmlFor="email">
@@ -73,7 +76,7 @@ const Login = ({}) => {
                     />
                   </div>
 
-                  <div className="form-outline mb-4 d-flex flex-column">
+                  <div className="form-outline mb-2 d-flex flex-column">
                     <label className="form-label text-start" htmlFor="password">
                       Password
                     </label>
@@ -101,7 +104,7 @@ const Login = ({}) => {
                     </div>
                     <button
                       type="submit"
-                      className="btn btn-success btn-block mb-5 rounded-0 ps-3 pe-3"
+                      className="btn btn-success btn-block mb-2 rounded-0 ps-3 pe-3"
                     >
                       {signupLoading ? (
                         <Loading dm={24} clr="light" />

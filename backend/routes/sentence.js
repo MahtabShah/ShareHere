@@ -18,23 +18,20 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
   try {
 
     // const files = req.files;
-    const {ready_url , text , mode} = req.body;
-    const userId = req.user.id;
-
-
+    const {ready_url , text , mode , id} = req.body;
 
     // Now save sentence to DB
     const newSentence = new Sentence({
       text: text,
       // image_text: req.body.image_text,
       images:[ready_url],
-      userId:userId,
+      userId:id,
       mode: mode,
       createdAt: Date.now()
       // pages: finalPages,
     });
 
-    console.log("new post at 53 - - - -- - - --->" , newSentence)
+    console.log("new post at 53 - - - -- - - --->" , newSentence , id)
     await newSentence.save();
   io.emit('sentence', newSentence.toObject());
 
@@ -70,9 +67,10 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get("/fix-sentences", async (req, res) => {
   try {
-    const result = await Comment.updateMany(
-      { dislikes: { $exists: false } }, // only docs missing the field
-      { $set: { dislikes: [] } } // set to an empty array
+    const result = await Sentence.deleteMany(
+      { userId: { $exists: false } }, // only docs missing the field
+      { userId: null }, 
+      { userId: "" }, 
     );
     res.json({ message: "Reports field added to comments without it", result });
   } catch (err) {
