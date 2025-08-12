@@ -24,7 +24,12 @@ import {
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { FaStrikethrough, FaFont, FaTextHeight } from "react-icons/fa";
+import {
+  FaStrikethrough,
+  FaFont,
+  FaTextHeight,
+  FaArrowsAltH,
+} from "react-icons/fa";
 
 const pre_bg_color = [
   "#A294F9",
@@ -500,6 +505,7 @@ const CanvasVibeEditor = () => {
     }
 
     setLazyLoading(true);
+    setActiveId(null);
 
     try {
       const ready_url = await handleCapture();
@@ -732,6 +738,9 @@ const CanvasVibeEditor = () => {
                         <div
                           className="d-flex gap-2 btn-tool overflow-x-auto none-scroller"
                           style={{ minWidth: "max-content" }}
+                          onClick={() => {
+                            setStyleOpen(true);
+                          }}
                         >
                           <div
                             className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
@@ -942,7 +951,7 @@ const CanvasVibeEditor = () => {
                           </div>
                         </div> */}
 
-                        <button
+                        {/* <button
                           className="props-btn fw-medium toolbar-button flex-grow-1"
                           style={{
                             border: `1px solid ${"#ededed"}`,
@@ -956,7 +965,7 @@ const CanvasVibeEditor = () => {
                           }}
                         >
                           &nbsp; reset bg&nbsp;
-                        </button>
+                        </button> */}
 
                         <button
                           className="btn props-btn toolbar-button"
@@ -1097,6 +1106,7 @@ const CanvasVibeEditor = () => {
                             color: text_clrH,
                             border: `1px solid ${text_clrH}`,
                             minHeight: "80px",
+                            fontSize: "10px",
                           }}
                           placeholder="Click Add Text and then write Here !"
                           spellCheck={false}
@@ -1148,7 +1158,6 @@ const CanvasVibeEditor = () => {
                   position: "relative",
                   overflow: "hidden",
                   maxWidth: "601px",
-
                   margin: "auto",
                 }}
               >
@@ -1163,11 +1172,11 @@ const CanvasVibeEditor = () => {
                       zIndex: el.zIndex,
                       border:
                         activeId === el.id
-                          ? "2px dashed #0d6efd"
+                          ? "2px dashed #ff0101ff"
                           : "2px solid transparent",
                       boxShadow:
                         activeId === el.id
-                          ? "0 0 10px rgba(13, 110, 253, 0.5)"
+                          ? "0 0 10px rgba(255, 255, 255, 0.73)"
                           : "none",
                       cursor: activeElement ? "move" : "",
                     }}
@@ -1212,19 +1221,31 @@ const CanvasVibeEditor = () => {
                           </button>
 
                           <div
-                            className="position-absolute bottom-0 end-0 bg-primary rounded-circle"
+                            className="position-absolute"
                             style={{
-                              width: "12px",
-                              height: "12px",
+                              width: "24px",
+                              height: "24px",
                               cursor: "nwse-resize",
+                              rotate: "45deg",
+                              bottom: "-12px",
+                              right: "-12px",
                             }}
-                          ></div>
+                          >
+                            <FaArrowsAltH
+                              className="position-absolute"
+                              style={{
+                                top: "2px",
+                                left: "1px",
+                              }}
+                              size={20}
+                            />
+                          </div>
                         </>
                       )}
 
                       {el.type === "text" ? (
                         <div
-                          className="text-element overflow-hidden outline-none w-100 h-100 none-scroller p-2"
+                          className="text-element w-100 overflow-hidden outline-none w-100 h-100 none-scroller p-2"
                           style={{
                             fontSize: `${el.fontSize}px`,
                             color: el.color,
@@ -1394,7 +1415,7 @@ const CanvasVibeEditor = () => {
             onChange={(e) => {
               handleInput(0, e, "text");
             }}
-            className={`form-control rounded-0 shadow-none ps-1 pe-2`}
+            className={`form-control rounded-0 h-100 shadow-none ps-1 pe-2 overflow-auto none-scroller`}
             placeholder="Write about post here . . ."
             style={{
               background: bg1,
