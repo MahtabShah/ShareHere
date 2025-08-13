@@ -12,7 +12,7 @@ import SuggetionSlip, {
 import { useTheme } from "./context/Theme";
 import { usePost, Rank_Calculation } from "./context/PostContext";
 
-function All_Post_Section({ posts, category, title }) {
+function All_Post_Section({ posts, category }) {
   const [loading, setLoading] = useState(false);
 
   const {
@@ -78,19 +78,19 @@ function All_Post_Section({ posts, category, title }) {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [page, fetch_n_posts, limit, setPosts, setPage, loading]);
+  }, [page, fetch_n_posts, limit, setPosts, loading]);
 
   useEffect(() => {
     const fetchPost = async () => {
       setAll_post_loading(true);
       const data = await fetch_n_posts(limit, 0, category);
-      setPage(() => 0);
       setPosts(data);
+      setPage(1); // move to next page
       setAll_post_loading(false);
     };
 
     fetchPost();
-  }, [category, title]);
+  }, [category]);
 
   // Merge posts with user info
   const visible_post = useMemo(() => {

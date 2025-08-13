@@ -11,14 +11,14 @@ export const VibeTabs = () => {
 
   const categories = [
     { key: "all", title: "All", content: posts },
-    { key: "motivational", title: "Motivational", content: posts },
     { key: "quotes", title: "Quotes", content: posts },
     { key: "shayari", title: "Shayari", content: posts },
     { key: "fun", title: "Fun", content: posts },
+    { key: "sad", title: "Sad", content: posts },
     { key: "love", title: "Love", content: posts },
     { key: "life", title: "Life", content: posts },
+    { key: "motivational", title: "Motivational", content: posts },
     { key: "friendship", title: "Friendship", content: posts },
-    { key: "sad", title: "Sad", content: posts },
   ];
 
   return (

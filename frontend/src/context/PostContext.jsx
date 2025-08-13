@@ -100,22 +100,7 @@ export const PostProvider = ({ children }) => {
     }
   };
 
-  // Initial load
-  useEffect(() => {
-    fetch_n_posts(limit, 0, "all").then((data) => {
-      if (data?.length > 0) {
-        const sorted = data
-          .map((post) => ({
-            ...post,
-            rank: Rank_Calculation(post),
-          }))
-          .sort((a, b) => b.rank - a.rank);
-
-        setPosts(sorted);
-        setPage((prev) => prev + 1); // after first load
-      }
-    });
-  }, []);
+  // Initial loa
 
   useEffect(() => {
     const handleSentence = (data) => {

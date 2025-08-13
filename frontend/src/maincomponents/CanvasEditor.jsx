@@ -282,13 +282,13 @@ const backgroundSize = [
 
 const categories = [
   { key: "all", title: "All" },
-  { key: "motivational", title: "Motivational" },
   { key: "quotes", title: "Quotes" },
   { key: "shayari", title: "Shayari" },
   { key: "fun", title: "Fun" },
+  { key: "sad", title: "Sad" },
   { key: "life", title: "Life" },
   { key: "friendship", title: "Friendship" },
-  { key: "sad", title: "Sad" },
+  { key: "motivational", title: "Motivational" },
 ];
 
 import { useTheme } from "../context/Theme";
@@ -1449,8 +1449,8 @@ const CanvasVibeEditor = () => {
       <div className="vibeTabs">
         <Accordion defaultActiveKey="0">
           <Accordion.Item>
-            <Accordion.Header>Select Category</Accordion.Header>
-            <Accordion.Body>
+            <Accordion.Header className="">Select Category</Accordion.Header>
+            <Accordion.Body style={{ background: bg1 }}>
               <Tabs
                 id="controlled-tab-example"
                 activeKey={category}

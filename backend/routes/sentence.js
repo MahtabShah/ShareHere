@@ -68,9 +68,9 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get("/fix-sentences", async (req, res) => {
   try {
-    const result = await Sentence.updateMany(
+    const result = await Sentence.updateOne(
       {categry:{$exists: true}},
-      {$set:{category :"all"}}
+      {$set:{category :"motivational"}}
     );
     res.json({ message: "Reports field added to comments without it", result });
   } catch (err) {
