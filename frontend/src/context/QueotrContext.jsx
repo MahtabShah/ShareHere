@@ -277,6 +277,7 @@ export const QuoteProvider = ({ children }) => {
         token,
         sorted_posts,
         setVisibleNotification,
+        setAll_post_loading,
         VisibleNotification,
       }}
     >

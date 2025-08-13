@@ -12,7 +12,7 @@ import SuggetionSlip, {
 import { useTheme } from "./context/Theme";
 import { usePost, Rank_Calculation } from "./context/PostContext";
 
-function All_Post_Section() {
+function All_Post_Section({ posts, category, title }) {
   const [loading, setLoading] = useState(false);
 
   const {
@@ -23,13 +23,14 @@ function All_Post_Section() {
     lgbreakPoint,
     openSlidWin,
     setActiveIndex,
+    setAll_post_loading,
   } = useQuote();
 
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const postId = params.get("postId");
 
-  const { limit, posts, page, setPage, fetch_n_posts, setPosts } = usePost();
+  const { limit, page, setPage, fetch_n_posts, setPosts } = usePost();
 
   // Scroll into postId if available
   useEffect(() => {
@@ -55,8 +56,9 @@ function All_Post_Section() {
         const currentPage = page;
         console.log("Fetching page:", currentPage);
 
-        const data = await fetch_n_posts(limit, currentPage);
-        console.log("dost", data);
+        const data = await fetch_n_posts(limit, currentPage, category);
+        setPage((prev) => prev + 1); // move to next page
+
         if (data?.length > 0) {
           const sorted = data
             .map((post) => ({
@@ -66,7 +68,6 @@ function All_Post_Section() {
             .sort((a, b) => b.rank - a.rank);
 
           setPosts((prev) => [...prev, ...sorted]);
-          setPage((prev) => prev + 1); // move to next page
         }
 
         setTimeout(() => {
@@ -79,6 +80,18 @@ function All_Post_Section() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [page, fetch_n_posts, limit, setPosts, setPage, loading]);
 
+  useEffect(() => {
+    const fetchPost = async () => {
+      setAll_post_loading(true);
+      const data = await fetch_n_posts(limit, 0, category);
+      setPage(() => 0);
+      setPosts(data);
+      setAll_post_loading(false);
+    };
+
+    fetchPost();
+  }, [category, title]);
+
   // Merge posts with user info
   const visible_post = useMemo(() => {
     if (!posts || !all_user) return [];
@@ -90,7 +103,6 @@ function All_Post_Section() {
   }, [posts, all_user]);
 
   const rn = 3;
-  const { bg2, text_clrL, bg1, bg3 } = useTheme();
 
   useEffect(() => {
     if (!openSlidWin) {
@@ -100,12 +112,11 @@ function All_Post_Section() {
 
   return (
     <div
-      className="position-relative pt-3 mb-5"
+      className="position-relative mb-5"
       style={{
         zIndex: 10,
         maxWidth: "100%",
-        marginTop: "48px",
-        background: bg2,
+        // background: bg2,
         minHeight: "100vh",
       }}
     >

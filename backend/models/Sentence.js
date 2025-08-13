@@ -16,6 +16,12 @@ const sentenceSchema = new mongoose.Schema({
     },
   ],
 
+  category:{
+    type:String,
+    default:"all",
+
+  },
+
   views: { type: Number, default: 0 },
 
   likes:[{

@@ -18,7 +18,7 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
   try {
 
     // const files = req.files;
-    const {ready_url , text , mode , id} = req.body;
+    const {ready_url , text , mode , id , category} = req.body;
 
     // Now save sentence to DB
     const newSentence = new Sentence({
@@ -27,7 +27,8 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
       images:[ready_url],
       userId:id,
       mode: mode,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      category:category,
       // pages: finalPages,
     });
 
@@ -67,10 +68,9 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get("/fix-sentences", async (req, res) => {
   try {
-    const result = await Sentence.deleteMany(
-      { userId: { $exists: false } }, // only docs missing the field
-      { userId: null }, 
-      { userId: "" }, 
+    const result = await Sentence.updateMany(
+      {categry:{$exists: true}},
+      {$set:{category :"all"}}
     );
     res.json({ message: "Reports field added to comments without it", result });
   } catch (err) {

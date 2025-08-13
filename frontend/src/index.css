@@ -113,3 +113,21 @@ textarea::placeholder {
   border: 1px solid #242424;
   border-radius: 3px;
 }
+
+/* ---------------------------------------- Vibe Tabs ---------------------------------------------- */
+
+.vibeTabs .nav-tabs .nav-link {
+  padding: 4px 1rem;
+  border-radius: 5px;
+  background: var(--bg1);
+  color: var(--tc1);
+}
+
+.vibeTabs .nav-tabs .nav-link.active {
+  background: var(--tc1) !important;
+  color: var(--bg1);
+}
+
+.accordion-button {
+  padding: 12px !important;
+}

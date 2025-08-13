@@ -24,6 +24,7 @@ import { ThemeProvider, useTheme } from "./context/Theme.jsx";
 import { VibeEditorProvider } from "./context/VibeEditorContext.jsx";
 import { TrackPost } from "../TinyComponent/TrackPost.jsx";
 import { PostProvider } from "./context/PostContext.jsx";
+import { VibeTabs } from "./maincomponents/VibeTabs.jsx";
 
 const StatusPage = () => {
   const [followings, setFollowings] = useState();
@@ -147,14 +148,15 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "236px"
+                            : "248px"
                         }`,
                       }}
                     >
                       <BottomNav />
 
                       {/* <StatusPage /> */}
-                      <All_Post_Section />
+                      {/* <All_Post_Section /> */}
+                      <VibeTabs />
                     </main>
                   }
                 />
@@ -170,13 +172,14 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "64px"
-                            : "236px"
+                            : "248px"
                         }`,
                       }}
                     >
                       <BottomNav />
+                      <VibeTabs />
 
-                      <All_Post_Section />
+                      {/* <All_Post_Section /> */}
                     </main>
                   }
                 />

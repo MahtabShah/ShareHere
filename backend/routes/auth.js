@@ -91,8 +91,9 @@ router.get("/all_sentence", async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 2; // default 10
     const page = parseInt(req.query.page) || 0;
+    const category = req.query.category;
 
-    const posts = await Sentence.find()
+    const posts = await Sentence.find({category: category})
       .sort({ createdAt: -1 }) // newest first
       .skip(limit * page)
       .limit(limit)

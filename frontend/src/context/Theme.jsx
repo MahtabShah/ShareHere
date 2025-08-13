@@ -31,8 +31,8 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     if (themeType === "dark") {
-      setMainBg("#0c0c0cff");
-      setBg1("#050505ff");
+      setMainBg("#080808ff");
+      setBg1("#0f0f0fff");
       setBg2("#000000ff");
       setBg3("#282828ff");
       setText_clrH("#eeeeee");
@@ -42,8 +42,8 @@ export const ThemeProvider = ({ children }) => {
       localStorage.setItem("theme", "dark");
     } else {
       setMainBg("#f6fafeff");
-      setBg1("#eff5ffff");
-      setBg2("#dfe4e9ff");
+      setBg1("#f2f7ffff");
+      setBg2("#e7ebefff");
       setBg3("#b9c1c6ff");
       setText_clrH("#000911ff");
       setText_clrM("#222222ff");

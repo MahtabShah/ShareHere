@@ -19,11 +19,11 @@ export const PostProvider = ({ children }) => {
   const limit = 10;
 
   // Fetch posts but do NOT change page here
-  const fetch_n_posts = async (l, p) => {
+  const fetch_n_posts = async (l, p, c) => {
     setPost_loading(true);
     try {
       const res = await axios.get(
-        `${API}/api/auth/all_sentence?limit=${l}&page=${p}`,
+        `${API}/api/auth/all_sentence?limit=${l}&page=${p}&category=${c}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -102,7 +102,7 @@ export const PostProvider = ({ children }) => {
 
   // Initial load
   useEffect(() => {
-    fetch_n_posts(limit, 0).then((data) => {
+    fetch_n_posts(limit, 0, "all").then((data) => {
       if (data?.length > 0) {
         const sorted = data
           .map((post) => ({

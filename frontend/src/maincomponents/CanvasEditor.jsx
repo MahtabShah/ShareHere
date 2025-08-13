@@ -9,6 +9,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const API = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("token");
+import Accordion from "react-bootstrap/Accordion";
+
+import Tabs from "react-bootstrap/esm/Tabs";
+import { Tab } from "bootstrap";
 
 import {
   faTextHeight,
@@ -276,6 +280,17 @@ const backgroundSize = [
   "auto 100%", // auto width, full height
 ];
 
+const categories = [
+  { key: "all", title: "All" },
+  { key: "motivational", title: "Motivational" },
+  { key: "quotes", title: "Quotes" },
+  { key: "shayari", title: "Shayari" },
+  { key: "fun", title: "Fun" },
+  { key: "life", title: "Life" },
+  { key: "friendship", title: "Friendship" },
+  { key: "sad", title: "Sad" },
+];
+
 import { useTheme } from "../context/Theme";
 
 import {
@@ -298,6 +313,8 @@ const CanvasVibeEditor = () => {
   const [active_style, setActive_style] = useState(fontFamily);
   const [style_type, setStyle_type] = useState("fontFamily");
   const [count, setCount] = useState(0);
+  const [category, setCategory] = useState("all");
+
   const DragcanvasRef = useRef(null);
 
   const canvasRef = useRef(null);
@@ -519,6 +536,7 @@ const CanvasVibeEditor = () => {
             text: text,
             mode: activeBtn3Profile,
             id: admin_user?._id,
+            category: category,
           },
           {
             headers: {
@@ -1426,6 +1444,41 @@ const CanvasVibeEditor = () => {
             spellCheck="false"
           />
         </div>
+      </div>
+
+      <div className="vibeTabs">
+        <Accordion defaultActiveKey="0">
+          <Accordion.Item>
+            <Accordion.Header>Select Category</Accordion.Header>
+            <Accordion.Body>
+              <Tabs
+                id="controlled-tab-example"
+                activeKey={category}
+                onSelect={(k) => setCategory(k)}
+                className="border-0 d-flex gap-3 none-scroller py-2 overflow-auto"
+                transition={false}
+                style={{
+                  "--bg1": bg1,
+                  "--bg2": bg2,
+                  "--tc1": text_clrH,
+                  "--tc2": text_clrM,
+                  width: "100%",
+                }}
+              >
+                {categories.map(({ key, title }) => (
+                  <Tab
+                    eventKey={key}
+                    title={title}
+                    className="border-0"
+                    key={key}
+                  >
+                    {/* Content for {title} */}
+                  </Tab>
+                ))}
+              </Tabs>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
       </div>
 
       <div className="d-flex gap-3 pt-2 justify-content-end p-0 pb-5 mb-4">
