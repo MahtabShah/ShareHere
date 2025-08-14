@@ -121,6 +121,7 @@ textarea::placeholder {
   border-radius: 5px;
   background: var(--bg1);
   color: var(--tc1);
+  min-width: max-content;
 }
 
 .vibeTabs .nav-tabs .nav-link.active {

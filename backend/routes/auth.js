@@ -92,9 +92,23 @@ router.get("/all_sentence", async (req, res) => {
     const limit = parseInt(req.query.limit) || 2; // default 10
     const page = parseInt(req.query.page) || 0;
     const category = req.query.category;
+    let posts;
 
-    const posts = await Sentence.find({category: category})
-      .sort({ createdAt: -1 }) // newest first
+    if (category==="all") {
+     posts = await Sentence.find().sort({ createdAt: -1 }) // newest first
+      .skip(limit * page)
+      .limit(limit)
+      .populate("comments")
+      .populate(
+    {
+      path: "comments",
+      populate: { path: "userId", model: "User" },
+    }
+   );
+
+       
+    }else{
+      posts = await Sentence.find({category: category}).sort({ createdAt: -1 }) // newest first
       .skip(limit * page)
       .limit(limit)
       .populate("comments")
@@ -105,6 +119,11 @@ router.get("/all_sentence", async (req, res) => {
     }
   );
 
+
+    }
+
+
+    
     res.json(posts);
   } catch (error) {
     console.error("Error fetching sentences:", error);

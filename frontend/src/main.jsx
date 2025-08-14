@@ -93,7 +93,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "236px"
+                            : "234px"
                         }`,
                       }}
                     >
@@ -111,7 +111,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "64px"
-                            : "236px"
+                            : "234px"
                         }`,
                       }}
                     >
@@ -129,7 +129,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "64px"
-                            : "236px"
+                            : "234px"
                         }`,
                       }}
                     >
@@ -148,7 +148,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "248px"
+                            : "234px"
                         }`,
                       }}
                     >
@@ -172,7 +172,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "64px"
-                            : "248px"
+                            : "234px"
                         }`,
                       }}
                     >
@@ -195,7 +195,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "236px"
+                            : "234px"
                         }`,
                       }}
                     >
@@ -215,7 +215,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "244px"
+                            : "234px"
                         }`,
                       }}
                     >
@@ -235,7 +235,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "236px"
+                            : "234px"
                         }`,
 
                         marginTop: `${mobile_break_point ? "44px" : "0"}`,

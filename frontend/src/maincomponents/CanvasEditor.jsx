@@ -284,11 +284,31 @@ const categories = [
   { key: "all", title: "All" },
   { key: "quotes", title: "Quotes" },
   { key: "shayari", title: "Shayari" },
-  { key: "fun", title: "Fun" },
   { key: "sad", title: "Sad" },
+  { key: "love", title: "Love" },
   { key: "life", title: "Life" },
-  { key: "friendship", title: "Friendship" },
   { key: "motivational", title: "Motivational" },
+  { key: "success", title: "Success" },
+  { key: "discipline", title: "Discipline" },
+  { key: "mindset", title: "Mindset" },
+  { key: "overcoming-failure", title: "Overcoming Failure" },
+  { key: "self-love", title: "Self Love" },
+  { key: "friendship", title: "Friendship" },
+  { key: "family", title: "Family" },
+  { key: "truth", title: "Truth" },
+  { key: "patriotic", title: "Patriotic" },
+  { key: "funny", title: "Funny" },
+  { key: "ghazal", title: "Ghazal" },
+  { key: "nazm", title: "Nazm" },
+  { key: "sufi", title: "Sufi Shayari" },
+  { key: "poetry", title: "Poetry" },
+  { key: "free-verse", title: "Free Verse" },
+  { key: "lyric-poetry", title: "Lyric Poetry" },
+  { key: "narrative-poetry", title: "Narrative Poetry" },
+  { key: "satire", title: "Satire" },
+  { key: "life-quotes", title: "Life Quotes" },
+  { key: "success-quotes", title: "Success Quotes" },
+  { key: "sad-quotes", title: "Sad Quotes" },
 ];
 
 import { useTheme } from "../context/Theme";
@@ -1450,7 +1470,7 @@ const CanvasVibeEditor = () => {
         <Accordion defaultActiveKey="0">
           <Accordion.Item>
             <Accordion.Header className="">Select Category</Accordion.Header>
-            <Accordion.Body style={{ background: bg1 }}>
+            <Accordion.Body style={{ background: bg2 }}>
               <Tabs
                 id="controlled-tab-example"
                 activeKey={category}

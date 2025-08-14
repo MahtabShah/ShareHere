@@ -101,7 +101,7 @@ function MainHeader({}) {
 
     setTimeout(() => {
       setThemeType(theme === "dark" ? "light" : "dark");
-      document.body.classList.toggle(theme);
+      // document.body.classList.toggle(theme);
     }, 440);
   };
 

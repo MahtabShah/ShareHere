@@ -13,7 +13,7 @@ const SuggetionSlip = () => {
       {lgbreakPoint && (
         <div
           className="user-update"
-          style={{ position: "sticky", top: "54px", color: text_clrM }}
+          style={{ position: "sticky", top: "96px", color: text_clrM }}
         >
           {admin_user && (
             <div className="d-flex flex-column gap-2">

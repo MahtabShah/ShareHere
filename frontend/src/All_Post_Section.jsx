@@ -31,6 +31,7 @@ function All_Post_Section({ posts, category }) {
   const postId = params.get("postId");
 
   const { limit, page, setPage, fetch_n_posts, setPosts } = usePost();
+  const { bg2, bg1 } = useTheme();
 
   // Scroll into postId if available
   useEffect(() => {
@@ -84,7 +85,15 @@ function All_Post_Section({ posts, category }) {
     const fetchPost = async () => {
       setAll_post_loading(true);
       const data = await fetch_n_posts(limit, 0, category);
-      setPosts(data);
+
+      setPosts(
+        data
+          .map((post) => ({
+            ...post,
+            rank: Rank_Calculation(post),
+          }))
+          .sort((a, b) => b.rank - a.rank)
+      );
       setPage(1); // move to next page
       setAll_post_loading(false);
     };
@@ -114,10 +123,7 @@ function All_Post_Section({ posts, category }) {
     <div
       className="position-relative mb-5"
       style={{
-        zIndex: 10,
-        maxWidth: "100%",
-        // background: bg2,
-        minHeight: "100vh",
+        background: bg2,
       }}
     >
       <section
@@ -184,7 +190,6 @@ function All_Post_Section({ posts, category }) {
           <div
             style={{
               position: "sticky",
-              top: "0",
               width: "340px",
             }}
           >
@@ -192,6 +197,12 @@ function All_Post_Section({ posts, category }) {
           </div>
         )}
       </section>
+
+      {posts.length === 0 && !all_post_loading && (
+        <p className="p-3 text-center">
+          No vibe for this category : {category}
+        </p>
+      )}
     </div>
   );
 }

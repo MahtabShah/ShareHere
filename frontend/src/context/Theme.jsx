@@ -18,37 +18,34 @@ export const ThemeProvider = ({ children }) => {
     tc3: "#777777",
   });
 
-  const [mainbg, setMainBg] = useState("#f2f8ffff");
-  const [bg1, setBg1] = useState("#eff5ffff");
+  const [mainbg, setMainBg] = useState("#f6fafeff");
+  const [bg1, setBg1] = useState("#f2f7ffff");
   const [bg2, setBg2] = useState("#d5dce3ff");
-  const [bg3, setBg3] = useState("#b9c1c6ff");
+  const [bg3, setBg3] = useState("#9b9b9bff");
   const [text_clrH, setText_clrH] = useState("#000911ff");
   const [text_clrM, setText_clrM] = useState("#222222ff");
   const [text_clrL, setText_clrL] = useState("#bbbbbbff");
-  // useEffect(() => {
-  //   document.body.style.background = bg2;
-  // }, []);
 
   useEffect(() => {
     if (themeType === "dark") {
-      setMainBg("#080808ff");
-      setBg1("#0f0f0fff");
-      setBg2("#000000ff");
+      setMainBg("#040404ff");
+      setBg1("#050505ff");
+      setBg2("#0d0d0dff");
       setBg3("#282828ff");
       setText_clrH("#eeeeee");
       setText_clrM("#c3c2c2ff");
       setText_clrL("#9b9b9bff");
-      document.body.style.background = "#0d0d0dff";
+      document.body.style.background = bg2;
       localStorage.setItem("theme", "dark");
     } else {
       setMainBg("#f6fafeff");
-      setBg1("#f2f7ffff");
-      setBg2("#e7ebefff");
+      setBg1("#f5f9feff");
+      setBg2("#e9edf1ff");
       setBg3("#b9c1c6ff");
       setText_clrH("#000911ff");
       setText_clrM("#222222ff");
       setText_clrL("#bbbbbbff");
-      document.body.style.background = "#d5dce3ff";
+      document.body.style.background = bg2;
       localStorage.setItem("theme", "light");
     }
   }, [themeType, theme]);

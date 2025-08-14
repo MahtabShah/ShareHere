@@ -4,14 +4,10 @@
   padding: 0;
 }
 
-:root {
-  --lightBlack-clr: #646464;
-  --light-clr: #e0dfdf;
-}
-
 html,
 body {
   overflow-x: clip;
+  /* background: var(--bg2); */
   /* border: 2px solid red; */
 }
 
