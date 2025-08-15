@@ -1114,7 +1114,7 @@ const CanvasVibeEditor = () => {
               </div>
 
               <div
-                onPointerDown={handleMouseDown}
+                onMouseDown={startResizing}
                 onTouchStart={startResizing}
                 className="border"
               >
