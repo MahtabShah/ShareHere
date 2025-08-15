@@ -984,15 +984,13 @@ const CanvasVibeEditor = () => {
                       activeElement?.id == el.id ? true : false
                     }
                     enableResizing={activeElement?.id == el.id ? true : false}
-                    onClick={(e) => {
+                    onTouchStart={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
                     }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        document.execCommand("insertHTML", false, "<br><br>");
-                      }
+                    onMouseDown={() => {
+                      setActiveId(el.id);
+                      setActiveElement(el);
                     }}
                   >
                     <div className="w-100 h-100 position-relative">
@@ -1009,7 +1007,7 @@ const CanvasVibeEditor = () => {
                               setActiveId(null);
                               e.stopPropagation();
                             }}
-                            onTouchEnd={(e) => {
+                            onTouchStart={(e) => {
                               setActiveId(null);
                               e.stopPropagation();
                             }}
