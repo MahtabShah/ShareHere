@@ -344,14 +344,18 @@ const CanvasVibeEditor = () => {
 
   const handleMouseMove = (e) => {
     if (isResizing.current) {
-      setCanvasHeight(e.clientY);
+      setCanvasHeight(
+        e.clientY - canvasRef.current.getBoundingClientRect().top
+      );
     }
   };
 
   const handleTouchMove = (e) => {
     if (isResizing.current) {
       e.preventDefault(); // prevent scrolling while resizing
-      setCanvasHeight(e.touches[0].clientY);
+      setCanvasHeight(
+        e.touches[0].clientY - canvasRef.current.getBoundingClientRect().top
+      );
     }
   };
 
@@ -986,6 +990,7 @@ const CanvasVibeEditor = () => {
                           ? "0 0 10px rgba(255, 255, 255, 0.73)"
                           : "none",
                       cursor: activeElement ? "move" : "",
+                      userSelect: "none",
                     }}
                     spellCheck={false}
                     disableDragging={activeElement?.id == el.id ? false : true}
@@ -1067,6 +1072,7 @@ const CanvasVibeEditor = () => {
                             letterSpacing: `${el.letterSpacing}px`,
                             textShadow: el.textShadow,
                             boxShadow: el.boxShadow,
+                            userSelect: "none",
                           }}
                           contentEditable={
                             activeElement?.id === el?.id ? true : false
@@ -1081,6 +1087,9 @@ const CanvasVibeEditor = () => {
                                 "<br><br>"
                               );
                             }
+                          }}
+                          onTouchStart={(e) => {
+                            e.stopPropagation(); // prevent parent drag from blocking focus
                           }}
                         >
                           {el.content}
@@ -1116,13 +1125,14 @@ const CanvasVibeEditor = () => {
               <div
                 onMouseDown={startResizing}
                 onTouchStart={startResizing}
-                className="border"
+                className="position-absolute"
+                style={{
+                  bottom: "-10px",
+                  right: "1px",
+                }}
               >
                 <FaArrowsAltH
-                  className="position-absolute"
                   style={{
-                    bottom: "-10px",
-                    right: "1px",
                     color: text_clrH,
                     rotate: "90deg",
                     cursor: "ns-resize",
