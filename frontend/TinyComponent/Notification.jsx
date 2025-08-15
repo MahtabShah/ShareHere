@@ -91,12 +91,12 @@ export const Notification = ({ setVisibleNotification }) => {
             color: text_clrM,
             maxWidth: "481px",
             boxShadow: `0 4px 10px ${text_clrM}`,
-            maxHeight: "85vh",
+            height: "calc(100vh - 102px)",
           }}
         >
           <h5
             className="d-flex align-items-center gap-3 position-sticky py-2 top-0"
-            style={{ background: bg1 }}
+            style={{ background: bg1, zIndex: 9877 }}
           >
             <div
               className="d-inline-flex p-1 rounded-1"

@@ -355,7 +355,7 @@ export default function LeftNavbar() {
 
       {activeIndex === "Notifications" && (
         <div
-          className="h-100 position-fixed w-100 h-100 "
+          className="h-100 position-fixed w-100 px-1 h-100 "
           style={{
             zIndex: 8992,
             margin: "auto",
