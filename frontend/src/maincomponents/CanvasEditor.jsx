@@ -60,18 +60,6 @@ import {
   FaFireAlt, // Can represent a fiery text effect (strong glow)
 } from "react-icons/fa";
 
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-
-function MyEditor({ content }) {
-  const editor = useEditor({
-    extensions: [StarterKit],
-    content: content,
-  });
-
-  return <EditorContent editor={editor} />;
-}
-
 const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
@@ -1084,12 +1072,12 @@ const CanvasVibeEditor = () => {
                             letterSpacing: `${el.letterSpacing}px`,
                             textShadow: el.textShadow,
                             boxShadow: el.boxShadow,
-                            userSelect: "none",
+                            outline: "none",
                           }}
-                          // contentEditable={
-                          //   activeElement?.id === el?.id ? true : false
-                          // }
-                          // suppressContentEditableWarning={true}
+                          contentEditable={
+                            activeElement?.id === el?.id ? true : false
+                          }
+                          suppressContentEditableWarning={true}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -1101,11 +1089,10 @@ const CanvasVibeEditor = () => {
                             }
                           }}
                           onTouchStart={(e) => {
-                            e.stopPropagation(); // prevent parent drag from blocking focus
+                            e.stopPropagation();
                           }}
                         >
-                          <MyEditor content={el.content} />
-                          {/* {el.content} */}
+                          {el.content}
                         </div>
                       ) : (
                         <div className="overflow-hidden d-flex align-items-center justify-content-center h-100 w-100">
@@ -1297,6 +1284,13 @@ const CanvasVibeEditor = () => {
           ))}
         </Tabs>
       </div>
+
+      <div
+        className="my-2 p-3"
+        contentEditable={true}
+        suppressContentEditableWarning={true}
+        style={{ color: text_clrH, border: "1px solid red" }}
+      />
 
       <div className="d-flex gap-3 pt-2 justify-content-end p-0 pb-5 mb-4">
         <label
