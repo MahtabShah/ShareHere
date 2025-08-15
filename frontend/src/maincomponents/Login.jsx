@@ -51,13 +51,13 @@ const Login = ({}) => {
         ></div>
 
         <div
-          className="card mx-4 mx-md-5 shadow-5-strong bg-body-tertiary"
+          className="card mx-4 mx-md-5 shadow-5-strong bg-light"
           style={{
             marginTop: "-150px",
             backdropFilter: "blur(30px)",
           }}
         >
-          <div className="card-body py-5 px-md-5">
+          <div className="card-body py-3 px-md-5">
             <div className="row d-flex justify-content-center">
               <div className="col-lg-8">
                 <h2 className="fw-bold mb-3">Login now</h2>
@@ -91,7 +91,6 @@ const Login = ({}) => {
                   </div>
 
                   <div className="d-flex flex-column gap-2 align-items-center">
-                    <hr />
                     <div className="d-flex gap-2 align-items-center">
                       <small>you dont have any account ?</small>
 

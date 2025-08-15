@@ -62,7 +62,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(584);
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 200);
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -1307,11 +1307,12 @@ const CanvasVibeEditor = () => {
                 style={{
                   bottom: "-10px",
                   right: "1px",
+                  zIndex: 2983787381223,
                 }}
               >
                 <FaArrowsAltH
                   style={{
-                    color: text_clrH,
+                    color: "red",
                     rotate: "90deg",
                     cursor: "ns-resize",
                   }}

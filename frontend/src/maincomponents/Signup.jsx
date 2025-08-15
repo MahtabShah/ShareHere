@@ -55,12 +55,12 @@ const Signup = ({}) => {
           backdropFilter: "blur(30px)",
         }}
       >
-        <div className="card-body py-4 px-md-5">
+        <div className="card-body py-3 px-md-5">
           <div className="row d-flex justify-content-center">
             <div className="col-lg-8">
-              <h2 className="fw-bold mb-">Sign up now</h2>
+              <h2 className="fw-bold mb-0 mb-md-2">Sign up now</h2>
               <form onSubmit={handleSubmit} className="">
-                <div className="form-outline mb-4 d-flex flex-column">
+                <div className="form-outline mb-3 d-flex flex-column">
                   <label className="form-label text-start" htmlFor="username">
                     Username
                   </label>
@@ -74,7 +74,7 @@ const Signup = ({}) => {
                   />
                 </div>
 
-                <div className="form-outline mb-4 d-flex flex-column">
+                <div className="form-outline mb-3 d-flex flex-column">
                   <label className="form-label text-start" htmlFor="email">
                     Email address
                   </label>
@@ -103,7 +103,6 @@ const Signup = ({}) => {
                 </div>
 
                 <div className="d-flex flex-column gap-2 align-items-center">
-                  <hr />
                   <div className="d-flex gap-2 align-items-center">
                     <small>you have already an account ?</small>
                     <span
