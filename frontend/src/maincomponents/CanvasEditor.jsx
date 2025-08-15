@@ -999,7 +999,6 @@ const CanvasVibeEditor = () => {
                     }
                     enableResizing={activeElement?.id == el.id ? true : false}
                     onClick={(e) => {
-                      e.stopPropagation();
                       setActiveId(el.id);
                     }}
                   >
@@ -1074,10 +1073,10 @@ const CanvasVibeEditor = () => {
                             boxShadow: el.boxShadow,
                             outline: "none",
                           }}
-                          contentEditable={
-                            activeElement?.id === el?.id ? true : false
-                          }
-                          suppressContentEditableWarning={true}
+                          // contentEditable={
+                          //   activeElement?.id === el?.id ? true : false
+                          // }
+                          // suppressContentEditableWarning={true}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -1109,6 +1108,17 @@ const CanvasVibeEditor = () => {
                         </div>
                       )}
                     </div>
+
+                    <div
+                      className="my-2 p-3 position-absolute w-100"
+                      contentEditable={true}
+                      suppressContentEditableWarning={true}
+                      style={{
+                        color: text_clrH,
+                        border: "1px solid red",
+                        top: 0,
+                      }}
+                    />
                   </Rnd>
                 ))}
 
@@ -1284,13 +1294,6 @@ const CanvasVibeEditor = () => {
           ))}
         </Tabs>
       </div>
-
-      <div
-        className="my-2 p-3"
-        contentEditable={true}
-        suppressContentEditableWarning={true}
-        style={{ color: text_clrH, border: "1px solid red" }}
-      />
 
       <div className="d-flex gap-3 pt-2 justify-content-end p-0 pb-5 mb-4">
         <label
