@@ -142,7 +142,12 @@ const CanvasVibeEditor = () => {
       prev.map((el) => (el.id === id ? { ...el, [key]: value } : el))
     );
 
-    console.log("val ", value);
+    setActiveElement((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+
+    // console.log("val ", activeElement);
   };
 
   const setContinuousActiveId = () => {
@@ -209,20 +214,6 @@ const CanvasVibeEditor = () => {
       setExporting(false);
     }
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        DragcanvasRef.current &&
-        !DragcanvasRef.current.contains(event.target)
-      ) {
-        setActiveId(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   // -----------------------------------posting-----------------------------
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("Public");
@@ -390,7 +381,7 @@ const CanvasVibeEditor = () => {
                           minWidth: "max-content",
                         }}
                         onClick={() => {
-                          // e.stopPropagation();
+                          e.stopPropagation();
                           setStyleOpen(!styleOpen);
                         }}
                       >
@@ -670,7 +661,8 @@ const CanvasVibeEditor = () => {
                           </div>
                         </div>
 
-                        {/* <div
+                        <>
+                          {/* <div
                           className="btn overflow-hidden p-0 props-btn toolbar-button"
                           style={{ border: `` }}
                         >
@@ -694,7 +686,7 @@ const CanvasVibeEditor = () => {
                           />
                         </div> */}
 
-                        {/*
+                          {/*
                         <div
                           className="props-btn toolbar-button"
                           style={{
@@ -736,7 +728,7 @@ const CanvasVibeEditor = () => {
                           </div>
                         </div> */}
 
-                        {/* <button
+                          {/* <button
                           className="props-btn fw-medium toolbar-button flex-grow-1"
                           style={{
                             border: `1px solid ${"#ededed"}`,
@@ -751,6 +743,7 @@ const CanvasVibeEditor = () => {
                         >
                           &nbsp; reset bg&nbsp;
                         </button> */}
+                        </>
 
                         {elements?.length > 1 && (
                           <>
@@ -779,7 +772,7 @@ const CanvasVibeEditor = () => {
                           </>
                         )}
 
-                        {activeElement && (
+                        {activeId && (
                           <>
                             <button
                               className={`btn props-btn toolbar-button ${
@@ -905,32 +898,30 @@ const CanvasVibeEditor = () => {
                       </div>
                     </summary>
 
-                    {mobile_break_point && (
-                      <div className="">
-                        <textarea
-                          className="form-control w-100 overflow-auto none-scroller border py-2"
-                          value={activeElement?.content}
-                          style={{
-                            background: bg2,
-                            color: text_clrH,
-                            border: `1px solid ${text_clrH}`,
-                            minHeight: "80px",
-                            fontSize: "10px",
-                          }}
-                          placeholder="Click Add Text and then write Here !"
-                          spellCheck={false}
-                          onChange={(e) =>
-                            handleChange(
-                              activeElement?.id,
-                              "content",
-                              e.target.value
-                            )
-                          }
-                        >
-                          {activeElement?.content || "Type Here"}
-                        </textarea>
-                      </div>
-                    )}
+                    <div className="border">
+                      <textarea
+                        className="form-control w-100 overflow-auto none-scroller border py-2"
+                        value={activeElement?.content}
+                        style={{
+                          background: bg2,
+                          color: text_clrH,
+                          border: `1px solid ${text_clrH}`,
+                          minHeight: "80px",
+                          fontSize: "10px",
+                        }}
+                        placeholder="Click Add Text and then write Here !"
+                        spellCheck={false}
+                        onChange={(e) =>
+                          handleChange(
+                            activeElement?.id,
+                            "content",
+                            e.target.value
+                          )
+                        }
+                      >
+                        {activeElement?.content || "Type Here"}
+                      </textarea>
+                    </div>
                   </details>
                 </div>
               </div>
@@ -943,7 +934,8 @@ const CanvasVibeEditor = () => {
                   styleOpen ? `96px` : "62px"
                 })`,
                 width: "100%",
-                border: "2px solid red",
+                borderBlock: "2px solid red",
+                background: bg3,
               }}
             >
               <div
@@ -1003,7 +995,7 @@ const CanvasVibeEditor = () => {
                               width: "18px",
                               height: "18px",
                             }}
-                            onPointerDown={(e) => {
+                            onMouseDown={(e) => {
                               setActiveId(null);
                               e.stopPropagation();
                             }}
