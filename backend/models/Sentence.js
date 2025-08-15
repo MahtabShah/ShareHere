@@ -30,8 +30,8 @@ const sentenceSchema = new mongoose.Schema({
 
   mode:{
     type: String,
-    enum: ["public" , "Follower" , "Paid"],
-    default:"public"
+    enum: ["Public" , "Follower" , "Paid"],
+    default:"Public"
   },
 
   createdAt:{

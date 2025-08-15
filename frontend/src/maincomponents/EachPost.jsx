@@ -77,7 +77,7 @@ export const EachPost = ({ user, comment }) => {
     if (user && user?.followers && admin_user) {
       const isFollower = user?.followers?.includes(admin_user?._id);
       setMode(
-        isFollower || admin_user?._id == user?._id ? "public" : comment?.mode
+        isFollower || admin_user?._id == user?._id ? "Public" : comment?.mode
       );
     }
   }, [admin_user?.followers]);
@@ -187,7 +187,7 @@ export const EachPost = ({ user, comment }) => {
             >
               <div className="p-0 w-100 position-relative">
                 <div className="bg-image d-flex align-items-center flex-column">
-                  {mode == "public" && (
+                  {mode == "Public" && (
                     <img
                       src={`${comment?.images[0]}`}
                       loading="lazy"

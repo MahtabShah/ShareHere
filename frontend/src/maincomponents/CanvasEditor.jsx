@@ -233,7 +233,7 @@ const CanvasVibeEditor = () => {
   const activeElement = elements.find((el) => el.id === activeId);
 
   // -----------------------------------posting-----------------------------
-  const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
+  const [activeBtn3Profile, setActiveBtn3Profile] = useState("Public");
   const [text, setText] = useState("");
   const [LazyLoading, setLazyLoading] = useState(false);
 
@@ -332,25 +332,35 @@ const CanvasVibeEditor = () => {
 
   const isResizing = useRef(false);
 
-  const handleMouseDown = () => {
+  const startResizing = () => {
     isResizing.current = true;
+    // Mouse events
     document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mouseup", stopResizing);
+    // Touch events
+    document.addEventListener("touchmove", handleTouchMove, { passive: false });
+    document.addEventListener("touchend", stopResizing);
   };
 
   const handleMouseMove = (e) => {
     if (isResizing.current) {
-      // Increase or decrease height based on mouse position
-      setCanvasHeight(
-        e.clientY - canvasRef.current.getBoundingClientRect().top
-      );
+      setCanvasHeight(e.clientY);
     }
   };
 
-  const handleMouseUp = () => {
+  const handleTouchMove = (e) => {
+    if (isResizing.current) {
+      e.preventDefault(); // prevent scrolling while resizing
+      setCanvasHeight(e.touches[0].clientY);
+    }
+  };
+
+  const stopResizing = () => {
     isResizing.current = false;
     document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
+    document.removeEventListener("mouseup", stopResizing);
+    document.removeEventListener("touchmove", handleTouchMove);
+    document.removeEventListener("touchend", stopResizing);
   };
 
   return (
@@ -1103,7 +1113,11 @@ const CanvasVibeEditor = () => {
                 )}
               </div>
 
-              <div onPointerDown={handleMouseDown} className="border">
+              <div
+                onPointerDown={handleMouseDown}
+                onTouchStart={startResizing}
+                className="border"
+              >
                 <FaArrowsAltH
                   className="position-absolute"
                   style={{
@@ -1164,10 +1178,10 @@ const CanvasVibeEditor = () => {
       <div className="d-flex gap-3 pt-2 ">
         <button
           className={`btn border p-1 ps-2 pe-2 rounded-5 `}
-          onClick={() => setActiveBtn3Profile("public")}
+          onClick={() => setActiveBtn3Profile("Public")}
           style={{
-            color: activeBtn3Profile === "public" ? bg1 : text_clrM,
-            background: activeBtn3Profile === "public" ? text_clrM : "",
+            color: activeBtn3Profile === "Public" ? bg1 : text_clrM,
+            background: activeBtn3Profile === "Public" ? text_clrM : "",
           }}
         >
           <small> For Public</small>

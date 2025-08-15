@@ -44,11 +44,11 @@ const UserProfile = ({}) => {
 
   // console.log(user_post);
 
-  const [activeBtn3Profile, setActiveBtn3Profile] = useState("public");
+  const [activeBtn3Profile, setActiveBtn3Profile] = useState("Public");
 
   const FollowerPost = user_post?.filter((p) => p.mode == "Follower");
   const PaidPost = user_post?.filter((p) => p.mode == "Paid");
-  const PublicPost = user_post?.filter((p) => p.mode == "public");
+  const PublicPost = user_post?.filter((p) => p.mode == "Public");
 
   // console.log("KKKK", all_posts);
 
@@ -62,7 +62,7 @@ const UserProfile = ({}) => {
       const isFollower = user?.followers?.includes(admin_user?._id);
 
       console.log(isFollower);
-      setMode(isFollower || admin_user._id == user._id ? "public" : "");
+      setMode(isFollower || admin_user._id == user._id ? "Public" : "");
     }
 
     setLazyLoading(user_post.length < 0);
@@ -324,10 +324,10 @@ const UserProfile = ({}) => {
           <div className="d-flex gap-3 ps-2">
             <button
               className={`btn border p-1 ps-2 pe-2 rounded-5`}
-              onClick={() => setActiveBtn3Profile("public")}
+              onClick={() => setActiveBtn3Profile("Public")}
               style={{
-                color: activeBtn3Profile === "public" ? bg1 : text_clrH,
-                background: activeBtn3Profile === "public" ? text_clrH : bg1,
+                color: activeBtn3Profile === "Public" ? bg1 : text_clrH,
+                background: activeBtn3Profile === "Public" ? text_clrH : bg1,
               }}
             >
               Public
@@ -343,7 +343,7 @@ const UserProfile = ({}) => {
               onClick={() => {
                 setActiveBtn3Profile("Follower");
 
-                if (mode != "public") {
+                if (mode != "Public") {
                   setfollowMSG(true);
                 }
               }}
@@ -378,7 +378,7 @@ const UserProfile = ({}) => {
                 </div>
               ) : (
                 <div className="d-flex flex-column gap-4 my-4">
-                  {activeBtn3Profile == "public" &&
+                  {activeBtn3Profile == "Public" &&
                     PublicPost?.map((ps, idx) => {
                       return (
                         <Fragment key={idx}>
