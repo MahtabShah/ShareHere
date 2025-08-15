@@ -41,8 +41,6 @@ import {
   fontFamily,
   fontSize,
   pre_bg_color,
-  backgroundSize,
-  backgroundPosition,
   textDecoration,
   textShadow,
   boxShadow,
@@ -64,16 +62,15 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(440);
-  const [canvasBgColor, setCanvasBgColor] = useState("#4bbac0ff");
+  const [canvasHeight, setCanvasHeight] = useState(584);
+  const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
   const [active_style, setActive_style] = useState(fontFamily);
   const [style_type, setStyle_type] = useState("fontFamily");
   const [count, setCount] = useState(0);
   const [category, setCategory] = useState("all");
-
-  const DragcanvasRef = useRef(null);
+  const [hidePage, setHidePage] = useState("");
 
   const canvasRef = useRef(null);
   const nevigate = useNavigate();
@@ -111,10 +108,14 @@ const CanvasVibeEditor = () => {
       textAlign: "left",
       textShadow: "",
       backgroundPosition: "",
+      range1: 0,
+      range2: 0,
+      borderRadius: 0,
     };
     setElements((prev) => [...prev, newText]);
     setActiveId(newText.id);
     setActiveElement(newText);
+    setTextWriteOpen(true);
   };
 
   const addImageBox = (file) => {
@@ -132,9 +133,13 @@ const CanvasVibeEditor = () => {
       zIndex: elements.length + 1,
       background: "00000000",
       boxShadow: "",
+      range1: 0,
+      range2: 0,
+      borderRadius: 0,
     };
     setElements([...elements, newImage]);
     setActiveId(newImage.id);
+    setHidePage("objectPosition");
   };
 
   const handleChange = (id, key, value) => {
@@ -147,7 +152,7 @@ const CanvasVibeEditor = () => {
       [key]: value,
     }));
 
-    // console.log("val ", activeElement);
+    console.log("val ", activeElement);
   };
 
   const setContinuousActiveId = () => {
@@ -302,9 +307,9 @@ const CanvasVibeEditor = () => {
     setLazyLoading(false);
   };
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg3, bg2 } = useTheme();
 
-  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [textWriteOpen, setTextWriteOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
 
   const preventToggle = (e) => {
@@ -349,597 +354,784 @@ const CanvasVibeEditor = () => {
   };
 
   return (
-    <div className="" style={{ background: bg2 }}>
+    <div
+      className="overflow-hidden"
+      style={{
+        background: bg2,
+        maxWidth: "601px",
+        // border: "2px solid red",
+        zIndex: 98765432,
+        margin: "auto",
+      }}
+    >
       <div className="">
         <div className="pt-0">
-          <div className="d-flex">
+          <div className="d-flex ">
             <div className="card border-0">
               <div
-                className={`position-fixed toolbar-pr ${
-                  sm_break_point || mobile_break_point ? "" : "mx-2"
-                }`}
+                className={`position-fixed toolbar-pr p-2`}
                 style={{
-                  zIndex: 9000000000000,
+                  zIndex: 898999,
+                  background: bg1,
+                  color: text_clrH,
+                  boxShadow: `0 1px 1px ${text_clrL}`,
+                  right: "0",
                   left: `${
-                    mobile_break_point ? 0 : sm_break_point ? "76px" : "246px"
+                    mobile_break_point
+                      ? "0px"
+                      : sm_break_point
+                      ? "74px"
+                      : "245px"
                   }`,
-                  right: "6px",
-                  top: "40px",
-                  background: bg2,
+
+                  right: 0,
                 }}
               >
-                <div>
-                  <details
-                    className="bg- ms-2 rounded"
-                    onClick={preventToggle}
-                    open={styleOpen}
+                <div className="d-flex gap-2 overflow-x-auto">
+                  <div
+                    className=" toolbar-button props-btn border-danger d-inline-flex p-1 rounded-1 bg-danger text-light"
+                    style={{
+                      minWidth: "32px",
+                      maxHeight: "32px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setopenSlidWin(false);
+                    }}
                   >
-                    <summary
-                      className="d-flex gap-2 h-100"
-                      style={{ color: "#ededed" }}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      fill={"white"}
+                    >
+                      <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+                    </svg>
+                  </div>
+
+                  <summary
+                    className="d-flex gap-2 h-100"
+                    style={{ color: "#ededed" }}
+                  >
+                    <div
+                      className="toolbar-button props-btn "
+                      style={{
+                        wordSpacing: "pre-wrap",
+                        minWidth: "max-content",
+                      }}
+                      onClick={() => {
+                        setStyleOpen(!styleOpen);
+                      }}
+                    >
+                      &nbsp; {!styleOpen ? "open " : "close "} &nbsp;
+                    </div>
+                  </summary>
+
+                  <div className="d-flex overflow-x-auto  rounded-1 h-100 none-scroller gap-2 mb-1">
+                    <button
+                      className={`toolbar-button   ${
+                        activeElement?.fontWeight === "bold" ? "active" : ""
+                      }`}
+                      style={{ minWidth: "34px" }}
+                      onClick={() =>
+                        handleChange(
+                          activeElement?.id,
+                          "fontWeight",
+                          activeElement?.fontWeight === "bold"
+                            ? "normal"
+                            : "bold"
+                        )
+                      }
+                      disabled={!activeElement}
+                    >
+                      <FontAwesomeIcon
+                        icon={faBold}
+                        fontSize={12}
+                        color={"#ededed"}
+                      />
+                    </button>
+
+                    <button
+                      className={`toolbar-button ${
+                        activeElement?.fontStyle === "italic" ? "active" : ""
+                      }`}
+                      style={{ minWidth: "34px" }}
+                      onClick={() =>
+                        handleChange(
+                          activeElement?.id,
+                          "fontStyle",
+                          activeElement?.fontStyle === "italic"
+                            ? "normal"
+                            : "italic"
+                        )
+                      }
+                      disabled={!activeElement}
+                    >
+                      <FontAwesomeIcon
+                        icon={faItalic}
+                        fontSize={12}
+                        color={"#ededed"}
+                      />
+                    </button>
+
+                    <button
+                      className={`toolbar-button ${
+                        activeElement?.textDecoration === "underline"
+                          ? "active"
+                          : ""
+                      }`}
+                      style={{ minWidth: "34px" }}
+                      onClick={() =>
+                        handleChange(
+                          activeElement?.id,
+                          "textDecoration",
+                          activeElement?.textDecoration === "underline"
+                            ? "none"
+                            : "underline"
+                        )
+                      }
+                      disabled={!activeElement}
+                    >
+                      <FontAwesomeIcon
+                        icon={faUnderline}
+                        fontSize={12}
+                        color={"#ededed"}
+                      />
+                    </button>
+
+                    <button
+                      className={`toolbar-button ${
+                        activeElement?.textAlign === "left" ? "active" : ""
+                      }   props-btn `}
+                      onClick={() =>
+                        handleChange(activeElement?.id, "textAlign", "left")
+                      }
+                      disabled={!activeElement}
+                      style={{ minWidth: "34px" }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faAlignLeft}
+                        fontSize={12}
+                        color={"#ededed"}
+                      />
+                    </button>
+
+                    <button
+                      className={`toolbar-button ${
+                        activeElement?.textAlign === "center" ? "active" : ""
+                      }`}
+                      onClick={() =>
+                        handleChange(activeElement?.id, "textAlign", "center")
+                      }
+                      disabled={!activeElement}
+                      style={{ minWidth: "34px" }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faAlignCenter}
+                        fontSize={12}
+                        color={"#ededed"}
+                      />
+                    </button>
+
+                    <button
+                      className={`toolbar-button ${
+                        activeElement?.textAlign === "right" ? "active" : ""
+                      }`}
+                      style={{ minWidth: "34px" }}
+                      onClick={() =>
+                        handleChange(activeElement?.id, "textAlign", "right")
+                      }
+                      disabled={!activeElement}
+                    >
+                      <FontAwesomeIcon
+                        icon={faAlignRight}
+                        fontSize={12}
+                        color={"#ededed"}
+                      />
+                    </button>
+
+                    <div
+                      className="d-flex gap-2 btn-tool overflow-x-auto none-scroller"
+                      style={{ minWidth: "max-content" }}
+                      onClick={() => {
+                        setStyleOpen(true);
+                      }}
                     >
                       <div
-                        className="toolbar-button props-btn"
-                        style={{
-                          wordSpacing: "pre-wrap",
-                          minWidth: "max-content",
-                        }}
+                        className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
                         onClick={() => {
-                          e.stopPropagation();
-                          setStyleOpen(!styleOpen);
+                          setActive_style(fontFamily);
+                          setStyle_type("fontFamily");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === fontFamily ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === fontFamily ? "#fff" : ""}`,
                         }}
                       >
-                        &nbsp; {!styleOpen ? "open " : "close "} &nbsp;
+                        <FaFont />
                       </div>
-                      <div className="d-flex overflow-x-auto h-100 none-scroller gap-2 mb-1">
-                        <button
-                          className={`toolbar-button   ${
-                            activeElement?.fontWeight === "bold" ? "active" : ""
-                          }`}
-                          style={{ minWidth: "34px" }}
-                          onClick={() =>
-                            handleChange(
-                              activeElement?.id,
-                              "fontWeight",
-                              activeElement?.fontWeight === "bold"
-                                ? "normal"
-                                : "bold"
-                            )
-                          }
-                          disabled={!activeElement}
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 fontSize"
+                        onClick={() => {
+                          setActive_style(fontSize);
+                          setStyle_type("fontSize");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === fontSize ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === fontSize ? "#fff" : ""}`,
+                        }}
+                      >
+                        <FaTextHeight title="Increase Font Size" />
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                        onClick={() => {
+                          setActive_style(textShadow);
+                          setStyle_type("textShadow");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === textShadow ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === textShadow ? "#fff" : ""}`,
+                        }}
+                      >
+                        <FaMagic title="FaShadow" />
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                        onClick={() => {
+                          setActive_style(textDecoration);
+                          setStyle_type("textDecoration");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === textDecoration ? "#6b0ad2" : ""
+                          }`,
+                          color: `${
+                            active_style === textDecoration ? "#fff" : ""
+                          }`,
+                        }}
+                      >
+                        <FaStrikethrough title="Strikethrough" />
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
+                        onClick={() => {
+                          setActive_style(color);
+                          setStyle_type("color");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === color ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === color ? "#fff" : ""}`,
+                        }}
+                      >
+                        Color
+                      </div>
+
+                      <div
+                        className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 letterSpacing"
+                        onClick={() => {
+                          setActive_style(letterSpacing);
+                          setStyle_type("letterSpacing");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === letterSpacing ? "#6b0ad2" : ""
+                          }`,
+                          color: `${
+                            active_style === letterSpacing ? "#fff" : ""
+                          }`,
+                        }}
+                      >
+                        Spacing
+                      </div>
+
+                      <div
+                        className="toolbar-button d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 backgroundPosition "
+                        onClick={() => {
+                          setActive_style(boxShadow);
+                          setStyle_type("boxShadow");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          background: `${
+                            active_style === boxShadow ? "#6b0ad2" : ""
+                          }`,
+                          color: `${active_style === boxShadow ? "#fff" : ""}`,
+                        }}
+                      >
+                        box Shadow
+                      </div>
+                    </div>
+
+                    {activeElement?.type === "image" && (
+                      <div
+                        className="props-btn toolbar-button"
+                        onClick={() => {
+                          setStyleOpen(false);
+                          setHidePage("objectPosition");
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          minWidth: "max-content",
+                        }}
+                      >
+                        Imagexy
+                      </div>
+                    )}
+
+                    <div
+                      className="props-btn toolbar-button"
+                      onClick={() => {
+                        setHidePage("borderRadius");
+                        setStyleOpen(false);
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        minWidth: "max-content",
+                      }}
+                    >
+                      Round
+                    </div>
+
+                    <div
+                      className="btn overflow-hidden p-0 props-btn toolbar-button"
+                      style={{ border: `` }}
+                    >
+                      <input
+                        type="color"
+                        value={activeElement?.color}
+                        style={{
+                          scale: "2",
+                          border: ``,
+                        }}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          handleChange(
+                            activeElement?.id,
+                            "color",
+                            e.target.value
+                          );
+                        }}
+                        defaultValue={"#ff0000"}
+                        open
+                      />
+                    </div>
+
+                    <div
+                      className="props-btn toolbar-button"
+                      style={{
+                        border: `1px solid ${"#ededed"}`,
+                        minWidth: "120px",
+                      }}
+                    >
+                      <div
+                        className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
+                        style={{ translate: "6px" }}
+                      >
+                        <small
+                          className="flex-grow-1"
+                          style={{ color: "#ededed" }}
                         >
-                          <FontAwesomeIcon
-                            icon={faBold}
-                            fontSize={12}
-                            color={"#ededed"}
-                          />
-                        </button>
-
-                        <button
-                          className={`toolbar-button ${
-                            activeElement?.fontStyle === "italic"
-                              ? "active"
-                              : ""
-                          }`}
-                          style={{ minWidth: "34px" }}
-                          onClick={() =>
-                            handleChange(
-                              activeElement?.id,
-                              "fontStyle",
-                              activeElement?.fontStyle === "italic"
-                                ? "normal"
-                                : "italic"
-                            )
-                          }
-                          disabled={!activeElement}
-                        >
-                          <FontAwesomeIcon
-                            icon={faItalic}
-                            fontSize={12}
-                            color={"#ededed"}
-                          />
-                        </button>
-
-                        <button
-                          className={`toolbar-button ${
-                            activeElement?.textDecoration === "underline"
-                              ? "active"
-                              : ""
-                          }`}
-                          style={{ minWidth: "34px" }}
-                          onClick={() =>
-                            handleChange(
-                              activeElement?.id,
-                              "textDecoration",
-                              activeElement?.textDecoration === "underline"
-                                ? "none"
-                                : "underline"
-                            )
-                          }
-                          disabled={!activeElement}
-                        >
-                          <FontAwesomeIcon
-                            icon={faUnderline}
-                            fontSize={12}
-                            color={"#ededed"}
-                          />
-                        </button>
-
-                        <button
-                          className={`toolbar-button ${
-                            activeElement?.textAlign === "left" ? "active" : ""
-                          }   props-btn `}
-                          onClick={() =>
-                            handleChange(activeElement?.id, "textAlign", "left")
-                          }
-                          disabled={!activeElement}
-                          style={{ minWidth: "34px" }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faAlignLeft}
-                            fontSize={12}
-                            color={"#ededed"}
-                          />
-                        </button>
-
-                        <button
-                          className={`toolbar-button ${
-                            activeElement?.textAlign === "center"
-                              ? "active"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            handleChange(
-                              activeElement?.id,
-                              "textAlign",
-                              "center"
-                            )
-                          }
-                          disabled={!activeElement}
-                          style={{ minWidth: "34px" }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faAlignCenter}
-                            fontSize={12}
-                            color={"#ededed"}
-                          />
-                        </button>
-
-                        <button
-                          className={`toolbar-button ${
-                            activeElement?.textAlign === "right" ? "active" : ""
-                          }`}
-                          style={{ minWidth: "34px" }}
-                          onClick={() =>
-                            handleChange(
-                              activeElement?.id,
-                              "textAlign",
-                              "right"
-                            )
-                          }
-                          disabled={!activeElement}
-                        >
-                          <FontAwesomeIcon
-                            icon={faAlignRight}
-                            fontSize={12}
-                            color={"#ededed"}
-                          />
-                        </button>
-
-                        <div
-                          className="d-flex gap-2 btn-tool overflow-x-auto none-scroller"
-                          style={{ minWidth: "max-content" }}
-                          onClick={() => {
-                            setStyleOpen(true);
-                          }}
-                        >
-                          <div
-                            className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
-                            onClick={() => {
-                              setActive_style(fontFamily);
-                              setStyle_type("fontFamily");
-                            }}
-                            style={{
-                              cursor: "pointer",
-                              background: `${
-                                active_style === fontFamily ? "#6b0ad2" : ""
-                              }`,
-                              color: `${
-                                active_style === fontFamily ? "#fff" : ""
-                              }`,
-                            }}
-                          >
-                            <FaFont />
-                          </div>
-
-                          <div
-                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 fontSize"
-                            onClick={() => {
-                              setActive_style(fontSize);
-                              setStyle_type("fontSize");
-                            }}
-                            style={{
-                              cursor: "pointer",
-                              background: `${
-                                active_style === fontSize ? "#6b0ad2" : ""
-                              }`,
-                              color: `${
-                                active_style === fontSize ? "#fff" : ""
-                              }`,
-                            }}
-                          >
-                            <FaTextHeight title="Increase Font Size" />
-                          </div>
-
-                          <div
-                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                            onClick={() => {
-                              setActive_style(textShadow);
-                              setStyle_type("textShadow");
-                            }}
-                            style={{
-                              cursor: "pointer",
-                              background: `${
-                                active_style === textShadow ? "#6b0ad2" : ""
-                              }`,
-                              color: `${
-                                active_style === textShadow ? "#fff" : ""
-                              }`,
-                            }}
-                          >
-                            <FaMagic title="FaShadow" />
-                          </div>
-
-                          <div
-                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                            onClick={() => {
-                              setActive_style(textDecoration);
-                              setStyle_type("textDecoration");
-                            }}
-                            style={{
-                              cursor: "pointer",
-                              background: `${
-                                active_style === textDecoration ? "#6b0ad2" : ""
-                              }`,
-                              color: `${
-                                active_style === textDecoration ? "#fff" : ""
-                              }`,
-                            }}
-                          >
-                            <FaStrikethrough title="Strikethrough" />
-                          </div>
-
-                          <div
-                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                            onClick={() => {
-                              setActive_style(color);
-                              setStyle_type("color");
-                            }}
-                            style={{
-                              cursor: "pointer",
-                              background: `${
-                                active_style === color ? "#6b0ad2" : ""
-                              }`,
-                              color: `${active_style === color ? "#fff" : ""}`,
-                            }}
-                          >
-                            Color
-                          </div>
-
-                          <div
-                            className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 letterSpacing"
-                            onClick={() => {
-                              setActive_style(letterSpacing);
-                              setStyle_type("letterSpacing");
-                            }}
-                            style={{
-                              cursor: "pointer",
-                              background: `${
-                                active_style === letterSpacing ? "#6b0ad2" : ""
-                              }`,
-                              color: `${
-                                active_style === letterSpacing ? "#fff" : ""
-                              }`,
-                            }}
-                          >
-                            Spacing
-                          </div>
-
-                          <div
-                            className="toolbar-button d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 backgroundPosition "
-                            onClick={() => {
-                              setActive_style(boxShadow);
-                              setStyle_type("boxShadow");
-                            }}
-                            style={{
-                              cursor: "pointer",
-                              background: `${
-                                active_style === boxShadow ? "#6b0ad2" : ""
-                              }`,
-                              color: `${
-                                active_style === boxShadow ? "#fff" : ""
-                              }`,
-                            }}
-                          >
-                            box Shadow
-                          </div>
-                        </div>
-
-                        <>
-                          {/* <div
-                          className="btn overflow-hidden p-0 props-btn toolbar-button"
-                          style={{ border: `` }}
-                        >
+                          Background
+                        </small>
+                        <div className="btn overflow-hidden flex-grow-1 props-btn rounded-0 p-0">
                           <input
                             type="color"
-                            value={activeElement?.color}
-                            style={{
-                              scale: "2",
-                              border: ``,
-                            }}
+                            className="form-control form-control-color w-100 props-btn border"
+                            style={{ scale: 3 }}
+                            value={activeElement?.background}
+                            onChange={(e) =>
+                              activeElement
+                                ? handleChange(
+                                    activeId,
+                                    "background",
+                                    e.target.value
+                                  )
+                                : setCanvasBgColor(e.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      className="props-btn fw-medium toolbar-button flex-grow-1"
+                      style={{
+                        border: `1px solid ${"#ededed"}`,
+                        minWidth: "84px",
+                      }}
+                      disabled={!activeElement}
+                      onClick={() => {
+                        activeElement
+                          ? handleChange(activeId, "background", "00000000")
+                          : "";
+                      }}
+                    >
+                      &nbsp;Reset BG&nbsp;
+                    </button>
+
+                    {elements?.length > 1 && (
+                      <>
+                        <button
+                          className={`toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          onClick={() => bringToFront(activeElement?.id)}
+                          disabled={!activeElement}
+                          style={{ minWidth: "34px" }}
+                        >
+                          <FontAwesomeIcon icon={faArrowUp} color={"#ededed"} />
+                        </button>
+                        <button
+                          className="btn props-btn toolbar-button"
+                          onClick={() => {
+                            setContinuousActiveId();
+                          }}
+                          style={{ minWidth: "max-content" }}
+                        >
+                          <b style={{ color: "#ededed" }}>Active</b>
+                        </button>
+                      </>
+                    )}
+
+                    {activeId && (
+                      <>
+                        <button
+                          className={`btn props-btn toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          onClick={() => setActiveId(null)}
+                          style={{
+                            border: `1px solid ${"#ededed"}`,
+                            minWidth: "max-content",
+                          }}
+                          disabled={!activeElement}
+                        >
+                          <b style={{ color: "#ededed" }}>- / -</b>
+                        </button>
+
+                        <button
+                          className={`btn  toolbar-button ${
+                            activeElement ? "active" : ""
+                          }`}
+                          style={{ minWidth: "max-content" }}
+                          onPointerDown={() => {
+                            if (activeElement) {
+                              deleteElement(activeElement?.id);
+                            }
+                          }}
+                          disabled={!activeElement}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {styleOpen && (
+                  <div className="d-flex gap-2 text-light mb-2 overflow-x-auto overflow-y-hidden none-scroller">
+                    {active_style.map((op) => (
+                      <button
+                        className={`props-btn toolbar-button ${
+                          activeElement?.[style_type] == op ? "active" : ""
+                        }`}
+                        style={{
+                          color: "#ededed",
+                          minWidth: "fit-content",
+                          minHeight: "max-height",
+                          boxShadow: `${style_type == "boxShadow" ? op : ""}`,
+                        }}
+                        onClick={() => {
+                          handleChange(activeId, style_type, op);
+                        }}
+                      >
+                        <span
+                          className="btn border-0 p-2"
+                          style={{
+                            color: "#ededed",
+                            [style_type]: `${
+                              op == "fontSize" || style_type == "boxShadow"
+                                ? ""
+                                : op
+                            }`,
+                          }}
+                        >
+                          {style_type == "textShadow" ||
+                          style_type == "boxShadow"
+                            ? "A"
+                            : op}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="position-sticky my-1 d-flex gap-2">
+                  <div className="d-flex gap-2 border-0">
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTextWriteOpen(!textWriteOpen);
+                      }}
+                      className="toolbar-button props-btn"
+                      style={{
+                        wordSpacing: "pre-wrap",
+                        minWidth: "max-content",
+                      }}
+                    >
+                      &nbsp; {!textWriteOpen ? "open" : "close "} &nbsp;
+                    </div>
+                  </div>
+
+                  <div className="" style={{ minWidth: "max-content" }}>
+                    <>
+                      <div
+                        className="d-flex flex-row-reverse props-parent flex-wrap gap-2 overflow-x-auto"
+                        style={{
+                          height: "max-content",
+                        }}
+                      >
+                        <button className="btn flex-grow-1 overflow-hidden btn-success props-btn rounded-0 p-0">
+                          <label className="btn btn-success props-btn gap-2 rounded-0 w-100">
+                            Add{" "}
+                            <FontAwesomeIcon icon={faImage} color={text_clrH} />
+                            <input
+                              type="file"
+                              className="d-none"
+                              accept="image/*"
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                addImageBox(e.target.files[0]);
+                              }}
+                            />
+                          </label>
+                        </button>
+
+                        <button
+                          className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
+                          onClick={addTextBox}
+                        >
+                          <div className="props-btn rounded-0">
+                            Add Text &nbsp;
+                            <FontAwesomeIcon
+                              icon={faTextHeight}
+                              className="me-2"
+                            />
+                          </div>
+                        </button>
+                      </div>
+                    </>
+                  </div>
+
+                  <div
+                    className="d-flex gap-2 w-100 none-scroller overflow-x-auto overflow-y-hidden"
+                    style={{ maxHeight: "40px" }}
+                  >
+                    {pre_bg_color.map((c, idx) => {
+                      return (
+                        <span
+                          key={`bg-${idx}`}
+                          className="rounded-5 d-block"
+                          style={{
+                            minWidth: "30px",
+                            minHeight: "30px",
+                            background: `${c}`,
+                            cursor: "pointer",
+                            border: `${
+                              canvasBgColor === c
+                                ? "2px solid red"
+                                : "2px solid #f9d8df00"
+                            }`,
+                          }}
+                          onClick={() => {
+                            setCanvasBgColor(c);
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {hidePage === "objectPosition" && (
+                  <>
+                    <div
+                      className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
+                      style={{ background: bg1, color: text_clrH }}
+                    >
+                      <div className="d-flex flex-grow-1 w-100 flex-column">
+                        <label className="w-100 d-flex gap-2 flex-grow-1 ">
+                          X
+                          <input
+                            type="range"
+                            id="rg1"
+                            className="w-100"
+                            min={-600}
+                            max={600}
+                            value={activeElement?.range1}
                             onChange={(e) => {
-                              e.stopPropagation();
                               handleChange(
                                 activeElement?.id,
-                                "color",
+                                "range1",
                                 e.target.value
                               );
                             }}
-                            defaultValue={"#ff0000"}
-                            open
                           />
-                        </div> */}
-
-                          {/*
-                        <div
-                          className="props-btn toolbar-button"
-                          style={{
-                            border: `1px solid ${"#ededed"}`,
-                            minWidth: "120px",
-                          }}
-                        >
-                          <div
-                            className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
-                            style={{ translate: "6px" }}
-                          >
-                            <small
-                              className="flex-grow-1"
-                              style={{ color: "#ededed" }}
-                            >
-                              Background
-                            </small>
-                            <div className="btn overflow-hidden flex-grow-1 props-btn rounded-0 p-0">
-                              <input
-                                type="color"
-                                className="form-control form-control-color w-100 props-btn border"
-                                style={{ scale: 3 }}
-                                value={
-                                  activeElement
-                                    ? activeElement.background
-                                    : "00000000"
-                                }
-                                onChange={(e) =>
-                                  activeElement
-                                    ? handleChange(
-                                        activeId,
-                                        "background",
-                                        e.target.value
-                                      )
-                                    : setCanvasBgColor(e.target.value)
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div> */}
-
-                          {/* <button
-                          className="props-btn fw-medium toolbar-button flex-grow-1"
-                          style={{
-                            border: `1px solid ${"#ededed"}`,
-                            minWidth: "84px",
-                          }}
-                          disabled={!activeElement}
-                          onClick={() => {
-                            activeElement
-                              ? handleChange(activeId, "background", "00000000")
-                              : "";
-                          }}
-                        >
-                          &nbsp; reset bg&nbsp;
-                        </button> */}
-                        </>
-
-                        {elements?.length > 1 && (
-                          <>
-                            <button
-                              className={`toolbar-button ${
-                                activeElement ? "active" : ""
-                              }`}
-                              onClick={() => bringToFront(activeElement?.id)}
-                              disabled={!activeElement}
-                              style={{ minWidth: "34px" }}
-                            >
-                              <FontAwesomeIcon
-                                icon={faArrowUp}
-                                color={"#ededed"}
-                              />
-                            </button>
-                            <button
-                              className="btn props-btn toolbar-button"
-                              onClick={() => {
-                                setContinuousActiveId();
-                              }}
-                              style={{ minWidth: "max-content" }}
-                            >
-                              <b style={{ color: "#ededed" }}>Active</b>
-                            </button>
-                          </>
-                        )}
-
-                        {activeId && (
-                          <>
-                            <button
-                              className={`btn props-btn toolbar-button ${
-                                activeElement ? "active" : ""
-                              }`}
-                              onClick={() => setActiveId(null)}
-                              style={{
-                                border: `1px solid ${"#ededed"}`,
-                                minWidth: "max-content",
-                              }}
-                              disabled={!activeElement}
-                            >
-                              <b style={{ color: "#ededed" }}>- / -</b>
-                            </button>
-
-                            <button
-                              className={`btn  toolbar-button ${
-                                activeElement ? "active" : ""
-                              }`}
-                              style={{ minWidth: "max-content" }}
-                              onPointerDown={() => {
-                                if (activeElement) {
-                                  deleteElement(activeElement?.id);
-                                }
-                              }}
-                              disabled={!activeElement}
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </summary>
-
-                    <div className="d-flex gap-2 text-light mb-2 overflow-x-auto overflow-y-hidden none-scroller">
-                      {active_style.map((op) => (
-                        <button
-                          className={`props-btn toolbar-button ${
-                            activeElement?.[style_type] == op ? "active" : ""
-                          }`}
-                          style={{
-                            color: "#ededed",
-                            minWidth: "fit-content",
-                            minHeight: "max-height",
-                            boxShadow: `${style_type == "boxShadow" ? op : ""}`,
-                          }}
-                          onClick={() => {
-                            handleChange(activeId, style_type, op);
-                          }}
-                        >
-                          <span
-                            className="btn border-0 p-2"
-                            style={{
-                              color: "#ededed",
-                              [style_type]: `${
-                                op == "fontSize" || style_type == "boxShadow"
-                                  ? ""
-                                  : op
-                              }`,
+                        </label>
+                        <label className="w-100 d-flex gap-2">
+                          Y
+                          <input
+                            type="range"
+                            className="w-100 border"
+                            id="rg2"
+                            min={-1000}
+                            max={1000}
+                            value={activeElement?.range2}
+                            onChange={(e) => {
+                              handleChange(
+                                activeElement?.id,
+                                "range2",
+                                e.target.value
+                              );
                             }}
-                          >
-                            {style_type == "textShadow" ||
-                            style_type == "boxShadow"
-                              ? "A"
-                              : op}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </details>
-                </div>
+                          />
+                        </label>
+                      </div>
 
-                <div className=" border-0 position-sticky my-2 ms-2">
-                  <details
-                    className="rounded border-0"
-                    style={{ background: bg2 }}
-                    onClick={preventToggle}
-                  >
-                    <summary
-                      className="d-flex gap-2 mb-1 border-0"
-                      style={{ background: bg2 }}
+                      <div className="d-flex flex-column gap-1 align-items-center">
+                        <div
+                          className="btn btn-danger rounded-1 px-2 py-0 text-end"
+                          onClick={() => {
+                            setHidePage("");
+                            setStyleOpen(false);
+                          }}
+                        >
+                          Close
+                        </div>
+
+                        <div
+                          className="btn btn-dark rounded-1 px-2 py-0 text-end"
+                          onClick={() => {
+                            handleChange(activeElement?.id, "range1", 0);
+
+                            handleChange(activeElement?.id, "range2", 0);
+                          }}
+                        >
+                          Reset
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {hidePage === "borderRadius" && (
+                  <>
+                    <div
+                      className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
+                      style={{ background: bg1 }}
                     >
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setDetailsOpen(!detailsOpen);
-                        }}
-                        className="toolbar-button props-btn"
-                        style={{
-                          wordSpacing: "pre-wrap",
-                          minWidth: "max-content",
-                        }}
-                      >
-                        &nbsp; {!detailsOpen ? "open " : "close "} &nbsp;
+                      <div className="d-flex flex-grow-1 w-100 flex-column">
+                        <label className="w-100 d-flex flex-column gap-2 flex-grow-1 ">
+                          <span className="mb-1 fw-semibold">
+                            Round the border
+                          </span>
+                          <input
+                            type="range"
+                            id="rg1"
+                            className="w-100"
+                            min={0}
+                            max={400}
+                            value={activeElement?.borderRadius}
+                            onChange={(e) => {
+                              handleChange(
+                                activeElement?.id,
+                                "borderRadius",
+                                e.target.value
+                              );
+                            }}
+                          />
+                        </label>
                       </div>
 
-                      <div
-                        className="d-flex gap-2 w-100 none-scroller overflow-x-auto overflow-y-hidden"
-                        style={{ maxHeight: "40px" }}
-                      >
-                        {pre_bg_color.map((c, idx) => {
-                          return (
-                            <span
-                              key={`bg-${idx}`}
-                              className="rounded-5 d-block"
-                              style={{
-                                minWidth: "30px",
-                                minHeight: "30px",
-                                background: `${c}`,
-                                cursor: "pointer",
-                                border: `${
-                                  canvasBgColor === c
-                                    ? "2px solid red"
-                                    : "2px solid #f9d8df00"
-                                }`,
-                              }}
-                              onClick={() => {
-                                setCanvasBgColor(c);
-                              }}
-                            />
-                          );
-                        })}
-                      </div>
-                    </summary>
+                      <div className="d-flex flex-column gap-1 align-items-center">
+                        <div
+                          className="btn btn-danger rounded-1 px-2 py-0 text-end"
+                          onClick={() => {
+                            setHidePage("");
+                            setStyleOpen(false);
+                          }}
+                        >
+                          Close
+                        </div>
 
-                    <div className="border">
-                      <textarea
-                        className="form-control w-100 overflow-auto none-scroller border py-2"
-                        value={activeElement?.content}
-                        style={{
-                          background: bg2,
-                          color: text_clrH,
-                          border: `1px solid ${text_clrH}`,
-                          minHeight: "80px",
-                          fontSize: "10px",
-                        }}
-                        placeholder="Click Add Text and then write Here !"
-                        spellCheck={false}
-                        onChange={(e) =>
-                          handleChange(
-                            activeElement?.id,
-                            "content",
-                            e.target.value
-                          )
-                        }
-                      >
-                        {activeElement?.content || "Type Here"}
-                      </textarea>
+                        <div
+                          className="btn btn-dark rounded-1 px-2 py-0 text-end"
+                          onClick={() => {
+                            handleChange(activeElement?.id, "borderRadius", 0);
+                          }}
+                        >
+                          Reset
+                        </div>
+                      </div>
                     </div>
-                  </details>
-                </div>
+                  </>
+                )}
+
+                {textWriteOpen && (
+                  <div className="mt-">
+                    <textarea
+                      className="form-control w-100 overflow-auto none-scroller border py-2"
+                      value={activeElement?.content}
+                      style={{
+                        color: text_clrH,
+                        border: `1px solid ${text_clrH}`,
+                        minHeight: "80px",
+                        fontSize: "10px",
+                      }}
+                      placeholder="Click Add Text and then write Here !"
+                      spellCheck={false}
+                      onChange={(e) =>
+                        handleChange(
+                          activeElement?.id,
+                          "content",
+                          e.target.value
+                        )
+                      }
+                    >
+                      {activeElement?.content || "Type Here"}
+                    </textarea>
+                  </div>
+                )}
               </div>
             </div>
 
             <div
               className="position-relative"
               style={{
-                marginTop: `calc(${detailsOpen ? `140px` : "54px"} + ${
-                  styleOpen ? `96px` : "62px"
+                marginTop: `calc(${textWriteOpen ? `134px` : "54px"} + ${
+                  styleOpen ? `82px` : "44px"
                 })`,
                 width: "100%",
-                borderBlock: "2px solid red",
-                background: bg3,
+                border: "2px solid red",
+                background: bg2,
               }}
             >
               <div
@@ -1060,6 +1252,7 @@ const CanvasVibeEditor = () => {
                             outline: "none",
                             width: `${el.width}px`,
                             height: `${el.height}px`,
+                            borderRadius: `${el.borderRadius}px`,
                           }}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
@@ -1077,15 +1270,18 @@ const CanvasVibeEditor = () => {
                           {el.content}
                         </div>
                       ) : (
-                        <div className="overflow-hidden d-flex align-items-center justify-content-center h-100 w-100">
+                        <div className="overflow-hidden  h-100 w-100">
                           <img
                             src={el.src}
                             alt="uploaded"
-                            className="image-element overflow-hidden w-100"
+                            className="image-element overflow-hidden h-100 w-100"
                             draggable={false}
                             style={{
-                              objectFit: "cover",
                               boxShadow: el.boxShadow,
+                              position: "relative",
+                              objectFit: "cover",
+                              objectPosition: `${el.range1}px ${el.range2}px`,
+                              borderRadius: `${el.borderRadius}px`,
                             }}
                           />
                         </div>
@@ -1127,169 +1323,137 @@ const CanvasVibeEditor = () => {
         </div>
       </div>
 
-      <div
-        className="py-3"
-        style={{ background: bg2, minWidth: "max-content" }}
-      >
-        <>
-          <div
-            className="d-flex flex-row-reverse props-parent flex-wrap gap-2 overflow-x-auto"
+      <div style={{ background: bg1 }}>
+        <div className="d-flex gap-3 p-2 ">
+          <button
+            className={`btn border p-1 ps-2 pe-2 rounded-5 `}
+            onClick={() => setActiveBtn3Profile("Public")}
             style={{
-              height: "max-content",
+              color: activeBtn3Profile === "Public" ? bg1 : text_clrH,
+              background: activeBtn3Profile === "Public" ? text_clrH : "",
             }}
           >
-            <button className="btn flex-grow-1 overflow-hidden btn-success props-btn rounded-0 p-0">
-              <label className="btn btn-success props-btn gap-2 rounded-0 w-100">
-                Add <FontAwesomeIcon icon={faImage} color={text_clrH} />
-                <input
-                  type="file"
-                  className="d-none"
-                  accept="image/*"
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    addImageBox(e.target.files[0]);
-                  }}
-                />
-              </label>
-            </button>
+            <small> For Public</small>
+          </button>
+          <button
+            className={`btn border p-1 ps-2 pe-2 rounded-5 ${
+              activeBtn3Profile === "Follower" ? "btn-dark" : ""
+            }`}
+            onClick={() => setActiveBtn3Profile("Follower")}
+            style={{
+              color: activeBtn3Profile === "Follower" ? bg1 : text_clrH,
+              background: activeBtn3Profile === "Follower" ? text_clrH : "",
+            }}
+          >
+            <small> For Follower</small>
+          </button>
+          <button
+            className={`btn border p-1 ps-3 pe-3 rounded-5 ${
+              activeBtn3Profile === "Paid" ? "btn-dark" : ""
+            }`}
+            onClick={() => setActiveBtn3Profile("Paid")}
+            disabled={true}
+            style={{
+              color: activeBtn3Profile === "Paid" ? text_clrH : "",
+              background: activeBtn3Profile === "Paid" ? text_clrH : "",
+            }}
+          >
+            <small>Paid Only</small>
+          </button>
+        </div>
 
-            <button
-              className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
-              onClick={addTextBox}
+        <div className="px-2">
+          <div className="d-flex gap-2 align-items-center  pb-0 pt-3">
+            <div
+              className="d-flex fw-semibold text-white rounded-5 align-items-center justify-content-center"
+              style={{
+                width: "40px",
+                height: "40px",
+                backgroundColor: `${admin_user?.bg_clr}`,
+                color: text_clrH,
+              }}
             >
-              <div className="props-btn rounded-0">
-                Add Text &nbsp;
-                <FontAwesomeIcon icon={faTextHeight} className="me-2" />
+              {admin_user?.username?.charAt(0) || "M"}
+            </div>
+            <div>
+              <div style={{ fontWeight: "bold", color: text_clrH }}>
+                @{admin_user?.username || "Mahtab"}
               </div>
-            </button>
+              <small style={{ color: text_clrM }}>
+                Visibility: {activeBtn3Profile}
+              </small>
+            </div>
           </div>
-        </>
-      </div>
+          <div className="mt-2">
+            <textarea
+              value={text}
+              onChange={(e) => {
+                handleInput(0, e, "text");
+              }}
+              className={`form-control rounded h-100 shadow-none ps-1 pe-2 overflow-auto none-scroller`}
+              placeholder="Write about post here . . ."
+              style={{
+                background: bg1,
+                color: text_clrH,
+                minHeight: `${text.split("\n").length * 22}px`,
+                border: `${error ? "1px solid red" : `1px solid ${bg1}`}`,
+              }}
+              spellCheck="false"
+            />
+          </div>
+        </div>
 
-      <div className="d-flex gap-3 pt-2 ">
-        <button
-          className={`btn border p-1 ps-2 pe-2 rounded-5 `}
-          onClick={() => setActiveBtn3Profile("Public")}
-          style={{
-            color: activeBtn3Profile === "Public" ? bg1 : text_clrM,
-            background: activeBtn3Profile === "Public" ? text_clrM : "",
-          }}
-        >
-          <small> For Public</small>
-        </button>
-        <button
-          className={`btn border p-1 ps-2 pe-2 rounded-5 ${
-            activeBtn3Profile === "Follower" ? "btn-dark" : ""
-          }`}
-          onClick={() => setActiveBtn3Profile("Follower")}
-          style={{
-            color: activeBtn3Profile === "Follower" ? bg1 : text_clrM,
-            background: activeBtn3Profile === "Follower" ? text_clrM : "",
-          }}
-        >
-          <small> For Follower</small>
-        </button>
-        <button
-          className={`btn border p-1 ps-3 pe-3 rounded-5 ${
-            activeBtn3Profile === "Paid" ? "btn-dark" : ""
-          }`}
-          onClick={() => setActiveBtn3Profile("Paid")}
-          disabled={true}
-          style={{
-            color: activeBtn3Profile === "Paid" ? text_clrH : "",
-            background: activeBtn3Profile === "Paid" ? text_clrM : "",
-          }}
-        >
-          <small>Paid Only</small>
-        </button>
-      </div>
-
-      <div className="">
-        <div className="d-flex gap-2 align-items-center  pb-0 pt-3">
-          <div
-            className="d-flex fw-semibold text-white rounded-5 align-items-center justify-content-center"
+        <div className="vibeTabs px-2">
+          <Tabs
+            id="controlled-tab-example"
+            activeKey={category}
+            onSelect={(k) => setCategory(k)}
+            className="border-0 d-flex gap-3 py-2 flex-nowrap none-scroller overflow-auto"
+            transition={false}
             style={{
-              width: "40px",
-              height: "40px",
-              backgroundColor: `${admin_user?.bg_clr}`,
+              "--bg1": bg2,
+              "--bg2": bg1,
+              "--tc1": text_clrH,
+              "--tc2": text_clrM,
+              width: "100%",
+              // gridTemplateColumns: "repeat(auto-fit , minmax(100px, 1fr))",
             }}
           >
-            {admin_user?.username?.charAt(0) || "M"}
-          </div>
-          <div>
-            <div style={{ fontWeight: "bold" }}>
-              @{admin_user?.username || "Mahtab"}
-            </div>
-            <small style={{ color: text_clrM }}>
-              Visibility: {activeBtn3Profile}
-            </small>
-          </div>
+            {categories.map(({ key, title }) => (
+              <Tab
+                eventKey={key}
+                title={title}
+                className="border-0"
+                key={key}
+              />
+            ))}
+          </Tabs>
         </div>
-        <div className="mt-2">
-          <textarea
-            value={text}
-            onChange={(e) => {
-              handleInput(0, e, "text");
-            }}
-            className={`form-control rounded-0 h-100 shadow-none ps-1 pe-2 overflow-auto none-scroller`}
-            placeholder="Write about post here . . ."
+
+        <div className="d-flex gap-3 p-2 justify-content-end p-0 pb-5 mb-4">
+          <label
+            htmlFor="images"
+            className="btn  ps-3 pe-3 rounded-0 p-2"
             style={{
-              background: bg2,
-              color: text_clrH,
-              minHeight: `${text.split("\n").length * 22}px`,
-              border: `${error ? "1px solid red" : "0"}`,
+              height: "42px",
+              border: `1px solid ${"#959595ff"}`,
+              color: text_clrM,
             }}
-            spellCheck="false"
-          />
+            disabled={true}
+          >
+            Set as Status
+          </label>
+
+          <button
+            type={LazyLoading ? "button" : "submit"}
+            className="btn btn-danger flex-grow-1 rounded-0"
+            style={{ height: "42px" }}
+            disabled={LazyLoading}
+            onClick={handleSubmit}
+          >
+            {LazyLoading ? <Loading clr={"white"} /> : "Post"}
+          </button>
         </div>
-      </div>
-
-      <div className="vibeTabs">
-        <Tabs
-          id="controlled-tab-example"
-          activeKey={category}
-          onSelect={(k) => setCategory(k)}
-          className="border-0 d-flex gap-3 py-2 flex-nowrap none-scroller overflow-auto"
-          transition={false}
-          style={{
-            "--bg1": bg1,
-            "--bg2": bg2,
-            "--tc1": text_clrH,
-            "--tc2": text_clrM,
-            width: "100%",
-            // gridTemplateColumns: "repeat(auto-fit , minmax(100px, 1fr))",
-          }}
-        >
-          {categories.map(({ key, title }) => (
-            <Tab eventKey={key} title={title} className="border-0" key={key} />
-          ))}
-        </Tabs>
-      </div>
-
-      <div className="d-flex gap-3 pt-2 justify-content-end p-0 pb-5 mb-4">
-        <label
-          htmlFor="images"
-          className="btn  ps-3 pe-3 rounded-0 p-2"
-          style={{
-            height: "42px",
-            border: `1px solid ${"#959595ff"}`,
-            color: text_clrM,
-          }}
-          disabled={true}
-        >
-          Set as Status
-        </label>
-
-        <button
-          type={LazyLoading ? "button" : "submit"}
-          className="btn btn-danger flex-grow-1 rounded-0"
-          style={{ height: "42px" }}
-          disabled={LazyLoading}
-          onClick={handleSubmit}
-        >
-          {LazyLoading ? <Loading clr={"white"} /> : "Post"}
-        </button>
       </div>
     </div>
   );

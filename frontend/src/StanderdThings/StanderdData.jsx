@@ -270,6 +270,7 @@ const backgroundSize = [
   "auto 100%", // auto width, full height
 ];
 
+const objectPosition = [];
 // const { search } = useLocation();
 // const params = new URLSearchParams(search);
 
@@ -297,4 +298,5 @@ export {
   textDecoration,
   textShadow,
   boxShadow,
+  objectPosition,
 };

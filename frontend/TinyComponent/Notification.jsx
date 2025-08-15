@@ -22,13 +22,7 @@ export const Notification = ({ setVisibleNotification }) => {
   const nevigate = useNavigate();
   const [go_comment, setGo_comment] = useState(false);
 
-  const {
-    curr_all_notifications,
-    mobile_break_point,
-    token,
-    sm_break_point,
-    setopenSlidWin,
-  } = useQuote();
+  const { curr_all_notifications, token, setopenSlidWin } = useQuote();
 
   const [comments, setComments] = useState(post?.comments || []); // store comments here
   const { fetch_comments_postId, fetch_post_by_Id } = usePost();
@@ -88,29 +82,51 @@ export const Notification = ({ setVisibleNotification }) => {
     <>
       {setVisibleNotification && (
         <div
-          className="list p-1 me-1 h-100"
+          className="list rounded overflow-auto none-scroller  "
           style={{
-            width: `calc(100vw - ${
-              mobile_break_point ? "4px" : sm_break_point ? "100px" : "265px"
-            })`,
+            // border: "2px solid red",
             minHeight: "100px",
+            margin: "auto",
             background: bg2,
             color: text_clrM,
+            maxWidth: "481px",
+            boxShadow: `0 4px 10px ${text_clrM}`,
+            maxHeight: "85vh",
           }}
         >
-          {/* <h5 className=""></h5> */}
+          <h5
+            className="d-flex align-items-center gap-3 position-sticky py-2 top-0"
+            style={{ background: bg1 }}
+          >
+            <div
+              className="d-inline-flex p-1 rounded-1"
+              onClick={() => {
+                setopenSlidWin(false);
+              }}
+              style={{
+                minWidth: "32px",
+                maxHeight: "32px",
+                cursor: "pointer",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                fill={text_clrH}
+              >
+                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+              </svg>
+            </div>
+            <span className="d-inline-flex">Notifications</span>
+          </h5>
           <div
-            className="notification d-flex flex-column gap-4 h-100 w-100 overflow-y-auto"
+            className="notification  d-flex p-2 pb-4  flex-column gap-4 h-100 w-100 "
             style={{
-              maxHeight: "80vh",
-              // width: "calc(100% - 5px)",
               zIndex: "100",
               background: bg2,
               color: text_clrH,
             }}
           >
-            {/* <i className="fa-solid fa-arrow-left"></i> */}
-            {/* {LazyLoading && <Loading />} */}
             {LazyLoading || curr_all_notifications.length < 1 ? (
               <Loading dm={32} />
             ) : go_comment ? (

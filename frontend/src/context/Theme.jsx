@@ -21,7 +21,7 @@ export const ThemeProvider = ({ children }) => {
   const [mainbg, setMainBg] = useState("#f6fafeff");
   const [bg1, setBg1] = useState("#f5f9feff");
   const [bg2, setBg2] = useState("#e9edf1ff");
-  const [bg3, setBg3] = useState("#9b9b9bff");
+  const [bg3, setBg3] = useState("#d5dee3ff");
   const [text_clrH, setText_clrH] = useState("#000911ff");
   const [text_clrM, setText_clrM] = useState("#222222ff");
   const [text_clrL, setText_clrL] = useState("#bbbbbbff");
@@ -29,9 +29,9 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     if (themeType === "dark") {
       setMainBg("#040404ff");
-      setBg1("#050505ff");
-      setBg2("#0d0d0dff");
-      setBg3("#282828ff");
+      setBg1("#000000ff");
+      setBg2("#0e0e0eff");
+      setBg3("#a4a2a2ff");
       setText_clrH("#eeeeee");
       setText_clrM("#c3c2c2ff");
       setText_clrL("#9b9b9bff");
@@ -40,8 +40,8 @@ export const ThemeProvider = ({ children }) => {
     } else {
       setMainBg("#f6fafeff");
       setBg1("#f5f9feff");
-      setBg2("#e9edf1ff");
-      setBg3("#b9c1c6ff");
+      setBg2("#e0e6ecff");
+      setBg3("#d5dee3ff");
       setText_clrH("#000911ff");
       setText_clrM("#222222ff");
       setText_clrL("#bbbbbbff");

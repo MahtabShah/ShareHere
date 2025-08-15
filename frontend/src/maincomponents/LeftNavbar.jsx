@@ -25,17 +25,8 @@ import { Notification } from "../../TinyComponent/Notification";
 const API = import.meta.env.VITE_API_URL;
 import CanvasVibeEditor from "./CanvasEditor";
 import { useTheme } from "../context/Theme";
-const menuItems = [
-  { icon: faExternalLinkAlt, label: "Connect", herf: "Home" },
-  { icon: faLock, label: "Privacy", herf: "Home" },
-  { icon: faBookOpen, label: `FAQ's`, herf: "Home" },
-  { icon: faCircleInfo, label: "About", herf: "Home" },
-  { icon: faCircleQuestion, label: "Help", herf: "Home" },
-  { icon: faGear, label: "Settings", herf: "Home" },
-  { icon: faUser, label: "User Profile", herf: "profile" },
-];
 
-export default function LeftNavbar({ onActiveChange = "" }) {
+export default function LeftNavbar() {
   const {
     sm_break_point,
     admin_user,
@@ -84,78 +75,6 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     }
   };
 
-  function GiveComponent(activeIndex, ref) {
-    if (activeIndex == "Search") {
-      return (
-        <>
-          <h5
-            className="d-flex align-items-center gap-2 mx-2 position-fixed  py-2"
-            style={{
-              zIndex: 9999999,
-              top: 0,
-              left: `${
-                mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
-              }`,
-              right: 0,
-              background: bg2,
-            }}
-          >
-            {ref} Search Your Quote Here
-          </h5>
-          <div
-            className="w-100"
-            style={{ maxWidth: "601px", marginTop: "40px" }}
-          >
-            <SearchBaar />
-          </div>
-        </>
-      );
-    } else if (activeIndex == "Notifications") {
-      return (
-        <>
-          {" "}
-          <h5
-            className="d-flex align-items-center gap-2 mx-2 position-fixed py-2"
-            style={{
-              zIndex: 9999999,
-              top: 0,
-              left: `${
-                mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
-              }`,
-              right: 0,
-              background: bg2,
-            }}
-          >
-            {ref} All Notifications
-          </h5>
-          <div style={{ marginTop: "40px", background: bg2 }}>
-            <Notification setVisibleNotification={setVisibleNotification} />{" "}
-          </div>
-        </>
-      );
-    } else if (activeIndex == "Upload") {
-      return (
-        <>
-          <h5
-            className="d-flex align-items-center gap-2 mx-2 position-fixed  py-2"
-            style={{
-              zIndex: 9999999,
-              top: 0,
-              left: `${
-                mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
-              }`,
-              right: 0,
-              background: bg2,
-            }}
-          >
-            {ref} Upload Your Thought Here
-          </h5>
-          <CanvasVibeEditor />
-        </>
-      );
-    }
-  }
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     setLoggedIn(!!token);
@@ -171,26 +90,15 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     if (onLogout) onLogout();
   };
 
-  useEffect(() => {
-    if (openSlidWin) {
-      document.documentElement.classList.add("no-scroll");
-    } else {
-      document.documentElement.classList.remove("no-scroll");
-    }
-  }, [openSlidWin]);
-
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
 
   return (
     <>
       <div
-        className="LeftNavbar d-flex h-100 pt-0 position-fixed top-0"
-        style={{
-          zIndex: `${openSlidWin ? 100000000000 : 1000000000}`,
-          width: `${openSlidWin ? "100%" : "0"}`,
-          background: bg2,
-          borderRight: `${mobile_break_point ? "" : `1px solid ${text_clrL}`}`,
-        }}
+        className={`LeftNavbar d-flex h-100 position-fixed top-0 ${
+          activeIndex === "Upload" ? "w-100" : ""
+        }`}
+        style={{ zIndex: 991999, background: bg2 }}
       >
         {!mobile_break_point && (
           <div
@@ -202,9 +110,8 @@ export default function LeftNavbar({ onActiveChange = "" }) {
               borderRight: `1px solid ${text_clrL}`,
             }}
           >
-            {/* <div className="mb-2 fw-bold text-uppercase fs-5">Menu</div> */}
             <ul className="nav nav-pills flex-column gap-3 mb-auto">
-              <li className="nav-item  pt-1">
+              <li className="nav-item   pt-1">
                 <a
                   href="/home"
                   className={`nav-link d-flex align-items-center gap-3 fs-6`}
@@ -240,7 +147,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 </a>
               </li>
 
-              <li className="nav-item ">
+              <li className="nav-item">
                 <Nav.Link
                   href={`${openSlidWin ? "" : "/home"}`}
                   className={`nav-link d-flex align-items-center gap-3 fs-6  ${
@@ -435,39 +342,32 @@ export default function LeftNavbar({ onActiveChange = "" }) {
             </ul>
           </div>
         )}
-        {openSlidWin && (
-          <div
-            className="p-2 w-100 overflow-y-auto position-relative none-scroller"
-            style={{
-              zIndex: 2000000,
-              top: 0,
-              color: text_clrM,
 
-              // marginTop: `${mobile_break_point ? "54px" : ""}`,
-              // marginBottom: `${mobile_break_point ? "48px" : ""}`,
-            }}
+        {activeIndex === "Upload" && (
+          <div
+            className="overflow-y-auto h-100 position-relative none-scroller"
+            style={{ zIndex: 8999922, margin: "auto" }}
           >
-            {GiveComponent(
-              activeIndex,
-              <span
-                className="d-inline-flex ms-1"
-                style={{ width: "16px", cursor: "pointer" }}
-                onClick={() => {
-                  setopenSlidWin(false);
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  fill={text_clrM}
-                >
-                  <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-                </svg>
-              </span>
-            )}
+            <CanvasVibeEditor />
           </div>
         )}
       </div>
+
+      {activeIndex === "Notifications" && (
+        <div
+          className="h-100 position-fixed w-100 h-100 "
+          style={{
+            zIndex: 8992,
+            margin: "auto",
+            top: `${mobile_break_point ? "52px" : "54px"}`,
+            left: `${
+              mobile_break_point ? "0" : sm_break_point ? "40px" : "26px"
+            }`,
+          }}
+        >
+          <Notification setVisibleNotification={setVisibleNotification} />
+        </div>
+      )}
     </>
   );
 }
