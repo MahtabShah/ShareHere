@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, act } from "react";
 import { toPng } from "html-to-image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Rnd } from "react-rnd";
@@ -63,6 +63,7 @@ import {
 const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
+  const [activeElement, setActiveElement] = useState(null);
   const [canvasHeight, setCanvasHeight] = useState(440);
   const [canvasBgColor, setCanvasBgColor] = useState("#4bbac0ff");
   const [exporting, setExporting] = useState(false);
@@ -111,8 +112,9 @@ const CanvasVibeEditor = () => {
       textShadow: "",
       backgroundPosition: "",
     };
-    setElements([...elements, newText]);
+    setElements((prev) => [...prev, newText]);
     setActiveId(newText.id);
+    setActiveElement(newText);
   };
 
   const addImageBox = (file) => {
@@ -141,14 +143,6 @@ const CanvasVibeEditor = () => {
     );
 
     console.log("val ", value);
-  };
-
-  const handleResizeOrDrag = (id, width, height, x, y) => {
-    setElements((prev) =>
-      prev.map((el) =>
-        el.id === id ? { ...el, ...width, ...height, ...x, ...y } : el
-      )
-    );
   };
 
   const setContinuousActiveId = () => {
@@ -229,8 +223,6 @@ const CanvasVibeEditor = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const activeElement = elements.find((el) => el.id === activeId);
 
   // -----------------------------------posting-----------------------------
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("Public");
@@ -978,8 +970,6 @@ const CanvasVibeEditor = () => {
                     style={{
                       left: `${el.x}px`,
                       top: `${el.y}px`,
-                      width: `${el.width}px`,
-                      height: `${el.height}px`,
                       zIndex: el.zIndex,
                       border:
                         activeId === el.id
@@ -1000,20 +990,10 @@ const CanvasVibeEditor = () => {
                     enableResizing={activeElement?.id == el.id ? true : false}
                     onClick={(e) => {
                       setActiveId(el.id);
+                      setActiveElement(el);
                     }}
                   >
-                    <div
-                      className="w-100 h-100 position-relative"
-                      onDrag={() => {
-                        handleResizeOrDrag(
-                          el.id,
-                          el.width,
-                          el.height,
-                          el.x,
-                          el.y
-                        );
-                      }}
-                    >
+                    <div className="w-100 h-100 position-relative">
                       {activeId === el.id && (
                         <>
                           <button
@@ -1041,6 +1021,12 @@ const CanvasVibeEditor = () => {
                               bottom: "-12px",
                               right: "-12px",
                             }}
+                            onTouchStart={(e) => {
+                              e.stopPropagation();
+                            }}
+                            onMouseDown={(e) => {
+                              e.stopPropagation();
+                            }}
                           >
                             <FaArrowsAltH
                               className="position-absolute"
@@ -1056,7 +1042,7 @@ const CanvasVibeEditor = () => {
 
                       {el.type === "text" ? (
                         <div
-                          className="text-element w-100 overflow-hidden outline-none w-100 h-100 none-scroller p-2"
+                          className="text-element h-100 w-100 overflow-hidden outline-none w-100 h-100 none-scroller p-2"
                           style={{
                             fontSize: `${el.fontSize}px`,
                             color: el.color,
@@ -1072,11 +1058,9 @@ const CanvasVibeEditor = () => {
                             textShadow: el.textShadow,
                             boxShadow: el.boxShadow,
                             outline: "none",
+                            width: `${el.width}px`,
+                            height: `${el.height}px`,
                           }}
-                          // contentEditable={
-                          //   activeElement?.id === el?.id ? true : false
-                          // }
-                          // suppressContentEditableWarning={true}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -1087,7 +1071,12 @@ const CanvasVibeEditor = () => {
                               );
                             }
                           }}
+                          contentEditable={true}
+                          suppressContentEditableWarning={true}
                           onTouchStart={(e) => {
+                            e.stopPropagation();
+                          }}
+                          onMouseDown={(e) => {
                             e.stopPropagation();
                           }}
                         >
@@ -1108,17 +1097,6 @@ const CanvasVibeEditor = () => {
                         </div>
                       )}
                     </div>
-
-                    <div
-                      className="my-2 p-3 position-absolute w-100"
-                      contentEditable={true}
-                      suppressContentEditableWarning={true}
-                      style={{
-                        color: text_clrH,
-                        border: "1px solid red",
-                        top: 0,
-                      }}
-                    />
                   </Rnd>
                 ))}
 
