@@ -97,7 +97,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
-              background: bg1,
+              background: bg2,
             }}
           >
             {ref} Search Your Quote Here
@@ -123,12 +123,12 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
-              background: bg1,
+              background: bg2,
             }}
           >
             {ref} All Notifications
           </h5>
-          <div style={{ marginTop: "40px", background: bg1 }}>
+          <div style={{ marginTop: "40px", background: bg2 }}>
             <Notification setVisibleNotification={setVisibleNotification} />{" "}
           </div>
         </>
@@ -145,7 +145,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
                 mobile_break_point ? 0 : sm_break_point ? "74px" : "246px"
               }`,
               right: 0,
-              background: bg1,
+              background: bg2,
             }}
           >
             {ref} Upload Your Thought Here
@@ -179,7 +179,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
     }
   }, [openSlidWin]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1 } = useTheme();
+  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
 
   return (
     <>
@@ -188,7 +188,7 @@ export default function LeftNavbar({ onActiveChange = "" }) {
         style={{
           zIndex: `${openSlidWin ? 100000000000 : 1000000000}`,
           width: `${openSlidWin ? "100%" : "0"}`,
-          background: bg1,
+          background: bg2,
           borderRight: `${mobile_break_point ? "" : `1px solid ${text_clrL}`}`,
         }}
       >

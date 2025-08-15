@@ -82,8 +82,7 @@ export const Notification = ({ setVisibleNotification }) => {
     setVisibleNotification(false);
   };
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1 } = useTheme();
-  console.log("----->", post);
+  const { text_clrH, text_clrL, text_clrM, bg1, bg2 } = useTheme();
 
   return (
     <>
@@ -95,7 +94,7 @@ export const Notification = ({ setVisibleNotification }) => {
               mobile_break_point ? "4px" : sm_break_point ? "100px" : "265px"
             })`,
             minHeight: "100px",
-            background: bg1,
+            background: bg2,
             color: text_clrM,
           }}
         >
@@ -106,7 +105,7 @@ export const Notification = ({ setVisibleNotification }) => {
               maxHeight: "80vh",
               // width: "calc(100% - 5px)",
               zIndex: "100",
-              background: bg1,
+              background: bg2,
               color: text_clrH,
             }}
           >
@@ -118,7 +117,7 @@ export const Notification = ({ setVisibleNotification }) => {
               <div className="">
                 <div
                   className="p-1 d-flex gap-3 justify-content-between"
-                  style={{ background: bg1, color: text_clrM }}
+                  style={{ background: bg2, color: text_clrM }}
                 >
                   <>
                     <div className="flex-grow-1 w-100">
@@ -201,7 +200,7 @@ export const Notification = ({ setVisibleNotification }) => {
                       <div
                         className="commentNotify"
                         key={`cmnt${idx}`}
-                        style={{ background: bg1 }}
+                        style={{ background: bg2 }}
                       >
                         <div className="d-flex gap-2">
                           <div

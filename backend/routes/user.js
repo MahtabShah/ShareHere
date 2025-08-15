@@ -25,4 +25,20 @@ router.get('/id', verifyToken,  async (req, res) => {
   }
 });
 
+
+router.get('/fix' , async (req,res)=>{
+try {
+    const posts = await Sentence.find();
+
+    // const res = await User.updateMany(
+    // {posts:{$exists:false}},
+    // {$set:{posts:[]}}
+  // )
+
+  res.json({message:"updated", posts})
+} catch (error) {
+  console.error(error)
+}
+})
+
 module.exports = router;

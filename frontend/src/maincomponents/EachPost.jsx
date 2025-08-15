@@ -127,14 +127,14 @@ export const EachPost = ({ user, comment }) => {
   }, [postId]);
 
   return (
-    <div ref={seenRef} style={{ borderBottom: `1px solid ${bg3}` }}>
+    <div ref={seenRef} style={{ borderBottom: `1px solid ${text_clrL}` }}>
       <div
-        className="d-flex flex-column gap-2 position-relative bglight px-2"
+        className="d-flex flex-column gap-2 position-relative bglight"
         key={comment?._id}
         style={{ background: mainbg }}
       >
         {/* user header */}
-        <div className="d-flex gap-2 align-items-center pt-2 justify-content-between flex-grow-1">
+        <div className="d-flex gap-2 px-2 align-items-center pt-2 justify-content-between flex-grow-1">
           <div className="d-flex flex-grow-1">
             <UserRing user={user} />
           </div>
@@ -180,7 +180,9 @@ export const EachPost = ({ user, comment }) => {
         <div>
           <ul style={{ listStyle: "none" }} className="p-0 m-0">
             <div
-              className="d-flex align-items-center"
+              className={`d-flex align-items-center ${
+                mobile_break_point ? "" : "px-2"
+              }`}
               style={{ overflow: "hidden" }}
             >
               <div className="p-0 w-100 position-relative">
@@ -229,7 +231,7 @@ export const EachPost = ({ user, comment }) => {
               {comment && (
                 <div
                   key={comment.text}
-                  className="w-100"
+                  className="w-100 px-2"
                   style={{
                     overflow: "hidden",
                     transition: "height 0.3s ease",
@@ -273,7 +275,7 @@ export const EachPost = ({ user, comment }) => {
         </div>
 
         {/* like / comment / share */}
-        <div className="d-flex flex-column">
+        <div className="d-flex flex-column px-2">
           <div
             className={`d-flex pt-1 justify-content-between like-comment-share`}
             style={{ color: text_clrM }}
@@ -603,7 +605,7 @@ export const SlipDotinPost = ({ user, post }) => {
 
 export const LikeBtn = ({ post, size = 18 }) => {
   const [Post, setPost] = useState(post);
-  console.log("post type ", post);
+  // console.log("post type ", post);
   const [animatingBtn, setAnimatingBtn] = useState(null); // to track which button is animating
   const token = localStorage.getItem("token");
   const { admin_user } = useQuote();

@@ -11,6 +11,7 @@ import { FollowBtn } from "./EachPost";
 import { useTheme } from "../context/Theme";
 import { UserRing } from "./EachPost";
 import { usePost } from "../context/PostContext";
+
 const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   const nevigate = useNavigate();
@@ -33,7 +34,8 @@ const UserProfile = ({}) => {
 
   const func = async () => {
     const userpost = await fetch_posts_by_user(id);
-    setUser_post(userpost);
+    setUser_post(userpost?.posts);
+    console.log(user_post?.posts);
   };
 
   useEffect(() => {
@@ -117,6 +119,30 @@ const UserProfile = ({}) => {
       setFollowing(res.data.following);
     });
   };
+
+  // const [loading, setLoading] = useState(true);
+
+  //   useEffect(() => {
+  //     const handleScroll = throttle(async () => {
+  //       setLoading(true);
+  //       if (
+  //         window.innerHeight + window.scrollY >=
+  //         document.body.offsetHeight - 100
+  //       ) {
+  //         const data = await fetch_n_posts(limit, page, "all");
+  //         // console.log("Fetching page:", page, data);
+
+  //         setUser_post((prev) => [...prev, ...data]);
+
+  //         setTimeout(() => {
+  //           setLoading(false);
+  //         }, 2000);
+  //       }
+  //     }, 500);
+
+  //     window.addEventListener("scroll", handleScroll);
+  //     return () => window.removeEventListener("scroll", handleScroll);
+  //   }, [page]);
 
   return (
     <>
@@ -210,7 +236,11 @@ const UserProfile = ({}) => {
             >
               <div
                 className="p-3 rounded bg-black  mt-5 overflow-hidden"
-                style={{ maxHeight: "calc(100vh - 200px)" }}
+                style={{
+                  maxHeight: "calc(100vh - 200px)",
+                  maxWidth: "calc(100vh - 200px)",
+                  margin: "auto",
+                }}
               >
                 <div className="fw-bold d-flex gap-2 align-items-start mb-2 justify-content-between">
                   <p className="small text-warning">
@@ -384,7 +414,7 @@ const UserProfile = ({}) => {
           }
         </div>
 
-        {user_post ? (
+        {user_post.length > 0 ? (
           followMSG && (
             <div
               className="position-fixed shadow-lg border d-flex flex-column justify-content-center align-items-center gap-3 p-4 bg-white rounded"

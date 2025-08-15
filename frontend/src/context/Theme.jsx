@@ -19,8 +19,8 @@ export const ThemeProvider = ({ children }) => {
   });
 
   const [mainbg, setMainBg] = useState("#f6fafeff");
-  const [bg1, setBg1] = useState("#f2f7ffff");
-  const [bg2, setBg2] = useState("#d5dce3ff");
+  const [bg1, setBg1] = useState("#f5f9feff");
+  const [bg2, setBg2] = useState("#e9edf1ff");
   const [bg3, setBg3] = useState("#9b9b9bff");
   const [text_clrH, setText_clrH] = useState("#000911ff");
   const [text_clrM, setText_clrM] = useState("#222222ff");

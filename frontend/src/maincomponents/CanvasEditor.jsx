@@ -7,8 +7,7 @@ import { Loading } from "../../TinyComponent/LazyLoading";
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const API = import.meta.env.VITE_API_URL;
-const token = localStorage.getItem("token");
+
 import Accordion from "react-bootstrap/Accordion";
 
 import Tabs from "react-bootstrap/esm/Tabs";
@@ -35,281 +34,19 @@ import {
   FaArrowsAltH,
 } from "react-icons/fa";
 
-const pre_bg_color = [
-  "#A294F9",
-  "#6b3ac4",
-  "#89A8B2",
-  "#D91656",
-  "#640D5F",
-  "#355F2E",
-  "#441752",
-  "#F72C5B",
-  "#F0BB78",
-  "#131010",
-  "#3E5879",
-  "#C84C05",
-  "#074799",
-  "#8D0B41",
-  "#7E5CAD",
-  "#500073",
-  "#8D77AB",
-  "#FFE9D6",
-  "#D7C1E0",
-  "#EEF5FF",
-  "#7E30E1",
-  "#B0D553",
-  "#D4F6CC",
-  "#171717",
-  "#DA0037",
-  "#217756",
-  "#008DDA",
-  "#664343",
-  "#E0AB5B",
-  "#FFA6D5",
-  "#240750",
-  "#3B3030",
-  "#5FBDFF",
-  "#7B66FF",
-  "#FFF8CD",
-  "#D4D7DD",
-  "#A888B5",
-  "#000B58",
-  "#F67280",
-  "#46B7B9",
-  "#8D72E1",
-  "#2B580C",
-  // 🌇 LINEAR GRADIENTS
-  "linear-gradient(to right, #ff7e5f, #feb47b)", // Sunset
-  "linear-gradient(to right, #4facfe, #00f2fe)", // Sky blue
-  "linear-gradient(to right, #43e97b, #38f9d7)", // Green mint
-  "linear-gradient(to right, #f7971e, #ffd200)", // Orange yellow
-  "linear-gradient(to right, #c33764, #1d2671)", // Purple blue
-  "linear-gradient(45deg, #ff9a9e, #fad0c4)", // Diagonal pink
-  "linear-gradient(to top, #a18cd1, #fbc2eb)", // Lavender pink
-  "linear-gradient(to right, #e0c3fc, #8ec5fc)", // Soft purple-blue
-  "linear-gradient(to right, #ffecd2, #fcb69f)", // Warm peach
-  "linear-gradient(to right, #ff8177, #ff867a, #ff8c7f)", // Pink burst
-  "linear-gradient(to right, #00c3ff, #ffff1c)", // Blue to yellow
-  "linear-gradient(to right, #00f260, #0575e6)", // Green to blue
-  "linear-gradient(to right, #fc00ff, #00dbde)", // Violet to aqua
-  "linear-gradient(to right, #e1eec3, #f05053)", // Soft green red
-  "linear-gradient(to right, #74ebd5, #9face6)", // Light sea
-  "linear-gradient(to right, #ff6a00, #ee0979)", // Fire vibes
-  "linear-gradient(to right, #fdfc47, #24fe41)", // Lime sun
-  "linear-gradient(to right, #12c2e9, #c471ed, #f64f59)", // Rainbow mix
-  "linear-gradient(to right, #ff9a9e, #fecfef)", // Sweet pink
-  "linear-gradient(to right, #a1c4fd, #c2e9fb)", // Sky morning
-
-  // 🌌 RADIAL GRADIENTS
-  "radial-gradient(circle, #ff9a9e, #fad0c4)", // Pink ripple
-  "radial-gradient(circle, #43cea2, #185a9d)", // Aqua waves
-  "radial-gradient(circle, #fbc2eb, #a6c1ee)", // Pastel splash
-  "radial-gradient(circle, #ffecd2, #fcb69f)", // Warm touch
-  "radial-gradient(circle, #d299c2, #fef9d7)", // Pink-beige
-  "radial-gradient(circle, #ffdde1, #ee9ca7)", // Peach rose
-  "radial-gradient(circle, #b7f8db, #50a7c2)", // Fresh sea
-  "radial-gradient(circle, #e0c3fc, #8ec5fc)", // Purple teal
-  "radial-gradient(circle, #fdfcfb, #e2d1c3)", // Sand cream
-  "radial-gradient(circle, #accbee, #e7f0fd)", // Calm sky
-
-  // 🎯 CONIC GRADIENTS
-  // "conic-gradient(from 0deg, #ff9a9e, #fad0c4, #ff9a9e)", // Pink spin
-  // "conic-gradient(from 90deg, #4facfe, #00f2fe, #4facfe)", // Sky swirl
-  // "conic-gradient(from 180deg, #fbc2eb, #a6c1ee)", // Soft wheel
-  // "conic-gradient(from 0deg, #f7971e, #ffd200, #f7971e)", // Sunny swirl
-  // "conic-gradient(from 0deg at center, #00dbde, #fc00ff)", // Neon ring
-  // "conic-gradient(from 45deg at center, #00c3ff, #ffff1c)", // Bright circle
-  // "conic-gradient(from 0deg, #e1eec3, #f05053, #e1eec3)", // Soft rotate
-  // "conic-gradient(from 90deg, #ff6a00, #ee0979, #ff6a00)", // Flaming twist
-  // "conic-gradient(from 0deg, #a1c4fd, #c2e9fb)", // Calm motion
-  // "conic-gradient(from 0deg, #12c2e9, #f64f59)", // Color storm
-
-  // 🎨 MIXED SPECIAL EFFECTS
-  "linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0))", // Frosted glass
-  "radial-gradient(circle at top left, #ffafbd, #ffc3a0)", // Glow corner
-  "linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)", // Aqua light
-  "radial-gradient(ellipse at center, #89f7fe 0%, #66a6ff 100%)", // Ocean eye
-  "conic-gradient(at center, #f2709c, #ff9472)", // Peach cone
-  "linear-gradient(to right, #dce35b, #45b649)", // Lemon leaf
-  "radial-gradient(circle, #fdfbfb, #ebedee)", // Gray puff
-  "linear-gradient(to right, #00b4db, #0083b0)", // Ocean breeze
-  "conic-gradient(at center, #74ebd5, #acb6e5)", // Breeze cone
-  "radial-gradient(circle, #fffbd5, #b20a2c)", // Sunset splash
-
-  "linear-gradient(to right, #ff7e5f, #feb47b)", // sunset
-  "linear-gradient(to right, #4facfe, #00f2fe)", // sky blue
-  "linear-gradient(to right, #43e97b, #38f9d7)", // green mint
-  "linear-gradient(to right, #f7971e, #ffd200)", // orange yellow
-  "linear-gradient(to right, #c33764, #1d2671)", // purple blue
-  "linear-gradient(45deg, #ff9a9e, #fad0c4)", // diagonal pink
-  "linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%)", // lavender pink
-  "linear-gradient(to right, #e0c3fc 0%, #8ec5fc 100%)", // soft purple-blue
-];
-
-const color = [
-  "#A294F9",
-  "#F1F0E8",
-  "#89A8B2",
-  "#D91656",
-  "#640D5F",
-  "#355F2E",
-  "#441752",
-  "#F72C5B",
-  "#F0BB78",
-  "#131010",
-  "#3E5879",
-  "#C84C05",
-  "#074799",
-  "#8D0B41",
-  "#7E5CAD",
-  "#500073",
-  "#8D77AB",
-  "#FFE9D6",
-  "#D7C1E0",
-  "#EEF5FF",
-  "#7E30E1",
-  "#B0D553",
-  "#D4F6CC",
-  "#171717",
-  "#DA0037",
-  "#217756",
-  "#008DDA",
-  "#664343",
-  "#E0AB5B",
-  "#FFA6D5",
-  "#240750",
-  "#3B3030",
-  "#5FBDFF",
-  "#7B66FF",
-  "#FFF8CD",
-  "#D4D7DD",
-  "#A888B5",
-  "#000B58",
-  "#F67280",
-  "#46B7B9",
-  "#8D72E1",
-  "#2B580C",
-];
-
-const fontFamily = [
-  "Arial",
-  "Times New Roman",
-  "Courier New",
-  "Georgia",
-  "Verdana",
-  "Comic Sans MS",
-  "Tahoma",
-  "Lucida Console",
-  "Helvetica",
-  "Trebuchet MS",
-  "Impact",
-  "Palatino Linotype",
-  "Book Antiqua",
-  "Lucida Sans Unicode",
-  "Garamond",
-  "Segoe UI",
-];
-
-const fontSize = [
-  7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 22, 24, 26, 28, 30, 34, 38,
-  40, 45, 50, 55, 60, 70,
-];
-
-const letterSpacing = [
-  0.1, 0.2, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 10,
-  11, 12, 13, 14, 15, 16, 17, 18, 19, 22, 24, 26, 28, 30, 34, 38,
-];
-
-const textDecoration = ["none", "underline", "overline", "line-through"];
-
-const textShadow = [
-  "none",
-  "1px 1px 2px black",
-  "2px 2px 4px rgba(0, 0, 0, 0.5)",
-  "0 0 3px #FF0000",
-  "0 0 5px #00FFFF",
-  "1px 0 5px #000",
-  "2px 2px 0 #999",
-  "0 1px 3px rgba(0,0,0,0.3)",
-  "1px 1px 1px rgba(255,255,255,0.8)",
-  "2px 2px 8px #444",
-  "0 0 10px #FFF, 0 0 20px #F0F, 0 0 30px #0FF",
-  "3px 3px 5px rgba(0,0,0,0.7)",
-  "1px 2px 2px #333",
-  "-1px -1px 0 #000, 1px 1px 0 #fff", // outline effect
-  "4px 4px 6px rgba(0,0,0,0.4)",
-  "0px 4px 3px rgba(0, 0, 0, 0.3)",
-];
-
-const boxShadow = [
-  "none",
-  "1px 1px 2px black",
-  "2px 2px 4px rgba(0, 0, 0, 0.5)",
-  "0 0 3px #FF0000",
-  "0 0 5px #00FFFF",
-  "1px 0 5px #000",
-  "2px 2px 0 #999",
-  "0 1px 3px rgba(0,0,0,0.3)",
-  "1px 1px 1px rgba(255,255,255,0.8)",
-  "2px 2px 8px #444",
-  "0 0 10px #FFF, 0 0 20px #F0F, 0 0 30px #0FF",
-  "3px 3px 5px rgba(0,0,0,0.7)",
-  "1px 2px 2px #333",
-  "-1px -1px 0 #000, 1px 1px 0 #fff", // outline effect
-  "4px 4px 6px rgba(0,0,0,0.4)",
-  "0px 4px 3px rgba(0, 0, 0, 0.3)",
-];
-
-const backgroundPosition = [
-  "center top",
-  "center center",
-  "center bottom",
-  "bottom",
-  "top",
-  "right",
-  "left",
-];
-
-const backgroundSize = [
-  "auto", // default
-  "cover", // scale to cover entire area
-  "contain", // scale to fit inside the area
-  "100% 100%", // stretch to fill
-  "50% 50%", // half width and height
-  "100% auto", // full width, auto height
-  "auto 100%", // auto width, full height
-];
-
-const categories = [
-  { key: "all", title: "All" },
-  { key: "quotes", title: "Quotes" },
-  { key: "shayari", title: "Shayari" },
-  { key: "sad", title: "Sad" },
-  { key: "love", title: "Love" },
-  { key: "life", title: "Life" },
-  { key: "motivational", title: "Motivational" },
-  { key: "success", title: "Success" },
-  { key: "discipline", title: "Discipline" },
-  { key: "mindset", title: "Mindset" },
-  { key: "overcoming-failure", title: "Overcoming Failure" },
-  { key: "self-love", title: "Self Love" },
-  { key: "friendship", title: "Friendship" },
-  { key: "family", title: "Family" },
-  { key: "truth", title: "Truth" },
-  { key: "patriotic", title: "Patriotic" },
-  { key: "funny", title: "Funny" },
-  { key: "ghazal", title: "Ghazal" },
-  { key: "nazm", title: "Nazm" },
-  { key: "sufi", title: "Sufi Shayari" },
-  { key: "poetry", title: "Poetry" },
-  { key: "free-verse", title: "Free Verse" },
-  { key: "lyric-poetry", title: "Lyric Poetry" },
-  { key: "narrative-poetry", title: "Narrative Poetry" },
-  { key: "satire", title: "Satire" },
-  { key: "life-quotes", title: "Life Quotes" },
-  { key: "success-quotes", title: "Success Quotes" },
-  { key: "sad-quotes", title: "Sad Quotes" },
-];
+import {
+  categories,
+  letterSpacing,
+  color,
+  fontFamily,
+  fontSize,
+  pre_bg_color,
+  backgroundSize,
+  backgroundPosition,
+  textDecoration,
+  textShadow,
+  boxShadow,
+} from "../StanderdThings/StanderdData";
 
 import { useTheme } from "../context/Theme";
 
@@ -327,7 +64,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [canvasHeight, setCanvasHeight] = useState(440);
-  const [canvasBgColor, setCanvasBgColor] = useState("#3c3c3c");
+  const [canvasBgColor, setCanvasBgColor] = useState("#4bbac0ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
   const [active_style, setActive_style] = useState(fontFamily);
@@ -339,6 +76,15 @@ const CanvasVibeEditor = () => {
 
   const canvasRef = useRef(null);
   const nevigate = useNavigate();
+  const {
+    admin_user,
+    setUploadClicked,
+    sm_break_point,
+    mobile_break_point,
+    API,
+    token,
+    setopenSlidWin,
+  } = useQuote();
 
   let idCounter =
     elements.length > 0 ? Math.max(...elements.map((el) => el.id)) + 1 : 1;
@@ -350,8 +96,8 @@ const CanvasVibeEditor = () => {
       content: "Type Here",
       x: 50,
       y: 50,
-      width: 100,
-      height: 60,
+      width: 400,
+      height: 400,
       fontSize: 28,
       fontFamily: "Arial",
       color: "#a6e9f1",
@@ -491,17 +237,6 @@ const CanvasVibeEditor = () => {
   const [text, setText] = useState("");
   const [LazyLoading, setLazyLoading] = useState(false);
 
-  const {
-    style,
-    admin_user,
-    uploadClicked,
-    setUploadClicked,
-    sm_break_point,
-    mobile_break_point,
-    openSlidWin,
-    setopenSlidWin,
-  } = useQuote();
-
   const handleCapture = async () => {
     const dataURL = await exportAsImage();
 
@@ -595,8 +330,31 @@ const CanvasVibeEditor = () => {
     e.preventDefault(); // prevent summary default toggle
   };
 
+  const isResizing = useRef(false);
+
+  const handleMouseDown = () => {
+    isResizing.current = true;
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e) => {
+    if (isResizing.current) {
+      // Increase or decrease height based on mouse position
+      setCanvasHeight(
+        e.clientY - canvasRef.current.getBoundingClientRect().top
+      );
+    }
+  };
+
+  const handleMouseUp = () => {
+    isResizing.current = false;
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
   return (
-    <div className="">
+    <div className="" style={{ background: bg2 }}>
       <div className="">
         <div className="pt-0">
           <div className="d-flex">
@@ -612,7 +370,7 @@ const CanvasVibeEditor = () => {
                   }`,
                   right: "6px",
                   top: "40px",
-                  background: bg1,
+                  background: bg2,
                 }}
               >
                 <div>
@@ -912,20 +670,6 @@ const CanvasVibeEditor = () => {
                           </div>
                         </div>
 
-                        <button
-                          className={`btn props-btn toolbar-button ${
-                            activeElement ? "active" : ""
-                          }`}
-                          onClick={() => setActiveId(null)}
-                          style={{
-                            border: `1px solid ${"#ededed"}`,
-                            minWidth: "max-content",
-                          }}
-                          disabled={!activeElement}
-                        >
-                          <b style={{ color: "#ededed" }}>- / -</b>
-                        </button>
-
                         {/* <div
                           className="btn overflow-hidden p-0 props-btn toolbar-button"
                           style={{ border: `` }}
@@ -937,17 +681,20 @@ const CanvasVibeEditor = () => {
                               scale: "2",
                               border: ``,
                             }}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              e.stopPropagation();
                               handleChange(
                                 activeElement?.id,
                                 "color",
                                 e.target.value
-                              )
-                            }
+                              );
+                            }}
                             defaultValue={"#ff0000"}
+                            open
                           />
-                        </div>
+                        </div> */}
 
+                        {/*
                         <div
                           className="props-btn toolbar-button"
                           style={{
@@ -1005,41 +752,65 @@ const CanvasVibeEditor = () => {
                           &nbsp; reset bg&nbsp;
                         </button> */}
 
-                        <button
-                          className="btn props-btn toolbar-button"
-                          onClick={() => {
-                            setContinuousActiveId();
-                          }}
-                          style={{ minWidth: "max-content" }}
-                        >
-                          <b style={{ color: "#ededed" }}>Active</b>
-                        </button>
+                        {elements?.length > 1 && (
+                          <>
+                            <button
+                              className={`toolbar-button ${
+                                activeElement ? "active" : ""
+                              }`}
+                              onClick={() => bringToFront(activeElement?.id)}
+                              disabled={!activeElement}
+                              style={{ minWidth: "34px" }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faArrowUp}
+                                color={"#ededed"}
+                              />
+                            </button>
+                            <button
+                              className="btn props-btn toolbar-button"
+                              onClick={() => {
+                                setContinuousActiveId();
+                              }}
+                              style={{ minWidth: "max-content" }}
+                            >
+                              <b style={{ color: "#ededed" }}>Active</b>
+                            </button>
+                          </>
+                        )}
 
-                        <button
-                          className={`toolbar-button ${
-                            activeElement ? "active" : ""
-                          }`}
-                          onClick={() => bringToFront(activeElement?.id)}
-                          disabled={!activeElement}
-                          style={{ minWidth: "34px" }}
-                        >
-                          <FontAwesomeIcon icon={faArrowUp} color={"#ededed"} />
-                        </button>
+                        {activeElement && (
+                          <>
+                            <button
+                              className={`btn props-btn toolbar-button ${
+                                activeElement ? "active" : ""
+                              }`}
+                              onClick={() => setActiveId(null)}
+                              style={{
+                                border: `1px solid ${"#ededed"}`,
+                                minWidth: "max-content",
+                              }}
+                              disabled={!activeElement}
+                            >
+                              <b style={{ color: "#ededed" }}>- / -</b>
+                            </button>
 
-                        <button
-                          className={`btn  toolbar-button ${
-                            activeElement ? "active" : ""
-                          }`}
-                          style={{ minWidth: "max-content" }}
-                          onPointerDown={() => {
-                            if (activeElement) {
-                              deleteElement(activeElement?.id);
-                            }
-                          }}
-                          disabled={!activeElement}
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
+                            <button
+                              className={`btn  toolbar-button ${
+                                activeElement ? "active" : ""
+                              }`}
+                              style={{ minWidth: "max-content" }}
+                              onPointerDown={() => {
+                                if (activeElement) {
+                                  deleteElement(activeElement?.id);
+                                }
+                              }}
+                              disabled={!activeElement}
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </summary>
 
@@ -1084,12 +855,12 @@ const CanvasVibeEditor = () => {
                 <div className=" border-0 position-sticky my-2 ms-2">
                   <details
                     className="rounded border-0"
-                    style={{ background: bg1 }}
+                    style={{ background: bg2 }}
                     onClick={preventToggle}
                   >
                     <summary
                       className="d-flex gap-2 mb-1 border-0"
-                      style={{ background: bg1 }}
+                      style={{ background: bg2 }}
                     >
                       <div
                         onClick={(e) => {
@@ -1140,7 +911,7 @@ const CanvasVibeEditor = () => {
                           className="form-control w-100 overflow-auto none-scroller border py-2"
                           value={activeElement?.content}
                           style={{
-                            background: bg1,
+                            background: bg2,
                             color: text_clrH,
                             border: `1px solid ${text_clrH}`,
                             minHeight: "80px",
@@ -1160,36 +931,24 @@ const CanvasVibeEditor = () => {
                         </textarea>
                       </div>
                     )}
-
-                    <div className="my-0">
-                      <input
-                        type="range"
-                        min={100}
-                        max={800}
-                        step={10}
-                        onChange={(e) =>
-                          setCanvasHeight(parseInt(e.target.value))
-                        }
-                        style={{ height: "6px" }}
-                        className="w-100 "
-                      />
-                    </div>
                   </details>
                 </div>
               </div>
             </div>
 
             <div
+              className="position-relative"
               style={{
-                marginTop: `calc(${detailsOpen ? `160px` : "54px"} + ${
+                marginTop: `calc(${detailsOpen ? `140px` : "54px"} + ${
                   styleOpen ? `96px` : "62px"
                 })`,
                 width: "100%",
+                border: "2px solid red",
               }}
             >
               <div
                 ref={canvasRef}
-                className="canvas-container w-100"
+                className="canvas-container w-100 position-relative"
                 style={{
                   height: `${canvasHeight}px`,
                   background: canvasBgColor,
@@ -1343,14 +1102,28 @@ const CanvasVibeEditor = () => {
                   </div>
                 )}
               </div>
+
+              <div onMouseDown={handleMouseDown} className="border">
+                <FaArrowsAltH
+                  className="position-absolute"
+                  style={{
+                    bottom: "-10px",
+                    right: "1px",
+                    color: text_clrH,
+                    rotate: "90deg",
+                    cursor: "ns-resize",
+                  }}
+                  size={20}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div
-        className="py-2"
-        style={{ background: bg1, minWidth: "max-content" }}
+        className="py-3"
+        style={{ background: bg2, minWidth: "max-content" }}
       >
         <>
           <div
@@ -1456,7 +1229,7 @@ const CanvasVibeEditor = () => {
             className={`form-control rounded-0 h-100 shadow-none ps-1 pe-2 overflow-auto none-scroller`}
             placeholder="Write about post here . . ."
             style={{
-              background: bg1,
+              background: bg2,
               color: text_clrH,
               minHeight: `${text.split("\n").length * 22}px`,
               border: `${error ? "1px solid red" : "0"}`,
@@ -1467,38 +1240,25 @@ const CanvasVibeEditor = () => {
       </div>
 
       <div className="vibeTabs">
-        <Accordion defaultActiveKey="0">
-          <Accordion.Item>
-            <Accordion.Header className="">Select Category</Accordion.Header>
-            <Accordion.Body style={{ background: bg2 }}>
-              <Tabs
-                id="controlled-tab-example"
-                activeKey={category}
-                onSelect={(k) => setCategory(k)}
-                className="border-0 d-flex gap-3 none-scroller py-2 overflow-auto"
-                transition={false}
-                style={{
-                  "--bg1": bg1,
-                  "--bg2": bg2,
-                  "--tc1": text_clrH,
-                  "--tc2": text_clrM,
-                  width: "100%",
-                }}
-              >
-                {categories.map(({ key, title }) => (
-                  <Tab
-                    eventKey={key}
-                    title={title}
-                    className="border-0"
-                    key={key}
-                  >
-                    {/* Content for {title} */}
-                  </Tab>
-                ))}
-              </Tabs>
-            </Accordion.Body>
-          </Accordion.Item>
-        </Accordion>
+        <Tabs
+          id="controlled-tab-example"
+          activeKey={category}
+          onSelect={(k) => setCategory(k)}
+          className="border-0 d-flex gap-3 py-2 flex-nowrap none-scroller overflow-auto"
+          transition={false}
+          style={{
+            "--bg1": bg1,
+            "--bg2": bg2,
+            "--tc1": text_clrH,
+            "--tc2": text_clrM,
+            width: "100%",
+            // gridTemplateColumns: "repeat(auto-fit , minmax(100px, 1fr))",
+          }}
+        >
+          {categories.map(({ key, title }) => (
+            <Tab eventKey={key} title={title} className="border-0" key={key} />
+          ))}
+        </Tabs>
       </div>
 
       <div className="d-flex gap-3 pt-2 justify-content-end p-0 pb-5 mb-4">

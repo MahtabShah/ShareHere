@@ -12,53 +12,32 @@ import SuggetionSlip, {
 import { useTheme } from "./context/Theme";
 import { usePost, Rank_Calculation } from "./context/PostContext";
 
-function All_Post_Section({ posts, category }) {
-  const [loading, setLoading] = useState(false);
+function All_Post_Section({ category }) {
+  const [loading, setLoading] = useState(true);
+  const [rn, setRn] = useState(null);
 
   const {
     all_user,
     sm_break_point,
-    all_post_loading,
     Errors,
     lgbreakPoint,
     openSlidWin,
     setActiveIndex,
-    setAll_post_loading,
   } = useQuote();
 
-  const { search } = useLocation();
-  const params = new URLSearchParams(search);
-  const postId = params.get("postId");
-
-  const { limit, page, setPage, fetch_n_posts, setPosts } = usePost();
+  const { limit, page, fetch_n_posts, setPosts, posts } = usePost();
   const { bg2, bg1 } = useTheme();
-
-  // Scroll into postId if available
-  useEffect(() => {
-    if (postId) {
-      const target = document.getElementById(postId);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-  }, [postId, posts]);
 
   // Infinite scroll handler
   useEffect(() => {
     const handleScroll = throttle(async () => {
+      setLoading(true);
       if (
         window.innerHeight + window.scrollY >=
         document.body.offsetHeight - 100
       ) {
-        if (loading) return; // prevent multiple triggers
-        setLoading(true);
-
-        // Always use the latest page value
-        const currentPage = page;
-        console.log("Fetching page:", currentPage);
-
-        const data = await fetch_n_posts(limit, currentPage, category);
-        setPage((prev) => prev + 1); // move to next page
+        const data = await fetch_n_posts(limit, page, category);
+        // console.log("Fetching page:", page, data);
 
         if (data?.length > 0) {
           const sorted = data
@@ -73,35 +52,14 @@ function All_Post_Section({ posts, category }) {
 
         setTimeout(() => {
           setLoading(false);
-        }, 10000);
+        }, 2000);
       }
     }, 500);
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [page, fetch_n_posts, limit, setPosts, loading]);
+  }, [page]);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      setAll_post_loading(true);
-      const data = await fetch_n_posts(limit, 0, category);
-
-      setPosts(
-        data
-          .map((post) => ({
-            ...post,
-            rank: Rank_Calculation(post),
-          }))
-          .sort((a, b) => b.rank - a.rank)
-      );
-      setPage(1); // move to next page
-      setAll_post_loading(false);
-    };
-
-    fetchPost();
-  }, [category]);
-
-  // Merge posts with user info
   const visible_post = useMemo(() => {
     if (!posts || !all_user) return [];
 
@@ -111,7 +69,12 @@ function All_Post_Section({ posts, category }) {
     });
   }, [posts, all_user]);
 
-  const rn = 3;
+  useEffect(() => {
+    setRn(Math.floor(Math.random() * 10 + 1));
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     if (!openSlidWin) {
@@ -120,12 +83,7 @@ function All_Post_Section({ posts, category }) {
   }, [openSlidWin]);
 
   return (
-    <div
-      className="position-relative mb-5"
-      style={{
-        background: bg2,
-      }}
-    >
+    <div className="position-relative mb-5" style={{ background: bg2 }}>
       <section
         style={{
           marginBottom: "90px",
@@ -142,15 +100,11 @@ function All_Post_Section({ posts, category }) {
             className="fs-3 text-danger p-2 d-flex justify-content-center align-items-center"
             style={{ height: "64vh" }}
           >
-            {Errors.message} . . .try later !
+            {Errors.message} . . .Try again later or refresh the page!
           </div>
         ) : (
           <div style={{ maxWidth: "min(600px, 100%)" }}>
-            {all_post_loading ? (
-              <div className="d-flex justify-content-center mt-5">
-                <Loading dm={34} />
-              </div>
-            ) : (
+            <>
               <div className="d-flex flex-column">
                 <div className="d-flex flex-column gap-3">
                   {visible_post.map(
@@ -163,7 +117,7 @@ function All_Post_Section({ posts, category }) {
                           className="d-flex flex-column"
                         >
                           <EachPost user={user} comment={post} />
-                          {rn + 1 > idx && idx > rn - 1 && (
+                          {rn && rn + 1 > idx && idx > rn - 1 && (
                             <div
                               className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto"
                               style={{ maxWidth: "100%" }}
@@ -176,13 +130,23 @@ function All_Post_Section({ posts, category }) {
                   )}
                 </div>
               </div>
-            )}
-            <div
-              className="d-flex justify-content-center p-3 my-3"
-              style={{ height: "44px" }}
-            >
-              {loading && <Loading dm={34} />}
-            </div>
+              <div
+                className="d-flex justify-content-center"
+                style={{ height: "84px" }}
+              >
+                {loading ? (
+                  <div className="p-3">
+                    {" "}
+                    <Loading dm={34} />
+                  </div>
+                ) : (
+                  <p className="p-3 text-center">
+                    Not available any more vibe at this time : Try again or
+                    refresh
+                  </p>
+                )}
+              </div>
+            </>
           </div>
         )}
 
@@ -197,12 +161,6 @@ function All_Post_Section({ posts, category }) {
           </div>
         )}
       </section>
-
-      {posts.length === 0 && !all_post_loading && (
-        <p className="p-3 text-center">
-          No vibe for this category : {category}
-        </p>
-      )}
     </div>
   );
 }

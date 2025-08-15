@@ -86,7 +86,7 @@ export const SuggetionSlipInPost = () => {
 
   // console.log(all_user, admin_user?._id);
 
-  console.log(some_user);
+  // console.log(some_user);
 
   return (
     <>

@@ -46,6 +46,11 @@ const userSchema = new mongoose.Schema({
     ref: 'Status' 
   }],
 
+  posts:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Sentence"
+  }],
+
   default: [],
 
   following:[{

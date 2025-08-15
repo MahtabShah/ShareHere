@@ -215,7 +215,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "234px"
+                            : "242px"
                         }`,
                       }}
                     >
@@ -235,7 +235,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "234px"
+                            : "242px"
                         }`,
 
                         marginTop: `${mobile_break_point ? "44px" : "0"}`,

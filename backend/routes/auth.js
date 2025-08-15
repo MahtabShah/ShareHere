@@ -33,7 +33,7 @@ router.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ username, email, password: hashedPassword , bg_clr: random_clr ,  cover_pic:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s",
 
-  profile_pic:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s",});
+    profile_pic:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuGtIXUGOHsmxJL3mQRqFe1K9xclHAJzAQOQ&s",});
     await user.save();
 
     const token = jwt.sign({ id: user._id ,  username: user.username,
@@ -74,12 +74,9 @@ router.post('/login', async (req, res) => {
 
 
 router.get("/home" , async (req, res)=>{
-      const users = await User.find();
-
-  //  console.log("all user want ot fetching 58: auth,js routes", users);
-
+    const users = await User.find();
    try {
-      res.json(users)
+    res.json(users)
    } catch (error) {
     console.error("error in auth " , error)
    }
@@ -136,13 +133,8 @@ router.get("/all_post/:id", async (req, res) => {
   try {
     const userId = req.params.id;
 
-    const posts = await Sentence.find({ userId }) // find all posts for that user
-      .sort({ createdAt: -1 }) // newest first
-      .populate("comments")
-      .populate({
-        path: "comments",
-        populate: { path: "userId", model: "User" },
-      });
+    const posts = await User.findById(userId).populate("posts") // find all posts for that user
+    
 
     res.send(posts);
   } catch (error) {
@@ -169,10 +161,6 @@ router.get("/all_post_comments" , async (req, res)=>{
    }
  
 })
-
-
-
-
 
 
 

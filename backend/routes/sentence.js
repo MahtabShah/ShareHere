@@ -68,11 +68,28 @@ const sentences = await Sentence.find({ userId: userId }).populate('userId');;
 
 router.get("/fix-sentences", async (req, res) => {
   try {
-    const result = await Sentence.updateOne(
-      {categry:{$exists: true}},
-      {$set:{category :"motivational"}}
-    );
-    res.json({ message: "Reports field added to comments without it", result });
+
+        const posts = await Sentence.find();
+        const users = await User.find();
+
+        for (let i = 0; i < users.length; i++) {
+          const user = users[i];
+          for (let j = 0; j < posts.length; j++) {
+            const post = posts[j];
+            if (post.userId.toString() == user._id.toString()) {
+              user.posts.push(post);
+              await user.save()
+            }
+            
+          }
+          
+        }
+    
+    // const result = await User.updateMany(
+    //   {posts:{$exists: true}},
+    //   {$set:{posts :[]}}
+    // );
+    res.json({ message: "Reports field added to comments without it", posts , users});
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to update comments" });

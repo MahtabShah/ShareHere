@@ -16,6 +16,7 @@ export const PostProvider = ({ children }) => {
   const [posts, setPosts] = useState([]);
   const [post_loading, setPost_loading] = useState(false);
   const [page, setPage] = useState(0);
+  const [isData, setIsdata] = useState("");
   const limit = 10;
 
   // Fetch posts but do NOT change page here
@@ -29,7 +30,12 @@ export const PostProvider = ({ children }) => {
         }
       );
 
-      if (res.status !== 200) throw new Error("Failed to fetch posts");
+      if (res.status !== 200) {
+        throw new Error("Failed to fetch posts");
+      }
+      if (res?.data?.length > 0) {
+        setPage(() => p + 1);
+      }
 
       return res.data;
     } catch (err) {
@@ -143,6 +149,7 @@ export const PostProvider = ({ children }) => {
         fetch_comments_postId,
         fetch_user_by_Id,
         fetch_post_by_Id,
+        isData,
       }}
     >
       {children}
@@ -155,8 +162,7 @@ export function Rank_Calculation(post) {
 
   const now = dayjs();
   const createdAt = dayjs(post?.createdAt);
-  const ageInHours = now.diff(createdAt, "minute") || 1; // prevent divide by 0
-
+  const ageInHours = now.diff(createdAt, "hour") || 1; // prevent divide by 0
   const likes = post?.likes?.length || 0;
   const comments = post?.comments?.length || 0;
   const views = post?.views || 1;
@@ -165,16 +171,19 @@ export function Rank_Calculation(post) {
   // const isFollowed = post?.followers?.includes(u=>u._id == admin_user?._id) || 1;
 
   // Engagement Score
-  const engagement = likes * 3 + comments * 7; // comment > like
+  const recencyFactor = 6000 / ageInHours; // decay over 1 day
+
+  const engagement = views + recencyFactor + likes * 8 + comments * 24; // comment > like
 
   // Network influence
   const influence = Math.log10(followers + 2) / Math.log10(following + 2); // avoid division explosion
 
   // Recency Bonus: newer posts get higher weight
-  const recencyFactor = 3600 / ageInHours; // decay over 1 day
 
   // Final rank formula (tunable)
-  const rank = engagement * recencyFactor * influence;
+  const rank = engagement * influence + (Math.random() * 1000 + 1);
 
-  return Math.round(rank * (Math.random() * 100 + 1) * 100) / 100; // round to 2 decimal places
+  // console.log("ageInHours", rank, views);
+
+  return Math.round(rank); // round to 2 decimal places
 }
