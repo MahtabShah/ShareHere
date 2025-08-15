@@ -1103,7 +1103,7 @@ const CanvasVibeEditor = () => {
                 )}
               </div>
 
-              <div onMouseDown={handleMouseDown} className="border">
+              <div onPointerDown={handleMouseDown} className="border">
                 <FaArrowsAltH
                   className="position-absolute"
                   style={{
