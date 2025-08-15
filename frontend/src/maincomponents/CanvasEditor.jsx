@@ -1077,8 +1077,8 @@ const CanvasVibeEditor = () => {
                               );
                             }
                           }}
-                          contentEditable={true}
-                          suppressContentEditableWarning={true}
+                          // contentEditable={true}
+                          // suppressContentEditableWarning={true}
                         >
                           {el.content}
                         </div>
