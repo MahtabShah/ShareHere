@@ -154,6 +154,8 @@ const CanvasVibeEditor = () => {
     const len = elements.length;
     if (len > 0) {
       setActiveId(elements[count % len]?.id);
+      setActiveElement(elements.find((el) => el.id === activeId));
+
       setCount(count + 1);
     }
   };
