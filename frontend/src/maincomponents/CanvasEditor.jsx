@@ -309,12 +309,6 @@ const CanvasVibeEditor = () => {
 
   const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
 
-  useEffect(() => {
-    if (elements.length <= 0) {
-      addTextBox();
-    }
-  }, []);
-
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
 
@@ -992,6 +986,8 @@ const CanvasVibeEditor = () => {
                       setActiveId(el.id);
                       setActiveElement(el);
                     }}
+                    contentEditable={true}
+                    suppressContentEditableWarning={true}
                   >
                     <div className="w-100 h-100 position-relative">
                       {activeId === el.id && (
@@ -1015,7 +1011,7 @@ const CanvasVibeEditor = () => {
                             <FontAwesomeIcon icon={faMinus} />
                           </button>
 
-                          <div
+                          {/* <div
                             className="position-absolute text-danger"
                             style={{
                               width: "24px",
@@ -1040,7 +1036,7 @@ const CanvasVibeEditor = () => {
                               }}
                               size={20}
                             />
-                          </div>
+                          </div> */}
                         </>
                       )}
 
@@ -1075,8 +1071,6 @@ const CanvasVibeEditor = () => {
                               );
                             }
                           }}
-                          contentEditable={true}
-                          suppressContentEditableWarning={true}
                         >
                           {el.content}
                         </div>
