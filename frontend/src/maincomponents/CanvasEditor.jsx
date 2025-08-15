@@ -965,6 +965,8 @@ const CanvasVibeEditor = () => {
                       left: `${el.x}px`,
                       top: `${el.y}px`,
                       zIndex: el.zIndex,
+                      outline: "none",
+
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
@@ -986,8 +988,12 @@ const CanvasVibeEditor = () => {
                       setActiveId(el.id);
                       setActiveElement(el);
                     }}
-                    contentEditable={true}
-                    suppressContentEditableWarning={true}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        document.execCommand("insertHTML", false, "<br><br>");
+                      }
+                    }}
                   >
                     <div className="w-100 h-100 position-relative">
                       {activeId === el.id && (
@@ -1011,7 +1017,7 @@ const CanvasVibeEditor = () => {
                             <FontAwesomeIcon icon={faMinus} />
                           </button>
 
-                          {/* <div
+                          <div
                             className="position-absolute text-danger"
                             style={{
                               width: "24px",
@@ -1036,7 +1042,7 @@ const CanvasVibeEditor = () => {
                               }}
                               size={20}
                             />
-                          </div> */}
+                          </div>
                         </>
                       )}
 
@@ -1071,6 +1077,8 @@ const CanvasVibeEditor = () => {
                               );
                             }
                           }}
+                          contentEditable={true}
+                          suppressContentEditableWarning={true}
                         >
                           {el.content}
                         </div>
