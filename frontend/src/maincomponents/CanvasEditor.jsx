@@ -1004,8 +1004,12 @@ const CanvasVibeEditor = () => {
                               height: "18px",
                             }}
                             onPointerDown={(e) => {
-                              e.stopPropagation();
                               setActiveId(null);
+                              e.stopPropagation();
+                            }}
+                            onTouchEnd={(e) => {
+                              setActiveId(null);
+                              e.stopPropagation();
                             }}
                           >
                             <FontAwesomeIcon icon={faMinus} />
@@ -1073,12 +1077,6 @@ const CanvasVibeEditor = () => {
                           }}
                           contentEditable={true}
                           suppressContentEditableWarning={true}
-                          onTouchStart={(e) => {
-                            e.stopPropagation();
-                          }}
-                          onMouseDown={(e) => {
-                            e.stopPropagation();
-                          }}
                         >
                           {el.content}
                         </div>
