@@ -270,6 +270,7 @@ const CanvasVibeEditor = () => {
 
     setLazyLoading(true);
     setActiveId(null);
+    setActiveElement(null);
 
     try {
       const ready_url = await handleCapture();
@@ -1259,9 +1260,19 @@ const CanvasVibeEditor = () => {
                     //   setActiveId(el.id);
                     //   setActiveElement(el);
                     // }}
-                    onDragStart={() => {
+                    onMouseDown={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
+                    }}
+                    onTouchStart={(e) => {
+                      touchStartTime = Date.now();
+                    }}
+                    onTouchEnd={(e) => {
+                      const duration = Date.now() - touchStartTime;
+                      if (duration > 500) {
+                        setActiveId(el.id);
+                        setActiveElement(el);
+                      }
                     }}
                   >
                     <div className="w-100 h-100 position-relative">

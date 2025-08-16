@@ -137,3 +137,8 @@ textarea::placeholder {
 .no-scroll {
   overflow: hidden !important;
 }
+
+.react-rnd {
+  touch-action: none; /* prevent scroll interference */
+  -webkit-user-drag: none; /* prevent ghost image drag */
+}
