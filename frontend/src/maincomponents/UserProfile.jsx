@@ -17,17 +17,6 @@ const UserProfile = ({}) => {
   const nevigate = useNavigate();
   const { id } = useParams();
 
-  if (!id) {
-    return (
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maxime ea
-        tenetur doloribus amet iure quam dignissimos voluptatibus cum vitae
-        officia fuga, fugit necessitatibus velit mollitia? Officiis quam dolore
-        nihil fuga?
-      </p>
-    );
-  }
-
   const {
     admin_user,
     token,
@@ -52,6 +41,7 @@ const UserProfile = ({}) => {
 
   useEffect(() => {
     func();
+    document.body.scrollIntoView(1);
   }, [token, admin_user, id]);
 
   // console.log(user_post);

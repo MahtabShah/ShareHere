@@ -1422,7 +1422,7 @@ const CanvasVibeEditor = () => {
         </div>
       </div>
 
-      <div style={{ background: bg1 }}>
+      <div style={{ background: bg2 }}>
         <div className="d-flex gap-3 p-2 ">
           <button
             className={`btn border p-1 ps-2 pe-2 rounded-5 `}
@@ -1492,7 +1492,7 @@ const CanvasVibeEditor = () => {
               className={`form-control rounded h-100 shadow-none ps-1 pe-2 overflow-auto none-scroller`}
               placeholder="Write about post here . . ."
               style={{
-                background: bg1,
+                background: bg2,
                 color: text_clrH,
                 minHeight: `${text.split("\n").length * 22}px`,
                 border: `${error ? "1px solid red" : `1px solid ${bg1}`}`,

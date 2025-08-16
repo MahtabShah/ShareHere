@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useQuote } from "../context/QueotrContext";
 import { useTheme } from "../context/Theme";
 import { EachPost } from "./EachPost";
-import { categories } from "../StanderdThings/StanderdData";
+import { categories, objectPosition } from "../StanderdThings/StanderdData";
 import Tabs from "react-bootstrap/esm/Tabs";
 import { Tab } from "bootstrap";
 import { Loading } from "../../TinyComponent/LazyLoading";
@@ -106,59 +106,51 @@ const EditPost = () => {
   return (
     <>
       <div style={{ background: bg2 }} className="d-flex flex-column gap-2 p-3">
-        <div className="d-flex  flex-row-reverse flex-wrap flex-md-nowrap gap-3">
+        <div
+          className="d-flex rounded flex-row-reverse flex-wrap flex-md-nowrap gap-3 overflow-hidden"
+          style={{}}
+        >
           <div
-            className="rounded d-flex align-items-start"
+            className="rounded align-items-center  pe-2 d-flex"
             style={{
               minHeight: "240px",
-              background: bg2,
               margin: "auto",
             }}
           >
             <img
               src={post?.images[0]}
               alt=""
-              className="rounded"
+              className="rounded p-0"
               style={{
-                objectFit: "cover",
+                objectFit: "cotain",
+                objectPosition: "0, 0",
                 maxHeight: "220px",
-                margin: "auto",
               }}
             />
-            {/* {post && user && <EachPost user={user} comment={post} />} */}
           </div>
 
           <div
-            className="d-flex flex-column w-100 "
-            style={{ maxHeight: "100%" }}
+            className="d-flex flex-column w-100 gap-2 overflow-auto"
+            style={{
+              minHeight: "200px",
+            }}
           >
-            <div className="w-100">
-              <div
-                className="d-flex flex-column gap-2 overflow-auto"
-                style={{ height: "240px" }}
-              >
-                <textarea
-                  value={text}
-                  onChange={handleInput}
-                  className={`form-control position-relative rounded h-100 shadow-none p-2 overflow-auto none-scroller`}
-                  placeholder="Write about post here . . ."
-                  style={{
-                    background: bg2,
-                    color: text_clrH,
-                    minHeight: "100%",
-                    // minHeight: `${text?.split("\n").length * 25}px`,
-                    border: `${
-                      error ? "1px solid red" : `1px solid ${text_clrL}`
-                    }`,
-                  }}
-                  spellCheck="false"
-                />
-              </div>
-            </div>
+            <textarea
+              value={text}
+              onChange={handleInput}
+              className={`form-control position-relative d h-100 shadow-none p-2 overflow-auto none-scroller rounded `}
+              placeholder="Write about post here . . ."
+              style={{
+                background: bg2,
+                color: text_clrH,
+                border: `1px solid ${text_clrL}`,
+              }}
+              spellCheck="false"
+            />
           </div>
         </div>
 
-        <div className="mt-2">
+        <div className="mt-2" style={{ color: text_clrM }}>
           <b>Set visibility : </b> Who can see your post ?
         </div>
 
@@ -192,7 +184,7 @@ const EditPost = () => {
             onClick={() => setVisiblity("Paid")}
             disabled={true}
             style={{
-              color: visiblity === "Paid" ? text_clrH : "",
+              color: visiblity === "Paid" ? bg1 : text_clrH,
               background: visiblity === "Paid" ? text_clrH : "",
             }}
           >
@@ -200,7 +192,10 @@ const EditPost = () => {
           </button>
         </div>
 
-        <div className="vibeTabs mt-3 d-flex flex-column gap-2">
+        <div
+          className="vibeTabs mt-3 d-flex flex-column gap-2"
+          style={{ color: text_clrM }}
+        >
           <div>
             <b>Select Category of the Post</b>
           </div>
@@ -238,7 +233,11 @@ const EditPost = () => {
               border: `1px solid ${"#959595ff"}`,
               color: text_clrM,
             }}
-            disabled={true}
+            onClick={() => {
+              setCategory(post?.category);
+              setVisiblity(post?.mode);
+              setText(post?.text);
+            }}
           >
             Reset
           </label>

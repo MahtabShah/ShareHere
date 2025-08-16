@@ -150,7 +150,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "74px"
-                            : "234px"
+                            : "236px"
                         }`,
                       }}
                     >
@@ -196,7 +196,7 @@ const Main = () => {
                             ? "0px"
                             : sm_break_point
                             ? "64px"
-                            : "244px"
+                            : "236px"
                         }`,
                       }}
                     >
