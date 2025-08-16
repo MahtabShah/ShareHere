@@ -1256,10 +1256,6 @@ const CanvasVibeEditor = () => {
                     }}
                     spellCheck={false}
                     disableDragging={activeElement?.id == el.id ? false : true}
-                    // onMouseDown={() => {
-                    //   setActiveId(el.id);
-                    //   setActiveElement(el);
-                    // }}
                     onMouseDown={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
@@ -1286,14 +1282,16 @@ const CanvasVibeEditor = () => {
                               height: "18px",
                             }}
                             onMouseDown={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault(); // ⬅️ important
                               setActiveId(null);
                               setActiveElement(null);
-                              e.stopPropagation();
                             }}
                             onTouchStart={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault(); // ⬅️ important
                               setActiveId(null);
                               setActiveElement(null);
-                              e.stopPropagation();
                             }}
                           >
                             <FontAwesomeIcon icon={faMinus} />
