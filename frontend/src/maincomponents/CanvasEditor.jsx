@@ -264,7 +264,7 @@ const CanvasVibeEditor = () => {
 
     setLazyLoading(true);
     setActiveId(null);
-    setActiveElement(null);
+    setActiveElement({ id: "x" });
 
     try {
       const ready_url = await handleCapture();
@@ -1240,7 +1240,7 @@ const CanvasVibeEditor = () => {
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
-                          : "2px solid transparent",
+                          : "2px solid red",
 
                       cursor: activeId ? "move" : "",
                     }}
@@ -1251,11 +1251,12 @@ const CanvasVibeEditor = () => {
                       width: 320,
                       height: 200,
                     }}
-                    disableDragging={!activeId}
-                    onDragStop={() => {
-                      setActiveId(null);
-                      setActiveElement(null);
-                    }}
+                    disableDragging={!(activeId === activeElement?.id)}
+                    enableResizing={activeId === activeElement?.id}
+                    // onDragStop={() => {
+                    //   setActiveId(null);
+                    //   setActiveElement({ id: "x" });
+                    // }}
                   >
                     <div
                       className="w-100 h-100 position-relative"
@@ -1281,13 +1282,13 @@ const CanvasVibeEditor = () => {
                               e.stopPropagation();
                               e.preventDefault(); // ⬅️ important
                               setActiveId(null);
-                              setActiveElement(null);
+                              setActiveElement({ id: "x" });
                             }}
                             onTouchStart={(e) => {
                               e.stopPropagation();
                               e.preventDefault(); // ⬅️ important
                               setActiveId(null);
-                              setActiveElement(null);
+                              setActiveElement({ id: "x" });
                             }}
                           >
                             <FontAwesomeIcon icon={faMinus} />
