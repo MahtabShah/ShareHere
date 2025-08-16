@@ -83,7 +83,7 @@ export const Notification = ({ setVisibleNotification }) => {
     <>
       {setVisibleNotification && (
         <div
-          className="list rounded overflow-auto none-scroller  "
+          className="list rounded pb-4 overflow-auto none-scroller  "
           style={{
             // border: "2px solid red",
             minHeight: "100px",
