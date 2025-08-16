@@ -53,7 +53,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
           },
         }
       );
-      alert("Comment reported");
+      alert("Comment reported . . .!!!");
     } catch (err) {
       console.error("Report failed:", err);
       alert("Failed to report");
@@ -68,12 +68,12 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
     <div className="pb-3">
       {comments.length > 0 ? (
         comments.map((pc) => (
-          <div className="d-flex gap-1 mt-3" key={pc._id}>
+          <div className="d-flex gap-2 mt-3" key={pc._id}>
             {/* Avatar */}
             <div
-              className="d-flex align-items-center justify-content-center rounded-circle text-white"
+              className="d-flex align-items-center overflow-hidden justify-content-center rounded-circle text-white"
               style={{
-                minWidth: "40px",
+                maxWidth: "40px",
                 height: "40px",
                 borderRadius: "20px",
                 background: `${pc?.userId?.bg_clr}`,
@@ -81,7 +81,13 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
               }}
               onClick={() => navigate(`/api/user/${pc?.userId?._id}`)}
             >
-              <span>{pc?.userId?.username?.charAt(0).toUpperCase()}</span>
+              {/* <span>{pc?.userId?.username?.charAt(0).toUpperCase()}</span> */}
+              <img
+                src={pc?.userId?.profile_pic}
+                alt=""
+                className="h-100 w-100"
+                style={{ objectFit: "cover" }}
+              />
             </div>
 
             {/* Comment content */}

@@ -294,15 +294,22 @@ router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
 
 router.delete("/:commentId", verifyToken, async (req, res) => {
   try {
-    const comment = await Comment.findById(req.params.commentId);
+    const comment = await Comment.findById(req.params.commentId).populate("postId");
     if (!comment) return res.status(404).json({ message: "Comment not found" });
 
-    if (comment.userId.toString() !== req.user.id) {
+    const postUserId = comment?.postId?.userId.toString();
+
+    console.log("comment id - - ", req.user.id)
+
+    if (postUserId == req.user.id || comment.userId.toString() == req.user.id) {
+          await Comment.findByIdAndDelete(req.params.commentId);
+          res.json({ message: "Comment deleted" });
+
+    }else{
       return res.status(403).json({ message: "Not authorized to delete this comment" });
+
     }
 
-    await Comment.findByIdAndDelete(req.params.commentId);
-    res.json({ message: "Comment deleted" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
