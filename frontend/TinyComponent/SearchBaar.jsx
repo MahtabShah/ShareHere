@@ -10,7 +10,14 @@ import axios from "axios";
 export const SearchBaar = () => {
   const [query, setQuery] = useState("");
   const [Filterd_result, setFilterd_result] = useState([]);
-  const { all_user, admin_user, setopenSlidWin, API } = useQuote();
+  const {
+    all_user,
+    admin_user,
+    setopenSlidWin,
+    mobile_break_point,
+    API,
+    sm_break_point,
+  } = useQuote();
   const nevigate = useNavigate();
 
   const [page, setPage] = useState(1);
@@ -87,7 +94,7 @@ export const SearchBaar = () => {
     };
   }, []);
 
-  const { text_clrH, text_clrM, bg1, bg3 } = useTheme();
+  const { text_clrH, text_clrM, bg1, bg3, text_clrL } = useTheme();
 
   return (
     <div className="" ref={elementRef}>
@@ -113,14 +120,21 @@ export const SearchBaar = () => {
 
       {Filterd_posts.length > 0 && isTouched && (
         <div
-          className="rounded-3 position-absolute overflow-auto none-scroller"
+          className="rounded-2 position-absolute overflow-auto none-scroller"
           style={{
             background: bg1,
-            maxHeight: "74vh",
-            marginTop: "10px",
-            right: "4vw",
-            left: "4vw",
-            boxShadow: "0 0 4px #4d4d4d",
+            border: `1px solid ${text_clrL}`,
+            maxHeight: `calc(100vh - ${mobile_break_point ? "104px" : "60px"})`,
+            width: `calc(100% - ${
+              mobile_break_point ? "10px" : sm_break_point ? "32px" : "20px"
+            })`,
+            margin: "12px auto",
+
+            maxWidth: "600px",
+            left: `${
+              mobile_break_point ? "4px" : sm_break_point ? "18px" : "20px"
+            }`,
+            boxShadow: "0 2px 4px #212121ff",
           }}
         >
           <div
@@ -156,7 +170,7 @@ export const SearchBaar = () => {
                 fontStyle: "italic",
               }}
             >
-              Result for {query}
+              Result for query {query}
             </div>
           </div>
 
