@@ -165,18 +165,16 @@ router.get("/all_post_comments" , async (req, res)=>{
 
 
 router.put("/like_this_post", verifyToken ,async (req, res) => {
-   const { id } = req.body;
+   const { id , adminId} = req.body;
 
   try {
-    const token = req.headers['authorization'].split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const useriid = decoded.id;  // admin or logged user
+  // admin or logged user
 
     let post = await Sentence.findById(id); // no populate yet
 
 
-    const isliked = post.likes.includes(useriid)
-    isliked ? post.likes.pop(useriid) : post.likes.push(useriid)
+    const isliked = post.likes.includes(adminId)
+    isliked ? post.likes.pop(adminId) : post.likes.push(adminId)
     await post.save();
 
     console.log(post)
@@ -192,7 +190,7 @@ router.put("/like_this_post", verifyToken ,async (req, res) => {
    const newNotification = new Notification({
       recipient: post.userId,
       type: "like",
-      sender: useriid, 
+      sender: adminId, 
       isRead: false,
       post: post._id,
     });
@@ -201,7 +199,7 @@ router.put("/like_this_post", verifyToken ,async (req, res) => {
       await Notification.deleteOne({
        post: post._id,
        type: "like",
-       sender: useriid,
+       sender: adminId,
      });
 
     }else{

@@ -335,16 +335,15 @@ router.post("/report/:commentId", verifyToken, async (req, res) => {
 
 
 router.put('/crud_follow_post', verifyToken,  async (req, res) => {
-  const { id } = req.body;
+  const { id ,  adminId} = req.body;
  
-  const userId = req.user.userId || req.user.id;
 
   try {
   const user_a = await User.findById(id); // post owener
-  const user_b = await User.findById(userId); // curr user
+  const user_b = await User.findById(adminId); // curr user
   // console.log("user b -" ,  user_b)
 
-  const isFollowed = user_a.followers.includes(userId);
+  const isFollowed = user_a.followers.includes(adminId);
 
   const newNotification = new Notification({
   "recipient": user_a._id,  // User B (original commenter)

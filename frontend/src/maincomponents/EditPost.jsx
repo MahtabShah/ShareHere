@@ -108,10 +108,9 @@ const EditPost = () => {
       <div style={{ background: bg2 }} className="d-flex flex-column gap-2 p-3">
         <div className="d-flex  flex-row-reverse flex-wrap flex-md-nowrap gap-3">
           <div
-            className="rounded p-2 w-sm-100 d-flex align-items-start"
+            className="rounded d-flex align-items-start"
             style={{
               minHeight: "240px",
-              border: `1px solid ${text_clrL}`,
               background: bg2,
               margin: "auto",
             }}
@@ -126,6 +125,7 @@ const EditPost = () => {
                 margin: "auto",
               }}
             />
+            {/* {post && user && <EachPost user={user} comment={post} />} */}
           </div>
 
           <div

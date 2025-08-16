@@ -515,7 +515,7 @@ export const FollowBtn = ({ id, cls, style = {} }) => {
 
       await axios.put(
         `${API}/api/crud/crud_follow_post`,
-        { id: user?._id },
+        { id: user?._id, adminId: admin_user?._id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
     } catch (err) {
@@ -636,6 +636,7 @@ export const LikeBtn = ({ post, size = 18 }) => {
         `${API}/api/auth/like_this_post`,
         {
           id: id,
+          adminId: admin_user?._id,
         },
         {
           headers: {

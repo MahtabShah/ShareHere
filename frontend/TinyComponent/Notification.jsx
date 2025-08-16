@@ -63,6 +63,8 @@ export const Notification = ({ setVisibleNotification }) => {
     setLazyLoading(false);
   };
 
+  const seen = new Set();
+
   // console.log(curr_all_notifications);
   const Track_post = (postId) => {
     const target = document.getElementById(postId);
@@ -124,7 +126,7 @@ export const Notification = ({ setVisibleNotification }) => {
             <span className="d-inline-flex">Notifications</span>
           </h5>
           <div
-            className="notification  d-flex p-2 pb-4  flex-column gap-4 h-100 w-100 "
+            className="notification  d-flex p-2 pb-4 mb-4  flex-column gap-4 w-100 "
             style={{
               zIndex: "100",
               background: bg2,
@@ -168,12 +170,49 @@ export const Notification = ({ setVisibleNotification }) => {
               </div>
             ) : (
               curr_all_notifications?.map((n, idx) => {
+                const diff = dayjs().diff(dayjs(n?.createdAt), "day");
+                let heading = null;
+
+                if (diff > 30 && !seen.has("month")) {
+                  heading = (
+                    <div
+                      className="pb-1 mx-2"
+                      style={{ borderBottom: `2px solid ${text_clrH}` }}
+                    >
+                      Last Month
+                    </div>
+                  );
+                  seen.add("month");
+                } else if (diff <= 30 && diff > 7 && !seen.has("week")) {
+                  heading = (
+                    <div
+                      className="pb-1 mx-2"
+                      style={{ borderBottom: `2px solid ${text_clrH}` }}
+                    >
+                      Last Week
+                    </div>
+                  );
+                  seen.add("week");
+                } else if (diff <= 7 && !seen.has("thisweek")) {
+                  heading = (
+                    <div
+                      className="pb-1 mx-2"
+                      style={{ borderBottom: `2px solid ${text_clrH}` }}
+                    >
+                      This Week
+                    </div>
+                  );
+                  seen.add("thisweek");
+                }
+
                 return (
                   <Fragment key={`idx-notify${idx}`}>
+                    {heading}
+
                     {n?.type === "follow" && (
                       <div
-                        className="followersNotify"
-                        key={`curr_notify${idx}`}
+                        className="followersNotify p-2"
+                        style={{ borderBottom: `1px solid ${text_clrL}` }}
                       >
                         <div className="d-flex gap-2">
                           <div
@@ -222,103 +261,17 @@ export const Notification = ({ setVisibleNotification }) => {
                         key={`cmnt${idx}`}
                         style={{ background: bg2 }}
                       >
-                        <div className="d-flex gap-2">
-                          <div
-                            className="dpPhoto rounded-circle d-flex align-items-center justify-content-center"
-                            style={{
-                              maxWidth: "37px",
-                              minWidth: "37px",
-                              height: "37px",
-                              background: `${n?.sender?.bg_clr}`,
-                              color: text_clrH,
-                            }}
-                          >
-                            {n?.sender && (
-                              <img
-                                src={n?.sender?.profile_pic}
-                                alt=""
-                                className="h-100 w-100 rounded-5"
-                                style={{ objectFit: "cover" }}
-                              />
-                            )}
-                          </div>
-                          <span className="small">
-                            <span className="small d-block fw-light">
-                              {dayjs(n?.createdAt).fromNow()}
-                            </span>
-                            <span className="fw-medium d-block">
-                              <span
-                                className="on-hover-userid fw-medium"
-                                onClick={() => {
-                                  go_to_comment(n?.post, n?.recipient);
-                                  console.log("post with userid ", n.recipient);
-                                }}
-                                style={{ color: text_clrH }}
-                              >
-                                @{n?.sender?.username}
-                                {"  "}
-                                commented . . .{" "}
-                              </span>{" "}
-                            </span>
-                            <span
-                              className="justify"
-                              style={{ color: text_clrH }}
-                            >
-                              {" "}
-                              {n?.comment?.text
-                                ?.split(" ")
-                                .slice(0, 16)
-                                .join(" ")}
-                              {". . . . . ."}
-                            </span>
-                          </span>
-                        </div>
+                        <LikeCommNotifi
+                          n={n}
+                          Track_post={Track_post}
+                          type="commented in your post."
+                          content={n?.comment?.text}
+                        />
                       </div>
                     )}
 
                     {n?.type === "like" && (
-                      <div className="likeNootify" key={`like${idx}`}>
-                        <div className="d-flex gap-2">
-                          <div
-                            className="dpPhoto rounded-circle border"
-                            style={{
-                              maxWidth: "37px",
-                              minWidth: "37px",
-                              height: "37px",
-                            }}
-                            onClick={() => {
-                              navigate(`/api/user/${n?.sender?._id}`);
-                              setopenSlidWin(false);
-                            }}
-                          >
-                            {n?.sender?.profile_pic && (
-                              <img
-                                src={n?.sender?.profile_pic}
-                                alt=""
-                                className="h-100 w-100 rounded-5"
-                                style={{ objectFit: "cover" }}
-                              />
-                            )}
-                          </div>
-                          <span className="small">
-                            <span className="small d-block fw-light">
-                              {dayjs(n?.createdAt).fromNow()}
-                            </span>
-                            <span
-                              className="fw-medium d-block on-hover-userid"
-                              onClick={() => {
-                                Track_post(n?.post);
-                                setopenSlidWin(false);
-                              }}
-                            >
-                              @{n?.sender?.username} liked your post{" "}
-                            </span>
-                            <span className="justify">
-                              {/* You have reached {n?.post} likes */}
-                            </span>
-                          </span>
-                        </div>
-                      </div>
+                      <LikeCommNotifi n={n} Track_post={Track_post} />
                     )}
                   </Fragment>
                 );
@@ -327,6 +280,108 @@ export const Notification = ({ setVisibleNotification }) => {
           </div>
         </div>
       )}
+    </>
+  );
+};
+
+const LikeCommNotifi = ({
+  n,
+  Track_post,
+  content = "",
+  type = "liked your post",
+}) => {
+  const [post, setPost] = useState(null);
+  const { fetch_post_by_Id } = usePost();
+  const { setopenSlidWin } = useQuote();
+  useEffect(() => {
+    (async () => {
+      const res = await fetch_post_by_Id(n?.post);
+      setPost(res);
+    })();
+  }, [n?.post]);
+
+  const navigate = useNavigate();
+
+  const { bg2, bg1, text_clrL } = useTheme();
+
+  // console.log(post?.images?.[0]);
+
+  return (
+    <>
+      {" "}
+      <div className="likeNootify p-1">
+        <div className="d-flex gap-2 justify-content-between">
+          <div
+            className="dpPhoto rounded-circle border"
+            style={{
+              maxWidth: "37px",
+              minWidth: "37px",
+              height: "37px",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              navigate(`/api/user/${n?.sender?._id}`);
+              setopenSlidWin(false);
+            }}
+          >
+            {n?.sender?.profile_pic && (
+              <img
+                src={n?.sender?.profile_pic}
+                alt=""
+                className="h-100 w-100 rounded-5"
+                style={{ objectFit: "cover" }}
+              />
+            )}
+          </div>
+          <div className="d-flex justify-content-between gap-2 w-100">
+            <div className="d-flex flex-column">
+              <span
+                className="small"
+                style={{ minWidth: "max-content" }}
+                onClick={() => {
+                  Track_post(n?.post);
+                }}
+              >
+                <span className="small d-block fw-light">
+                  {dayjs(n?.createdAt).fromNow()}
+                </span>
+                <span className="fw-medium d-block on-hover-userid">
+                  @{n?.sender?.username} {type}
+                </span>
+              </span>
+
+              <span
+                className="small overflow-hidden"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {content}
+              </span>
+            </div>
+
+            <span
+              className="justify"
+              onClick={() => {
+                Track_post(n?.post);
+              }}
+            >
+              <div className="rounded" style={{ width: "80px" }}>
+                {post && (
+                  <CardPost
+                    post={post}
+                    style={{ width: "80px", borderRadius: "4px" }}
+                  />
+                )}
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

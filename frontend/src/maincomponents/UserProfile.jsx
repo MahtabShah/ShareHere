@@ -16,6 +16,18 @@ const UserProfile = ({}) => {
   // const [OnEditMode, setOnEditMode] = useState(false);
   const nevigate = useNavigate();
   const { id } = useParams();
+
+  if (!id) {
+    return (
+      <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maxime ea
+        tenetur doloribus amet iure quam dignissimos voluptatibus cum vitae
+        officia fuga, fugit necessitatibus velit mollitia? Officiis quam dolore
+        nihil fuga?
+      </p>
+    );
+  }
+
   const {
     admin_user,
     token,
@@ -62,10 +74,10 @@ const UserProfile = ({}) => {
       const isFollower = user?.followers?.includes(admin_user?._id);
 
       console.log(isFollower);
-      setMode(isFollower || admin_user._id == user._id ? "Public" : "");
+      setMode(isFollower || admin_user?._id == user?._id ? "Public" : "");
     }
 
-    setLazyLoading(user_post.length < 0);
+    setLazyLoading(user_post?.length < 0);
   }, [admin_user?.followers]);
 
   useEffect(() => {
@@ -414,7 +426,7 @@ const UserProfile = ({}) => {
           }
         </div>
 
-        {user_post.length > 0 ? (
+        {user_post?.length > 0 ? (
           followMSG && (
             <div
               className="position-fixed shadow-lg border d-flex flex-column justify-content-center align-items-center gap-3 p-4 bg-white rounded"
