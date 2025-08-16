@@ -228,7 +228,7 @@ const CanvasVibeEditor = () => {
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("Public");
   const [text, setText] = useState("");
   const [LazyLoading, setLazyLoading] = useState(false);
-
+  let touchStartTime = 0;
   const handleCapture = async () => {
     const dataURL = await exportAsImage();
 
