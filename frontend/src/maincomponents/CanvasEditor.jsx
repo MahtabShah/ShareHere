@@ -1240,7 +1240,7 @@ const CanvasVibeEditor = () => {
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
-                          : "2px solid red",
+                          : "2px solid transparent",
 
                       cursor: activeId ? "move" : "",
                     }}
@@ -1254,7 +1254,7 @@ const CanvasVibeEditor = () => {
                     disableDragging={!activeId}
                     onDragStop={() => {
                       setActiveId(null);
-                      setActiveElement(el);
+                      setActiveElement(null);
                     }}
                   >
                     <div
