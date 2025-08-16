@@ -49,13 +49,7 @@ import {
 import { useTheme } from "../context/Theme";
 
 import {
-  FaRegSun, // Could represent "glow" effect
-  FaPaintBrush, // Styling/text effects
-  FaAdjust, // Used for contrast/shadow
-  FaLayerGroup, // For multi-layer effects like shadows
-  FaRegSquare, // Could be used to symbolize a backdrop or outline
   FaMagic, // For visual effects like shadows/glow
-  FaFireAlt, // Can represent a fiery text effect (strong glow)
 } from "react-icons/fa";
 
 const CanvasVibeEditor = () => {
@@ -353,38 +347,6 @@ const CanvasVibeEditor = () => {
     document.removeEventListener("touchmove", handleTouchMove);
     document.removeEventListener("touchend", stopResizing);
   };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const handleTouchStart = (e) => {
-      // ⛔ ignore taps on UI controls
-      if (e.target.closest("button") || e.target.closest(".resize-handle")) {
-        return;
-      }
-
-      // ✅ normal logic (activate element on canvas)
-      // example:
-      // setActiveId(null);
-      // setActiveElement(null);
-    };
-
-    const handleMouseDown = (e) => {
-      if (e.target.closest("button") || e.target.closest(".resize-handle")) {
-        return;
-      }
-      // your normal mousedown logic
-    };
-
-    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
-    canvas.addEventListener("mousedown", handleMouseDown);
-
-    return () => {
-      canvas.removeEventListener("touchstart", handleTouchStart);
-      canvas.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, []);
 
   return (
     <div
@@ -1265,44 +1227,42 @@ const CanvasVibeEditor = () => {
                 style={{
                   height: `${canvasHeight}px`,
                   background: canvasBgColor,
-                  position: "relative",
                   overflow: "hidden",
                   maxWidth: "601px",
                   margin: "auto",
                 }}
               >
-                {elements.map((el) => (
+                {elements.map((el, idx) => (
                   <Rnd
-                    key={el.id}
+                    key={`${el.id}-${idx}`}
                     style={{
                       zIndex: el.zIndex,
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
-                          : "2px solid transparent",
-                      boxShadow:
-                        activeId === el.id
-                          ? "0 0 10px rgba(255, 255, 255, 0.73)"
-                          : "none",
+                          : "2px solid red",
+
                       cursor: activeElement ? "move" : "",
                     }}
                     spellCheck={false}
-                    disableDragging={activeId === el.id ? false : true}
-                    enableResizing={activeId !== el.id ? false : true}
-                    onMouseDown={() => {
-                      setActiveId(el.id);
-                      setActiveElement(el);
+                    default={{
+                      x: 0,
+                      y: 0,
+                      width: 320,
+                      height: 200,
                     }}
-                    onTouchStart={(e) => {
-                      touchStartTime = Date.now();
-                    }}
-                    onTouchEnd={(e) => {
-                      const duration = Date.now() - touchStartTime;
-                      if (duration > 500) {
-                        setActiveId(el.id);
-                        setActiveElement(el);
-                      }
-                    }}
+                    disableDragging
+                    // onDragStop={(e, d) => {
+                    //   this.setState({ x: d.x, y: d.y });
+                    // }}
+
+                    // onResizeStop={(e, direction, ref, delta, position) => {
+                    //   this.setState({
+                    //     width: ref.style.width,
+                    //     height: ref.style.height,
+                    //     ...position,
+                    //   });
+                    // }}
                   >
                     <div className="w-100 h-100 position-relative">
                       {activeId === el.id && (
