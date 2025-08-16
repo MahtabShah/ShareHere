@@ -1172,7 +1172,11 @@ const CanvasVibeEditor = () => {
                       activeElement?.id == el.id ? true : false
                     }
                     enableResizing={activeElement?.id == el.id ? true : false}
-                    onClick={() => {
+                    onTouchStart={() => {
+                      setActiveId(el.id);
+                      setActiveElement(el);
+                    }}
+                    onMouseDown={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
                     }}
@@ -1187,7 +1191,11 @@ const CanvasVibeEditor = () => {
                               width: "18px",
                               height: "18px",
                             }}
-                            onClick={(e) => {
+                            onMouseDown={(e) => {
+                              setActiveId(null);
+                              e.stopPropagation();
+                            }}
+                            onTouchStart={(e) => {
                               setActiveId(null);
                               e.stopPropagation();
                             }}
@@ -1205,7 +1213,7 @@ const CanvasVibeEditor = () => {
                               bottom: "-12px",
                               right: "-12px",
                             }}
-                            onPointerDown={(e) => {
+                            onTouchStart={(e) => {
                               e.stopPropagation();
                             }}
                             onMouseDown={(e) => {
@@ -1294,7 +1302,7 @@ const CanvasVibeEditor = () => {
 
               <div
                 onMouseDown={startResizing}
-                // onClick={startResizing}
+                onTouchStart={startResizing}
                 className="position-absolute"
                 style={{
                   bottom: "-10px",
