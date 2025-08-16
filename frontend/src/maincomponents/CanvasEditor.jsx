@@ -1295,7 +1295,7 @@ const CanvasVibeEditor = () => {
                                 e.preventDefault(); // ⬅️ important
                                 setActiveId(null);
                                 setActiveElement({ id: "x" });
-                              }, 200);
+                              }, 100);
                             }}
                           >
                             <FontAwesomeIcon icon={faMinus} />
