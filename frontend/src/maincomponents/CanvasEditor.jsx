@@ -680,6 +680,34 @@ const CanvasVibeEditor = () => {
                       </div>
                     </div>
 
+                    <div
+                      className="props-btn toolbar-button"
+                      onClick={() => {
+                        setStyleOpen(false);
+                        setHidePage("CanvasHeight");
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        minWidth: "max-content",
+                      }}
+                    >
+                      Canvas{" "}
+                      <div
+                        style={{
+                          bottom: "-10px",
+                          right: "1px",
+                        }}
+                      >
+                        <FaArrowsAltH
+                          style={{
+                            color: text_clrL,
+                            rotate: "90deg",
+                          }}
+                          size={16}
+                        />
+                      </div>
+                    </div>
+
                     {activeElement?.type === "image" && (
                       <div
                         className="props-btn toolbar-button"
@@ -1095,6 +1123,70 @@ const CanvasVibeEditor = () => {
                   </>
                 )}
 
+                {hidePage === "CanvasHeight" && (
+                  <>
+                    <div
+                      className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
+                      style={{ background: bg1 }}
+                    >
+                      <div className="d-flex flex-grow-1 w-100 flex-column">
+                        <label className="w-100 d-flex flex-column gap-2 flex-grow-1 ">
+                          <span className="mb-1 gap-2 d-inline-flex fw-semibold">
+                            <span style={{ minWidth: "max-content" }}>
+                              Set Canvas Height :
+                            </span>
+                            <input
+                              className="border rounded-1 px-1 w-100"
+                              type="number"
+                              placeholder="Set height"
+                              name=""
+                              min={0}
+                              value={canvasHeight || 0}
+                              onChange={(e) => {
+                                setCanvasHeight(e.target.value);
+                              }}
+                              id=""
+                            />
+                          </span>
+
+                          <input
+                            type="range"
+                            id="ch1"
+                            className="w-100"
+                            min={0}
+                            max={700}
+                            value={canvasHeight}
+                            onChange={(e) => {
+                              setCanvasHeight(e.target.value);
+                            }}
+                          />
+                        </label>
+                      </div>
+
+                      <div className="d-flex flex-column gap-1 align-items-center">
+                        <div
+                          className="btn btn-danger rounded-1 px-2 py-0 text-end"
+                          onClick={() => {
+                            setHidePage("");
+                            setStyleOpen(false);
+                          }}
+                        >
+                          Close
+                        </div>
+
+                        <div
+                          className="btn btn-dark rounded-1 px-2 py-0 text-end"
+                          onClick={() => {
+                            setCanvasHeight(400);
+                          }}
+                        >
+                          Reset
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 {textWriteOpen && (
                   <div className="mt-">
                     <textarea
@@ -1298,24 +1390,6 @@ const CanvasVibeEditor = () => {
                     </p>
                   </div>
                 )}
-              </div>
-
-              <div
-                className="position-absolute"
-                style={{
-                  bottom: "-10px",
-                  right: "1px",
-                  zIndex: 2983787381223,
-                }}
-              >
-                <FaArrowsAltH
-                  style={{
-                    color: "red",
-                    rotate: "90deg",
-                    cursor: "ns-resize",
-                  }}
-                  size={20}
-                />
               </div>
             </div>
           </div>
