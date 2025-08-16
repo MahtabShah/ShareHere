@@ -1294,7 +1294,7 @@ const CanvasVibeEditor = () => {
 
               <div
                 onMouseDown={startResizing}
-                onTouchStart={startResizing}
+                // onClick={startResizing}
                 className="position-absolute"
                 style={{
                   bottom: "-10px",
