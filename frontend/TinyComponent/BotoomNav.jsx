@@ -51,7 +51,7 @@ export default function BottomNav({}) {
               bottom: "0",
               left: "0",
               background: bg1,
-              boxShadow: `0 -1px 4px ${text_clrL}`,
+              boxShadow: `0 -2px 12px ${bg1}`,
             }}
           >
             <ul className="nav nav-pills gap-3 mb-auto d-flex justify-content-around">

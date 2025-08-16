@@ -27,7 +27,7 @@ function All_Post_Section({ category }) {
 
   const { limit, page, post_loading, fetch_n_posts, setPosts, posts } =
     usePost();
-  const { bg2, bg1 } = useTheme();
+  const { bg2, bg1, text_clrM } = useTheme();
 
   // Infinite scroll handler
   useEffect(() => {
@@ -143,7 +143,7 @@ function All_Post_Section({ category }) {
                     <Loading dm={34} />
                   </div>
                 ) : (
-                  <p className="p-3 text-center">
+                  <p className="p-3 text-center" style={{ color: text_clrM }}>
                     Not available any more vibe at this time : Try again or
                     refresh
                   </p>

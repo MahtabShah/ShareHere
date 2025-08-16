@@ -16,7 +16,7 @@ export const ThemeProvider = ({ children }) => {
     themeType === "dark" ? "#000000ff" : "#f5f9feff"
   );
   const [bg2, setBg2] = useState(
-    themeType === "dark" ? "#121520ff" : "#e9edf1ff"
+    themeType === "dark" ? "#0f121bff" : "#e9edf1ff"
   );
   const [bg3, setBg3] = useState(
     themeType === "dark" ? "#a4a2a2ff" : "#d5dee3ff"
@@ -38,7 +38,7 @@ export const ThemeProvider = ({ children }) => {
     if (themeType === "dark") {
       setMainBg("#040404b3");
       setBg1("#010105ff");
-      setBg2("#0b0d14ff");
+      setBg2("#0f121bff");
       setBg3("#a4a2a2ff");
       setText_clrH("#eeeeee");
       setText_clrM("#c3c2c2ff");

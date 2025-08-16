@@ -91,20 +91,20 @@ export const Notification = ({ setVisibleNotification }) => {
     <>
       {openSlidWin && (
         <div
-          className="list rounded pb-4 overflow-auto none-scroller  "
+          className="list rounded pb-4 overflow-auto none-scroller"
           style={{
-            // border: "2px solid red",
+            border: `1px solid ${text_clrL}`,
             minHeight: "100px",
             margin: "auto",
             background: bg2,
             color: text_clrM,
-            maxWidth: "481px",
-            boxShadow: `0 4px 10px ${text_clrM}`,
-            height: "calc(100dvh - 142px)",
+            maxWidth: "501px",
+            boxShadow: `0 2px 4px ${bg1}`,
+            height: "calc(100dvh - 104px)",
           }}
         >
           <h5
-            className="d-flex align-items-center gap-3 position-sticky py-2 top-0"
+            className="d-flex px-1 align-items-center gap-3 position-sticky py-2 top-0"
             style={{ background: bg1, zIndex: 9877 }}
             onClick={() => {
               setCount(0);
@@ -217,7 +217,7 @@ export const Notification = ({ setVisibleNotification }) => {
 
                     {n?.type === "follow" && (
                       <div
-                        className="followersNotify p-2"
+                        className="followersNotify p-1"
                         style={{ borderBottom: `1px solid ${text_clrL}` }}
                       >
                         <div className="d-flex gap-2">
