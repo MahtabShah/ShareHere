@@ -354,6 +354,38 @@ const CanvasVibeEditor = () => {
     document.removeEventListener("touchend", stopResizing);
   };
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleTouchStart = (e) => {
+      // ⛔ ignore taps on UI controls
+      if (e.target.closest("button") || e.target.closest(".resize-handle")) {
+        return;
+      }
+
+      // ✅ normal logic (activate element on canvas)
+      // example:
+      // setActiveId(null);
+      // setActiveElement(null);
+    };
+
+    const handleMouseDown = (e) => {
+      if (e.target.closest("button") || e.target.closest(".resize-handle")) {
+        return;
+      }
+      // your normal mousedown logic
+    };
+
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+    canvas.addEventListener("mousedown", handleMouseDown);
+
+    return () => {
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      canvas.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, []);
+
   return (
     <div
       className="overflow-hidden"
@@ -1247,7 +1279,7 @@ const CanvasVibeEditor = () => {
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
-                          : "2px solid transparent",
+                          : "2px solid red",
                       boxShadow:
                         activeId === el.id
                           ? "0 0 10px rgba(255, 255, 255, 0.73)"
@@ -1256,6 +1288,7 @@ const CanvasVibeEditor = () => {
                     }}
                     spellCheck={false}
                     disableDragging={activeElement?.id == el.id ? false : true}
+                    enableResizing={activeElement?.id !== el.id ? false : true}
                     onMouseDown={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
