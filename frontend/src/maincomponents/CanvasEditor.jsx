@@ -1279,7 +1279,7 @@ const CanvasVibeEditor = () => {
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
-                          : "2px solid red",
+                          : "2px solid transparent",
                       boxShadow:
                         activeId === el.id
                           ? "0 0 10px rgba(255, 255, 255, 0.73)"
@@ -1287,8 +1287,8 @@ const CanvasVibeEditor = () => {
                       cursor: activeElement ? "move" : "",
                     }}
                     spellCheck={false}
-                    disableDragging={activeElement?.id == el.id ? false : true}
-                    enableResizing={activeElement?.id !== el.id ? false : true}
+                    disableDragging={activeId === el.id ? false : true}
+                    enableResizing={activeId !== el.id ? false : true}
                     onMouseDown={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
