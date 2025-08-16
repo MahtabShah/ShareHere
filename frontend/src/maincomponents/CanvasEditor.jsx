@@ -1253,23 +1253,21 @@ const CanvasVibeEditor = () => {
                     }}
                     disableDragging={!(activeId === activeElement?.id)}
                     enableResizing={activeId === activeElement?.id}
-                    // onDragStop={(e) => {
-                    //   console.log("dragg 1", e.clientX);
-                    //   setActiveId(null);
-                    //   setActiveElement({ id: "x" });
-                    // }}
+                    onDragStop={(e) => {
+                      if (activeElement.type === "image") {
+                        console.log("dragg 1", e.clientX);
+                        setActiveId(null);
+                        setActiveElement({ id: "x" });
+                      }
+                    }}
                     onTouchStart={(e) => {
-                      // setTimeout(() => {
                       setActiveId(el.id);
                       setActiveElement(el);
-                      // }, 250);
                     }}
                     onMouseDown={(e) => {
-                      // setTimeout(() => {
                       setActiveId(el.id);
                       setActiveElement(el);
                       console.log("dragg 2", Date.now());
-                      // }, 240);
                     }}
                   >
                     <div className="w-100 h-100 position-relative">
