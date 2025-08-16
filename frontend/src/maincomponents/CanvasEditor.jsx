@@ -1253,13 +1253,13 @@ const CanvasVibeEditor = () => {
                     }}
                     disableDragging={!(activeId === activeElement?.id)}
                     enableResizing={activeId === activeElement?.id}
-                    onDragStop={(e) => {
-                      if (activeElement.type === "image") {
-                        console.log("dragg 1", e.clientX);
-                        setActiveId(null);
-                        setActiveElement({ id: "x" });
-                      }
-                    }}
+                    // onDragStop={(e) => {
+                    //   if (activeElement.type === "image") {
+                    //     console.log("dragg 1", e.clientX);
+                    //     setActiveId(null);
+                    //     setActiveElement({ id: "x" });
+                    //   }
+                    // }}
                     onTouchStart={(e) => {
                       setActiveId(el.id);
                       setActiveElement(el);
