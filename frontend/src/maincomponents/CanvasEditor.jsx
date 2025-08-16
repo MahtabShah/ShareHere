@@ -1242,11 +1242,7 @@ const CanvasVibeEditor = () => {
                   <Rnd
                     key={el.id}
                     style={{
-                      left: `${el.x}px`,
-                      top: `${el.y}px`,
                       zIndex: el.zIndex,
-                      outline: "none",
-
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
@@ -1256,19 +1252,14 @@ const CanvasVibeEditor = () => {
                           ? "0 0 10px rgba(255, 255, 255, 0.73)"
                           : "none",
                       cursor: activeElement ? "move" : "",
-                      userSelect: "none",
                     }}
                     spellCheck={false}
                     disableDragging={activeElement?.id == el.id ? false : true}
-                    enableUserSelectHack={
-                      activeElement?.id == el.id ? true : false
-                    }
-                    enableResizing={activeElement?.id == el.id ? true : false}
-                    onPointerDown={() => {
-                      setActiveId(el.id);
-                      setActiveElement(el);
-                    }}
-                    onClick={() => {
+                    // onMouseDown={() => {
+                    //   setActiveId(el.id);
+                    //   setActiveElement(el);
+                    // }}
+                    onDragStart={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
                     }}
@@ -1285,10 +1276,12 @@ const CanvasVibeEditor = () => {
                             }}
                             onMouseDown={(e) => {
                               setActiveId(null);
+                              setActiveElement(null);
                               e.stopPropagation();
                             }}
                             onTouchStart={(e) => {
                               setActiveId(null);
+                              setActiveElement(null);
                               e.stopPropagation();
                             }}
                           >
