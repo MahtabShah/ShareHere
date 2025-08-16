@@ -1251,7 +1251,15 @@ const CanvasVibeEditor = () => {
                       width: 320,
                       height: 200,
                     }}
-                    disableDragging
+                    disableDragging={!activeId}
+                    onResize={() => {
+                      setActiveId(el.id);
+                    }}
+                    onDragStop={() => {
+                      setActiveId(null);
+                    }}
+
+                    // enableResizing={false}
                     // onDragStop={(e, d) => {
                     //   this.setState({ x: d.x, y: d.y });
                     // }}
