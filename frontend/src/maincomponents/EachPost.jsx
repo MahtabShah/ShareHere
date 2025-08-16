@@ -61,6 +61,7 @@ export const EachPost = ({ user, comment }) => {
         {
           id: id,
           new_comment: new_comment,
+          adminId: admin_user?._id,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );

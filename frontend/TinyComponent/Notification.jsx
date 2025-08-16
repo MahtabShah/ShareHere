@@ -22,8 +22,13 @@ export const Notification = ({ setVisibleNotification }) => {
   const nevigate = useNavigate();
   const [go_comment, setGo_comment] = useState(false);
 
-  const { curr_all_notifications, setCount, token, setopenSlidWin } =
-    useQuote();
+  const {
+    curr_all_notifications,
+    setCount,
+    token,
+    setopenSlidWin,
+    openSlidWin,
+  } = useQuote();
 
   const [comments, setComments] = useState(post?.comments || []); // store comments here
   const { fetch_comments_postId, fetch_post_by_Id } = usePost();
@@ -68,6 +73,8 @@ export const Notification = ({ setVisibleNotification }) => {
   // console.log(curr_all_notifications);
   const Track_post = (postId) => {
     const target = document.getElementById(postId);
+    setopenSlidWin(false);
+    setVisibleNotification((prev) => !prev);
 
     console.log("trackking..................165 app", postId);
     if (target) {
@@ -76,14 +83,13 @@ export const Notification = ({ setVisibleNotification }) => {
       // If not found, navigate so it gets rendered first
       navigate(`/home/${postId}`);
     }
-    setVisibleNotification(false);
   };
 
   const { text_clrH, text_clrL, text_clrM, bg1, bg2 } = useTheme();
 
   return (
     <>
-      {setVisibleNotification && (
+      {openSlidWin && (
         <div
           className="list rounded pb-4 overflow-auto none-scroller  "
           style={{
@@ -176,7 +182,7 @@ export const Notification = ({ setVisibleNotification }) => {
                 if (diff > 30 && !seen.has("month")) {
                   heading = (
                     <div
-                      className="pb-1 mx-2"
+                      className="pb-1 mx-1"
                       style={{ borderBottom: `2px solid ${text_clrH}` }}
                     >
                       Last Month
@@ -186,7 +192,7 @@ export const Notification = ({ setVisibleNotification }) => {
                 } else if (diff <= 30 && diff > 7 && !seen.has("week")) {
                   heading = (
                     <div
-                      className="pb-1 mx-2"
+                      className="pb-1 mx-1"
                       style={{ borderBottom: `2px solid ${text_clrH}` }}
                     >
                       Last Week
@@ -196,7 +202,7 @@ export const Notification = ({ setVisibleNotification }) => {
                 } else if (diff <= 7 && !seen.has("thisweek")) {
                   heading = (
                     <div
-                      className="pb-1 mx-2"
+                      className="pb-1 mx-1"
                       style={{ borderBottom: `2px solid ${text_clrH}` }}
                     >
                       This Week
@@ -335,22 +341,21 @@ const LikeCommNotifi = ({
           </div>
           <div className="d-flex justify-content-between gap-2 w-100">
             <div className="d-flex flex-column">
-              <span
+              <div
                 className="small"
-                style={{ minWidth: "max-content" }}
                 onClick={() => {
                   Track_post(n?.post);
                 }}
               >
-                <span className="small d-block fw-light">
+                <div className="small fw-light">
                   {dayjs(n?.createdAt).fromNow()}
-                </span>
-                <span className="fw-medium d-block on-hover-userid">
+                </div>
+                <div className="fw-medium  on-hover-userid">
                   @{n?.sender?.username} {type}
-                </span>
-              </span>
+                </div>
+              </div>
 
-              <span
+              <div
                 className="small overflow-hidden"
                 style={{
                   display: "-webkit-box",
@@ -361,16 +366,17 @@ const LikeCommNotifi = ({
                 }}
               >
                 {content}
-              </span>
+              </div>
             </div>
 
-            <span
+            <div
               className="justify"
               onClick={() => {
                 Track_post(n?.post);
               }}
+              style={{ minWidth: "80px" }}
             >
-              <div className="rounded" style={{ width: "80px" }}>
+              <div className="rounded">
                 {post && (
                   <CardPost
                     post={post}
@@ -378,7 +384,7 @@ const LikeCommNotifi = ({
                   />
                 )}
               </div>
-            </span>
+            </div>
           </div>
         </div>
       </div>

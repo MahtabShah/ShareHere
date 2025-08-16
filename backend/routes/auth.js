@@ -221,12 +221,11 @@ router.put("/like_this_post", verifyToken ,async (req, res) => {
 
 
 router.put("/set_comment_this_post", verifyToken ,async (req, res) => {
-  const { id, new_comment, headers } = req.body;
+  const { id, new_comment, adminId } = req.body;
 
   try {
-    const token = req.headers['authorization'].split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const useriid = decoded.id;
+ 
+    const useriid = adminId;
 
     const post = await Sentence.findById(id);
 
