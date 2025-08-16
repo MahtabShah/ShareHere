@@ -32,6 +32,10 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
       // pages: finalPages,
     });
 
+    const user = await User.find({_id : id});
+    user?.posts?.push(newSentence);
+    await user.save()
+
     console.log("new post at 53 - - - -- - - --->" , newSentence , id)
     await newSentence.save();
   io.emit('sentence', newSentence.toObject());
