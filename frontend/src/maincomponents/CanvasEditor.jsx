@@ -1240,7 +1240,7 @@ const CanvasVibeEditor = () => {
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
-                          : "2px solid red",
+                          : "2px solid transparent",
 
                       cursor: activeId ? "move" : "",
                     }}
@@ -1253,10 +1253,14 @@ const CanvasVibeEditor = () => {
                     }}
                     disableDragging={!(activeId === activeElement?.id)}
                     enableResizing={activeId === activeElement?.id}
-                    // onDragStop={() => {
-                    //   setActiveId(null);
-                    //   setActiveElement({ id: "x" });
-                    // }}
+                    onDragStop={() => {
+                      setActiveId(null);
+                      setActiveElement({ id: "x" });
+                    }}
+                    onResizeStop={() => {
+                      setActiveId(null);
+                      setActiveElement({ id: "x" });
+                    }}
                   >
                     <div
                       className="w-100 h-100 position-relative"
@@ -1398,8 +1402,8 @@ const CanvasVibeEditor = () => {
                 style={{
                   cursor: "pointer",
                   minWidth: "max-content",
-                  bottom: "-10px",
-                  right: "1px",
+                  bottom: "-14px",
+                  right: "10px",
                   zIndex: 9834982093,
                   cursor: "ns-resize",
                 }}
@@ -1409,7 +1413,7 @@ const CanvasVibeEditor = () => {
                     color: "red",
                     rotate: "90deg",
                   }}
-                  size={16}
+                  size={26}
                 />
               </div>
             </div>
