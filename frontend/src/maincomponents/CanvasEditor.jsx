@@ -1259,17 +1259,17 @@ const CanvasVibeEditor = () => {
                     //   setActiveElement({ id: "x" });
                     // }}
                     onTouchStart={(e) => {
-                      setTimeout(() => {
-                        setActiveId(el.id);
-                        setActiveElement(el);
-                      }, 250);
+                      // setTimeout(() => {
+                      setActiveId(el.id);
+                      setActiveElement(el);
+                      // }, 250);
                     }}
                     onMouseDown={(e) => {
-                      setTimeout(() => {
-                        setActiveId(el.id);
-                        setActiveElement(el);
-                        console.log("dragg 2", Date.now());
-                      }, 240);
+                      // setTimeout(() => {
+                      setActiveId(el.id);
+                      setActiveElement(el);
+                      console.log("dragg 2", Date.now());
+                      // }, 240);
                     }}
                   >
                     <div className="w-100 h-100 position-relative">
@@ -1290,10 +1290,12 @@ const CanvasVibeEditor = () => {
                               console.log("dragg 1", Date.now());
                             }}
                             onTouchStart={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault(); // ⬅️ important
-                              setActiveId(null);
-                              setActiveElement({ id: "x" });
+                              setTimeout(() => {
+                                e.stopPropagation();
+                                e.preventDefault(); // ⬅️ important
+                                setActiveId(null);
+                                setActiveElement({ id: "x" });
+                              }, 200);
                             }}
                           >
                             <FontAwesomeIcon icon={faMinus} />
