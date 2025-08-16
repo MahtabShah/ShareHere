@@ -1264,11 +1264,11 @@ const CanvasVibeEditor = () => {
                       activeElement?.id == el.id ? true : false
                     }
                     enableResizing={activeElement?.id == el.id ? true : false}
-                    onTouchStart={() => {
+                    onPointerDown={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
                     }}
-                    onMouseDown={() => {
+                    onClick={() => {
                       setActiveId(el.id);
                       setActiveElement(el);
                     }}
