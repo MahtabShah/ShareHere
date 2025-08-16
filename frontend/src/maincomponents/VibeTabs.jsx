@@ -54,9 +54,7 @@ export const VibeTabs = () => {
               className="border-0 py-0"
               style={{ marginTop: "96px" }}
             >
-              {Key === key && posts.length && (
-                <All_Post_Section category={key} />
-              )}
+              {Key === key && <All_Post_Section category={key} />}
             </Tab>
           ))}
         </Tabs>

@@ -25,7 +25,8 @@ function All_Post_Section({ category }) {
     setActiveIndex,
   } = useQuote();
 
-  const { limit, page, fetch_n_posts, setPosts, posts } = usePost();
+  const { limit, page, post_loading, fetch_n_posts, setPosts, posts } =
+    usePost();
   const { bg2, bg1 } = useTheme();
 
   // Infinite scroll handler
@@ -71,10 +72,12 @@ function All_Post_Section({ category }) {
 
   useEffect(() => {
     setRn(Math.floor(Math.random() * 10 + 1));
+    setLoading(true);
+
     setTimeout(() => {
       setLoading(false);
     }, 2000);
-  }, []);
+  }, [category]);
 
   useEffect(() => {
     if (!openSlidWin) {
@@ -134,7 +137,7 @@ function All_Post_Section({ category }) {
                 className="d-flex justify-content-center"
                 style={{ height: "84px" }}
               >
-                {loading ? (
+                {post_loading ? (
                   <div className="p-3">
                     {" "}
                     <Loading dm={34} />
@@ -150,7 +153,7 @@ function All_Post_Section({ category }) {
           </div>
         )}
 
-        {lgbreakPoint && (
+        {lgbreakPoint && posts?.length && (
           <div
             style={{
               position: "sticky",

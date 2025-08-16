@@ -179,7 +179,7 @@ export const NotificationBell = () => {
   };
 
   return (
-    <li className="" style={{ listStyle: "none" }}>
+    <div className="">
       <Nav.Link
         className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
         onClick={HandleBellIcon}
@@ -217,7 +217,7 @@ export const NotificationBell = () => {
           <FontAwesomeIcon icon={faBell} color={text_clrH} fontSize={20} />
         </div>
       </Nav.Link>
-    </li>
+    </div>
   );
 };
 
