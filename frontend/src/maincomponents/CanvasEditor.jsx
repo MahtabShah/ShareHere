@@ -1240,7 +1240,7 @@ const CanvasVibeEditor = () => {
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
-                          : "2px solid red",
+                          : "2px solid transparent",
 
                       cursor: activeId ? "move" : "",
                     }}
@@ -1253,17 +1253,23 @@ const CanvasVibeEditor = () => {
                     }}
                     disableDragging={!(activeId === activeElement?.id)}
                     enableResizing={activeId === activeElement?.id}
-                    onDragStop={() => {
+                    onDragStop={(e) => {
+                      console.log("dragg 1", e.clientX);
                       setActiveId(null);
                       setActiveElement({ id: "x" });
                     }}
-                    onTouchStart={() => {
-                      setActiveId(el.id);
-                      setActiveElement(el);
+                    onTouchStart={(e) => {
+                      setTimeout(() => {
+                        setActiveId(el.id);
+                        setActiveElement(el);
+                      }, 250);
                     }}
-                    onMouseDown={() => {
-                      setActiveId(el.id);
-                      setActiveElement(el);
+                    onMouseDown={(e) => {
+                      setTimeout(() => {
+                        setActiveId(el.id);
+                        setActiveElement(el);
+                        console.log("dragg 2", Date.now());
+                      }, 240);
                     }}
                   >
                     <div className="w-100 h-100 position-relative">
