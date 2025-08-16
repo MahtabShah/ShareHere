@@ -293,15 +293,19 @@ router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
 });
 
 router.delete("/:commentId", verifyToken, async (req, res) => {
+
+  const {adminId , postId} = req.body
+
+
   try {
-    const comment = await Comment.findById(req.params.commentId).populate("postId");
+    const comment = await Comment.findById(req.params.commentId)
     if (!comment) return res.status(404).json({ message: "Comment not found" });
 
-    const postUserId = comment?.postId?.userId.toString();
+    const postUserId = comment?.postId?.userId?.toString();
 
-    console.log("comment id - - ", req.user.id)
+    // console.log("comment id - - ", comment)
 
-    if (postUserId == req.user.id || comment.userId.toString() == req.user.id) {
+    if (postUserId == req.user.id || comment?.userId?.toString() == req.user.id) {
           await Comment.findByIdAndDelete(req.params.commentId);
           res.json({ message: "Comment deleted" });
 

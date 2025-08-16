@@ -33,7 +33,13 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
   const handleDelete = async (commentId) => {
     try {
       await axios.delete(`${API}/api/crud/${commentId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        data: {
+          adminId: admin_user?._id,
+          postId: postId,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       setComments((prev) => prev.filter((c) => c._id !== commentId));
     } catch (err) {
