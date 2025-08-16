@@ -203,8 +203,7 @@ export const QuoteProvider = ({ children }) => {
     };
 
     socket.on("userUpdated", handleUserUpdate);
-    socket.on("status", () => {
-      fetch_user_statuses();
+    socket.on("update", () => {
       fetch_admin_user();
     });
     socket.on("Notification", fetch_all_notifications);
@@ -212,7 +211,7 @@ export const QuoteProvider = ({ children }) => {
     return () => {
       socket.off("userUpdated", handleUserUpdate);
       socket.off("Notification", fetch_all_notifications);
-      socket.off("status", fetch_user_statuses);
+      socket.off("update", fetch_user_statuses);
     };
   }, []);
 

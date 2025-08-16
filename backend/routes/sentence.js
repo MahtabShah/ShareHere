@@ -32,7 +32,7 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
       // pages: finalPages,
     });
 
-    const user = await User.find({_id : id});
+    const user = await User.findById(id);
     user?.posts?.push(newSentence);
     await user.save()
 
