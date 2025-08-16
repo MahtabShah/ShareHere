@@ -1242,7 +1242,7 @@ const CanvasVibeEditor = () => {
                           ? "2px dashed #ff0101ff"
                           : "2px solid red",
 
-                      cursor: activeElement ? "move" : "",
+                      cursor: activeId ? "move" : "",
                     }}
                     spellCheck={false}
                     default={{
@@ -1252,27 +1252,22 @@ const CanvasVibeEditor = () => {
                       height: 200,
                     }}
                     disableDragging={!activeId}
-                    onResize={() => {
-                      setActiveId(el.id);
-                    }}
                     onDragStop={() => {
                       setActiveId(null);
+                      setActiveElement(el);
                     }}
-
-                    // enableResizing={false}
-                    // onDragStop={(e, d) => {
-                    //   this.setState({ x: d.x, y: d.y });
-                    // }}
-
-                    // onResizeStop={(e, direction, ref, delta, position) => {
-                    //   this.setState({
-                    //     width: ref.style.width,
-                    //     height: ref.style.height,
-                    //     ...position,
-                    //   });
-                    // }}
                   >
-                    <div className="w-100 h-100 position-relative">
+                    <div
+                      className="w-100 h-100 position-relative"
+                      onTouchStart={() => {
+                        setActiveId(el.id);
+                        setActiveElement(el);
+                      }}
+                      onMouseDown={() => {
+                        setActiveId(el.id);
+                        setActiveElement(el);
+                      }}
+                    >
                       {activeId === el.id && (
                         <>
                           <button
@@ -1393,6 +1388,28 @@ const CanvasVibeEditor = () => {
                     </p>
                   </div>
                 )}
+              </div>
+
+              <div
+                onTouchStart={startResizing}
+                onMouseDown={startResizing}
+                className="position-absolute"
+                style={{
+                  cursor: "pointer",
+                  minWidth: "max-content",
+                  bottom: "-10px",
+                  right: "1px",
+                  zIndex: 9834982093,
+                  cursor: "ns-resize",
+                }}
+              >
+                <FaArrowsAltH
+                  style={{
+                    color: "red",
+                    rotate: "90deg",
+                  }}
+                  size={16}
+                />
               </div>
             </div>
           </div>
