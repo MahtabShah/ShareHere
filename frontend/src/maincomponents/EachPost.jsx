@@ -493,7 +493,7 @@ export const UserRing = ({
 export const FollowBtn = ({ id, cls, style = {} }) => {
   const { admin_user, token } = useQuote();
   const { fetch_user_by_Id } = usePost();
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState(null);
   const [isFollower, setIsFollower] = useState(false);
 
   const fetxchUser = async () => {
@@ -530,14 +530,18 @@ export const FollowBtn = ({ id, cls, style = {} }) => {
   if (admin_user?._id === user?._id) return null;
 
   return (
-    <div
-      className={`${cls}`}
-      onClick={handleClick}
-      style={{ ...style, minWidth: "max-content" }}
-      aria-readonly={true}
-    >
-      {isFollower ? "Unfollow" : "Follow"}
-    </div>
+    <>
+      {user && (
+        <div
+          className={`${cls}`}
+          onClick={handleClick}
+          style={{ ...style, minWidth: "max-content" }}
+          aria-readonly={true}
+        >
+          {isFollower ? "Unfollow" : "Follow"}
+        </div>
+      )}
+    </>
   );
 };
 

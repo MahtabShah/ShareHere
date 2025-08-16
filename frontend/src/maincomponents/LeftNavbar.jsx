@@ -25,12 +25,11 @@ import { Notification } from "../../TinyComponent/Notification";
 const API = import.meta.env.VITE_API_URL;
 import CanvasVibeEditor from "./CanvasEditor";
 import { useTheme } from "../context/Theme";
-
+import { NotificationBell } from "./MainHeader";
 export default function LeftNavbar() {
   const {
     sm_break_point,
     admin_user,
-    curr_all_notifications,
     setUploadClicked,
     uploadClicked,
     mobile_break_point,
@@ -39,41 +38,12 @@ export default function LeftNavbar() {
     activeIndex,
     setActiveIndex,
     setVisibleNotification,
-    VisibleNotification,
+    setCount,
   } = useQuote();
 
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (curr_all_notifications && curr_all_notifications?.length > 0) {
-      const length =
-        curr_all_notifications?.filter((n) => n?.isRead === false)?.length || 0;
-      setCount(length);
-    }
-  }, [curr_all_notifications, VisibleNotification]);
-
-  const Mark_as_read_notification = async () => {
-    try {
-      const res = await axios.put(
-        `${API}/api/crud/crud_mark_notification`,
-        { curr_all_notifications }, // ✅ This is the body
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      // setLoading(false);
-      // console.log("marked---->", res.data);
-      // setcurr_all_notifications(res.data);
-    } catch (error) {
-      console.log("error in notification", error);
-    }
-  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -89,6 +59,16 @@ export default function LeftNavbar() {
     setLoggedIn(false);
     if (onLogout) onLogout();
   };
+
+  useEffect(() => {
+    if (activeIndex === "Notifications") {
+      document.querySelector("html").classList.add("no-scroll");
+    } else {
+      if (document.querySelector("html").classList.contains("no-scroll")) {
+        document.querySelector("html").classList.remove("no-scroll");
+      }
+    }
+  }, [activeIndex]);
 
   const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
 
@@ -207,30 +187,18 @@ export default function LeftNavbar() {
                 </Nav.Link>
               </li>
 
-              <li className="nav-item ">
-                <Nav.Link
-                  className={`nav-link  d-flex align-items-center gap-3 fs-6  ${
-                    activeIndex == "Notifications" ? "active" : ""
+              <li className="nav-item">
+                <div
+                  className={`d-flex p-0 nav-link align-items-center ${
+                    activeIndex == "Notifications" ? "active" : "br"
                   }`}
                   onClick={() => {
-                    setVisibleNotification(!VisibleNotification);
                     setCount(0);
-                    Mark_as_read_notification();
-
-                    if (activeIndex == "Notifications") {
-                      setopenSlidWin(!openSlidWin);
-                    } else {
-                      setopenSlidWin(true);
-                      setActiveIndex("Notifications");
-                    }
+                    setopenSlidWin(true);
                   }}
+                  style={{ cursor: "pointer" }}
                 >
-                  <div
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px", color: text_clrH }}
-                  >
-                    <FontAwesomeIcon icon={faBell} />
-                  </div>
+                  <NotificationBell />
                   <span
                     className={`fw-semibold pe-5 ${
                       sm_break_point ? "d-none" : ""
@@ -239,40 +207,8 @@ export default function LeftNavbar() {
                   >
                     Notifications
                   </span>
-                </Nav.Link>
+                </div>
               </li>
-
-              {/* <li className="nav-item ">
-                <Nav.Link
-                  className={`nav-link d-flex align-items-center gap-3 fs-6 ${
-                    activeIndex == "Search" ? "active" : ""
-                  }`}
-                  onClick={() => {
-                    setopenSlidWin(true);
-                    if (activeIndex == "Search") {
-                      setopenSlidWin(!openSlidWin);
-                    } else {
-                      setopenSlidWin(true);
-                      setActiveIndex("Search");
-                    }
-                  }}
-                >
-                  <div
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px", color: text_clrH }}
-                  >
-                    <FontAwesomeIcon icon={faSearch} />
-                  </div>
-                  <span
-                    className={`fw-semibold pe-5 ${
-                      sm_break_point ? "d-none" : ""
-                    }`}
-                    style={{ width: "154px", color: text_clrH }}
-                  >
-                    Search
-                  </span>
-                </Nav.Link>
-              </li> */}
 
               {loggedIn && admin_user?._id ? (
                 <>

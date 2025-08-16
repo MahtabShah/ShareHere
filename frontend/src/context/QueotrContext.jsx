@@ -50,6 +50,7 @@ export const QuoteProvider = ({ children }) => {
   const limit = 2; // how many items per page
   let page = 1;
   const token = localStorage.getItem("token");
+  const [count, setCount] = useState(null);
 
   const fetch_admin_user = async () => {
     try {
@@ -102,6 +103,7 @@ export const QuoteProvider = ({ children }) => {
         });
         // console.log("setcurr_all_notifications---->", res.data);
         setcurr_all_notifications(res.data);
+        return res.data;
       }
     } catch (error) {
       console.log("erriorrr in notify", error);
@@ -246,6 +248,8 @@ export const QuoteProvider = ({ children }) => {
         setStatusClicked,
         curr_all_notifications,
         fetch_all_notifications,
+        setCount,
+        count,
 
         setLoading,
         openSlidWin,

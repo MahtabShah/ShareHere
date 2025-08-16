@@ -55,33 +55,6 @@ function MainHeader({}) {
   };
 
   useEffect(() => {
-    if (curr_all_notifications && curr_all_notifications?.length > 0) {
-      const length =
-        curr_all_notifications?.filter((n) => n?.isRead === false)?.length || 0;
-      setCount(length);
-    }
-  }, [curr_all_notifications]);
-
-  const Mark_as_read_notification = async () => {
-    try {
-      const res = await axios.put(
-        `${API}/api/crud/crud_mark_notification`,
-        { curr_all_notifications }, // ✅ This is the body
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      // setLoading(false);
-      // console.log("marked---->", res.data);
-      // setcurr_all_notifications(res.data);
-    } catch (error) {
-      console.log("error in notification", error);
-    }
-  };
-
-  useEffect(() => {
     window.addEventListener("resize", () => {
       setsmbreakPoint(window.innerWidth < 600);
     });
@@ -131,49 +104,7 @@ function MainHeader({}) {
                 <SearchBaar />
               </div>
 
-              {!sm_break_point && (
-                <li className="nav-item " style={{ listStyle: "none" }}>
-                  <Nav.Link
-                    className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-                    onClick={() => {
-                      if (count <= 0) {
-                        setVisibleNotification(!VisibleNotification);
-                        Mark_as_read_notification();
-                      }
-                      setActiveIndex("Notifications");
-                      setopenSlidWin(true);
-                      setopenSlidWin(!openSlidWin);
-
-                      setCount(0);
-                    }}
-                  >
-                    <div
-                      className="d-flex align-items-center small justify-content-center"
-                      style={{ width: "24px", height: "24px" }}
-                    >
-                      {count > 0 && (
-                        <small
-                          className="text-light small position-absolute text-center rounded-4 fw-bold "
-                          style={{
-                            translate: "10px -4px",
-                            minWidth: "18px",
-                            height: "18px",
-                            background: "red",
-                          }}
-                        >
-                          {count > 0 ? count : ""}
-                        </small>
-                      )}
-
-                      <FontAwesomeIcon
-                        icon={faBell}
-                        color={text_clrH}
-                        fontSize={20}
-                      />
-                    </div>
-                  </Nav.Link>
-                </li>
-              )}
+              {!sm_break_point && <NotificationBell />}
 
               <button
                 className={`rotate`}
@@ -200,25 +131,94 @@ function MainHeader({}) {
   );
 }
 
-const NotificationBell = ({ count }) => {
+export const NotificationBell = () => {
+  const { text_clrH } = useTheme();
+  const {
+    curr_all_notifications,
+    openSlidWin,
+    setcurr_all_notifications,
+    setopenSlidWin,
+    setActiveIndex,
+    API,
+    token,
+    count,
+    setCount,
+  } = useQuote();
+
+  useEffect(() => {
+    if (curr_all_notifications && curr_all_notifications?.length > 0) {
+      const length =
+        curr_all_notifications?.filter((n) => n?.isRead === false)?.length || 0;
+      setCount(length);
+    }
+  }, [curr_all_notifications]);
+
+  const Mark_as_read_notification = async () => {
+    setCount(0);
+
+    try {
+      const res = await axios.put(
+        `${API}/api/crud/crud_mark_notification`,
+        { curr_all_notifications }, // ✅ This is the body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setcurr_all_notifications(res.data);
+    } catch (error) {
+      console.log("error in notification", error);
+    }
+  };
+
+  const HandleBellIcon = () => {
+    setActiveIndex("Notifications");
+    setopenSlidWin(true);
+    Mark_as_read_notification();
+  };
+
   return (
-    <div className="position-relative d-inline-block">
-      {count > 0 && (
-        <span
-          className="position-absolute start-50 translate-middle bg-danger border border-light text-light d-flex align-items-center justify-content-center rounded-circle fw-bold"
-          style={{
-            fontSize: "0.5rem",
-            width: "20px",
-            height: "20px",
-            left: "5px",
-          }}
+    <li className="" style={{ listStyle: "none" }}>
+      <Nav.Link
+        className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
+        onClick={HandleBellIcon}
+      >
+        <div
+          className="d-flex align-items-center small justify-content-center"
+          style={{ width: "24px", height: "24px" }}
         >
-          {count > 9 ? "9+" : count}
-        </span>
-      )}
-    </div>
+          {count > 0 && (
+            <small
+              className="text-light small position-absolute text-center rounded-4 fw-bold "
+              style={{
+                translate: "10px -4px",
+                minWidth: "18px",
+                height: "18px",
+              }}
+            >
+              <div className="position-relative d-inline-block">
+                {count > 0 && (
+                  <span
+                    className="position-absolute translate-middle bg-danger border border-light text-light d-flex align-items-center justify-content-center rounded-circle fw-bold"
+                    style={{
+                      fontSize: "0.5rem",
+                      width: "20px",
+                      height: "20px",
+                    }}
+                  >
+                    {count > 9 ? "9+" : count}
+                  </span>
+                )}
+              </div>
+            </small>
+          )}
+
+          <FontAwesomeIcon icon={faBell} color={text_clrH} fontSize={20} />
+        </div>
+      </Nav.Link>
+    </li>
   );
 };
 
 export default MainHeader;
-// this is commit

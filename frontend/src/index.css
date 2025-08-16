@@ -3,10 +3,6 @@
   width: 0 !important;
 }
 
-.no-scroll {
-  overflow: hidden !important;
-}
-
 .class {
   border: 2px solid red;
 }
@@ -136,4 +132,8 @@ textarea::placeholder {
 
 .accordion-button {
   padding: 12px !important;
+}
+
+.no-scroll {
+  overflow: hidden !important;
 }

@@ -456,7 +456,7 @@ router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
 
    
     io.emit('userUpdated', user);
-    console.log("------------> mark" , curr_notifications , user)
+    // console.log("------------> mark" , curr_notifications , user)
     res.status(201).json(curr_notifications);
   } catch (err) {
     console.error('Error deleting sentence:', err);

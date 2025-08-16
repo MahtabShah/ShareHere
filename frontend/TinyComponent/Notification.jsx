@@ -22,7 +22,8 @@ export const Notification = ({ setVisibleNotification }) => {
   const nevigate = useNavigate();
   const [go_comment, setGo_comment] = useState(false);
 
-  const { curr_all_notifications, token, setopenSlidWin } = useQuote();
+  const { curr_all_notifications, setCount, token, setopenSlidWin } =
+    useQuote();
 
   const [comments, setComments] = useState(post?.comments || []); // store comments here
   const { fetch_comments_postId, fetch_post_by_Id } = usePost();
@@ -91,12 +92,15 @@ export const Notification = ({ setVisibleNotification }) => {
             color: text_clrM,
             maxWidth: "481px",
             boxShadow: `0 4px 10px ${text_clrM}`,
-            height: "calc(100vh - 102px)",
+            height: "calc(100dvh - 142px)",
           }}
         >
           <h5
             className="d-flex align-items-center gap-3 position-sticky py-2 top-0"
             style={{ background: bg1, zIndex: 9877 }}
+            onClick={() => {
+              setCount(0);
+            }}
           >
             <div
               className="d-inline-flex p-1 rounded-1"

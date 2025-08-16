@@ -17,21 +17,18 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { NotificationBell } from "../src/maincomponents/MainHeader";
 import { useTheme } from "../src/context/Theme";
-
 export default function BottomNav({}) {
   const {
     admin_user,
     sm_break_point,
-    mobile_break_point,
     setopenSlidWin,
     setActiveIndex,
     activeIndex,
     setUploadClicked,
     uploadClicked,
     openSlidWin,
-    setVisibleNotification,
-    VisibleNotification,
   } = useQuote();
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -119,36 +116,13 @@ export default function BottomNav({}) {
               </li>
 
               <li className="nav-item ">
-                <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
+                <div
+                  className={`nav-link p-0 ${
                     activeIndex == "Notifications" ? "active" : "br"
                   }`}
-                  onClick={() => {
-                    setVisibleNotification(!VisibleNotification);
-
-                    if (activeIndex == "Notifications") {
-                      setopenSlidWin(!openSlidWin);
-                    } else {
-                      setopenSlidWin(true);
-                      setActiveIndex("Notifications");
-                    }
-                  }}
                 >
-                  <div
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px", color: text_clrH }}
-                  >
-                    <FontAwesomeIcon icon={faBell} />
-                  </div>
-                  <span
-                    className={`fw-semibold pe-5 ${
-                      sm_break_point ? "d-none" : ""
-                    }`}
-                    style={{ width: "154px" }}
-                  >
-                    Notifications
-                  </span>
-                </Nav.Link>
+                  <NotificationBell />
+                </div>
               </li>
 
               {/* <li className="nav-item ">
