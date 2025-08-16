@@ -212,8 +212,8 @@ const EditUserProfile = () => {
             <textarea
               rows={4}
               className="w-100 h-100 p-2"
-              value={bio || user?.bio}
-              onChange={(e) => setBio(e.target.value)}
+              value={bio || ""}
+              onChange={(e) => setBio(e.target.value || "")}
               required
               spellCheck={false}
               style={{

@@ -46,7 +46,7 @@ export default function BottomNav({}) {
           <div
             className="BottomNav py-1 w-100 d-sm-none position-fixed"
             style={{
-              zIndex: 90019999991,
+              zIndex: 90019999999991,
               height: "48px",
               bottom: "0",
               left: "0",

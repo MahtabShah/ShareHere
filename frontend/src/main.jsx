@@ -25,6 +25,7 @@ import { VibeEditorProvider } from "./context/VibeEditorContext.jsx";
 import { TrackPost } from "../TinyComponent/TrackPost.jsx";
 import { PostProvider } from "./context/PostContext.jsx";
 import { VibeTabs } from "./maincomponents/VibeTabs.jsx";
+import EditPost from "./maincomponents/EditPost.jsx";
 
 const StatusPage = () => {
   const [followings, setFollowings] = useState();
@@ -119,6 +120,7 @@ const Main = () => {
                     </div>
                   }
                 />
+
                 <Route
                   path="/login"
                   element={
@@ -158,6 +160,28 @@ const Main = () => {
                       {/* <All_Post_Section /> */}
                       <VibeTabs />
                     </main>
+                  }
+                />
+
+                <Route
+                  path="/post/edit/:id"
+                  element={
+                    <div
+                      style={{
+                        marginLeft: `${
+                          mobile_break_point
+                            ? "0px"
+                            : sm_break_point
+                            ? "74px"
+                            : "246px"
+                        }`,
+
+                        marginBlock: "50px",
+                      }}
+                    >
+                      <EditPost />
+                      <BottomNav />
+                    </div>
                   }
                 />
 

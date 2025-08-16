@@ -576,7 +576,7 @@ export const SlipDotinPost = ({ user, post }) => {
         // this way is just for temporary...!!!
 
         <>
-          {/* <Nav.Link href="/home">Edit Post</Nav.Link> */}
+          <Nav.Link href={`/post/edit/${post._id}`}>Edit Post</Nav.Link>
           <Nav.Link onClick={HandleDelete} className=" pe-2 ps-2 text-danger">
             Delete
           </Nav.Link>

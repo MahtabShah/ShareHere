@@ -49,6 +49,55 @@ router.post("/post", verifyToken, upload.array("images"), async (req, res) => {
 
 
 
+router.post("/post/edit", verifyToken, async (req, res) => {
+  try {
+    const { ready_url, text, mode, id, category , postId } = req.body;
+
+    if (!ready_url || !text || !id) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Check if post exists
+    let post = await Sentence.findOne({ _id: postId });
+    let user = await User.findOne({ _id: id });
+
+    
+
+    console.error("post:", post);
+  
+      // If found → update
+      post.text = text;
+      post.mode = mode;
+      post.userId = id;
+      post.category = category;
+      post.updatedAt = Date.now();
+      await post.save();
+
+      user.posts = user.posts.map(f => {
+      if (f._id.toString() == postId.toString()) {
+        console.log("matched . . .")
+        return post;  // replace with updated post
+       }
+       return f;       // keep original
+      });
+
+      await user.save()
+
+      console.log("user ",post, user)
+
+
+    return res.status(200).json({
+      success: true,
+      message: "Post saved successfully",
+      post,
+    });
+  } catch (err) {
+    console.error("Error editing post:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 
 
 
