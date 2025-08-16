@@ -1240,7 +1240,7 @@ const CanvasVibeEditor = () => {
                       border:
                         activeId === el.id
                           ? "2px dashed #ff0101ff"
-                          : "2px solid transparent",
+                          : "2px solid red",
 
                       cursor: activeId ? "move" : "",
                     }}
@@ -1257,22 +1257,16 @@ const CanvasVibeEditor = () => {
                       setActiveId(null);
                       setActiveElement({ id: "x" });
                     }}
-                    onResizeStop={() => {
-                      setActiveId(null);
-                      setActiveElement({ id: "x" });
+                    onTouchStart={() => {
+                      setActiveId(el.id);
+                      setActiveElement(el);
+                    }}
+                    onMouseDown={() => {
+                      setActiveId(el.id);
+                      setActiveElement(el);
                     }}
                   >
-                    <div
-                      className="w-100 h-100 position-relative"
-                      onTouchStart={() => {
-                        setActiveId(el.id);
-                        setActiveElement(el);
-                      }}
-                      onMouseDown={() => {
-                        setActiveId(el.id);
-                        setActiveElement(el);
-                      }}
-                    >
+                    <div className="w-100 h-100 position-relative">
                       {activeId === el.id && (
                         <>
                           <button
