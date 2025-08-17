@@ -33,7 +33,7 @@ export const VibeTabs = () => {
 
   return (
     <>
-      <div className="vibeTabs mt-5 px-2">
+      <div className="vibeTabs mt-5 px-3">
         <Tabs
           id="controlled-tab-example"
           activeKey={Key}

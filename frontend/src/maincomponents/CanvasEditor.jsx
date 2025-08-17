@@ -378,7 +378,7 @@ const CanvasVibeEditor = () => {
                         ? "0px"
                         : sm_break_point
                         ? "74px"
-                        : "245px"
+                        : "256px"
                     }`,
 
                     right: 0,
