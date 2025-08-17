@@ -271,7 +271,9 @@ export const SearchBaar = () => {
                 <Loading dm={34} />
               </div>
             ) : (
-              <p className="p-2">No result</p>
+              <p className="p-2" style={{ color: text_clrM }}>
+                No result
+              </p>
             ))}
         </div>
       )}

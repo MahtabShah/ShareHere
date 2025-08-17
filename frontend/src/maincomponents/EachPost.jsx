@@ -305,15 +305,32 @@ export const EachPost = ({ user, comment }) => {
               </span>
             </div>
 
-            <span
-              onClick={() => setdotClicked(!isdotClicked)}
-              style={{
-                rotate: isdotClicked ? "-45deg" : "",
-                translate: mobile_break_point ? "4px" : "7px",
-              }}
-            >
-              <BsThreeDotsVertical size={18} />
-            </span>
+            <div className="d-flex align-items-center">
+              <div
+                className="small border rounded-1"
+                style={{
+                  fontSize: "12px",
+                  background: bg2,
+                }}
+              >
+                <small className="p-2">
+                  {comment?.category &&
+                    comment.category.charAt(0).toUpperCase() +
+                      comment.category.slice(1)}
+                </small>
+              </div>
+
+              <div
+                className="d-flex"
+                onClick={() => setdotClicked(!isdotClicked)}
+                style={{
+                  rotate: isdotClicked ? "-45deg" : "",
+                  translate: mobile_break_point ? "4px" : "7px",
+                }}
+              >
+                <BsThreeDotsVertical size={18} />
+              </div>
+            </div>
           </div>
 
           <span className="pb-1" style={{ color: text_clrM, fontSize: "12px" }}>
