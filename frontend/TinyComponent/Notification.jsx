@@ -216,64 +216,23 @@ export const Notification = ({ setVisibleNotification }) => {
                     {heading}
 
                     {n?.type === "follow" && (
-                      <div
-                        className="followersNotify p-1"
-                        style={{ borderBottom: `1px solid ${text_clrL}` }}
-                      >
-                        <div className="d-flex gap-2">
-                          <div
-                            className="dpPhoto rounded-circle d-flex justify-content-center align-items-center"
-                            style={{
-                              maxWidth: "37px",
-                              minWidth: "37px",
-                              height: "37px",
-                              background: `${n?.sender?.bg_clr}`,
-                            }}
-                          >
-                            <img
-                              src={n?.sender?.profile_pic}
-                              alt=""
-                              className="h-100 w-100 rounded-5"
-                              style={{ objectFit: "cover" }}
-                            />
-                            {/* {n?.sender?.username?.charAt(0).toUpperCase()} */}
-                          </div>
-                          <span className="small">
-                            <span className="small d-block fw-light">
-                              {dayjs(n?.createdAt).fromNow()}
-                            </span>
-                            <span className="">
-                              <span
-                                className="on-hover-userid fw-medium"
-                                onClick={() => {
-                                  setVisibleNotification(false);
-                                  setopenSlidWin(false);
-                                  nevigate(`api/user/${n?.sender._id}`);
-                                }}
-                              >
-                                @{n?.sender?.username}
-                                {"  "}
-                              </span>
-                              followed you . .
-                            </span>
-                          </span>
-                        </div>
+                      <div className="my-3">
+                        <LikeCommNotifi
+                          n={n}
+                          Track_post={null}
+                          type="followed  you, new follower."
+                          content={null}
+                        />
                       </div>
                     )}
 
                     {n?.type === "comment" && (
-                      <div
-                        className="commentNotify"
-                        key={`cmnt${idx}`}
-                        style={{ background: bg2 }}
-                      >
-                        <LikeCommNotifi
-                          n={n}
-                          Track_post={Track_post}
-                          type="commented in your post."
-                          content={n?.comment?.text}
-                        />
-                      </div>
+                      <LikeCommNotifi
+                        n={n}
+                        Track_post={Track_post}
+                        type="commented in your post."
+                        content={n?.comment?.text}
+                      />
                     )}
 
                     {n?.type === "like" && (
@@ -320,9 +279,9 @@ const LikeCommNotifi = ({
           <div
             className="dpPhoto rounded-circle border"
             style={{
-              maxWidth: "37px",
-              minWidth: "37px",
-              height: "37px",
+              maxWidth: "42px",
+              minWidth: "42px",
+              height: "42px",
               cursor: "pointer",
             }}
             onClick={() => {
@@ -340,18 +299,19 @@ const LikeCommNotifi = ({
             )}
           </div>
           <div className="d-flex justify-content-between gap-2 w-100">
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column gap-2">
               <div
                 className="small"
                 onClick={() => {
                   Track_post(n?.post);
                 }}
               >
+                <div className="fw-medium on-hover-userid">
+                  {n?.sender?.username} {type}
+                </div>
+
                 <div className="small fw-light">
                   {dayjs(n?.createdAt).fromNow()}
-                </div>
-                <div className="fw-medium  on-hover-userid">
-                  @{n?.sender?.username} {type}
                 </div>
               </div>
 

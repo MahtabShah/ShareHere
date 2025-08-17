@@ -3,6 +3,11 @@ import { useQuote } from "../context/QueotrContext";
 import { UserRing, FollowBtn } from "./EachPost";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "../context/Theme";
+import { usePost } from "../context/PostContext";
+import { throttle } from "lodash";
+import { useNavigate } from "react-router-dom";
+
+import { Rank_Calculation } from "../context/PostContext";
 
 const SuggetionSlip = () => {
   const { all_user, admin_user, lgbreakPoint } = useQuote();
@@ -135,6 +140,149 @@ export const SuggetionSlipInPost = () => {
         );
       })}
     </>
+  );
+};
+
+function getCols(width) {
+  if (width >= 520) return 4;
+  else if (width >= 392) return 3;
+  else if (width >= 264) return 2;
+  return 1;
+}
+
+export const GalleryPost = ({ category }) => {
+  const [columns, setColumns] = useState(() => getCols(window.innerWidth));
+  const { text_clrH, text_clrL } = useTheme();
+  const { limit, page, post_loading, fetch_n_posts } = usePost();
+  const [posts, setPosts] = useState([]);
+  const [expanded, setExpanded] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const data = await fetch_n_posts(limit, page, category);
+      console.log(data);
+      const sorted = data
+        .map((post) => ({
+          ...post,
+          rank: Rank_Calculation(post),
+        }))
+        .sort((a, b) => b.rank - a.rank);
+
+      setPosts((prev) => [...prev, ...sorted]);
+    })();
+  }, [category]);
+
+  useEffect(() => {
+    function handleResize() {
+      setColumns(getCols(window.innerWidth));
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Split posts into a 2D array: columnsArr[colIndex] = array of posts
+  const columnsArr = Array.from({ length: columns }, () => []);
+
+  posts.forEach((post, idx) => {
+    const colIndex = idx % columns; // distribute across columns
+    columnsArr[colIndex].push(post);
+  });
+
+  const navigate = useNavigate();
+
+  const Track_post = (postId) => {
+    const target = document.getElementById(postId);
+
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      navigate(`/home/${postId}`);
+    }
+  };
+
+  const FetchMore = () => {
+    (async () => {
+      const data = await fetch_n_posts(limit, page, category);
+      if (data?.length > 0) {
+        const sorted = data
+          .map((post) => ({
+            ...post,
+            rank: Rank_Calculation(post),
+          }))
+          .sort((a, b) => b.rank - a.rank);
+
+        setPosts((prev) => [...prev, ...sorted]);
+      } else {
+        setExpanded(false);
+        console.log("posts");
+      }
+    })();
+  };
+
+  return (
+    <div className="position-relative">
+      <div
+        className="h-100"
+        style={{
+          display: "flex",
+          gap: "12px",
+          paddingBlock: "10px",
+          // maxHeight: expanded ? "none" : "400px",
+          overflow: expanded ? "visible" : "hidden",
+        }}
+      >
+        {columnsArr.map((colPosts, colIdx) => (
+          <div
+            key={colIdx}
+            className={`rounded col-${colIdx + 1}`}
+            style={{ flex: 1 }}
+          >
+            {colPosts.map((p, i) => (
+              <img
+                src={p?.images[0]}
+                className="w-100 my-2 rounded"
+                style={{ boxShadow: `0 1px 2px ${text_clrL}` }}
+                onClick={() => {
+                  Track_post(p?._id);
+                }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {expanded && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "200px",
+              background:
+                "linear-gradient(rgba(255,255,255,0) 10%, rgba(126, 157, 186, 1) 56%)",
+            }}
+          ></div>
+          <button
+            onClick={FetchMore}
+            style={{
+              position: "absolute",
+              bottom: "15px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              padding: "6px 16px",
+              borderRadius: "20px",
+              backgroundColor: "#007bff",
+              color: "#fff",
+              border: "none",
+            }}
+          >
+            See more
+          </button>
+        </>
+      )}
+    </div>
   );
 };
 

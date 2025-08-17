@@ -161,12 +161,7 @@ export default function LeftNavbar() {
                     activeIndex == "Upload" ? "active" : ""
                   }`}
                   onClick={() => {
-                    setUploadClicked(!uploadClicked);
-                    if (activeIndex == "Upload") {
-                      setopenSlidWin(!openSlidWin);
-                    } else {
-                      setopenSlidWin(true);
-                    }
+                    setopenSlidWin(true);
                     setActiveIndex("Upload");
                   }}
                 >

@@ -9,11 +9,14 @@ import { Rank_Calculation } from "../context/PostContext";
 
 export const VibeTabs = () => {
   const [Key, setKey] = useState("all");
-  const { limit, page, setPage, fetch_n_posts, setPosts, posts } = usePost();
+  const { limit, page, fetch_n_posts, setPosts, post_loading } = usePost();
   const { bg1, bg2, bg3, text_clrH, text_clrM, text_clrL } = useTheme();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+
       const res = await fetch_n_posts(limit, 0, Key);
       const sorted = res
         .map((post) => ({
@@ -24,6 +27,7 @@ export const VibeTabs = () => {
 
       setPosts(sorted);
       console.log("page:", page, res);
+      setLoading(false);
     })();
   }, [Key]);
 
@@ -54,7 +58,9 @@ export const VibeTabs = () => {
               className="border-0 py-0"
               style={{ marginTop: "96px" }}
             >
-              {Key === key && <All_Post_Section category={key} />}
+              {Key === key && (
+                <All_Post_Section loading={loading} category={key} />
+              )}
             </Tab>
           ))}
         </Tabs>

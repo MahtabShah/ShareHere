@@ -5,17 +5,7 @@ import { useEffect, useState } from "react";
 import { useQuote } from "../src/context/QueotrContext";
 export const btnclass = "btn btn-sm progressBtn text-white ps-4 pe-4 rounded-5";
 import Nav from "react-bootstrap/Nav";
-import { useNavigate } from "react-router-dom";
-import { SearchBaar } from "./SearchBaar";
-import { Notification } from "./Notification";
-import PostSentence from "../src/maincomponents/PostSentance";
-import {
-  faUser,
-  faHome,
-  faBell,
-  faSearch,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faHome, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { NotificationBell } from "../src/maincomponents/MainHeader";
 import { useTheme } from "../src/context/Theme";
@@ -26,8 +16,6 @@ export default function BottomNav({}) {
     setopenSlidWin,
     setActiveIndex,
     activeIndex,
-    setUploadClicked,
-    uploadClicked,
     openSlidWin,
   } = useQuote();
   const [loggedIn, setLoggedIn] = useState(false);
@@ -38,7 +26,6 @@ export default function BottomNav({}) {
   }, []);
 
   const { text_clrH, text_clrL, text_clrM, bg1 } = useTheme();
-  const navigate = useNavigate();
   return (
     <>
       {sm_break_point && (
@@ -89,12 +76,7 @@ export default function BottomNav({}) {
                     activeIndex == "Upload" ? "active" : "br"
                   }`}
                   onClick={() => {
-                    setUploadClicked(!uploadClicked);
-                    if (activeIndex == "Upload") {
-                      setopenSlidWin(!openSlidWin);
-                    } else {
-                      setopenSlidWin(true);
-                    }
+                    setopenSlidWin(true);
                     setActiveIndex("Upload");
                   }}
                 >
@@ -124,38 +106,6 @@ export default function BottomNav({}) {
                   <NotificationBell />
                 </div>
               </li>
-
-              {/* <li className="nav-item ">
-                <Nav.Link
-                  className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
-                    activeIndex == "Search" ? "active" : "br"
-                  }`}
-                  onClick={() => {
-                    setopenSlidWin(true);
-                    if (activeIndex == "Search") {
-                      setopenSlidWin(!openSlidWin);
-                    } else {
-                      setopenSlidWin(true);
-                      setActiveIndex("Search");
-                    }
-                  }}
-                >
-                  <div
-                    className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px", color: text_clrH }}
-                  >
-                    <FontAwesomeIcon icon={faSearch} />
-                  </div>
-                  <span
-                    className={`fw-semibold pe-5 ${
-                      sm_break_point ? "d-none" : ""
-                    }`}
-                    style={{ width: "154px" }}
-                  >
-                    Search
-                  </span>
-                </Nav.Link>
-              </li> */}
 
               {loggedIn && admin_user?._id ? (
                 <>

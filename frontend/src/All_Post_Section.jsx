@@ -8,12 +8,13 @@ import { EachPost } from "./maincomponents/EachPost";
 import { throttle } from "lodash";
 import SuggetionSlip, {
   SuggetionSlipInPost,
+  GalleryPost,
 } from "./maincomponents/NewUserUpdate";
 import { useTheme } from "./context/Theme";
 import { usePost, Rank_Calculation } from "./context/PostContext";
+import { CardPost } from "./maincomponents/Home";
 
-function All_Post_Section({ category }) {
-  const [loading, setLoading] = useState(true);
+function All_Post_Section({ category, loading }) {
   const [rn, setRn] = useState(null);
 
   const {
@@ -32,7 +33,7 @@ function All_Post_Section({ category }) {
   // Infinite scroll handler
   useEffect(() => {
     const handleScroll = throttle(async () => {
-      setLoading(true);
+      // setLoading(true);
       if (
         window.innerHeight + window.scrollY >=
         document.body.offsetHeight - 100
@@ -51,9 +52,9 @@ function All_Post_Section({ category }) {
           setPosts((prev) => [...prev, ...sorted]);
         }
 
-        setTimeout(() => {
-          setLoading(false);
-        }, 2000);
+        // setTimeout(() => {
+        //   setLoading(false);
+        // }, 2000);
       }
     }, 500);
 
@@ -72,11 +73,6 @@ function All_Post_Section({ category }) {
 
   useEffect(() => {
     setRn(Math.floor(Math.random() * 10 + 1));
-    setLoading(true);
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
   }, [category]);
 
   useEffect(() => {
@@ -108,31 +104,38 @@ function All_Post_Section({ category }) {
         ) : (
           <div style={{ maxWidth: "min(600px, 100%)" }}>
             <>
-              <div className="d-flex flex-column">
-                <div className="d-flex flex-column gap-3">
-                  {visible_post.map(
-                    ({ post, user }, idx) =>
-                      user &&
-                      post && (
-                        <div
-                          key={`comment-${idx}`}
-                          id={post?._id}
-                          className="d-flex flex-column"
-                        >
-                          <EachPost user={user} comment={post} />
-                          {rn && rn + 1 > idx && idx > rn - 1 && (
-                            <div
-                              className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto"
-                              style={{ maxWidth: "100%" }}
-                            >
-                              <SuggetionSlipInPost />
-                            </div>
-                          )}
-                        </div>
-                      )
-                  )}
+              {!loading && (
+                <div className="d-flex flex-column">
+                  <div className="d-flex flex-column  gap-3">
+                    {visible_post.map(
+                      ({ post, user }, idx) =>
+                        user &&
+                        post && (
+                          <div
+                            key={`comment-${idx}`}
+                            id={post?._id}
+                            className="d-flex flex-column"
+                          >
+                            {rn && rn + 4 > idx && idx > rn + 2 ? (
+                              <GalleryPost category={category} />
+                            ) : (
+                              <EachPost user={user} comment={post} />
+                            )}
+
+                            {rn && rn + 1 > idx && idx > rn - 1 && (
+                              <div
+                                className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto"
+                                style={{ maxWidth: "100%" }}
+                              >
+                                <SuggetionSlipInPost />
+                              </div>
+                            )}
+                          </div>
+                        )
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
               <div
                 className="d-flex justify-content-center"
                 style={{ height: "84px" }}
