@@ -159,7 +159,7 @@ const UserProfile = ({}) => {
       >
         <div className="pb-3" style={{ background: bg1 }}>
           <div
-            className="photoHeader w-100 position-relative border"
+            className="photoHeader w-100 position-relative"
             style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}
           >
             <div

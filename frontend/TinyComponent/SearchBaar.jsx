@@ -109,7 +109,7 @@ export const SearchBaar = () => {
   }
 
   return (
-    <div className="px-2" ref={elementRef}>
+    <div className="" ref={elementRef}>
       <div className="p-0 m-0 h-100" onClick={() => {}}>
         <form onSubmit={handleSearch} className="input-group rounded-5 bg-none">
           <input

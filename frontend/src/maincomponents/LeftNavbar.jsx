@@ -190,6 +190,7 @@ export default function LeftNavbar() {
                   onClick={() => {
                     setCount(0);
                     setopenSlidWin(true);
+                    setActiveIndex("Notifications");
                   }}
                   style={{ cursor: "pointer" }}
                 >
