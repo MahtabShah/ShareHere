@@ -80,6 +80,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
               className="d-flex align-items-center overflow-hidden justify-content-center rounded-circle text-white"
               style={{
                 maxWidth: "40px",
+                minWidth: "40px",
                 height: "40px",
                 borderRadius: "20px",
                 background: `${pc?.userId?.bg_clr}`,
