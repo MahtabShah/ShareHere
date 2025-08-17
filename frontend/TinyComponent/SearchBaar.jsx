@@ -6,6 +6,7 @@ import { CardPost } from "../src/maincomponents/Home";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../src/context/Theme";
 import axios from "axios";
+import { Loading } from "./LazyLoading";
 
 export const SearchBaar = () => {
   const [query, setQuery] = useState("");
@@ -21,29 +22,35 @@ export const SearchBaar = () => {
   const nevigate = useNavigate();
 
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [limit] = useState(5);
   const [Filterd_posts, setFilterd_posts] = useState([]);
-  const [pages, setPages] = useState(1);
 
   // Fetch posts from backend (search by title only)
+
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(
+        `${API}/api/crud/search?search=${query}&page=${page}&limit=${limit}`
+      );
+      setFilterd_posts((prev) => [...prev, ...data.posts]);
+      setPage((prev) => prev + 1);
+
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching posts:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const { data } = await axios.get(
-          `${API}/api/crud/search?search=${query}&page=${page}&limit=${limit}`
-        );
-        setFilterd_posts(data.posts);
-        setPages(data.pages);
-      } catch (err) {
-        console.error("Error fetching posts:", err);
-      }
-    };
+    setFilterd_posts([]);
+
     if (query.trim()) {
       fetchPosts();
-    } else {
-      setFilterd_posts([]);
+      setPage(1);
     }
-  }, [query, page, limit, API]);
+  }, [query]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -61,8 +68,7 @@ export const SearchBaar = () => {
         const indexA = a.username.toLowerCase().indexOf(query.toLowerCase());
         const indexB = b.username.toLowerCase().indexOf(query.toLowerCase());
         return indexA - indexB;
-      })
-      .slice(0, 3);
+      });
   };
 
   useEffect(() => {
@@ -72,10 +78,6 @@ export const SearchBaar = () => {
 
   const [isTouched, setIsTouched] = useState(false);
   const elementRef = useRef(null);
-
-  useEffect(() => {
-    setIsTouched(Filterd_posts.length > 0 || Filterd_result.length > 0);
-  }, [Filterd_posts, Filterd_result]);
 
   const handleTouchOutside = (event) => {
     if (elementRef.current && !elementRef.current.contains(event.target)) {
@@ -94,11 +96,21 @@ export const SearchBaar = () => {
     };
   }, []);
 
-  const { text_clrH, text_clrM, bg1, bg3, text_clrL } = useTheme();
+  const { text_clrH, text_clrM, bg1, bg3, bg2, text_clrL } = useTheme();
+
+  const containerRef = useRef();
+
+  function handleScroll() {
+    const div = containerRef.current;
+
+    if (div.scrollTop + div.clientHeight >= div.scrollHeight - 50) {
+      fetchPosts();
+    }
+  }
 
   return (
     <div className="" ref={elementRef}>
-      <div className="p-0 m-0 h-100">
+      <div className="p-0 m-0 h-100" onClick={() => {}}>
         <form onSubmit={handleSearch} className="input-group rounded-5 bg-none">
           <input
             type="text"
@@ -113,20 +125,21 @@ export const SearchBaar = () => {
             onChange={(e) => {
               setQuery(e.target.value);
               setPage(1); // reset page when typing
+              setIsTouched(true);
             }}
           />
         </form>
       </div>
 
-      {Filterd_posts.length > 0 && isTouched && (
+      {query.trim() && isTouched && (
         <div
           className="rounded-2 position-absolute overflow-auto none-scroller"
           style={{
-            background: bg1,
+            background: bg2,
             border: `1px solid ${text_clrL}`,
             maxHeight: `calc(100vh - ${mobile_break_point ? "104px" : "60px"})`,
             width: `calc(100% - ${
-              mobile_break_point ? "10px" : sm_break_point ? "32px" : "20px"
+              mobile_break_point ? "6px" : sm_break_point ? "32px" : "20px"
             })`,
             margin: "12px auto",
 
@@ -136,6 +149,8 @@ export const SearchBaar = () => {
             }`,
             boxShadow: "0 2px 4px #212121ff",
           }}
+          ref={containerRef}
+          onScroll={handleScroll}
         >
           <div
             className="d-flex gap-3 p-2 position-sticky top-0"
@@ -151,8 +166,8 @@ export const SearchBaar = () => {
                 cursor: "pointer",
               }}
               onClick={(e) => {
-                e.preventDefault();
                 setIsTouched(false);
+                e.preventDefault();
               }}
             >
               <svg
@@ -175,97 +190,89 @@ export const SearchBaar = () => {
           </div>
 
           {/* User results */}
-          <div className="d-flex flex-column gap-4 p-2">
+          <div className="d-flex flex-column gap-4 p-2 mb-3">
             {Filterd_result?.map(
               (res, idx) =>
                 admin_user?._id !== res?._id &&
                 res && (
-                  <div className="d-flex" key={res._id || idx}>
+                  <div className="d-flex align-items-end" key={res._id || idx}>
                     <Fragment>
                       <UserRing user={res} onlyphoto={false} />
                     </Fragment>
-                    <FollowBtn
-                      user={res}
-                      cls="btn btn-outline-primary p-0 h-100 ps-3 rounded-0 pe-3 p-1"
-                    />
+                    <div
+                      className="border"
+                      style={{ minWidth: "104px", maxWidth: "104px" }}
+                    >
+                      <FollowBtn
+                        id={res?._id}
+                        cls="btn btn-primary w-100 p-0 ps-3 rounded-0 pe-3 p-1"
+                      />
+                    </div>
                   </div>
                 )
             )}
           </div>
-
-          {/* Post results */}
-          <div className="d-flex flex-column gap-4 p-2 position-relative">
-            {Filterd_posts?.map((res, idx) => (
-              <div
-                className="d-flex flex-column"
-                key={`F-post${res._id || idx}`}
-                style={{
-                  color: text_clrM,
-                }}
-              >
-                <div className="d-flex gap-3 align-items-start">
-                  <div className="mt-">
-                    <UserRing
-                      user={
-                        all_user?.filter((u) => u._id === res?.userId?._id)[0]
-                      }
-                      onlyphoto={true}
-                    />
-                  </div>
-                  <small
-                    className="flex-grow-1 w-100 fw-medium overflow-hidden"
-                    style={{
-                      display: "-webkit-box",
-                      WebkitLineClamp: 5,
-                      WebkitBoxOrient: "vertical",
-                      textOverflow: "ellipsis",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {res.text} {/* showing post title */}
-                  </small>
-                  <div
-                    onClick={() => {
-                      setopenSlidWin(false);
-                      setQuery("");
-                      nevigate(`/home/${res._id}`);
-                    }}
-                  >
-                    <CardPost
-                      post={res}
+          {Filterd_posts.length > 0 && isTouched && (
+            <div className="d-flex flex-column gap-4 p-2 position-relative">
+              {Filterd_posts?.map((res, idx) => (
+                <div
+                  className="d-flex flex-column"
+                  key={`F-post${idx}`}
+                  style={{
+                    color: text_clrM,
+                  }}
+                >
+                  <div className="d-flex gap-3 align-items-start">
+                    <div className="mt-">
+                      <UserRing
+                        user={
+                          all_user?.filter((u) => u._id === res?.userId?._id)[0]
+                        }
+                        onlyphoto={true}
+                      />
+                    </div>
+                    <small
+                      className="flex-grow-1 w-100 fw-medium overflow-hidden"
                       style={{
-                        width: "84px",
-                        borderRadius: "3px",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 5,
+                        WebkitBoxOrient: "vertical",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
                       }}
-                    />
+                    >
+                      {res.text} {/* showing post title */}
+                    </small>
+                    <div
+                      onClick={() => {
+                        setopenSlidWin(false);
+                        setQuery("");
+                        nevigate(`/home/${res._id}`);
+                      }}
+                    >
+                      <CardPost
+                        post={res}
+                        style={{
+                          width: "104px",
+                          borderRadius: "3px",
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          )}
 
-            {/* Pagination buttons */}
-            {pages > 1 && (
-              <div className="d-flex justify-content-between mt-3">
-                <button
-                  className="btn btn-sm btn-outline-secondary"
-                  onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                  disabled={page === 1}
-                >
-                  Prev
-                </button>
-                <span>
-                  Page {page} of {pages}
-                </span>
-                <button
-                  className="btn btn-sm btn-outline-secondary"
-                  onClick={() => setPage((p) => Math.min(p + 1, pages))}
-                  disabled={page === pages}
-                >
-                  Next
-                </button>
+          {!Filterd_result.length &&
+            !Filterd_posts.length &&
+            (loading ? (
+              <div className="px-4 pb-2">
+                <Loading dm={34} />
               </div>
-            )}
-          </div>
+            ) : (
+              <p className="p-2">No result</p>
+            ))}
         </div>
       )}
     </div>

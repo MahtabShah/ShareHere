@@ -239,6 +239,7 @@ export const GalleryPost = ({ category }) => {
           >
             {colPosts.map((p, i) => (
               <img
+                key={`i-${colIdx}-${i}`}
                 src={p?.images[0]}
                 className="w-100 my-2 rounded"
                 style={{ boxShadow: `0 1px 2px ${text_clrL}` }}
