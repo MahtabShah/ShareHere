@@ -278,10 +278,13 @@ export const EachPost = ({ user, comment }) => {
         {/* like / comment / share */}
         <div className="d-flex flex-column px-2 pb-2">
           <div
-            className={`d-flex pt-1 justify-content-between like-comment-share`}
+            className={`d-flex pt-1 gap-1 justify-content-between like-comment-share`}
             style={{ color: text_clrM }}
           >
-            <div className="d-flex gap-4 ">
+            <div
+              className="d-flex gap-4 px-2 p-1 rounded-4"
+              style={{ background: bg2, minWidth: "max-content" }}
+            >
               <LikeBtn post={comment} size={22} />
               <span
                 className="fw-semibold d-flex align-items-center gap-1"
@@ -289,18 +292,18 @@ export const EachPost = ({ user, comment }) => {
               >
                 <span
                   style={{
-                    marginTop: "0.2rem",
+                    marginTop: "0rem",
                     color: open_comment ? "#a0a" : "",
                   }}
                 >
                   <BiChat size={21} color={open_comment ? "#a0a" : ""} />{" "}
-                  {comments.length}&nbsp;
+                  <small>{comments.length}&nbsp;</small>
                 </span>
               </span>
               <span
                 className="fw-semibold"
                 onClick={() => HandleShare(comment?._id)}
-                style={{ marginTop: "3px" }}
+                style={{ marginTop: "-1px" }}
               >
                 <BiShare size={21} />
               </span>
@@ -315,10 +318,11 @@ export const EachPost = ({ user, comment }) => {
               </span>
 
               <div
-                className="small border rounded-1"
+                className="small rounded-1"
                 style={{
                   fontSize: "12px",
                   background: bg2,
+                  border: `1px solid ${text_clrL}`,
                 }}
               >
                 <small className="p-2">
@@ -399,7 +403,7 @@ export const EachPost = ({ user, comment }) => {
                   onClick={(e) => SubmitComment(e, comment?._id)}
                 >
                   {LazyLoading ? (
-                    <Loading clr={"light"} />
+                    <Loading clr={"red"} />
                   ) : (
                     <MdSend size={22} color={text_clrM} />
                   )}
@@ -698,10 +702,10 @@ export const LikeBtn = ({ post, size = 18 }) => {
           {isliked ? <FaHeart size={size} /> : <BiHeart size={size} />}
         </span>
 
-        <span className="" style={{ marginTop: "0.1rem" }}>
+        <small className="" style={{ marginTop: "1px" }}>
           {" "}
           {Post?.likes?.length || 0}&nbsp;
-        </span>
+        </small>
       </span>
     </>
   );
