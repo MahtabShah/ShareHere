@@ -220,7 +220,7 @@ export const GalleryPost = ({ category }) => {
   };
 
   return (
-    <div className="position-relative">
+    <div className="position-relative p-1">
       <div
         className="h-100"
         style={{

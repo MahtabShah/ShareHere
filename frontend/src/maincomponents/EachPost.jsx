@@ -276,13 +276,13 @@ export const EachPost = ({ user, comment }) => {
         </div>
 
         {/* like / comment / share */}
-        <div className="d-flex flex-column px-2">
+        <div className="d-flex flex-column px-2 pb-2">
           <div
             className={`d-flex pt-1 justify-content-between like-comment-share`}
             style={{ color: text_clrM }}
           >
             <div className="d-flex gap-4 ">
-              <LikeBtn post={comment} size={20} />
+              <LikeBtn post={comment} size={22} />
               <span
                 className="fw-semibold d-flex align-items-center gap-1"
                 onClick={() => setopen_comment(!open_comment)}
@@ -293,19 +293,27 @@ export const EachPost = ({ user, comment }) => {
                     color: open_comment ? "#a0a" : "",
                   }}
                 >
-                  <BiChat size={20} color={open_comment ? "#a0a" : ""} />{" "}
+                  <BiChat size={21} color={open_comment ? "#a0a" : ""} />{" "}
                   {comments.length}&nbsp;
                 </span>
               </span>
               <span
                 className="fw-semibold"
                 onClick={() => HandleShare(comment?._id)}
+                style={{ marginTop: "3px" }}
               >
-                <BiShare size={20} />
+                <BiShare size={21} />
               </span>
             </div>
 
-            <div className="d-flex align-items-center">
+            <div className="d-flex gap-1 align-items-center">
+              <span
+                className="me-2"
+                style={{ color: text_clrM, fontSize: "12px" }}
+              >
+                {formatNumber(comment?.views || 1)} views
+              </span>
+
               <div
                 className="small border rounded-1"
                 style={{
@@ -332,10 +340,6 @@ export const EachPost = ({ user, comment }) => {
               </div>
             </div>
           </div>
-
-          <span className="pb-1" style={{ color: text_clrM, fontSize: "12px" }}>
-            {formatNumber(comment?.views || 1)} views
-          </span>
         </div>
       </div>
 
