@@ -18,10 +18,8 @@ const categories = [
   { key: "motivational", title: "Motivational" },
   { key: "discipline", title: "Discipline" },
   { key: "self-love", title: "Self Love" },
-  { key: "narrative-poetry", title: "Narrative Poetry" },
   { key: "friendship", title: "Friendship" },
   { key: "life-quotes", title: "Life Quotes" },
-  { key: "success-quotes", title: "Success Quotes" },
   { key: "sad-quotes", title: "Sad Quotes" },
 ];
 
