@@ -350,7 +350,7 @@ export default function StatusPage() {
                             ? `${progress}%`
                             : "0",
                         height: "100%",
-                        transition: blink ? "" : "width 0.1s linear",
+                        transition: blink ? "" : "width 0.05s linear",
                       }}
                     />
                   </div>
@@ -455,7 +455,7 @@ export default function StatusPage() {
                 }}
               >
                 <img
-                  src={currentStatus.image}
+                  src={currentStatus?.image}
                   alt="status"
                   className="w-100"
                   style={{

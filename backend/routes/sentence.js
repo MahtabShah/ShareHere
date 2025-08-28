@@ -123,27 +123,27 @@ router.get("/fix-sentences", async (req, res) => {
   try {
 
         const posts = await Sentence.find();
-        // const users = await User.find();
+        const users = await User.find();
 
         // for (let i = 0; i < users.length; i++) {
         //   const user = users[i];
-          for (let j = 0; j < posts.length; j++) {
-            const post = posts[j];
-            if (post.mode == "public") {
-              // user.posts.push(post);
-              // post.mode == "Public"
-              post.set({mode:"Public"})
-              await post.save()
-            }
+          // for (let j = 0; j < posts.length; j++) {
+          //   const post = posts[j];
+          //   if (post.mode == "public") {
+          //     // user.posts.push(post);
+          //     // post.mode == "Public"
+          //     post.set({mode:"Public"})
+          //     await post.save()
+          //   }
             
-          }
+          // }
           
         // }
     
-    // const result = await User.updateMany(
-    //   {posts:{$exists: true}},
-    //   {$set:{posts :[]}}
-    // );
+    const result = await User.updateMany(
+      {status:{$exists: false}},
+      {$set:{status :[]}}
+    );
     res.json({ message: "Reports field added to comments without it"});
   } catch (err) {
     console.error(err);
