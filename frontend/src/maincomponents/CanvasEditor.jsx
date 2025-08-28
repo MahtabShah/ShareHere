@@ -56,7 +56,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 200);
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 400);
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -124,8 +124,8 @@ const CanvasVibeEditor = () => {
       src: url,
       x: 10,
       y: 10,
-      width: 40,
-      height: 10,
+      width: 100,
+      height: 100,
       zIndex: elements.length + 1,
       background: "00000000",
       boxShadow: "",
@@ -135,6 +135,7 @@ const CanvasVibeEditor = () => {
     };
     setElements([...elements, newImage]);
     setActiveId(newImage.id);
+    setActiveElement(newImage);
     setHidePage("objectPosition");
   };
 
@@ -348,6 +349,51 @@ const CanvasVibeEditor = () => {
     document.removeEventListener("mouseup", stopResizing);
     document.removeEventListener("touchmove", handleTouchMove);
     document.removeEventListener("touchend", stopResizing);
+  };
+
+  const [statusLoading, setStatusLoading] = useState(false);
+  const HandleStatus = async (e) => {
+    // const [userId, setUserId] = useState(""); // use logged-in user ID
+    // alert("Currently status feature is not availble. . . stay tuned !");
+    // return;
+
+    e.preventDefault();
+    if (!admin_user) {
+      const confirm = window.confirm("You have to sign up or login to post");
+      if (confirm) {
+        nevigate("/login") || nevigate("/signup");
+      }
+    } else if (text == "") {
+      setError("Plese write something aboute post !");
+      return;
+    }
+
+    setActiveId(null);
+    setActiveElement({ id: "x" });
+
+    try {
+      setStatusLoading(true);
+      const ready_url = await handleCapture();
+      const res = await axios.post(
+        `${API}/api/crud/create_status`,
+        {
+          text: text,
+          image: ready_url,
+          user: admin_user?._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Created status:", res.data);
+      alert("Status created!");
+    } catch (err) {
+      console.error("Error creating status:", err);
+    } finally {
+      setStatusLoading(false);
+    }
   };
 
   return (
@@ -1262,23 +1308,18 @@ const CanvasVibeEditor = () => {
                             : "2px solid transparent",
 
                         cursor: activeId ? "move" : "",
+                        width: "100%",
                       }}
                       spellCheck={false}
-                      default={{
-                        x: 0,
-                        y: 0,
-                        width: 320,
-                        height: 200,
-                      }}
                       disableDragging={!(activeId === activeElement?.id)}
                       enableResizing={activeId === activeElement?.id}
-                      // onDragStop={(e) => {
-                      //   if (activeElement.type === "image") {
-                      //     console.log("dragg 1", e.clientX);
-                      //     setActiveId(null);
-                      //     setActiveElement({ id: "x" });
-                      //   }
-                      // }}
+                      onDragStop={(e) => {
+                        if (activeElement.type === "image") {
+                          console.log("dragg 1", e.clientX);
+                          setActiveId(null);
+                          setActiveElement({ id: "x" });
+                        }
+                      }}
                       onTouchStart={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
@@ -1289,7 +1330,7 @@ const CanvasVibeEditor = () => {
                         console.log("dragg 2", Date.now());
                       }}
                     >
-                      <div className="w-100 h-100 position-relative">
+                      <div className="w-100 h-100 border position-relative">
                         {activeId === el.id && (
                           <>
                             <button
@@ -1559,9 +1600,9 @@ const CanvasVibeEditor = () => {
                 border: `1px solid ${"#959595ff"}`,
                 color: text_clrM,
               }}
-              disabled={true}
+              onClick={HandleStatus}
             >
-              Set as Status
+              {statusLoading ? <Loading clr={"red"} /> : "Set as Status"}
             </label>
 
             <button

@@ -11,6 +11,7 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
 const mongoose = require("mongoose");
+const { use } = require('react');
 // Helper to delete status older than 30s (for testing)
 
 
@@ -20,7 +21,7 @@ router.get('/crud', verifyToken,  async (req, res) => {
   const userId = req.user.userId || req.user.id;
 
   try {
-    const user = await User.findById({_id:userId});
+    const user = await User.findById({_id:userId}).populate("status");
     res.json(user)
   } catch (err) {
     console.error('Error deleting sentence:', err);
@@ -113,7 +114,13 @@ const userId = req.params.userId;
   console.log("userId", userId)
   try {
 
-    const user = await User.findById(userId).populate("following").populate("followers")
+    const user = await User.findById(userId).populate("status").populate({
+      path: "followers following",
+      select: "_id name username bio profile_pic", // fields to send
+      path: "following", populate:{
+        path:"status", model:"Status"
+      }
+    });
     
 
     res.status(200).json(user);
@@ -231,37 +238,28 @@ router.get("/search", async (req, res) => {
 
 
 
-router.delete('/del_status', verifyToken ,async (req, res) => {
-  // const userId = req.user.userId || req.user.id;
+router.delete('/delete_status', verifyToken ,async (req, res) => {
+  const userId = req.user.userId || req.user.id;
   const all_users = await User.find();
+  const { status_id , id } = req.body;
+  // console.log("data", userId, id)
 
   try {
 
-    const all_user_have_statuses = all_users?.filter((u) => u.status && u.status.length > 0);
-    // console.log("Deleting statuses older than:", all_user_have_statuses);
+    if(userId !== id) return res.status(403).json({ message: "Not authorized to delete this status" });
 
-    all_user_have_statuses.forEach(async (user) => {
+    await Status.findByIdAndDelete(status_id);
+    const user = await User.findById(id);
 
-      user?.status?.forEach((statusId) => {
-        console.log("Checking status:", statusId);
-        Status.findById(statusId).then(async (status) => {
-          console.log("Found status:", status);
-          if (!status) {
-            user?.status?.pop(statusId);
-          }
-        }).catch(err => {
-          console.error("Error finding status:", err);
-        });
-      });
+    console.log("Deleted status:");
+    user.status = user.status.filter(s => s.toString() !== status_id);
+    await user.save();
 
-
-     await user.save();
-
-    });
-    io.emit("status");
     res.status(200).json({
       message: "Old statuses deleted successfully."
     });
+
+    io.emit('status');
     
 
   } catch (err) {
@@ -480,6 +478,7 @@ router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
 router.put("/set_status_seen/:id",async (req, res) => {
   const userId = req.params.id;
   const { user_statuses } = req.body;
+  console.log("userId", userId, user_statuses)
 
   try {
     const updates = [];
@@ -574,8 +573,20 @@ router.post("/create_status", async (req, res) => {
     }
     await new_user.save();
 
-    io.emit('status', newStatus.toObject());
+    io.emit('status');
     io.emit('userUpdated', new_user);
+
+    setTimeout(async () => {
+      try {
+        await Status.findByIdAndDelete(newStatus._id);
+        new_user.status = new_user.status.filter(s => s.toString() !== newStatus._id.toString());
+        await new_user.save();
+        io.timeout(5000).emit('status');
+        io.emit('userUpdated', new_user);
+      } catch (err) {
+        console.error("Error deleting old status:", err);
+      }
+    }, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
 
     res.status(201).json(newStatus);
 

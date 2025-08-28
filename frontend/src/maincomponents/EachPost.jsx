@@ -716,8 +716,8 @@ export const StatusBtn = ({ post }) => {
 
   const HandleStatus = async () => {
     // const [userId, setUserId] = useState(""); // use logged-in user ID
-    alert("Currently status feature is not availble. . . stay tuned !");
-    return;
+    // alert("Currently status feature is not availble. . . stay tuned !");
+    // return;
     try {
       const res = await axios.post(
         `${API}/api/crud/create_status`,

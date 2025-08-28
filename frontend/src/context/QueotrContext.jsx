@@ -203,9 +203,7 @@ export const QuoteProvider = ({ children }) => {
     };
 
     socket.on("userUpdated", handleUserUpdate);
-    socket.on("update", () => {
-      fetch_admin_user();
-    });
+
     socket.on("Notification", fetch_all_notifications);
 
     return () => {
@@ -236,6 +234,7 @@ export const QuoteProvider = ({ children }) => {
         statusClicked,
         duration,
         setDuration,
+        setadmin_user,
         setIsPaused,
         fetch_admin_user,
         setSelectedUserId,

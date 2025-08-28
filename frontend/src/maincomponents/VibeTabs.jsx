@@ -6,6 +6,7 @@ import All_Post_Section from "../All_Post_Section";
 import { usePost } from "../context/PostContext";
 import { categories } from "../StanderdThings/StanderdData";
 import { Rank_Calculation } from "../context/PostContext";
+import StatusPage from "./StatusPage";
 
 export const VibeTabs = () => {
   const [Key, setKey] = useState("all");
@@ -34,6 +35,10 @@ export const VibeTabs = () => {
   return (
     <>
       <div className="vibeTabs mt-5">
+        <div className="w-100 d-flex">
+          <StatusPage />
+        </div>
+
         <Tabs
           id="controlled-tab-example"
           activeKey={Key}
@@ -56,7 +61,6 @@ export const VibeTabs = () => {
               title={title}
               key={key}
               className="border-0 py-0"
-              style={{ marginTop: "96px" }}
             >
               {Key === key && (
                 <All_Post_Section loading={loading} category={key} />
