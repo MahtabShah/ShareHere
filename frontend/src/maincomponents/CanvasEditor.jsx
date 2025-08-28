@@ -1336,7 +1336,7 @@ const CanvasVibeEditor = () => {
                                 // width: "calc(100% + 3px)",
                                 height: "24px",
                                 left: "-1.5px",
-                                bottom: "-27px",
+                                bottom: "-1px",
                                 background:
                                   move === el.id ? "#4140408e" : "#17d22db2",
                               }}
@@ -1404,12 +1404,12 @@ const CanvasVibeEditor = () => {
                                   }, 100);
                                   e.stopPropagation();
                                 }}
-                                // onClick={(e) => {
-                                //   setMove(() =>
-                                //     move === el.id ? null : el.id
-                                //   );
-                                //   e.stopPropagation();
-                                // }}
+                                onMouseDown={(e) => {
+                                  setMove(() =>
+                                    move === el.id ? null : el.id
+                                  );
+                                  e.stopPropagation();
+                                }}
                               >
                                 <FontAwesomeIcon
                                   icon={
@@ -1478,7 +1478,6 @@ const CanvasVibeEditor = () => {
                               textShadow: el.textShadow,
                               boxShadow: el.boxShadow,
                               outline: "none",
-                              width: `${el.width}px`,
                               borderRadius: `${el.borderRadius}px`,
                             }}
                             onKeyDown={(e) => {
@@ -1488,7 +1487,7 @@ const CanvasVibeEditor = () => {
                                 document.execCommand(
                                   "insertHTML",
                                   false,
-                                  "<br><br>"
+                                  "<br />"
                                 );
                               }
                             }}
