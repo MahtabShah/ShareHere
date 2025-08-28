@@ -1403,7 +1403,9 @@ const CanvasVibeEditor = () => {
                                   );
                                 }}
                                 onTouchStart={(e) => {
-                                  setMove(el.id);
+                                  setMove((prev) =>
+                                    prev === el.id ? null : el.id
+                                  );
                                   e.stopPropagation();
                                 }}
                               >
