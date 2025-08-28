@@ -403,7 +403,7 @@ const CanvasVibeEditor = () => {
         style={{
           background: bg2,
           maxWidth: "601px",
-          zIndex: 98765432,
+          zIndex: 987654329999999,
           margin: "auto",
         }}
       >
@@ -1317,10 +1317,12 @@ const CanvasVibeEditor = () => {
                       onTouchStart={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
+                        setMove(null);
                       }}
                       onMouseDown={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
+                        setMove(null);
                         console.log("dragg 2", Date.now());
                       }}
                     >
@@ -1331,7 +1333,7 @@ const CanvasVibeEditor = () => {
                         {activeId === el.id && (
                           <>
                             <div
-                              className="d-flex gap-2 px-2 align-items-center position-absolute"
+                              className="d-flex gap-2 px-2 overflow-hidden align-items-center position-absolute"
                               style={{
                                 width: "calc(100% + 3px)",
                                 height: "24px",
@@ -1404,6 +1406,7 @@ const CanvasVibeEditor = () => {
                                 }}
                                 onTouchStart={(e) => {
                                   setMove(el.id);
+                                  e.stopPropagation();
                                 }}
                               >
                                 <FontAwesomeIcon
@@ -1426,7 +1429,7 @@ const CanvasVibeEditor = () => {
                             </div>
 
                             <div
-                              className="position-absolute"
+                              className="position-absolute "
                               style={{
                                 width: "24px",
                                 height: "24px",
