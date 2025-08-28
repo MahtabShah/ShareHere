@@ -24,6 +24,7 @@ import {
   faUnderline,
   faAlignLeft,
   faAlignCenter,
+  faPenNib,
   faAlignRight,
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
@@ -1300,10 +1301,10 @@ const CanvasVibeEditor = () => {
                       style={{
                         zIndex: el.zIndex,
                         border:
-                          move === el.id
-                            ? "2px dashed #01ff1fff"
-                            : activeId === el.id
-                            ? "2px dashed #ff0101ff"
+                          activeId === el.id
+                            ? move === el.id
+                              ? "2px dashed #01ff1fff"
+                              : "2px dashed #ff0101ff"
                             : "2px solid transparent",
 
                         cursor: activeId ? "move" : "",
@@ -1328,66 +1329,80 @@ const CanvasVibeEditor = () => {
                       >
                         {activeId === el.id && (
                           <>
-                            <button
-                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute top-0 end-0 rounded-0"
+                            <div
+                              className="bg-dark position-absolute"
                               style={{
-                                zIndex: 1000,
-                                width: "18px",
-                                height: "18px",
+                                width: "20px",
+                                height: "calc(100% + 2px)",
+                                right: "-1px",
+                                top: "-1px",
                               }}
-                              onMouseDown={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault(); // ⬅️ important
-                                setActiveId(null);
-                                setActiveElement({ id: "x" });
-                                console.log("dragg 1", Date.now());
-                              }}
-                              onTouchStart={(e) => {
-                                setTimeout(() => {
+                            >
+                              <button
+                                className="btn text-light btn-sm p-0 d-flex align-items-center justify-content-center position-absolute rounded-0"
+                                style={{
+                                  zIndex: 1000,
+                                  width: "20px",
+                                  height: "20px",
+                                  right: "-1px",
+                                  top: "-1px",
+                                }}
+                                onMouseDown={(e) => {
                                   e.stopPropagation();
                                   e.preventDefault(); // ⬅️ important
                                   setActiveId(null);
                                   setActiveElement({ id: "x" });
-                                }, 100);
-                              }}
-                            >
-                              <FontAwesomeIcon icon={faMinus} />
-                            </button>
+                                }}
+                                onTouchStart={(e) => {
+                                  setTimeout(() => {
+                                    e.stopPropagation();
+                                    e.preventDefault(); // ⬅️ important
+                                    setActiveId(null);
+                                    setActiveElement({ id: "x" });
+                                  }, 100);
+                                }}
+                              >
+                                <FontAwesomeIcon icon={faMinus} />
+                              </button>
 
-                            <button
-                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute end-0 rounded-0"
-                              style={{
-                                zIndex: 1000,
-                                width: "18px",
-                                height: "18px",
-                                top: "20px",
-                              }}
-                              onMouseDown={(e) => {
-                                e.stopPropagation();
-                                setMove((prev) =>
-                                  prev === el.id ? null : el.id
-                                );
-                              }}
-                              onTouchStart={(e) => {
-                                setTimeout(() => {
+                              <button
+                                className="btn text-light btn-sm p-0 d-flex align-items-center justify-content-center position-absolute rounded-0"
+                                style={{
+                                  zIndex: 1000,
+                                  width: "20px",
+                                  height: "20px",
+                                  top: "20px",
+                                  right: "-1px",
+                                }}
+                                onMouseDown={(e) => {
+                                  e.stopPropagation();
+                                  setMove((prev) =>
+                                    prev === el.id ? null : el.id
+                                  );
+                                }}
+                                onTouchStart={(e) => {
                                   e.stopPropagation();
                                   setMove(el.id);
-                                }, 100);
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                icon={faArrowsUpDownLeftRight}
-                                fontSize={10}
-                                style={{
-                                  paddingLeft: "1px",
-                                  transform: `rotate(
+                                }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={
+                                    move === el.id
+                                      ? faPenNib
+                                      : faArrowsUpDownLeftRight
+                                  }
+                                  fontSize={10}
+                                  style={{
+                                    paddingLeft: "1px",
+                                    transform: `rotate(
                                   ${move === el.id ? "360deg" : "0deg"}
                                 )`,
 
-                                  transitionDuration: "0.5s",
-                                }}
-                              />
-                            </button>
+                                    transitionDuration: "0.5s",
+                                  }}
+                                />
+                              </button>
+                            </div>
 
                             <div
                               className="position-absolute text-danger"
@@ -1396,7 +1411,7 @@ const CanvasVibeEditor = () => {
                                 height: "24px",
                                 cursor: "nwse-resize",
                                 rotate: "45deg",
-                                bottom: "-12px",
+                                bottom: "-11px",
                                 right: "-12px",
                               }}
                               onTouchStart={(e) => {
