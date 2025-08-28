@@ -1333,7 +1333,7 @@ const CanvasVibeEditor = () => {
                             <div
                               className="d-flex gap-4 px-2 overflow-hidden align-items-center position-absolute"
                               style={{
-                                width: "calc(100% + 3px)",
+                                // width: "calc(100% + 3px)",
                                 height: "24px",
                                 left: "-1.5px",
                                 bottom: "-27px",
@@ -1402,7 +1402,7 @@ const CanvasVibeEditor = () => {
                                     prev === el.id ? null : el.id
                                   );
                                 }}
-                                onTouchStart={(e) => {
+                                onTouchEnd={(e) => {
                                   setMove((prev) =>
                                     prev === el.id ? null : el.id
                                   );
