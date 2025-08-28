@@ -1309,23 +1309,24 @@ const CanvasVibeEditor = () => {
                             : "2px solid transparent",
 
                         cursor: activeId ? "move" : "",
-                        width: "100%",
                       }}
                       spellCheck={false}
-                      disableDragging={move === activeId ? false : true}
                       enableResizing={activeId === activeElement?.id}
                       onTouchStart={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
+                        // setMove(() => (move === el.id ? null : el.id));
                       }}
                       onMouseDown={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
                         console.log("dragg 2", Date.now());
+                        // setMove(() => (move === el.id ? null : el.id));
                       }}
+                      disableDragging={!move}
                     >
                       <div
-                        className="w-100 h-100 position-relative"
+                        className="w-10 h-100 position-relative"
                         style={{ minHeight: `fit-content` }}
                       >
                         {activeId === el.id && (
