@@ -34,6 +34,7 @@ import {
   FaFont,
   FaTextHeight,
   FaArrowsAltH,
+  FaTrash,
 } from "react-icons/fa";
 
 import {
@@ -1303,8 +1304,8 @@ const CanvasVibeEditor = () => {
                         border:
                           activeId === el.id
                             ? move === el.id
-                              ? "2px dashed #01ff1fff"
-                              : "2px dashed #ff0101ff"
+                              ? "2px dashed #414040ff"
+                              : "2px dashed #13da2aff"
                             : "2px solid transparent",
 
                         cursor: activeId ? "move" : "",
@@ -1313,7 +1314,7 @@ const CanvasVibeEditor = () => {
                       spellCheck={false}
                       disableDragging={move === activeId ? false : true}
                       enableResizing={activeId === activeElement?.id}
-                      onTouchEnd={(e) => {
+                      onTouchStart={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
                       }}
@@ -1330,16 +1331,18 @@ const CanvasVibeEditor = () => {
                         {activeId === el.id && (
                           <>
                             <div
-                              className="bg-dark position-absolute"
+                              className="d-flex gap-2 px-2 align-items-center position-absolute"
                               style={{
-                                width: "20px",
-                                height: "calc(100% + 2px)",
-                                right: "-1px",
-                                top: "-1px",
+                                width: "calc(100% + 3px)",
+                                height: "24px",
+                                left: "-1.5px",
+                                bottom: "-27px",
+                                background:
+                                  move === el.id ? "#414040ff" : "#17d22dff",
                               }}
                             >
                               <button
-                                className="btn text-light btn-sm p-0 d-flex align-items-center justify-content-center position-absolute rounded-0"
+                                className="btn text-light btn-sm p-0 d-flex align-items-center justify-content-center  rounded-0"
                                 style={{
                                   zIndex: 1000,
                                   width: "20px",
@@ -1366,7 +1369,26 @@ const CanvasVibeEditor = () => {
                               </button>
 
                               <button
-                                className="btn text-light btn-sm p-0 d-flex align-items-center justify-content-center position-absolute rounded-0"
+                                className="btn text-light btn-sm p-0 d-flex align-items-center justify-content-center  rounded-0"
+                                style={{
+                                  zIndex: 1000,
+                                  width: "20px",
+                                  height: "20px",
+                                  right: "-1px",
+                                  top: "-1px",
+                                }}
+                                onMouseDown={() => {
+                                  deleteElement(el.id);
+                                }}
+                                onTouchStart={() => {
+                                  deleteElement(el.id);
+                                }}
+                              >
+                                <FaTrash size={10} />
+                              </button>
+
+                              <button
+                                className="btn text-light btn-sm p-0 d-flex align-items-center justify-content-center rounded-0"
                                 style={{
                                   zIndex: 1000,
                                   width: "20px",
@@ -1381,7 +1403,6 @@ const CanvasVibeEditor = () => {
                                   );
                                 }}
                                 onTouchStart={(e) => {
-                                  e.stopPropagation();
                                   setMove(el.id);
                                 }}
                               >
@@ -1405,7 +1426,7 @@ const CanvasVibeEditor = () => {
                             </div>
 
                             <div
-                              className="position-absolute text-danger"
+                              className="position-absolute"
                               style={{
                                 width: "24px",
                                 height: "24px",
@@ -1413,6 +1434,7 @@ const CanvasVibeEditor = () => {
                                 rotate: "45deg",
                                 bottom: "-11px",
                                 right: "-12px",
+                                color: move === el.id ? "#414040ff" : "#01ff1f",
                               }}
                               onTouchStart={(e) => {
                                 e.stopPropagation();
@@ -1468,7 +1490,7 @@ const CanvasVibeEditor = () => {
                             onTouchStart={(e) => {
                               e.stopPropagation();
                             }}
-                            contentEditable={true}
+                            contentEditable={move === el.id ? false : true}
                             suppressContentEditableWarning={true}
                           >
                             {el.content}
