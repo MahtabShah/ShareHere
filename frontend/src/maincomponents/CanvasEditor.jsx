@@ -56,7 +56,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 400);
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 300);
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -1300,7 +1300,7 @@ const CanvasVibeEditor = () => {
                         zIndex: el.zIndex,
                         border:
                           activeId === el.id
-                            ? "2px dashed #ff0101ff"
+                            ? "2px dashed #ffd001ff"
                             : "2px solid transparent",
 
                         cursor: activeId ? "move" : "",
@@ -1309,7 +1309,7 @@ const CanvasVibeEditor = () => {
                       spellCheck={false}
                       disableDragging={!(activeId === activeElement?.id)}
                       enableResizing={activeId === activeElement?.id}
-                      onTouchStart={(e) => {
+                      onTouchEnd={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
                       }}
@@ -1319,7 +1319,10 @@ const CanvasVibeEditor = () => {
                         console.log("dragg 2", Date.now());
                       }}
                     >
-                      <div className="w-100 h-100 position-relative">
+                      <div
+                        className="w-100 h-100 position-relative"
+                        style={{ minHeight: `fit-content` }}
+                      >
                         {activeId === el.id && (
                           <>
                             <button
@@ -1396,7 +1399,6 @@ const CanvasVibeEditor = () => {
                               boxShadow: el.boxShadow,
                               outline: "none",
                               width: `${el.width}px`,
-                              height: `${el.height}px`,
                               borderRadius: `${el.borderRadius}px`,
                             }}
                             onKeyDown={(e) => {
