@@ -20,6 +20,7 @@ import {
   faArrowUp,
   faBold,
   faItalic,
+  faArrowsUpDownLeftRight,
   faUnderline,
   faAlignLeft,
   faAlignCenter,
@@ -56,7 +57,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 300);
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 250);
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -390,6 +391,8 @@ const CanvasVibeEditor = () => {
       setStatusLoading(false);
     }
   };
+
+  const [move, setMove] = useState(null);
 
   return (
     openSlidWin && (
@@ -961,7 +964,7 @@ const CanvasVibeEditor = () => {
                   )}
 
                   <div className="position-sticky my-1 d-flex gap-2">
-                    <div className="d-flex gap-2 border-0">
+                    {/* <div className="d-flex gap-2 border-0">
                       <div
                         onClick={(e) => {
                           e.stopPropagation();
@@ -973,9 +976,9 @@ const CanvasVibeEditor = () => {
                           minWidth: "max-content",
                         }}
                       >
-                        &nbsp; {!textWriteOpen ? "open" : "close "} &nbsp;
+                        &nbsp; {!textWriteOpen ? "opewn" : "close "} &nbsp;
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="" style={{ minWidth: "max-content" }}>
                       <>
@@ -1242,7 +1245,7 @@ const CanvasVibeEditor = () => {
                     </>
                   )}
 
-                  {textWriteOpen && (
+                  {/* {textWriteOpen && (
                     <div className="mt-">
                       <textarea
                         className="form-control w-100 overflow-auto none-scroller border py-2"
@@ -1267,16 +1270,14 @@ const CanvasVibeEditor = () => {
                         {activeElement?.content || "Type Here"}
                       </textarea>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
 
               <div
                 className="position-relative"
                 style={{
-                  marginTop: `calc(${textWriteOpen ? `134px` : "54px"} + ${
-                    styleOpen ? `82px` : "44px"
-                  })`,
+                  marginTop: `calc(46px + ${styleOpen ? `80px` : "44px"})`,
                   width: "100%",
                   border: "2px solid red",
                   background: bg2,
@@ -1299,17 +1300,18 @@ const CanvasVibeEditor = () => {
                       style={{
                         zIndex: el.zIndex,
                         border:
-                          activeId === el.id
+                          move === el.id
                             ? "2px dashed #01ff1fff"
+                            : activeId === el.id
+                            ? "2px dashed #ff0101ff"
                             : "2px solid transparent",
 
                         cursor: activeId ? "move" : "",
                         width: "100%",
                       }}
                       spellCheck={false}
-                      // disableDragging={!(activeId === activeElement?.id)}
-                      // enableResizing={activeId === activeElement?.id}
-                      disableDragging={true}
+                      disableDragging={move === activeId ? false : true}
+                      enableResizing={activeId === activeElement?.id}
                       onTouchEnd={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
@@ -1327,7 +1329,7 @@ const CanvasVibeEditor = () => {
                         {activeId === el.id && (
                           <>
                             <button
-                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute top-0 end-0 rounded-1"
+                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute top-0 end-0 rounded-0"
                               style={{
                                 zIndex: 1000,
                                 width: "18px",
@@ -1350,6 +1352,41 @@ const CanvasVibeEditor = () => {
                               }}
                             >
                               <FontAwesomeIcon icon={faMinus} />
+                            </button>
+
+                            <button
+                              className="btn text-light bg-danger btn-sm p-0 d-flex align-items-center justify-content-center position-absolute end-0 rounded-0"
+                              style={{
+                                zIndex: 1000,
+                                width: "18px",
+                                height: "18px",
+                                top: "20px",
+                              }}
+                              onMouseDown={(e) => {
+                                e.stopPropagation();
+                                setMove((prev) =>
+                                  prev === el.id ? null : el.id
+                                );
+                              }}
+                              onTouchStart={(e) => {
+                                setTimeout(() => {
+                                  e.stopPropagation();
+                                  setMove(el.id);
+                                }, 100);
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faArrowsUpDownLeftRight}
+                                fontSize={10}
+                                style={{
+                                  paddingLeft: "1px",
+                                  transform: `rotate(
+                                  ${move === el.id ? "360deg" : "0deg"}
+                                )`,
+
+                                  transitionDuration: "0.5s",
+                                }}
+                              />
                             </button>
 
                             <div
