@@ -473,24 +473,22 @@ router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
 
 router.put("/set_status_seen/:id",async (req, res) => {
   const userId = req.params.id;
-  const { user_statuses } = req.body;
+  const { user_statuses , currentStatus} = req.body;
   console.log("userId", userId, user_statuses)
 
   try {
 
-    for (let status of user_statuses) {
-      if (!status.SeenBy.includes(userId)) {
-         var st = await Status.findById(status?._id);
+     var st = await Status.findById(currentStatus?._id);
+      if (!st.SeenBy.includes(userId)) {
           if (st) {
             st?.SeenBy?.push(userId);
             await st.save();
           }
       }
-    }
 
     io.emit('status');
 
-    res.status(200).json({ message: "Statuses updated" });
+    res.status(200).json({ message: "Statuses updated" , user_statuses});
   } catch (error) {
     console.error("Error updating status:", error);
     res.status(500).json({ message: "Internal server error" });

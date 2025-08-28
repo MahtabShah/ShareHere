@@ -59,7 +59,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 250);
+  const [canvasHeight, setCanvasHeight] = useState(window.innerHeight - 180);
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -1323,7 +1323,7 @@ const CanvasVibeEditor = () => {
                         console.log("dragg 2", Date.now());
                         // setMove(() => (move === el.id ? null : el.id));
                       }}
-                      disableDragging={!move}
+                      disableDragging={!move || move != el.id}
                     >
                       <div
                         className="w-10 h-100 position-relative"

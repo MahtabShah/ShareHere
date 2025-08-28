@@ -18,11 +18,12 @@ const StatusList = ({ users, openStatus }) => {
   const { admin_user, setActiveIndex, setopenSlidWin, sm_break_point } =
     useQuote();
 
+  // console.log("u ", users[0]?.status);
   return (
     <>
       <div className="p-2" style={{ marginTop: "54px" }}>
         {/* Status List */}
-        <div className="d-flex gap-4 mb-2">
+        <div className="d-flex gap-4 mb-2 overflow-auto h-100">
           {users?.map(
             (u, i) =>
               (admin_user?._id === u?._id || u?.status?.length > 0) && (
@@ -46,9 +47,7 @@ const StatusList = ({ users, openStatus }) => {
                     style={{
                       objectFit: "cover",
                       border: u?.status?.every((s) =>
-                        s?.SeenBy?.some(
-                          (seenUserId) => seenUserId === admin_user?._id
-                        )
+                        s?.SeenBy?.includes(admin_user?._id)
                       )
                         ? `3px solid ${text_clrH}`
                         : "3px solid #ed0d32ff",
@@ -93,14 +92,8 @@ const StatusList = ({ users, openStatus }) => {
 };
 
 export default function StatusPage() {
-  const {
-    admin_user,
-    API,
-    token,
-    setadmin_user,
-    sm_break_point,
-    mobile_break_point,
-  } = useQuote();
+  const { admin_user, API, token, setadmin_user, mobile_break_point } =
+    useQuote();
   const { fetch_user_by_Id } = usePost();
   const [users, setUsers] = useState([]);
   // console.log(admin_user);
@@ -108,7 +101,7 @@ export default function StatusPage() {
   useEffect(() => {
     (async () => {
       const user = await fetch_user_by_Id(admin_user?._id);
-      console.log("user with status", user);
+      // console.log("user with status", user);
       setUsers(() =>
         [user, user?.following?.filter((f) => f?.status?.length > 0)].flat()
       );
@@ -139,15 +132,16 @@ export default function StatusPage() {
 
       if (currentStatus && !currentStatus?.SeenBy?.includes(admin_user?._id)) {
         // Mark status as
-        console.log("currentStatus", currentStatus);
-        currentStatus?.SeenBy?.push(admin_user?._id);
+        console.log("without seeing  ");
 
         (async () => {
+          console.log("user and status", users?.[currentUserIndex]?.status);
           try {
             const res = await axios.put(
               `${API}/api/crud/set_status_seen/${admin_user?._id}`,
               {
                 user_statuses: users?.[currentUserIndex]?.status,
+                currentStatus: currentStatus,
               },
               {
                 headers: {
@@ -160,6 +154,8 @@ export default function StatusPage() {
             console.error("Error creating status:", err);
           }
         })();
+
+        currentStatus?.SeenBy?.push(admin_user?._id);
       }
 
       HandleBar();
@@ -255,7 +251,7 @@ export default function StatusPage() {
     return () => {
       socket.off("status"); // cleanup on unmount
     };
-  }, []);
+  }, [admin_user]);
 
   const HandleDelteStatus = async () => {
     // alert("Are you sure you want to delete this status?");
@@ -311,7 +307,7 @@ export default function StatusPage() {
   return (
     <div>
       {/* Status Modal */}
-      {users && <StatusList users={users} openStatus={openStatus} />}
+      <StatusList users={users} openStatus={openStatus} />
 
       {currentUser && (
         <div
@@ -372,7 +368,7 @@ export default function StatusPage() {
                 <div
                   className="d-flex flex-column gap-2"
                   style={{
-                    color: text_clrH,
+                    color: "white",
                     marginTop: "6px",
                     maxWidth: "24px",
                     cursor: "pointer",
@@ -385,14 +381,14 @@ export default function StatusPage() {
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 448 512"
-                    fill={text_clrH}
+                    fill={"white"}
                     className="h-100 w-100"
                   >
                     <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                   </svg>
                 </div>
 
-                <div className="d-flex gap-2 align-items-start">
+                <div className="d-flex gap-2 flex-grow-1 align-items-start">
                   <img
                     src={currentUser?.profile_pic}
                     alt="profile_pic"

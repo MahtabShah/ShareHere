@@ -732,7 +732,9 @@ export const StatusBtn = ({ post }) => {
           },
         }
       );
-      console.log("Created status:", res.data);
+      admin_user?.status.push(res?.data);
+      console.log("Created status:", admin_user);
+
       alert("Status created!");
     } catch (err) {
       console.error("Error creating status:", err);
