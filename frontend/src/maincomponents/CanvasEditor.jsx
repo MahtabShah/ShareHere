@@ -1307,8 +1307,8 @@ const CanvasVibeEditor = () => {
                         width: "100%",
                       }}
                       spellCheck={false}
-                      disableDragging={!(activeId === activeElement?.id)}
-                      enableResizing={activeId === activeElement?.id}
+                      // disableDragging={!(activeId === activeElement?.id)}
+                      // enableResizing={activeId === activeElement?.id}
                       onTouchEnd={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
