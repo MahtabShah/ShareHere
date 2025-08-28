@@ -1300,7 +1300,7 @@ const CanvasVibeEditor = () => {
                         zIndex: el.zIndex,
                         border:
                           activeId === el.id
-                            ? "2px dashed #ffd001ff"
+                            ? "2px dashed #01ff1fff"
                             : "2px solid transparent",
 
                         cursor: activeId ? "move" : "",
@@ -1309,6 +1309,7 @@ const CanvasVibeEditor = () => {
                       spellCheck={false}
                       // disableDragging={!(activeId === activeElement?.id)}
                       // enableResizing={activeId === activeElement?.id}
+                      disableDragging={true}
                       onTouchEnd={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
