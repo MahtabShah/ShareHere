@@ -225,7 +225,6 @@ const CanvasVibeEditor = () => {
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("Public");
   const [text, setText] = useState("");
   const [LazyLoading, setLazyLoading] = useState(false);
-  let touchStartTime = 0;
   const handleCapture = async () => {
     const dataURL = await exportAsImage();
 
@@ -309,10 +308,6 @@ const CanvasVibeEditor = () => {
 
   const [textWriteOpen, setTextWriteOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
-
-  const preventToggle = (e) => {
-    e.preventDefault(); // prevent summary default toggle
-  };
 
   const isResizing = useRef(false);
 
@@ -1255,6 +1250,7 @@ const CanvasVibeEditor = () => {
                         style={{
                           color: text_clrH,
                           border: `1px solid ${text_clrH}`,
+                          background: bg2,
                           minHeight: "80px",
                           fontSize: "10px",
                         }}
@@ -1313,13 +1309,6 @@ const CanvasVibeEditor = () => {
                       spellCheck={false}
                       disableDragging={!(activeId === activeElement?.id)}
                       enableResizing={activeId === activeElement?.id}
-                      onDragStop={(e) => {
-                        if (activeElement.type === "image") {
-                          console.log("dragg 1", e.clientX);
-                          setActiveId(null);
-                          setActiveElement({ id: "x" });
-                        }
-                      }}
                       onTouchStart={(e) => {
                         setActiveId(el.id);
                         setActiveElement(el);
@@ -1330,7 +1319,7 @@ const CanvasVibeEditor = () => {
                         console.log("dragg 2", Date.now());
                       }}
                     >
-                      <div className="w-100 h-100 border position-relative">
+                      <div className="w-100 h-100 position-relative">
                         {activeId === el.id && (
                           <>
                             <button
@@ -1420,8 +1409,8 @@ const CanvasVibeEditor = () => {
                                 );
                               }
                             }}
-                            // contentEditable={true}
-                            // suppressContentEditableWarning={true}
+                            contentEditable={true}
+                            suppressContentEditableWarning={true}
                           >
                             {el.content}
                           </div>
