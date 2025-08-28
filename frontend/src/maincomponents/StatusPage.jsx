@@ -15,7 +15,8 @@ dayjs.extend(relativeTime);
 
 const StatusList = ({ users, openStatus }) => {
   const { bg2, bg1, text_clrM, text_clrH, text_clrL } = useTheme();
-  const { admin_user, setActiveIndex, setopenSlidWin } = useQuote();
+  const { admin_user, setActiveIndex, setopenSlidWin, sm_break_point } =
+    useQuote();
 
   return (
     <>
@@ -92,7 +93,14 @@ const StatusList = ({ users, openStatus }) => {
 };
 
 export default function StatusPage() {
-  const { admin_user, API, token, setadmin_user } = useQuote();
+  const {
+    admin_user,
+    API,
+    token,
+    setadmin_user,
+    sm_break_point,
+    mobile_break_point,
+  } = useQuote();
   const { fetch_user_by_Id } = usePost();
   const [users, setUsers] = useState([]);
   // console.log(admin_user);
@@ -132,6 +140,7 @@ export default function StatusPage() {
       if (currentStatus && !currentStatus?.SeenBy?.includes(admin_user?._id)) {
         // Mark status as
         console.log("currentStatus", currentStatus);
+        currentStatus?.SeenBy?.push(admin_user?._id);
 
         (async () => {
           try {
@@ -174,7 +183,7 @@ export default function StatusPage() {
   const handleNext = () => {
     setBlink(true);
     setDots(-1);
-    setTimeout(() => setBlink(false), 140);
+    setTimeout(() => setBlink(false), 100);
     if (!currentUser) return;
     if (currentStatusIndex < currentUser.status.length - 1) {
       setCurrentStatusIndex(currentStatusIndex + 1);
@@ -201,7 +210,7 @@ export default function StatusPage() {
   const handlePrev = () => {
     setBlink(true);
     setDots(-1);
-    setTimeout(() => setBlink(false), 140);
+    setTimeout(() => setBlink(false), 100);
     if (!currentUser) return;
     if (currentStatusIndex > 0) {
       setCurrentStatusIndex(currentStatusIndex - 1);
@@ -265,7 +274,7 @@ export default function StatusPage() {
       );
 
       setBlink(true);
-      setTimeout(() => setBlink(false), 200);
+      setTimeout(() => setBlink(false), 100);
       setDots(-1);
       setProgress(0);
 
@@ -293,7 +302,7 @@ export default function StatusPage() {
             handleNext();
             return 0;
           }
-          return prev + 1;
+          return prev + 0.5;
         });
       }, 50);
     }
@@ -306,25 +315,29 @@ export default function StatusPage() {
 
       {currentUser && (
         <div
-          className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-90 d-flex p-2  justify-content-center align-items-center"
+          className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-90 d-flex  justify-content-center align-items-center"
           style={{
             zIndex: 99999991050,
+            padding: mobile_break_point ? "0px" : "10px",
           }}
         >
           <div
-            className="position-relative rounded border-0 bg-dark  h-100 w-100"
+            className="position-relative border-0 bg-dark  h-100 w-100"
             style={{
               maxWidth: "500px",
               backgroundImage: `url(${currentStatus?.image})`,
               backgroundSize: "400% 100%",
               backgroundPosition: "center",
+              borderRadius: mobile_break_point ? "0px" : "7px",
             }}
           >
             <div
-              className="p-2 h-100 rounded position-relative"
+              className="p-2 h-100 position-relative"
               style={{
                 backdropFilter:
                   "blur(20px) saturate(1.4) brightness(0.7) sepia(0.1) hue-rotate(-3deg) opacity(0.85)",
+
+                borderRadius: mobile_break_point ? "0px" : "7px",
               }}
             >
               {/* Progress bars */}
@@ -355,16 +368,39 @@ export default function StatusPage() {
               </div>
 
               {/* User Info */}
-              <div className="d-flex text-white mt-3">
-                <div className="flex-grow-1 d-flex h-100">
+              <div className="d-flex align-items-center mb-2 order gap-3 text-white ">
+                <div
+                  className="d-flex flex-column gap-2"
+                  style={{
+                    color: text_clrH,
+                    marginTop: "6px",
+                    maxWidth: "24px",
+                    cursor: "pointer",
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    closeModal();
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                    fill={text_clrH}
+                    className="h-100 w-100"
+                  >
+                    <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+                  </svg>
+                </div>
+
+                <div className="d-flex gap-2 align-items-start">
                   <img
                     src={currentUser?.profile_pic}
                     alt="profile_pic"
-                    className="rounded-circle me-2 mb-2"
-                    width="50"
-                    height="50"
+                    className="rounded-circle"
+                    width="47"
+                    height="47"
                   />
-                  <div className="">
+                  <div>
                     <div className="fw-semibold">
                       {currentUser?.username}
                       {dayjs(currentStatus?.createdAt).fromNow() ===
@@ -373,7 +409,7 @@ export default function StatusPage() {
                         : " • " + dayjs(currentStatus?.createdAt).fromNow()}
                     </div>
                     <div
-                      className="small"
+                      className="small "
                       style={{
                         display: "-webkit-box",
                         WebkitLineClamp: 1,
@@ -384,7 +420,6 @@ export default function StatusPage() {
                     >
                       {currentStatus.text}
                     </div>
-                    {/* <div className="small text-muted">{currentStatus.time}</div> */}
                   </div>
                 </div>
 
@@ -456,7 +491,7 @@ export default function StatusPage() {
                   alt="status"
                   className="w-100"
                   style={{
-                    borderRadius: "7px",
+                    borderRadius: mobile_break_point ? "4px" : "7px",
                     objectFit: "cover",
                     maxHeight: "100%",
                   }}

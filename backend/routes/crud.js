@@ -477,20 +477,18 @@ router.put("/set_status_seen/:id",async (req, res) => {
   console.log("userId", userId, user_statuses)
 
   try {
-    // const updates = [];
 
-    // for (let status of user_statuses) {
-    //   if (!status.SeenBy.includes(userId)) {
-    //     updates.push(
-    //       Status.findByIdAndUpdate(status._id, {
-    //         $addToSet: { SeenBy: userId }, // prevent duplicates
-    //       })
-    //     );
-    //   }
-    // }
+    for (let status of user_statuses) {
+      if (!status.SeenBy.includes(userId)) {
+         var st = await Status.findById(status?._id);
+          if (st) {
+            st?.SeenBy?.push(userId);
+            await st.save();
+          }
+      }
+    }
 
-    // await Promise.all(updates);
-    // io.emit('status');
+    io.emit('status');
 
     res.status(200).json({ message: "Statuses updated" });
   } catch (error) {
