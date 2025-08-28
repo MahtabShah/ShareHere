@@ -1396,18 +1396,20 @@ const CanvasVibeEditor = () => {
                                   top: "20px",
                                   right: "-1px",
                                 }}
-                                onTouchEnd={(e) => {
-                                  setMove(() =>
-                                    move === el.id ? null : el.id
-                                  );
+                                onTouchStart={(e) => {
+                                  setTimeout(() => {
+                                    setMove(() =>
+                                      move === el.id ? null : el.id
+                                    );
+                                  }, 100);
                                   e.stopPropagation();
                                 }}
-                                onClick={(e) => {
-                                  setMove(() =>
-                                    move === el.id ? null : el.id
-                                  );
-                                  e.stopPropagation();
-                                }}
+                                // onClick={(e) => {
+                                //   setMove(() =>
+                                //     move === el.id ? null : el.id
+                                //   );
+                                //   e.stopPropagation();
+                                // }}
                               >
                                 <FontAwesomeIcon
                                   icon={

@@ -475,7 +475,7 @@ export default function StatusPage() {
                 className="w-100  d-flex flex-column align-items-center position-relative"
                 style={{
                   height: "calc(100% - 80px)",
-                  justifyContent: "flex-start",
+                  justifyContent: "center",
                 }}
                 onClick={(e) => {
                   const rect = e.target.getBoundingClientRect();
