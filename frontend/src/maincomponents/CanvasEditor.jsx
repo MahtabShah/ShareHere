@@ -1331,14 +1331,14 @@ const CanvasVibeEditor = () => {
                         {activeId === el.id && (
                           <>
                             <div
-                              className="d-flex gap-4 px-2 overflow-hidden align-items-center position-absolute"
+                              className="d-flex gap-4 rounded-1 px-2 overflow-hidden align-items-center position-absolute"
                               style={{
                                 // width: "calc(100% + 3px)",
                                 height: "24px",
                                 left: "-1.5px",
                                 bottom: "-27px",
                                 background:
-                                  move === el.id ? "#414040ff" : "#17d22dff",
+                                  move === el.id ? "#4140408e" : "#17d22db2",
                               }}
                             >
                               <button
@@ -1388,7 +1388,7 @@ const CanvasVibeEditor = () => {
                               </button>
 
                               <button
-                                className="btn text-light btn-sm p-0 d-flex align-items-center justify-content-center rounded-0"
+                                className="btn text-light border-0 btn-sm p-0 d-flex align-items-center justify-content-center rounded-0"
                                 style={{
                                   zIndex: 1000,
                                   width: "20px",
@@ -1396,15 +1396,15 @@ const CanvasVibeEditor = () => {
                                   top: "20px",
                                   right: "-1px",
                                 }}
-                                onMouseDown={(e) => {
-                                  e.stopPropagation();
-                                  setMove((prev) =>
-                                    prev === el.id ? null : el.id
-                                  );
-                                }}
                                 onTouchEnd={(e) => {
-                                  setMove((prev) =>
-                                    prev === el.id ? null : el.id
+                                  setMove(() =>
+                                    move === el.id ? null : el.id
+                                  );
+                                  e.stopPropagation();
+                                }}
+                                onClick={(e) => {
+                                  setMove(() =>
+                                    move === el.id ? null : el.id
                                   );
                                   e.stopPropagation();
                                 }}
