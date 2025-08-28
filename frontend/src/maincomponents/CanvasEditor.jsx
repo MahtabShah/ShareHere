@@ -1400,6 +1400,7 @@ const CanvasVibeEditor = () => {
                               borderRadius: `${el.borderRadius}px`,
                             }}
                             onKeyDown={(e) => {
+                              e.stopPropagation();
                               if (e.key === "Enter") {
                                 e.preventDefault();
                                 document.execCommand(
@@ -1408,6 +1409,9 @@ const CanvasVibeEditor = () => {
                                   "<br><br>"
                                 );
                               }
+                            }}
+                            onTouchStart={(e) => {
+                              e.stopPropagation();
                             }}
                             contentEditable={true}
                             suppressContentEditableWarning={true}
