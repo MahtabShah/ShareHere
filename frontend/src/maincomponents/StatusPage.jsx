@@ -9,7 +9,6 @@ import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { usePost } from "../context/PostContext";
 import socket from "./socket";
 import { FaEllipsisH, FaEllipsisV } from "react-icons/fa";
-import { set } from "mongoose";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -17,8 +16,6 @@ dayjs.extend(relativeTime);
 const StatusList = ({ users, openStatus }) => {
   const { bg2, bg1, text_clrM, text_clrH, text_clrL } = useTheme();
   const { admin_user, setActiveIndex, setopenSlidWin } = useQuote();
-
-  // console.log("admin_user in status page", users);
 
   return (
     <>
@@ -141,7 +138,7 @@ export default function StatusPage() {
             const res = await axios.put(
               `${API}/api/crud/set_status_seen/${admin_user?._id}`,
               {
-                user_statuses: users[currentUserIndex]?.status,
+                user_statuses: users?.[currentUserIndex]?.status,
               },
               {
                 headers: {
@@ -268,7 +265,7 @@ export default function StatusPage() {
       );
 
       setBlink(true);
-      setTimeout(() => setBlink(false), 140);
+      setTimeout(() => setBlink(false), 200);
       setDots(-1);
       setProgress(0);
 

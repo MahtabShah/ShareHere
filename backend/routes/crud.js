@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const router = express.Router();
 const {Sentence, Comment} = require('../models/Sentence');
@@ -10,8 +8,6 @@ const Report = require("../models/Report")
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/verifyToken');
 const { io } = require('../server');
-const mongoose = require("mongoose");
-const { use } = require('react');
 // Helper to delete status older than 30s (for testing)
 
 
@@ -481,20 +477,20 @@ router.put("/set_status_seen/:id",async (req, res) => {
   console.log("userId", userId, user_statuses)
 
   try {
-    const updates = [];
+    // const updates = [];
 
-    for (let status of user_statuses) {
-      if (!status.SeenBy.includes(userId)) {
-        updates.push(
-          Status.findByIdAndUpdate(status._id, {
-            $addToSet: { SeenBy: userId }, // prevent duplicates
-          })
-        );
-      }
-    }
+    // for (let status of user_statuses) {
+    //   if (!status.SeenBy.includes(userId)) {
+    //     updates.push(
+    //       Status.findByIdAndUpdate(status._id, {
+    //         $addToSet: { SeenBy: userId }, // prevent duplicates
+    //       })
+    //     );
+    //   }
+    // }
 
-    await Promise.all(updates);
-    io.emit('status');
+    // await Promise.all(updates);
+    // io.emit('status');
 
     res.status(200).json({ message: "Statuses updated" });
   } catch (error) {
