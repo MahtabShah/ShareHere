@@ -20,7 +20,7 @@ const SuggetionSlip = () => {
         style={{
           position: "sticky",
           width: "340px",
-          top: "90px",
+          top: "94px",
           height: "90vh",
           marginTop: "184px",
         }}
