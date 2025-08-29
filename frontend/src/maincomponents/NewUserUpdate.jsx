@@ -22,7 +22,7 @@ const SuggetionSlip = () => {
           width: "340px",
           top: "90px",
           height: "90vh",
-          marginTop: "200px",
+          marginTop: "184px",
         }}
       >
         {lgbreakPoint && (

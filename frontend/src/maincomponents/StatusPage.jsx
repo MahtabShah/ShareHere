@@ -36,7 +36,7 @@ const StatusList = ({ users, openStatus }) => {
       >
         <div
           className="d-flex gap-4 mb-2 overflow-auto w-100 h-100"
-          style={{ minHeight: "94px", transitionDuration: "1s" }}
+          style={{ minHeight: "84px", transitionDuration: "1s" }}
         >
           {JSON.stringify(admin_user) != "{}"
             ? users?.map(
