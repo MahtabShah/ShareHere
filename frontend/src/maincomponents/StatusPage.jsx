@@ -34,8 +34,11 @@ const StatusList = ({ users, openStatus }) => {
           paddingInline: !lgbreakPoint ? "7px" : "0",
         }}
       >
-        <div className="d-flex gap-4 mb-2 overflow-auto w-100 h-100">
-          {admin_user
+        <div
+          className="d-flex gap-4 mb-2 overflow-auto w-100 h-100"
+          style={{ minHeight: "105px", transitionDuration: "1s" }}
+        >
+          {JSON.stringify(admin_user) != "{}"
             ? users?.map(
                 (u, i) =>
                   (admin_user?._id === u?._id || u?.status?.length > 0) && (
@@ -115,6 +118,7 @@ const StatusList = ({ users, openStatus }) => {
                     color: "black",
                     border: "2px solid #d55163ff",
                     background: `linear-gradient(120deg, #fda, #a00419ff)`,
+                    transitionDuration: "1s",
                   }}
                   href="/signup"
                 >

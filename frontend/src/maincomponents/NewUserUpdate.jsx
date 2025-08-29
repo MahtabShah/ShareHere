@@ -28,17 +28,20 @@ const SuggetionSlip = () => {
         {lgbreakPoint && (
           <div className="user-update" style={{ color: text_clrM }}>
             {admin_user ? (
-              <div className="d-flex flex-column gap-2">
-                <div
-                  key={admin_user?.username}
-                  className="d-flex align-items-center gap-2 mb-2 rounded"
-                >
-                  <UserRing user={admin_user} dm={50} style={{}} />
-                  <a href={`/api/user/${admin_user?._id}`} className="small">
-                    see profile
-                  </a>
+              <>
+                <div className="d-flex flex-column gap-2">
+                  <div
+                    key={admin_user?.username}
+                    className="d-flex align-items-center gap-2 mb-2 rounded"
+                  >
+                    <UserRing user={admin_user} dm={50} style={{}} />
+                    <a href={`/api/user/${admin_user?._id}`} className="small">
+                      see profile
+                    </a>
+                  </div>
                 </div>
-              </div>
+                <p className="my-3 pb-2 small">Suggest For You</p>
+              </>
             ) : (
               posts?.length > 0 && (
                 <div className="d-flex flex-column gap-2">
@@ -61,7 +64,6 @@ const SuggetionSlip = () => {
                       Signin/login
                     </a>
                   </div>
-                  <p className="my-3 pb-2 small">Suggest For You</p>
                 </div>
               )
             )}
