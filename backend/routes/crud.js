@@ -17,7 +17,16 @@ router.get('/crud', verifyToken,  async (req, res) => {
   const userId = req.user.userId || req.user.id;
 
   try {
-    const user = await User.findById({_id:userId}).populate("status");
+    const user = await User.findById(userId)
+   .populate({
+    path: "status", // populate user's statuses
+    populate: {
+      path: "SeenBy",  // populate status.SeenBy
+      model: "User",
+      select: "name email username profile_pic bio", // fields from User
+    },
+  });
+
     res.json(user)
   } catch (err) {
     console.error('Error deleting sentence:', err);
@@ -107,19 +116,57 @@ router.get("/comments/:postId", async (req, res) => {
 
 router.get("/get_userbyId/:userId", async (req, res) => {
 const userId = req.params.userId;
-  console.log("userId", userId)
+  // console.log("userId", userId)
   try {
 
-    const user = await User.findById(userId).populate("status").populate({
-      path: "followers following",
-      select: "_id name username bio profile_pic", // fields to send
-      path: "following", populate:{
-        path:"status", model:"Status"
-      }
-    });
+   const user = await User.findById(userId)
+   .populate({
+     path: "status",
+    populate: [
+      {
+        path: "SeenBy",   // populate SeenBy users
+        model: "User",
+        select: "name email username profile_pic bio",
+      },
+      {
+        path: "likes",    // populate likes users
+        model: "User",
+        select: "_id email username user profile_pic bio",
+      },
+    ],
+  })
+  .populate([
+    {
+      path: "followers",
+      select: "_id name username bio profile_pic",
+      
+    },
+    {
+  path: "following",
+  select: "_id name username bio profile_pic status",
+  populate: {
+    path: "status",
+    populate: [
+      {
+        path: "SeenBy",   // populate SeenBy users
+        model: "User",
+        select: "name email username profile_pic bio",
+      },
+      {
+        path: "likes",    // populate likes users
+        model: "User",
+        select: "_id email username user profile_pic bio",
+      },
+    ],
+  },
+},
+  ]);
+
+    // console.log("uuuuuuuuuuuuuuuuuuuuuuuuuuuuu  " , user)
     
 
     res.status(200).json(user);
+
   } catch (error) {
     console.error("Error in /each_post_comments:", error);
     res.status(500).json({ message: "Server Error", error });
@@ -128,7 +175,7 @@ const userId = req.params.userId;
 
 router.get("/post_id/:id", async (req, res) => {
 const id = req.params.id;
-  console.log("userId", id)
+  // console.log("userId", id)
   try {
 
     const post = await Sentence.findById(id);
@@ -247,7 +294,7 @@ router.delete('/delete_status', verifyToken ,async (req, res) => {
     await Status.findByIdAndDelete(status_id);
     const user = await User.findById(id);
 
-    console.log("Deleted status:");
+    // console.log("Deleted status:");
     user.status = user.status.filter(s => s.toString() !== status_id);
     await user.save();
 
@@ -271,7 +318,7 @@ router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
   const { id } = req.body;
  
   const userId = req.user.userId || req.user.id;
-  console.log("backend response 16 crud" ,userId , id)
+  // console.log("backend response 16 crud" ,userId , id)
 
 
   try {
@@ -316,7 +363,7 @@ router.delete("/:commentId", verifyToken, async (req, res) => {
 
 
 router.post("/report/:commentId", verifyToken, async (req, res) => {
-  console.log("ic" , req.params.commentId)
+  // console.log("ic" , req.params.commentId)
   try {
     const comment = await Comment.findById(req.params.commentId);
 
@@ -411,13 +458,13 @@ router.put('/update_user', verifyToken,  async (req, res) => {
   try {
   const user_b = await User.findById(userId); // curr user
   if (!user_b) return res.status(404).json({ msg: "User not found" });
-  console.log("user b -" ,  user_b)
+  // console.log("user b -" ,  user_b)
     user_b.username = name || user_b.username;
     user_b.bio = bio || user_b.bio;
     user_b.profile_pic = profile_pic || user_b.profile_pic;
     user_b.cover_pic = cover_pic || user_b.cover_pic;
 
-  console.log("new formData - - - -- - - - -->" , name, bio, cover_pic)
+  // console.log("new formData - - - -- - - - -->" , name, bio, cover_pic)
 
 
   await user_b.save()
@@ -472,23 +519,29 @@ router.put('/crud_mark_notification', verifyToken,  async (req, res) => {
 // PUT: Update a status by ID
 
 router.put("/set_status_seen/:id",async (req, res) => {
-  const userId = req.params.id;
-  const { user_statuses , currentStatus} = req.body;
-  console.log("userId", userId, user_statuses)
+  const admin_id = req.params.id;
+  const { status } = req.body;
 
   try {
 
-     var st = await Status.findById(currentStatus?._id);
-      if (!st.SeenBy.includes(userId)) {
-          if (st) {
-            st?.SeenBy?.push(userId);
-            await st.save();
-          }
+       var st = await Status.findById(status?._id);
+
+      if (!status?.SeenBy?.includes(admin_id)) {
+
+        st?.SeenBy.push(admin_id);
+
+
       }
+      await st.save();
+
+      console.log("stttt ", st.SeenBy)
+
+
+
 
     io.emit('status');
 
-    res.status(200).json({ message: "Statuses updated" , user_statuses});
+    res.status(200).json({ message: "Statuses updated" , stS: status.SeenBy});
   } catch (error) {
     console.error("Error updating status:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -540,6 +593,33 @@ router.put("/dislike/:commentId", verifyToken, async (req, res) => {
     await comment.save();
     res.json({ likes: comment.likes, dislikes: comment.dislikes });
   } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.put("/like_status", async (req, res) => {
+  const { admin_id , status} = req.body
+  try {
+    console.log("yes reaching. . ." , status)
+    const st = await Status.findById(status?._id);
+
+    if (status?.likes?.some(u=>u?._id === admin_id)) {
+
+      st.likes = st?.likes?.filter(id=>id.toString() !== admin_id);
+      console.log("stttttttttt = ", st.likes)
+
+    }else{
+      st?.likes.push(admin_id);
+    }
+    await st.save();
+
+
+
+    io.emit("status")
+    res.json({ message: "status like updation" , st});
+
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });

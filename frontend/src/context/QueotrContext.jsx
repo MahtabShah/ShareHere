@@ -59,6 +59,8 @@ export const QuoteProvider = ({ children }) => {
           headers: { Authorization: `Bearer ${token}` },
         });
         res.data?.length === 0 ? "" : setadmin_user(res.data);
+
+        console.log("admin st", res?.data?.status?.[0]);
       }
     } catch (err) {
       console.log("Failed to fetch admin see err in console 34 context", err);

@@ -141,7 +141,7 @@ router.get("/fix-sentences", async (req, res) => {
         // }
     
     const result = await User.updateMany(
-      {status:{$exists: false}},
+      {status:{$exists: true}},
       {$set:{status :[]}}
     );
     res.json({ message: "Reports field added to comments without it"});
