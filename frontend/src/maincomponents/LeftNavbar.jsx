@@ -85,7 +85,7 @@ export default function LeftNavbar() {
             className="d-flex px-2"
             style={{
               height: "100vh",
-              minWidth: "max-content",
+              maxWidth: "244px",
               background: bg1,
               borderRight: `1px solid ${text_clrL}`,
             }}

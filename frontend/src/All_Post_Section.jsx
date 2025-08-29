@@ -1,34 +1,21 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState, useMemo } from "react";
 import "./App.css";
-import { Loading } from "../TinyComponent/LazyLoading";
-import { useLocation } from "react-router-dom";
 import { useQuote } from "./context/QueotrContext";
 import { EachPost } from "./maincomponents/EachPost";
 import { throttle } from "lodash";
-import SuggetionSlip, {
+import {
   SuggetionSlipInPost,
   GalleryPost,
 } from "./maincomponents/NewUserUpdate";
-import { useTheme } from "./context/Theme";
 import { usePost, Rank_Calculation } from "./context/PostContext";
-import { CardPost } from "./maincomponents/Home";
 
 function All_Post_Section({ category, loading }) {
   const [rn, setRn] = useState(null);
 
-  const {
-    all_user,
-    sm_break_point,
-    Errors,
-    lgbreakPoint,
-    openSlidWin,
-    setActiveIndex,
-  } = useQuote();
+  const { all_user, openSlidWin, setActiveIndex } = useQuote();
 
-  const { limit, page, post_loading, fetch_n_posts, setPosts, posts } =
-    usePost();
-  const { bg2, bg1, text_clrM } = useTheme();
+  const { limit, page, fetch_n_posts, setPosts, posts } = usePost();
 
   // Infinite scroll handler
   useEffect(() => {
@@ -82,92 +69,33 @@ function All_Post_Section({ category, loading }) {
   }, [openSlidWin]);
 
   return (
-    <div className="position-relative mb-5" style={{ background: bg2 }}>
-      <section
-        style={{
-          marginBottom: "90px",
-          margin: "auto",
-          gap: lgbreakPoint ? "100px" : "0",
-          maxWidth: "100%",
-        }}
-        className={`d-flex justify-content-${
-          lgbreakPoint || sm_break_point ? "center" : "evenly"
-        }`}
-      >
-        {Errors ? (
+    !loading &&
+    visible_post.map(
+      ({ post, user }, idx) =>
+        user &&
+        post && (
           <div
-            className="fs-3 text-danger p-2 d-flex justify-content-center align-items-center"
-            style={{ height: "64vh" }}
+            key={`comment-${idx}`}
+            id={post?._id}
+            className="d-flex flex-column"
           >
-            {Errors.message} . . .Try again later or refresh the page!
-          </div>
-        ) : (
-          <div style={{ maxWidth: "min(600px, 100%)" }}>
-            <>
-              {!loading && (
-                <div className="d-flex flex-column">
-                  <div className="d-flex flex-column  gap-3">
-                    {visible_post.map(
-                      ({ post, user }, idx) =>
-                        user &&
-                        post && (
-                          <div
-                            key={`comment-${idx}`}
-                            id={post?._id}
-                            className="d-flex flex-column"
-                          >
-                            {rn && rn + 4 > idx && idx > rn + 2 ? (
-                              <GalleryPost category={category} />
-                            ) : (
-                              <EachPost user={user} comment={post} />
-                            )}
+            {rn && rn + 4 > idx && idx > rn + 2 ? (
+              <GalleryPost category={category} />
+            ) : (
+              <EachPost user={user} comment={post} />
+            )}
 
-                            {rn && rn + 1 > idx && idx > rn - 1 && (
-                              <div
-                                className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto"
-                                style={{ maxWidth: "100%" }}
-                              >
-                                <SuggetionSlipInPost />
-                              </div>
-                            )}
-                          </div>
-                        )
-                    )}
-                  </div>
-                </div>
-              )}
+            {rn && rn + 1 > idx && idx > rn - 1 && (
               <div
-                className="d-flex justify-content-center"
-                style={{ height: "84px" }}
+                className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto"
+                style={{ maxWidth: "100%" }}
               >
-                {post_loading ? (
-                  <div className="p-3">
-                    {" "}
-                    <Loading dm={34} />
-                  </div>
-                ) : (
-                  <p className="p-3 text-center" style={{ color: text_clrM }}>
-                    Not available any more vibe at this time : Try again or
-                    refresh
-                  </p>
-                )}
+                <SuggetionSlipInPost />
               </div>
-            </>
+            )}
           </div>
-        )}
-
-        {lgbreakPoint && posts?.length && (
-          <div
-            style={{
-              position: "sticky",
-              width: "340px",
-            }}
-          >
-            <SuggetionSlip />
-          </div>
-        )}
-      </section>
-    </div>
+        )
+    )
   );
 }
 

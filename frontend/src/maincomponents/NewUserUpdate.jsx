@@ -11,65 +11,96 @@ import { Rank_Calculation } from "../context/PostContext";
 
 const SuggetionSlip = () => {
   const { all_user, admin_user, lgbreakPoint } = useQuote();
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
+  const { text_clrM, bg1 } = useTheme();
+  const { posts } = usePost();
 
   return (
     <>
-      {lgbreakPoint && (
-        <div
-          className="user-update"
-          style={{ position: "sticky", top: "96px", color: text_clrM }}
-        >
-          {admin_user && (
-            <div className="d-flex flex-column gap-2">
-              <div
-                key={admin_user?.username}
-                className="d-flex align-items-center gap-2 mb-2 rounded"
-              >
-                <UserRing user={admin_user} dm={50} />
-                <a href={`/api/user/${admin_user?._id}`} className="small">
-                  see profile
-                </a>
-              </div>
-            </div>
-          )}
-
-          <p className="my-3 pb-2 small">Suggest For You</p>
-
-          {all_user?.length > 0 && (
-            <div className="d-flex flex-column gap-3 mt-2">
+      <div
+        style={{
+          position: "sticky",
+          width: "340px",
+          top: "104px",
+          height: "90vh",
+          marginTop: "200px",
+        }}
+      >
+        {lgbreakPoint && (
+          <div className="user-update" style={{ color: text_clrM }}>
+            {admin_user ? (
               <div className="d-flex flex-column gap-2">
-                {all_user
-                  .slice(-4)
-                  .reverse()
-                  .map(
-                    (user) =>
-                      user?._id != admin_user?._id && (
-                        <div
-                          key={user.username}
-                          className="d-flex align-items-center gap-5 pb-3 rounded"
-                        >
-                          <UserRing user={user} style={{}} dm={52} />
-                          <div>
-                            <FollowBtn
-                              id={user?._id}
-                              cls={
-                                "btn btn-outline-primary text-center rounded-1 p-1 ps-3 pe-3"
-                              }
-                              style={{
-                                cursor: "pointer",
-                                width: "104px",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )
-                  )}
+                <div
+                  key={admin_user?.username}
+                  className="d-flex align-items-center gap-2 mb-2 rounded"
+                >
+                  <UserRing user={admin_user} dm={50} style={{}} />
+                  <a href={`/api/user/${admin_user?._id}`} className="small">
+                    see profile
+                  </a>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
+            ) : (
+              posts?.length > 0 && (
+                <div className="d-flex flex-column gap-2">
+                  <div
+                    key={admin_user?.username}
+                    className="d-flex align-items-center justify-content-between gap-2 mb-2 rounded"
+                  >
+                    <div
+                      className="h-100 rounded-5"
+                      style={{
+                        border: "2px solid #d55163ff",
+                        minHeight: "50px",
+                        width: "50px",
+                        background: `linear-gradient(120deg, #fda, #e40d29ff)`,
+                      }}
+                      alt=""
+                    />
+
+                    <a href="/signup" className="small btn btn-info">
+                      Signin/login
+                    </a>
+                  </div>
+                  <p className="my-3 pb-2 small">Suggest For You</p>
+                </div>
+              )
+            )}
+
+            {all_user?.length > 0 && (
+              <div className="d-flex flex-column gap-3 mt-2">
+                <div className="d-flex flex-column gap-2">
+                  {all_user
+                    .slice(-4)
+                    .reverse()
+                    .map(
+                      (user) =>
+                        user?._id != admin_user?._id && (
+                          <div
+                            key={user.username}
+                            className="d-flex align-items-center gap-5 pb-3 rounded"
+                          >
+                            <UserRing user={user} style={{}} dm={52} />
+                            <div>
+                              <FollowBtn
+                                id={user?._id}
+                                cls={
+                                  "btn btn-outline-primary text-center rounded-1 p-1 ps-3 pe-3"
+                                }
+                                style={{
+                                  cursor: "pointer",
+                                  width: "104px",
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )
+                    )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </>
   );
 };

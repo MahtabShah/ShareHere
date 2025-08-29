@@ -55,24 +55,20 @@ const StatusPage = () => {
 };
 
 const Main = () => {
-  const [sm_break_point, setsm_break_point] = useState(
-    window.innerWidth < 1081
-  );
-  const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1200);
-  const [mobile_break_point, setmobile_break_point] = useState(
-    window.innerWidth < 600
-  );
+  const [sm, setsm] = useState(window.innerWidth < 1081);
+  const [mb, setmb] = useState(window.innerWidth < 600);
 
   const breakPoint = () => {
-    setsm_break_point(window.innerWidth < 1081);
-    setlgbreakPoint(window.innerWidth > 1200);
-    setmobile_break_point(window.innerWidth < 600);
+    setsm(window.innerWidth < 1081);
+    setmb(window.innerWidth < 600);
   };
 
   useEffect(() => {
     window.addEventListener("resize", breakPoint);
     window.addEventListener("onload", breakPoint);
   }, []);
+
+  const mainStyle = { marginLeft: `${mb ? "0px" : sm ? "74px" : "244px"}` };
 
   return (
     <BrowserRouter>
@@ -87,17 +83,7 @@ const Main = () => {
                 <Route
                   path="/Explore"
                   element={
-                    <div
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "74px"
-                            : "234px"
-                        }`,
-                      }}
-                    >
+                    <div style={{ ...mainStyle }}>
                       <Explore />
                     </div>
                   }
@@ -105,17 +91,7 @@ const Main = () => {
                 <Route
                   path="/signup"
                   element={
-                    <div
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "64px"
-                            : "234px"
-                        }`,
-                      }}
-                    >
+                    <div style={{ ...mainStyle }}>
                       <Signup />
                     </div>
                   }
@@ -124,17 +100,7 @@ const Main = () => {
                 <Route
                   path="/login"
                   element={
-                    <div
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "64px"
-                            : "234px"
-                        }`,
-                      }}
-                    >
+                    <div style={{ ...mainStyle }}>
                       <Login />
                     </div>
                   }
@@ -142,22 +108,8 @@ const Main = () => {
                 <Route
                   path="/*"
                   element={
-                    <main
-                      className="p-0 me-0"
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "74px"
-                            : "236px"
-                        }`,
-                      }}
-                    >
+                    <main style={{ ...mainStyle }}>
                       <BottomNav />
-
-                      {/* <StatusPage /> */}
-                      {/* <All_Post_Section /> */}
                       <VibeTabs />
                     </main>
                   }
@@ -166,19 +118,7 @@ const Main = () => {
                 <Route
                   path="/post/edit/:id"
                   element={
-                    <div
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "74px"
-                            : "246px"
-                        }`,
-
-                        marginBlock: "50px",
-                      }}
-                    >
+                    <div style={{ ...mainStyle }}>
                       <EditPost />
                       <BottomNav />
                     </div>
@@ -188,22 +128,9 @@ const Main = () => {
                 <Route
                   path="/home"
                   element={
-                    <main
-                      className={`p-0 ${mobile_break_point ? " mb-5" : "ps-2"}`}
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "64px"
-                            : "236px"
-                        }`,
-                      }}
-                    >
+                    <main style={{ ...mainStyle }}>
                       <BottomNav />
                       <VibeTabs />
-
-                      {/* <All_Post_Section /> */}
                     </main>
                   }
                 />
@@ -211,18 +138,7 @@ const Main = () => {
                 <Route
                   path="/home/:postId"
                   element={
-                    <main
-                      className={`p-0 ${mobile_break_point ? " mb-5" : "ps-2"}`}
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "74px"
-                            : "234px"
-                        }`,
-                      }}
-                    >
+                    <main style={{ ...mainStyle }}>
                       <BottomNav />
                       <TrackPost />
                     </main>
@@ -231,18 +147,7 @@ const Main = () => {
                 <Route
                   path="/api/user/:id"
                   element={
-                    <main
-                      className="p-0 "
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "74px"
-                            : "242px"
-                        }`,
-                      }}
-                    >
+                    <main style={{ ...mainStyle }}>
                       <BottomNav />
                       <UserProfile />
                     </main>
@@ -251,20 +156,7 @@ const Main = () => {
                 <Route
                   path="/api/user/edit/:id"
                   element={
-                    <main
-                      className="p-0"
-                      style={{
-                        marginLeft: `${
-                          mobile_break_point
-                            ? "0px"
-                            : sm_break_point
-                            ? "74px"
-                            : "242px"
-                        }`,
-
-                        marginTop: `${mobile_break_point ? "44px" : "0"}`,
-                      }}
-                    >
+                    <main style={{ ...mainStyle }}>
                       <BottomNav />
                       <EditUserProfile />
                     </main>

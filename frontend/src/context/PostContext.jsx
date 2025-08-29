@@ -13,7 +13,7 @@ const token = localStorage.getItem("token");
 export const usePost = () => useContext(PostContext) || {};
 
 export const PostProvider = ({ children }) => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(null);
   const [post_loading, setPost_loading] = useState(false);
   const [page, setPage] = useState(0);
   const [isData, setIsdata] = useState("");
@@ -113,13 +113,17 @@ export const PostProvider = ({ children }) => {
       // console.log("Received new sentence:", data);
       // You can update state here
       setPosts((prev) => {
-        const index = prev.findIndex((post) => post._id === data._id);
+        const index = prev?.findIndex((post) => post._id === data._id) || -1;
 
         if (index !== -1) {
           // Replace the post at the same index
           const updated = [...prev];
           updated[index] = data;
           return updated;
+        }
+
+        if (!prev) {
+          return [data];
         }
 
         // If not found, add it to the start
