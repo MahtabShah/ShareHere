@@ -571,12 +571,12 @@ export default function StatusPage() {
 
               {currentStatus.user === admin_user?._id && seenOpen && (
                 <div
-                  className=" overflow-auto d-flex flex-column rounded-1 gap-4 p-2 py-3 position-absolute h-100  bg-dark"
+                  className=" overflow-auto d-flex flex-column rounded-1 gap-4 p-2 py-3 position-absolute bg-dark"
                   style={{
                     left: "8px",
                     right: "8px",
                     bottom: "54px",
-                    maxHeight: "80vh",
+                    maxHeight: "74vh",
                   }}
                 >
                   {currentStatus?.SeenBy?.map((u, i) => (
