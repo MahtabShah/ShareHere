@@ -314,9 +314,9 @@ export default function StatusPage() {
             handleNext();
             return 0;
           }
-          return prev + 0.5;
+          return prev + 0.1;
         });
-      }, 5000);
+      }, 10);
     }
   };
 
