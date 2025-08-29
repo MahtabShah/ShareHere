@@ -33,7 +33,7 @@ export const QuoteProvider = ({ children }) => {
   const [statusClicked, setStatusClicked] = useState(false);
   const [duration, setDuration] = useState(3000);
   const [isPaused, setIsPaused] = useState(false);
-  const [admin_user, setadmin_user] = useState({});
+  const [admin_user, setadmin_user] = useState(null);
   // const [user, set_user] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loading, setLoading] = useState(false);

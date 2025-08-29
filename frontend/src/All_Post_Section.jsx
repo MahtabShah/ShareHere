@@ -15,9 +15,11 @@ function All_Post_Section({ category, loading }) {
 
   const { all_user, openSlidWin, setActiveIndex } = useQuote();
 
-  const { limit, page, fetch_n_posts, setPosts, posts } = usePost();
+  const { limit, page, fetch_n_posts, setPosts, setCameSet, cameSet } =
+    usePost();
 
-  // Infinite scroll handler
+  var { posts } = usePost();
+
   useEffect(() => {
     const handleScroll = throttle(async () => {
       // setLoading(true);
@@ -52,7 +54,12 @@ function All_Post_Section({ category, loading }) {
   const visible_post = useMemo(() => {
     if (!posts || !all_user) return [];
 
-    return posts.map((post) => {
+    // make posts unique by _id
+    const uniquePosts = Array.from(
+      new Map(posts.map((p) => [p._id, p])).values()
+    );
+
+    return uniquePosts.map((post) => {
       const user = all_user.find((u) => u?._id === post.userId);
       return { post, user };
     });

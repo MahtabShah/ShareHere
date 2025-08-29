@@ -23,7 +23,7 @@ const PostLoading = () => {
     </div>
   ) : (
     <div
-      className="d-flex justify-content-center align-items-end"
+      className="d-flex justify-content-center  mb-5 align-items-end"
       style={{ height: "20vh" }}
     >
       {post_loading ? (
@@ -123,7 +123,7 @@ export const VibeTabs = () => {
                   {categories.map(
                     ({ key, title }) =>
                       Key === key && (
-                        <div key={title}>
+                        <div key={title} className="d-flex flex-column gap-4">
                           <All_Post_Section loading={loading} category={key} />
                         </div>
                       )

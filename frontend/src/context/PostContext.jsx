@@ -18,6 +18,7 @@ export const PostProvider = ({ children }) => {
   const [page, setPage] = useState(0);
   const [isData, setIsdata] = useState("");
   const limit = 10;
+  const [cameSet, setCameSet] = useState(new Set());
 
   // Fetch posts but do NOT change page here
   const fetch_n_posts = async (l, p, c) => {
@@ -153,6 +154,8 @@ export const PostProvider = ({ children }) => {
         fetch_comments_postId,
         fetch_user_by_Id,
         fetch_post_by_Id,
+        setCameSet,
+        cameSet,
         isData,
       }}
     >
