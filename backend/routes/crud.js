@@ -671,11 +671,15 @@ router.post("/create_status", async (req, res) => {
 
 router.post("/post_seen/:id", async (req, res) => {
   try {
-    const post = await Sentence.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { views: 1 } }, // increment views by 1
-      { new: true }
-    );
+     const post = await Sentence.findByIdAndUpdate(
+    req.params.id,
+    { $inc: { views: 1 } },
+    { new: true }
+  );
+
+  if (!post) {
+    return res.status(404).json({ error: "Post not found" });
+  }
     res.json({ success: true, views: post.views });
     io.timeout(5000).emit('sentence', post.toObject());
   } catch (error) {
