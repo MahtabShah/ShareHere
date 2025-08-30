@@ -12,10 +12,56 @@ import { FaEllipsisV } from "react-icons/fa";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
+import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 
 // ✅ StatusPage Component
 import { FaHeart } from "react-icons/fa";
 import { BiHeart } from "react-icons/bi";
+import { useStatus } from "../context/StatusContext";
+
+const isValidUser = (user) => {
+  return user && Object.keys(user).length > 0 && user;
+};
+
+const StatusImg = ({ u }) => {
+  const { text_clrH } = useTheme();
+  const { admin_user } = useQuote();
+  const [loaded, setLoaded] = useState(false);
+  const style = {
+    width: "80px",
+    height: "80px",
+    border: u?.status?.every(
+      (s) =>
+        s.SeenBy?.length > 0 &&
+        s.SeenBy?.some((seenUser) => seenUser._id === admin_user?._id)
+    )
+      ? `3px solid ${text_clrH}`
+      : "3px solid #ed0d32ff",
+  };
+
+  return (
+    <>
+      <div
+        className={`position-relative rounded-circle p-1 story-avatar d-flex align-items-center justify-content-center ${
+          loaded ? "" : "loading-pulse"
+        }`}
+        style={{ ...style }}
+      >
+        <img
+          src={u?.profile_pic}
+          alt={u?.username}
+          className={`rounded-circle w-100 h-100`}
+          style={{
+            objectFit: "cover",
+            opacity: loaded ? 1 : 0,
+            transition: "opacity 0.7s ease-in-out",
+          }}
+          onLoad={() => setLoaded(true)}
+        />
+      </div>
+    </>
+  );
+};
 
 const StatusList = ({ users, openStatus }) => {
   const { bg2, bg1, text_clrM, text_clrH, text_clrL } = useTheme();
@@ -38,94 +84,71 @@ const StatusList = ({ users, openStatus }) => {
           className="d-flex gap-4 mb-2 overflow-auto w-100 h-100"
           style={{ minHeight: "84px", transitionDuration: "1s" }}
         >
-          {JSON.stringify(admin_user) != "{}"
-            ? users?.map(
-                (u, i) =>
-                  (admin_user?._id === u?._id || u?.status?.length > 0) && (
-                    <div
-                      key={i}
-                      className="text-center position-relative"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        if (
-                          admin_user?._id === u?._id &&
-                          u?.status?.length === 0
-                        ) {
-                          setActiveIndex("Upload");
-                          setopenSlidWin("Upload");
-                        } else openStatus(i, 0);
-                      }}
-                    >
-                      <img
-                        src={u?.profile_pic}
-                        alt={u?.username}
-                        className="rounded-circle p-1"
-                        width="80"
-                        height="80"
-                        style={{
-                          objectFit: "cover",
-                          border: u?.status?.every(
-                            (s) =>
-                              s.SeenBy?.length > 0 &&
-                              s.SeenBy?.some(
-                                (seenUser) => seenUser._id === admin_user?._id
-                              )
-                          )
-                            ? `3px solid ${text_clrH}`
-                            : "3px solid #ed0d32ff",
-                        }}
-                      />
-                      <div className="small mt-1" style={{ color: text_clrM }}>
-                        {u?.username}
-                      </div>
-                      {admin_user?._id === u?._id && (
-                        <div
-                          className="position-absolute rounded-circle d-flex  fw-bold fs-5 "
-                          style={{
-                            background: bg1,
-                            color: text_clrL,
-                            bottom: "30px",
-                            right: 0,
-                            width: "20px",
-                            height: "20px",
-                            border: `1px solid ${text_clrH}`,
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveIndex("Upload");
-                            setopenSlidWin("Upload");
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faPlus}
-                            fontSize={12}
-                            className="m-auto"
-                            color={text_clrH}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )
-              )
-            : posts?.length > 0 && (
-                <a
-                  className="text-center my-2 d-flex justify-content-center fw-semibold align-items-center rounded-circle position-relative"
-                  style={{
-                    cursor: "pointer",
-                    width: "84px",
-                    height: "84px",
-                    textDecoration: "none",
-                    color: "black",
-                    border: "2px solid #d55163ff",
-                    background: `linear-gradient(120deg, #fda, #a00419ff)`,
-                    transitionDuration: "1s",
-                  }}
-                  href="/signup"
-                >
-                  Add <br />
-                  status
-                </a>
-              )}
+          {isValidUser(admin_user) && users?.length > 0 ? (
+            users?.map((u, i) => (
+              <div
+                key={i}
+                className="text-center position-relative"
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (admin_user?._id === u?._id && u?.status?.length === 0) {
+                    setActiveIndex("Upload");
+                    setopenSlidWin("Upload");
+                  } else openStatus(i, 0);
+                }}
+              >
+                <StatusImg u={u} />
+
+                <div className="small mt-1" style={{ color: text_clrM }}>
+                  {u?.username}
+                </div>
+                {admin_user?._id === u?._id && (
+                  <div
+                    className="position-absolute rounded-circle d-flex  fw-bold fs-5 "
+                    style={{
+                      background: bg1,
+                      color: text_clrL,
+                      bottom: "30px",
+                      right: 0,
+                      width: "20px",
+                      height: "20px",
+                      border: `1px solid ${text_clrH}`,
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveIndex("Upload");
+                      setopenSlidWin("Upload");
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      fontSize={12}
+                      className="m-auto"
+                      color={text_clrH}
+                    />
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <a
+              className="text-center d-flex justify-content-center fw-semibold align-items-center rounded-circle position-relative"
+              style={{
+                cursor: "pointer",
+                width: "80px",
+                height: "80px",
+                textDecoration: "none",
+                color: "black",
+                border: "2px solid #d55163ff",
+                background: `linear-gradient(120deg, #fda, #a00419ff)`,
+                transitionDuration: "1s",
+              }}
+              href="/signup"
+            >
+              Add <br />
+              status
+            </a>
+          )}
         </div>
       </div>
     </>
@@ -164,6 +187,138 @@ const ProgressBar = ({ currentUser, currentStatusIndex, progress, blink }) => {
   );
 };
 
+const StatusActions = ({ currentStatus, HandleLike }) => {
+  const { admin_user } = useQuote();
+  const { seenOpen, setSeenOpen } = useStatus();
+  return (
+    <div className="d-flex gap-2 align-items-center mt-1 justify-content-center text-light">
+      {currentStatus.user === admin_user?._id && (
+        <div
+          className="w-100 border d-flex justify-content-center rounded-4 align-items-center p-1"
+          style={{
+            background: "#747272ff",
+            zIndex: 100000,
+            cursor: "pointer",
+          }}
+          onClick={() => setSeenOpen((prev) => !prev)}
+        >
+          {seenOpen ? "close" : "views"}
+        </div>
+      )}
+
+      <div
+        className="p-1 d-flex justify-content-center"
+        style={{ zIndex: 100000 }}
+      >
+        {currentStatus?.likes?.some((u) => u._id === admin_user?._id) ? (
+          <FaHeart color="red" onClick={HandleLike} size={21} />
+        ) : (
+          <BiHeart onClick={HandleLike} size={22} />
+        )}
+      </div>
+
+      <div className="d-flex gap-2 align-items-center mt-1 justify-content-center text-light">
+        {currentStatus.user === admin_user?._id && seenOpen && (
+          <div
+            className=" overflow-auto d-flex flex-column rounded-1 gap-4 p-2 py-3 position-absolute bg-dark"
+            style={{
+              left: "8px",
+              right: "8px",
+              bottom: "54px",
+              maxHeight: "74vh",
+            }}
+          >
+            {currentStatus?.SeenBy?.map((u, i) => (
+              <div key={i} className="d-flex items-center gap-2 rounded-5">
+                <div
+                  className=""
+                  style={{
+                    height: "46px",
+                    minWidth: "46px",
+                    maxWidth: "46px",
+                  }}
+                >
+                  <img
+                    src={u?.profile_pic || "/default.png"}
+                    alt={u?.username}
+                    className="w-100 h-100  rounded-5"
+                  />
+                </div>
+                <div className="d-flex w-100">
+                  <div className="d-flex flex-column fleex-grow-1 w-100">
+                    <span className="text-light">{u?.username}</span>
+                    <small className="text-light small">{u?.bio}</small>
+                  </div>
+
+                  <div className="px-2">
+                    {currentStatus?.likes?.some((usr) => usr._id === u?._id) ? (
+                      <FaHeart color="red" onClick={HandleLike} size={21} />
+                    ) : (
+                      <BiHeart onClick={HandleLike} size={22} />
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ArrowButtons = ({ handlePrev, handleNext }) => {
+  return (
+    <>
+      <button
+        className="btn position-absolute top-50 start-0 text-white fs-3"
+        onClick={handlePrev}
+      >
+        <i className="bi bi-chevron-left"></i>
+      </button>
+
+      <button
+        className="btn position-absolute top-50 end-0 text-white fs-3"
+        onClick={handleNext}
+      >
+        <i className="bi bi-chevron-right"></i>
+      </button>
+    </>
+  );
+};
+
+const StatusImageViewer = ({ currentStatus, handlePrev, handleNext }) => {
+  const { mobile_break_point } = useQuote();
+  return (
+    <div
+      className="w-100 d-flex flex-column align-items-center position-relative"
+      style={{
+        height: "calc(100% - 110px)",
+        justifyContent: "center",
+      }}
+      onClick={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        if (e.clientX - rect.left > rect.width / 2) {
+          handleNext();
+        } else {
+          handlePrev();
+        }
+      }}
+    >
+      <img
+        src={currentStatus?.image}
+        alt="status"
+        className="w-100"
+        style={{
+          borderRadius: mobile_break_point ? "4px" : "7px",
+          objectFit: "cover",
+          maxHeight: "100%",
+        }}
+      />
+    </div>
+  );
+};
+
 export default function StatusPage() {
   const { admin_user, API, token, setadmin_user, mobile_break_point } =
     useQuote();
@@ -193,16 +348,19 @@ export default function StatusPage() {
   const progressRef = useRef(null);
   const [dots, setDots] = useState(-1);
   const [Onhover, setOnhover] = useState(true);
-  const { bg1, bg2 } = useTheme();
+  const { bg1, bg2, text_clrH } = useTheme();
+  const [pause, setPuase] = useState(false);
 
   var currentUser = currentUserIndex !== null ? users[currentUserIndex] : null;
   const currentStatus = currentUser && currentUser?.status[currentStatusIndex];
+  const { seenOpen } = useStatus();
 
   // Handle autoplay progress
   useEffect(() => {
     if (currentUserIndex !== null && currentStatus) {
       setProgress(0);
       setDots(-1);
+      setPuase(() => false);
 
       console.log("user and status", users?.[currentUserIndex]);
 
@@ -365,20 +523,30 @@ export default function StatusPage() {
   };
 
   const HandleBar = () => {
-    // Resume on mouse out
-    if (dots !== currentStatusIndex && Onhover) {
-      progressRef.current = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(progressRef?.current);
-            handleNext();
-            return 0;
-          }
-          return prev + 0.1;
-        });
-      }, 10);
+    // Clear any previous interval first
+    if (progressRef.current) {
+      clearInterval(progressRef.current);
     }
+
+    progressRef.current = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(progressRef.current);
+          handleNext();
+          return 0;
+        }
+
+        // Pause when seenOpen is true
+        if (seenOpen || pause) return prev;
+
+        return prev + 0.2; // smoother + less CPU heavy
+      });
+    }, 10); // ~33 FPS instead of 1000 FPS
   };
+
+  useEffect(() => {
+    HandleBar();
+  }, [seenOpen, pause]);
 
   const HandleLike = async () => {
     console.log("yes liking");
@@ -407,8 +575,6 @@ export default function StatusPage() {
       currentStatus.likes.push(admin_user);
     }
   };
-
-  const [seenOpen, setSeenOpen] = useState(false);
 
   // console.log(currentStatus);
   return (
@@ -508,6 +674,17 @@ export default function StatusPage() {
                   </div>
                 </div>
 
+                <button
+                  className="btn p-1 px-2 rounded-1 d-flex align-items-center justify-content-center gap-2"
+                  style={{ background: text_clrH, color: bg2 }}
+                  onClick={() => setPuase((prev) => !prev)}
+                >
+                  <FontAwesomeIcon
+                    icon={pause ? faPlay : faPause} // Toggle icon
+                    color={bg2}
+                  />
+                </button>
+
                 <div
                   onClick={() => {
                     setDots(
@@ -564,8 +741,6 @@ export default function StatusPage() {
 
               <StatusActions
                 currentStatus={currentStatus}
-                seenOpen={seenOpen}
-                setSeenOpen={setSeenOpen}
                 HandleLike={HandleLike}
               />
 
@@ -578,139 +753,3 @@ export default function StatusPage() {
     </div>
   );
 }
-
-const StatusActions = ({
-  currentStatus,
-  seenOpen,
-  setSeenOpen,
-  HandleLike,
-}) => {
-  const { admin_user } = useQuote();
-  return (
-    <div className="d-flex gap-2 align-items-center mt-1 justify-content-center text-light">
-      {currentStatus.user === admin_user?._id && (
-        <div
-          className="w-100 border d-flex justify-content-center rounded-4 align-items-center p-1"
-          style={{
-            background: "#747272ff",
-            zIndex: 100000,
-            cursor: "pointer",
-          }}
-          onClick={() => setSeenOpen((prev) => !prev)}
-        >
-          {seenOpen ? "close" : "views"}
-        </div>
-      )}
-
-      <div
-        className="p-1 d-flex justify-content-center"
-        style={{ zIndex: 100000 }}
-      >
-        {currentStatus?.likes?.some((u) => u._id === admin_user?._id) ? (
-          <FaHeart color="red" onClick={HandleLike} size={21} />
-        ) : (
-          <BiHeart onClick={HandleLike} size={22} />
-        )}
-      </div>
-
-      <div className="d-flex gap-2 align-items-center mt-1 justify-content-center text-light">
-        {currentStatus.user === admin_user?._id && seenOpen && (
-          <div
-            className=" overflow-auto d-flex flex-column rounded-1 gap-4 p-2 py-3 position-absolute bg-dark"
-            style={{
-              left: "8px",
-              right: "8px",
-              bottom: "54px",
-              maxHeight: "74vh",
-            }}
-          >
-            {currentStatus?.SeenBy?.map((u, i) => (
-              <div key={i} className="d-flex items-center gap-2 rounded-5">
-                <div
-                  className=""
-                  style={{
-                    height: "46px",
-                    minWidth: "46px",
-                    maxWidth: "46px",
-                  }}
-                >
-                  <img
-                    src={u?.profile_pic || "/default.png"}
-                    alt={u?.username}
-                    className="w-100 h-100  rounded-5"
-                  />
-                </div>
-                <div className="d-flex w-100">
-                  <div className="d-flex flex-column fleex-grow-1 w-100">
-                    <span className="text-light">{u?.username}</span>
-                    <small className="text-light small">{u?.bio}</small>
-                  </div>
-
-                  <div className="px-2">
-                    {currentStatus?.likes?.some((usr) => usr._id === u?._id) ? (
-                      <FaHeart color="red" onClick={HandleLike} size={21} />
-                    ) : (
-                      <BiHeart onClick={HandleLike} size={22} />
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const ArrowButtons = ({ handlePrev, handleNext }) => {
-  return (
-    <>
-      <button
-        className="btn position-absolute top-50 start-0 text-white fs-3"
-        onClick={handlePrev}
-      >
-        <i className="bi bi-chevron-left"></i>
-      </button>
-
-      <button
-        className="btn position-absolute top-50 end-0 text-white fs-3"
-        onClick={handleNext}
-      >
-        <i className="bi bi-chevron-right"></i>
-      </button>
-    </>
-  );
-};
-
-const StatusImageViewer = ({ currentStatus, handlePrev, handleNext }) => {
-  const { mobile_break_point } = useQuote();
-  return (
-    <div
-      className="w-100 d-flex flex-column align-items-center position-relative"
-      style={{
-        height: "calc(100% - 110px)",
-        justifyContent: "center",
-      }}
-      onClick={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        if (e.clientX - rect.left > rect.width / 2) {
-          handleNext();
-        } else {
-          handlePrev();
-        }
-      }}
-    >
-      <img
-        src={currentStatus?.image}
-        alt="status"
-        className="w-100"
-        style={{
-          borderRadius: mobile_break_point ? "4px" : "7px",
-          objectFit: "cover",
-          maxHeight: "100%",
-        }}
-      />
-    </div>
-  );
-};

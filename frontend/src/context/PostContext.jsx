@@ -169,18 +169,17 @@ export function Rank_Calculation(post) {
 
   const now = dayjs();
   const createdAt = dayjs(post?.createdAt);
-  const ageInHours = now.diff(createdAt, "hour") || 1; // prevent divide by 0
+  const ageInHours = now.diff(createdAt, "day") || 1; // prevent divide by 0
   const likes = post?.likes?.length || 0;
   const comments = post?.comments?.length || 0;
-  const views = post?.views || 1;
   const followers = post?.followers?.length || 1;
   const following = post?.following?.length || 1;
   // const isFollowed = post?.followers?.includes(u=>u._id == admin_user?._id) || 1;
 
   // Engagement Score
-  const recencyFactor = 6000 / ageInHours; // decay over 1 day
+  const recencyFactor = 30 / ageInHours; // decay over 1 day
 
-  const engagement = views + recencyFactor + likes * 8 + comments * 24; // comment > like
+  const engagement = recencyFactor + likes * 8 + comments * 24; // comment > like
 
   // Network influence
   const influence = Math.log10(followers + 2) / Math.log10(following + 2); // avoid division explosion

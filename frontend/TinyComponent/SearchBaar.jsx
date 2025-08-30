@@ -31,11 +31,24 @@ export const SearchBaar = () => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
+      const res = await axios.get(
         `${API}/api/crud/search?search=${query}&page=${page}&limit=${limit}`
       );
-      setFilterd_posts((prev) => [...prev, ...data.posts]);
-      setPage((prev) => prev + 1);
+
+      const data = res?.data?.posts || [];
+      console.log("dya ", page);
+      if (page == 1) {
+        setFilterd_posts(() => []);
+      }
+      const uniquePosts = Array.from(
+        new Map([...Filterd_posts, ...data].map((p) => [p._id, p])).values()
+      );
+
+      setFilterd_posts(() => uniquePosts);
+
+      if (data && data.length > 0) {
+        setPage((prev) => prev + 1);
+      }
 
       setLoading(false);
     } catch (err) {
@@ -44,9 +57,8 @@ export const SearchBaar = () => {
   };
 
   useEffect(() => {
-    setFilterd_posts([]);
-
     if (query.trim()) {
+      setFilterd_posts(() => []);
       fetchPosts();
       setPage(1);
     }
@@ -73,7 +85,12 @@ export const SearchBaar = () => {
 
   useEffect(() => {
     const f_res = filter_users(all_user, query);
-    setFilterd_result(f_res);
+
+    const uniquePosts = Array.from(
+      new Map(f_res.map((p) => [p._id, p])).values()
+    );
+
+    setFilterd_result(uniquePosts);
   }, [query, all_user]);
 
   const [isTouched, setIsTouched] = useState(false);

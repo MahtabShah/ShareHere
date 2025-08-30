@@ -26,6 +26,7 @@ import { TrackPost } from "../TinyComponent/TrackPost.jsx";
 import { PostProvider } from "./context/PostContext.jsx";
 import { VibeTabs } from "./maincomponents/VibeTabs.jsx";
 import EditPost from "./maincomponents/EditPost.jsx";
+import { StatusProvider } from "./context/StatusContext.jsx";
 
 const StatusPage = () => {
   const [followings, setFollowings] = useState();
@@ -76,93 +77,95 @@ const Main = () => {
         <PostProvider>
           <VibeEditorProvider>
             <ThemeProvider>
-              <LeftNavbar />
-              <MainHeader />
+              <StatusProvider>
+                <LeftNavbar />
+                <MainHeader />
 
-              <Routes>
-                <Route
-                  path="/Explore"
-                  element={
-                    <div style={{ ...mainStyle }}>
-                      <Explore />
-                    </div>
-                  }
-                />
-                <Route
-                  path="/signup"
-                  element={
-                    <div style={{ ...mainStyle }}>
-                      <Signup />
-                    </div>
-                  }
-                />
+                <Routes>
+                  <Route
+                    path="/Explore"
+                    element={
+                      <div style={{ ...mainStyle }}>
+                        <Explore />
+                      </div>
+                    }
+                  />
+                  <Route
+                    path="/signup"
+                    element={
+                      <div style={{ ...mainStyle }}>
+                        <Signup />
+                      </div>
+                    }
+                  />
 
-                <Route
-                  path="/login"
-                  element={
-                    <div style={{ ...mainStyle }}>
-                      <Login />
-                    </div>
-                  }
-                />
-                <Route
-                  path="/*"
-                  element={
-                    <main style={{ ...mainStyle }}>
-                      <BottomNav />
-                      <VibeTabs />
-                    </main>
-                  }
-                />
+                  <Route
+                    path="/login"
+                    element={
+                      <div style={{ ...mainStyle }}>
+                        <Login />
+                      </div>
+                    }
+                  />
+                  <Route
+                    path="/*"
+                    element={
+                      <main style={{ ...mainStyle }}>
+                        <BottomNav />
+                        <VibeTabs />
+                      </main>
+                    }
+                  />
 
-                <Route
-                  path="/post/edit/:id"
-                  element={
-                    <div style={{ ...mainStyle }}>
-                      <EditPost />
-                      <BottomNav />
-                    </div>
-                  }
-                />
+                  <Route
+                    path="/post/edit/:id"
+                    element={
+                      <div style={{ ...mainStyle }}>
+                        <EditPost />
+                        <BottomNav />
+                      </div>
+                    }
+                  />
 
-                <Route
-                  path="/home"
-                  element={
-                    <main style={{ ...mainStyle }}>
-                      <BottomNav />
-                      <VibeTabs />
-                    </main>
-                  }
-                />
+                  <Route
+                    path="/home"
+                    element={
+                      <main style={{ ...mainStyle }}>
+                        <BottomNav />
+                        <VibeTabs />
+                      </main>
+                    }
+                  />
 
-                <Route
-                  path="/home/:postId"
-                  element={
-                    <main style={{ ...mainStyle }}>
-                      <BottomNav />
-                      <TrackPost />
-                    </main>
-                  }
-                />
-                <Route
-                  path="/api/user/:id"
-                  element={
-                    <main style={{ ...mainStyle }}>
-                      <BottomNav />
-                      <UserProfile />
-                    </main>
-                  }
-                />
-                <Route
-                  path="/api/user/edit/:id"
-                  element={
-                    <main style={{ ...mainStyle }}>
-                      <BottomNav />
-                      <EditUserProfile />
-                    </main>
-                  }
-                />
-              </Routes>
+                  <Route
+                    path="/home/:postId"
+                    element={
+                      <main style={{ ...mainStyle }}>
+                        <BottomNav />
+                        <TrackPost />
+                      </main>
+                    }
+                  />
+                  <Route
+                    path="/api/user/:id"
+                    element={
+                      <main style={{ ...mainStyle }}>
+                        <BottomNav />
+                        <UserProfile />
+                      </main>
+                    }
+                  />
+                  <Route
+                    path="/api/user/edit/:id"
+                    element={
+                      <main style={{ ...mainStyle }}>
+                        <BottomNav />
+                        <EditUserProfile />
+                      </main>
+                    }
+                  />
+                </Routes>
+              </StatusProvider>
             </ThemeProvider>
           </VibeEditorProvider>
         </PostProvider>

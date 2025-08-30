@@ -50,7 +50,7 @@ const SuggetionSlip = () => {
                     className="d-flex align-items-center justify-content-between gap-2 mb-2 rounded"
                   >
                     <div
-                      className="h-100 rounded-5"
+                      className="h-100 d-flex rounded-5 align-items-center justify-content-center"
                       style={{
                         border: "2px solid #d55163ff",
                         minHeight: "50px",
@@ -58,7 +58,9 @@ const SuggetionSlip = () => {
                         background: `linear-gradient(120deg, #fda, #e40d29ff)`,
                       }}
                       alt=""
-                    />
+                    >
+                      ?
+                    </div>
 
                     <a href="/signup" className="small btn btn-info">
                       Signin/login
