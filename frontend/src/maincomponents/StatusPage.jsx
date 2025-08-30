@@ -291,9 +291,9 @@ const StatusImageViewer = ({ currentStatus, handlePrev, handleNext }) => {
   const { mobile_break_point } = useQuote();
   return (
     <div
-      className="w-100 d-flex flex-column align-items-center position-relative"
+      className="w-100 h-100 d-flex flex-column align-items-center position-relative"
       style={{
-        height: "calc(100% - 110px)",
+        maxHeight: "calc(100% - 140px)",
         justifyContent: "center",
       }}
       onClick={(e) => {
@@ -313,6 +313,7 @@ const StatusImageViewer = ({ currentStatus, handlePrev, handleNext }) => {
           borderRadius: mobile_break_point ? "4px" : "7px",
           objectFit: "cover",
           maxHeight: "100%",
+          objectPosition: "50% 50%",
         }}
       />
     </div>
@@ -601,7 +602,7 @@ export default function StatusPage() {
             }}
           >
             <div
-              className="p-2 h-100 position-relative"
+              className="p-2 h-100 position-relative justify-content-between d-flex flex-column"
               style={{
                 backdropFilter:
                   "blur(20px) saturate(1.4) brightness(0.7) sepia(0.1) hue-rotate(-3deg) opacity(0.85)",
@@ -619,7 +620,7 @@ export default function StatusPage() {
 
               {/* User Info */}
 
-              <div className="d-flex align-items-center mb-2 order gap-3 text-white ">
+              <div className="d-flex align-items-center mb-2 order gap-2 text-white ">
                 <div
                   className="d-flex flex-column gap-2"
                   style={{
@@ -652,7 +653,7 @@ export default function StatusPage() {
                     height="47"
                   />
                   <div>
-                    <div className="fw-semibold">
+                    <div className="fw- small">
                       {currentUser?.username}
                       {dayjs(currentStatus?.createdAt).fromNow() ===
                       "a few seconds ago"
@@ -674,31 +675,33 @@ export default function StatusPage() {
                   </div>
                 </div>
 
-                <button
-                  className="btn p-1 px-2 rounded-1 d-flex align-items-center justify-content-center gap-2"
-                  style={{ background: text_clrH, color: bg2 }}
-                  onClick={() => setPuase((prev) => !prev)}
-                >
-                  <FontAwesomeIcon
-                    icon={pause ? faPlay : faPause} // Toggle icon
-                    color={bg2}
-                  />
-                </button>
+                <div className="d-flex">
+                  <button
+                    className="btn p-1 px-2 small rounded-1 d-flex align-items-center justify-content-center"
+                    style={{ background: text_clrH, color: bg2 }}
+                    onClick={() => setPuase((prev) => !prev)}
+                  >
+                    <FontAwesomeIcon
+                      icon={pause ? faPlay : faPause} // Toggle icon
+                      color={bg2}
+                    />
+                  </button>
 
-                <div
-                  onClick={() => {
-                    setDots(
-                      dots === currentStatusIndex ? -1 : currentStatusIndex
-                    );
+                  <div
+                    onClick={() => {
+                      setDots(
+                        dots === currentStatusIndex ? -1 : currentStatusIndex
+                      );
 
-                    if (dots === currentStatusIndex) {
-                      () => clearInterval(progressRef?.current);
-                    }
-                  }}
-                  style={{ cursor: "pointer" }}
-                  className="p-2 d-flex align-items-center"
-                >
-                  <FaEllipsisV size={14} />
+                      if (dots === currentStatusIndex) {
+                        () => clearInterval(progressRef?.current);
+                      }
+                    }}
+                    style={{ cursor: "pointer" }}
+                    className="p-2 d-flex align-items-center"
+                  >
+                    <FaEllipsisV size={14} />
+                  </div>
                 </div>
 
                 {dots === currentStatusIndex && (
