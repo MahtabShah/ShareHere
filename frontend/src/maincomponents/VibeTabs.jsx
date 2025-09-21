@@ -106,36 +106,32 @@ export const VibeTabs = () => {
           ))}
         </div>
 
-        <section style={{ background: bg2 }}>
-          <div>
-            <div className="d-flex flex-column gap-3">
-              <div
-                className={`d-flex gap-3 py-2 justify-content-${
-                  lgbreakPoint || sm_break_point ? "evenly" : "center"
-                }`}
-              >
-                <div
-                  className="d-flex flex-column w-100 "
-                  style={{ maxWidth: "min(600px, 100%)" }}
-                >
-                  <StatusPage />
+        <div className="d-flex flex-column gap-3">
+          <div
+            className={`d-flex gap-3 py-2 justify-content-${
+              lgbreakPoint || sm_break_point ? "evenly" : "center"
+            }`}
+          >
+            <div
+              className="d-flex flex-column w-100"
+              style={{ maxWidth: "min(600px, 100%)" }}
+            >
+              <StatusPage />
 
-                  {categories.map(
-                    ({ key, title }) =>
-                      Key === key && (
-                        <div key={title} className="d-flex flex-column gap-4">
-                          <All_Post_Section loading={loading} category={key} />
-                        </div>
-                      )
-                  )}
+              {categories.map(
+                ({ key, title }) =>
+                  Key === key && (
+                    <div key={title} className="d-flex flex-column gap-4">
+                      <All_Post_Section loading={loading} category={key} />
+                    </div>
+                  )
+              )}
 
-                  <PostLoading />
-                </div>
-                {lgbreakPoint && <SuggetionSlip />}
-              </div>
+              <PostLoading />
             </div>
+            {lgbreakPoint && <SuggetionSlip />}
           </div>
-        </section>
+        </div>
       </div>
     </>
   );

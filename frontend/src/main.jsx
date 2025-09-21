@@ -123,7 +123,7 @@ const Main = () => {
 
   const mainStyle = {
     marginLeft: `${mb ? "0px" : sm ? "74px" : "244px"}`,
-    overflow: "auto",
+    // overflow: "auto",
   };
 
   return (

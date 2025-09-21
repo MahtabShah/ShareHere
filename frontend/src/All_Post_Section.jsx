@@ -107,7 +107,7 @@ function All_Post_Section({ category, loading }) {
 
             {rn && rn + 1 > idx && idx > rn - 1 && (
               <div
-                className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto"
+                className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto "
                 style={{ maxWidth: "100%" }}
               >
                 <SuggetionSlipInPost />
