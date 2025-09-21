@@ -86,7 +86,7 @@ function MainHeader({}) {
         fixed="top"
         style={{
           background: bg1,
-          zIndex: 990999,
+          zIndex: 999,
           marginLeft: `${
             mobile_break_point ? "0px" : sm_break_point ? "74px" : "244px"
           }`,

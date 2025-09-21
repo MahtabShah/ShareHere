@@ -86,6 +86,8 @@ export const Notification = ({ setVisibleNotification }) => {
   };
 
   const { text_clrH, text_clrL, text_clrM, bg1, bg2 } = useTheme();
+  const { admin_user, sm_break_point, setActiveIndex, activeIndex } =
+    useQuote();
 
   return (
     <>
@@ -114,6 +116,7 @@ export const Notification = ({ setVisibleNotification }) => {
               className="d-inline-flex p-1 rounded-1"
               onClick={() => {
                 setopenSlidWin(false);
+                setActiveIndex("x");
               }}
               style={{
                 minWidth: "32px",
@@ -270,12 +273,16 @@ const LikeCommNotifi = ({
   const { bg2, bg1, text_clrL } = useTheme();
 
   // console.log(post?.images?.[0]);
+  const [loaded, setLoaded] = useState(false); // initially false
 
   return (
     <>
       {" "}
-      <div className="likeNootify p-1">
-        <div className="d-flex gap-2 justify-content-between">
+      <div className="likeNootify p-1" onLoad={() => setLoaded(true)}>
+        <div
+          className="d-flex gap-2 justify-content-between"
+          style={{ display: loaded ? "block" : "none" }}
+        >
           <div
             className="dpPhoto rounded-circle border"
             style={{

@@ -20,7 +20,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 import { usePost } from "../context/PostContext";
 import { useTheme } from "../context/Theme";
-
+import React from "react";
 function formatNumber(num) {
   if (num >= 1_000_000_000) {
     return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
@@ -101,7 +101,7 @@ export const EachPost = ({ user, comment }) => {
   useEffect(() => {
     const el = contentRef.current;
     if (el) {
-      const isTruncated = el.scrollHeight > el.clientHeight + 1;
+      const isTruncated = comment.text.split("\n").length > 3;
       setShouldTruncate(isTruncated);
     }
   }, [comment.text]);
@@ -236,38 +236,34 @@ export const EachPost = ({ user, comment }) => {
                   style={{
                     overflow: "hidden",
                     transition: "height 0.3s ease",
+                    // border: "2px solid red",
                   }}
                 >
-                  <div
-                    ref={contentRef}
-                    style={{
-                      display: expanded ? "block" : "-webkit-box",
-                      WebkitLineClamp: expanded ? "unset" : 3,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {comment.text}
-                  </div>
+                  <span ref={contentRef}>
+                    {comment.text.split("\n").map((line, index) => (
+                      <React.Fragment key={index}>
+                        {1 < index &&
+                          (index <= 2 ? <br /> : expanded && <br />)}
+                        {index <= 2 ? <>{line}</> : expanded && <>{line}</>}
+                      </React.Fragment>
+                    ))}
+                  </span>
 
                   {shouldTruncate && (
-                    <button
+                    <span
                       onClick={() => setExpanded(!expanded)}
                       aria-expanded={expanded}
+                      className="border-0 fw-semibold "
                       style={{
                         background: "none",
-                        border: "none",
-                        padding: 0,
-                        color: text_clrM,
-                        fontWeight: "bold",
+                        color: "hsla(234, 89%, 43%, 1.00)",
                         cursor: "pointer",
                         fontSize: "inherit",
                         minWidth: "10px",
                       }}
                     >
-                      {expanded ? " less" : " more"}
-                    </button>
+                      {expanded ? ". . . less" : " . . . more"}
+                    </span>
                   )}
                 </div>
               )}
@@ -577,7 +573,7 @@ export const SlipDotinPost = ({ user, post }) => {
   const { text_clrM } = useTheme();
 
   const HandleDelete = async () => {
-    const condition = window.confirm("want to delete............");
+    const condition = window.confirm("want to delete the post");
 
     if (condition) {
       try {

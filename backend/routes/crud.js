@@ -317,7 +317,7 @@ router.delete('/delete_status', verifyToken ,async (req, res) => {
 router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
   const { id } = req.body;
  
-  const userId = req.user.userId || req.user.id;
+  // const userId = req.user.userId || req.user.id;
   // console.log("backend response 16 crud" ,userId , id)
 
 
@@ -325,7 +325,8 @@ router.delete('/crud_delete_post', verifyToken,  async (req, res) => {
 
     await Sentence.findByIdAndDelete(id);
     io.emit('update');
-    // console.log("------------> " , sentence)
+    // io.emit('deletedPost', id);
+    console.log("------------> " , id)
     res.status(201).json({ message: 'Sentence saved , see delete route' });
   } catch (err) {
     console.error('Error deleting sentence:', err);

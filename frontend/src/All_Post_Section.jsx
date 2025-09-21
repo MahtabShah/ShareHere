@@ -9,6 +9,7 @@ import {
   GalleryPost,
 } from "./maincomponents/NewUserUpdate";
 import { usePost, Rank_Calculation } from "./context/PostContext";
+import socket from "./maincomponents/socket";
 
 function All_Post_Section({ category, loading }) {
   const [rn, setRn] = useState(null);
@@ -40,10 +41,6 @@ function All_Post_Section({ category, loading }) {
 
           setPosts((prev) => [...prev, ...sorted]);
         }
-
-        // setTimeout(() => {
-        //   setLoading(false);
-        // }, 2000);
       }
     }, 500);
 
@@ -74,6 +71,22 @@ function All_Post_Section({ category, loading }) {
       setActiveIndex("Home");
     }
   }, [openSlidWin]);
+  // useEffect(() => {
+  //   // "deletedPost" event listen karna
+  //   socket.on("deletedPost", (id) => {
+  //     console.log("Post deleted with id:", id);
+
+  //     // State ko update karna using setVisiblePost
+  //     // setVisiblePost((prevPosts) =>
+  //     //   prevPosts.filter(({ post }) => post._id !== id)
+  //     // );
+  //   });
+
+  //   // Cleanup on unmount
+  //   return () => {
+  //     socket.off("deletedPost");
+  //   };
+  // }, [socket]);
 
   return (
     !loading &&
