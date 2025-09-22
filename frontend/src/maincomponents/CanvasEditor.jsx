@@ -901,30 +901,6 @@ const CanvasVibeEditor = () => {
                 </>
               </div>
 
-              {elements?.length > 1 && (
-                <>
-                  <button
-                    className={`toolbar-button ${
-                      activeElement ? "active" : ""
-                    }`}
-                    onClick={() => bringToFront(activeElement?.id)}
-                    disabled={!activeElement}
-                    style={{ minWidth: "34px" }}
-                  >
-                    <FontAwesomeIcon icon={faArrowUp} color={"#ededed"} />
-                  </button>
-                  <button
-                    className="btn props-btn toolbar-button"
-                    onClick={() => {
-                      setContinuousActiveId();
-                    }}
-                    style={{ minWidth: "max-content" }}
-                  >
-                    <b style={{ color: "#ededed" }}>Active</b>
-                  </button>
-                </>
-              )}
-
               {activeId && (
                 <>
                   <button
