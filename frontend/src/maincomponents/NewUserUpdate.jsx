@@ -35,7 +35,11 @@ const SuggetionSlip = () => {
                     className="d-flex align-items-center gap-2 mb-2 rounded"
                   >
                     <UserRing user={admin_user} dm={50} style={{}} />
-                    <a href={`/api/user/${admin_user?._id}`} className="small">
+                    <a
+                      href={`/api/user/${admin_user?._id}`}
+                      className="small btn btn-outline-primary text-center rounded-1 p-1 ps-3 pe-3"
+                      style={{ minWidth: "max-content" }}
+                    >
                       see profile
                     </a>
                   </div>

@@ -21,7 +21,7 @@ export const QuoteProvider = ({ children }) => {
     window.innerWidth <= 600
   );
 
-  const [activeIndex, setActiveIndex] = useState("");
+  const [activeIndex, setActiveIndex] = useState("home");
   const [openSlidWin, setopenSlidWin] = useState(false);
 
   window.addEventListener("resize", () => {

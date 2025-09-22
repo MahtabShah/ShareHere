@@ -161,8 +161,9 @@ export default function LeftNavbar() {
                     activeIndex == "Upload" ? "active" : ""
                   }`}
                   onClick={() => {
-                    setopenSlidWin(true);
-                    setActiveIndex("Upload");
+                    // setopenSlidWin(true);
+                    // setActiveIndex("Upload");
+                    navigate("/Editor");
                   }}
                 >
                   <div

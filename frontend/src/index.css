@@ -142,3 +142,5 @@ textarea::placeholder {
   touch-action: none; /* prevent scroll interference */
   -webkit-user-drag: none; /* prevent ghost image drag */
 }
+
+/* ---------------------------------------- Normal Editor Tabs ---------------------------------------------- */

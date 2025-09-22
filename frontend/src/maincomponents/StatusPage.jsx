@@ -54,7 +54,7 @@ const StatusImg = ({ u }) => {
           style={{
             objectFit: "cover",
             opacity: loaded ? 1 : 0,
-            transition: "opacity 0.7s ease-in-out",
+            transition: "opacity 0.5s ease-in-out",
           }}
           onLoad={() => setLoaded(true)}
         />
@@ -596,7 +596,7 @@ export default function StatusPage() {
             style={{
               maxWidth: "500px",
               backgroundImage: `url(${currentStatus?.image})`,
-              backgroundSize: "400% 100%",
+              backgroundSize: "300% 400%",
               backgroundPosition: "center",
               borderRadius: mobile_break_point ? "0px" : "7px",
             }}

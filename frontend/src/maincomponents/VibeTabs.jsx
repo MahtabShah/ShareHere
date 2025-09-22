@@ -114,7 +114,7 @@ export const VibeTabs = () => {
           >
             <div
               className="d-flex flex-column w-100"
-              style={{ maxWidth: "min(600px, 100%)" }}
+              style={{ maxWidth: "min(541px, 100%)" }}
             >
               <StatusPage />
 

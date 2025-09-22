@@ -99,11 +99,7 @@ const RoutesArr = [
   },
   {
     path: "/Editor",
-    element: (
-      <>
-        <CanvasVibeEditor />
-      </>
-    ),
+    element: <CanvasVibeEditor />,
   },
 ];
 
