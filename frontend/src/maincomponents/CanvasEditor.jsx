@@ -61,7 +61,7 @@ const CanvasVibeEditor = () => {
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
   const [canvasHeight, setCanvasHeight] = useState(
-    Math.min(window.innerHeight - 140, 500)
+    Math.min(window.innerHeight - 240, 400)
   );
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
@@ -386,6 +386,8 @@ const CanvasVibeEditor = () => {
 
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState(null);
+  const [range1, setRange1] = useState(0);
+  const [range2, setRange2] = useState(0);
 
   return (
     <div
@@ -996,13 +998,9 @@ const CanvasVibeEditor = () => {
                         className="w-100"
                         min={-600}
                         max={600}
-                        value={activeElement?.range1}
+                        value={range1}
                         onChange={(e) => {
-                          handleChange(
-                            activeElement?.id,
-                            "range1",
-                            e.target.value
-                          );
+                          setRange1(e.target.value);
                         }}
                       />
                     </label>
@@ -1014,13 +1012,9 @@ const CanvasVibeEditor = () => {
                         id="rg2"
                         min={-1000}
                         max={1000}
-                        value={activeElement?.range2}
+                        value={range2}
                         onChange={(e) => {
-                          handleChange(
-                            activeElement?.id,
-                            "range2",
-                            e.target.value
-                          );
+                          setRange2(e.target.value);
                         }}
                       />
                     </label>
@@ -1040,9 +1034,9 @@ const CanvasVibeEditor = () => {
                     <div
                       className="btn btn-dark rounded-1 px-2 py-0 text-end"
                       onClick={() => {
-                        handleChange(activeElement?.id, "range1", 0);
+                        setRange1(0);
 
-                        handleChange(activeElement?.id, "range2", 0);
+                        setRange2(0);
                       }}
                     >
                       Reset
@@ -1170,13 +1164,17 @@ const CanvasVibeEditor = () => {
         </div>
 
         <div
-          className="position-relative mx-2"
+          className="position-relative"
           style={{
             marginTop: `calc(52px + ${styleOpen ? `80px` : "44px"})`,
             width: "100%",
           }}
         >
-          <UploadButton onSelect={(url) => setImageUrl(url)} url={imageUrl} />
+          <UploadButton
+            onSelect={(url) => setImageUrl(url)}
+            url={imageUrl}
+            setHidePage={setHidePage}
+          />
 
           <div
             ref={canvasRef}
@@ -1189,9 +1187,9 @@ const CanvasVibeEditor = () => {
               overflow: "hidden",
               maxWidth: "601px",
               // margin: "auto",
-              backgroundSize: "100%",
+              backgroundSize: "101%",
               backgroundRepeat: "no-repeat",
-              backgroundPosition: "center center",
+              backgroundPosition: `${range1 || 0}px ${range2 || 0}px`,
             }}
           >
             {elements.map((el, idx) => (
@@ -1282,9 +1280,8 @@ const CanvasVibeEditor = () => {
       <div
         style={{
           background: bg2,
-          maxWidth: !dir ? "80%" : "100%",
+          maxWidth: !dir ? "100%" : "100%",
           marginTop: !dir && `calc(52px + ${styleOpen ? `80px` : "44px"})`,
-          padding: dir && "24px",
         }}
       >
         <Visiblity
@@ -1403,12 +1400,13 @@ const CanvasVibeEditor = () => {
   );
 };
 
-export function UploadButton({ onSelect, url }) {
+export function UploadButton({ onSelect, url, setHidePage }) {
   const fileInputRef = useRef(null);
 
   // File select karte hi URL generate
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setHidePage("objectPosition");
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       onSelect(imageUrl); // parent component ko image url bhejo
@@ -1929,5 +1927,6 @@ import {
   faRedo,
   faPalette,
 } from "@fortawesome/free-solid-svg-icons";
+import { set } from "mongoose";
 
 export default CanvasVibeEditor;
