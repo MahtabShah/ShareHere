@@ -401,12 +401,10 @@ const CanvasVibeEditor = () => {
         className="d-flex h-100"
         style={{
           maxWidth: "501px",
-          minWidth: "min(501px , calc(100vw - 20px))",
+          minWidth: `min(501px , calc(100vw - 14px)`,
           justifySelf: "center",
           margin: dir && "auto",
           // alignSelf: "",
-
-          // border: `1px solid ${text_clrL}`,
         }}
       >
         <div className="card border-0">
@@ -1185,7 +1183,7 @@ const CanvasVibeEditor = () => {
               background: canvasBgColor,
               backgroundImage: `url(${imageUrl || ""})`,
               overflow: "hidden",
-              maxWidth: "601px",
+              maxWidth: "501px",
               // margin: "auto",
               backgroundSize: "101%",
               backgroundRepeat: "no-repeat",
@@ -1428,7 +1426,13 @@ export function UploadButton({ onSelect, url, setHidePage }) {
         }}
       >
         {url ? (
-          <div onClick={() => onSelect(null)}>
+          <div
+            onClick={() => {
+              if (window.confirm("Are you sure to remove the image ?")) {
+                onSelect(null);
+              }
+            }}
+          >
             <FontAwesomeIcon icon={faTrash} color="white" />
           </div>
         ) : (
