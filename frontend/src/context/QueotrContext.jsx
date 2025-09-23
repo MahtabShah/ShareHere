@@ -14,9 +14,9 @@ export const useQuote = () => useContext(QuoteContext) || {};
 
 export const QuoteProvider = ({ children }) => {
   const [sm_break_point, setsm_break_point] = useState(
-    window.innerWidth < 1081
+    window.innerWidth < 1181
   );
-  const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1200);
+  const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1300);
   const [mobile_break_point, setmobile_break_point] = useState(
     window.innerWidth <= 600
   );
@@ -25,7 +25,7 @@ export const QuoteProvider = ({ children }) => {
   const [openSlidWin, setopenSlidWin] = useState(false);
 
   window.addEventListener("resize", () => {
-    setsm_break_point(window.innerWidth < 1081);
+    setsm_break_point(window.innerWidth < 1181);
     setlgbreakPoint(window.innerWidth > 1300);
     setmobile_break_point(window.innerWidth < 600);
   });

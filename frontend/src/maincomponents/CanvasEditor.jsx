@@ -8,8 +8,6 @@ const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import Accordion from "react-bootstrap/Accordion";
-
 import Tabs from "react-bootstrap/esm/Tabs";
 import { Tab } from "bootstrap";
 
@@ -60,13 +58,12 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(521);
+  const [canvasHeight, setCanvasHeight] = useState(441);
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
   const [active_style, setActive_style] = useState(fontFamily);
   const [style_type, setStyle_type] = useState("fontFamily");
-  const [count, setCount] = useState(0);
   const [category, setCategory] = useState("all");
   const [hidePage, setHidePage] = useState("");
 
@@ -368,7 +365,7 @@ const CanvasVibeEditor = () => {
 
   return (
     <div
-      className="overflow-hidden d-flex w-100 pb-3"
+      className="overflow-hidden d-flex w-100 pb-3 "
       style={{
         flexDirection: dir ? "column" : "row",
         gap: "20px",
@@ -381,7 +378,6 @@ const CanvasVibeEditor = () => {
           minWidth: `min(501px , calc(100vw - 14px)`,
           justifySelf: "center",
           margin: dir && "auto",
-          // alignSelf: "",
         }}
       >
         <div className="card border-0">
@@ -1231,9 +1227,10 @@ const CanvasVibeEditor = () => {
       <div
         className="rounded"
         style={{
-          background: bg1,
-          maxWidth: !dir ? "100%" : "100%",
+          background: !dir && bg1,
           marginTop: !dir && `calc(52px + ${styleOpen ? `80px` : "44px"})`,
+          maxHeight: "fit-content",
+          maxWidth: dir ? "100%" : "37vw",
         }}
       >
         <Visiblity
@@ -1272,7 +1269,7 @@ const CanvasVibeEditor = () => {
               className={`form-control rounded h-100 shadow-none p-2 overflow-auto none-scroller`}
               placeholder="Write about post here . . ."
               style={{
-                background: bg1,
+                background: !dir ? bg1 : bg2,
                 color: text_clrH,
                 minHeight: `${(text.split("\n").length + 4) * 27}px`,
                 border: `${error ? "1px solid red" : `1px solid ${text_clrL}`}`,
@@ -1323,7 +1320,10 @@ const CanvasVibeEditor = () => {
           </Tabs>
         </div>
 
-        <div className="d-flex gap-3 p-2 justify-content-end p-0 pb-5 mb-4">
+        <div
+          className="d-flex gap-3 px-2  justify-content-end"
+          style={{ paddingBottom: dir ? "40px" : "10px" }}
+        >
           <label
             htmlFor="images"
             className="btn  ps-3 pe-3 rounded-0 p-2"
