@@ -80,7 +80,7 @@ const SuggetionSlip = () => {
               <div className="d-flex flex-column gap-3 mt-2">
                 <div className="d-flex flex-column gap-2">
                   {all_user
-                    .filter((u) => !u?.followers?.includes(admin_user._id))
+                    ?.filter((u) => !u?.followers?.includes(admin_user?._id))
                     .slice(-4)
                     .reverse()
                     .map(
