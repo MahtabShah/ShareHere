@@ -105,7 +105,10 @@ const EditPost = () => {
 
   return (
     <>
-      <div style={{ background: bg2 }} className="d-flex flex-column gap-2 p-3">
+      <div
+        style={{ background: bg2 }}
+        className="d-flex flex-column gap-2 p-3 my-5"
+      >
         <div
           className="d-flex rounded flex-row-reverse flex-wrap flex-md-nowrap gap-3 overflow-hidden"
           style={{}}

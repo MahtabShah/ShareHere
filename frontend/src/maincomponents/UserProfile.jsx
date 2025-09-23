@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -463,7 +463,7 @@ const UserProfile = ({}) => {
           className="position-fixed m-2 d-flex flex-column overflow-auto none-scroller rounded border p-2"
           style={{
             top: "120px",
-            maxHeight: "calc(100% - 110px)",
+            maxHeight: "calc(100% - 140px)",
             width: `${
               mobile_break_point
                 ? "calc(100% - 15px)"
@@ -511,13 +511,18 @@ const UserProfile = ({}) => {
                     >
                       <UserRing user={user} dm={52} />
                     </span>
-                    <div>
-                      <FollowBtn
-                        user={user}
-                        cls={"text-primary rounded-1 border p-1 ps-3 pe-3"}
-                        style={{ cursor: "pointer" }}
-                      />
-                    </div>
+                    {user?._id !== admin_user?._id && (
+                      <div
+                        className="text-center btn p-1 btn-outline-primary"
+                        style={{ minWidth: "142px" }}
+                      >
+                        <FollowBtn
+                          id={user?._id}
+                          cls={"rounded-1 p-1 ps-3 pe-3"}
+                          style={{ cursor: "pointer" }}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
 
@@ -535,13 +540,18 @@ const UserProfile = ({}) => {
                     >
                       <UserRing user={user} dm={52} />
                     </span>
-                    <div>
-                      <FollowBtn
-                        id={user?._id}
-                        cls={"text-primary rounded-1 border p-1 ps-3 pe-3"}
-                        style={{ cursor: "pointer" }}
-                      />
-                    </div>
+                    {user?._id !== admin_user?._id && (
+                      <div
+                        className="text-center btn p-1 btn-outline-primary"
+                        style={{ minWidth: "142px" }}
+                      >
+                        <FollowBtn
+                          id={user?._id}
+                          cls={"rounded-1 p-1 ps-3 pe-3"}
+                          style={{ cursor: "pointer" }}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
             </div>

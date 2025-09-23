@@ -60,9 +60,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(
-    Math.min(window.innerHeight - 240, 400)
-  );
+  const [canvasHeight, setCanvasHeight] = useState(521);
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -138,18 +136,6 @@ const CanvasVibeEditor = () => {
     console.log("val ", activeElement);
   };
 
-  const setContinuousActiveId = () => {
-    const len = elements.length;
-    if (len > 0) {
-      setActiveId(elements[count % len]?.id);
-      setActiveElement(
-        elements.find((el) => el.id === elements[count % len]?.id)
-      );
-
-      setCount(count + 1);
-    }
-  };
-
   const deleteElement = (id) => {
     const conf = window.confirm("want to delete this element !");
     if (conf) {
@@ -157,15 +143,6 @@ const CanvasVibeEditor = () => {
       setActiveId(elements[0] ? elements[0].id : null);
       setActiveElement(elements[0] ? elements[0] : null);
     }
-  };
-
-  const bringToFront = (id) => {
-    setElements((prev) => {
-      const maxZIndex = Math.max(...prev.map((el) => el.zIndex), 0);
-      return prev.map((el) =>
-        el.id === id ? { ...el, zIndex: maxZIndex + 1 } : el
-      );
-    });
   };
 
   function base64ToBlob(base64, contentType = "image/png") {
@@ -391,7 +368,7 @@ const CanvasVibeEditor = () => {
 
   return (
     <div
-      className="overflow-hidden d-flex w-100 pb-5"
+      className="overflow-hidden d-flex w-100 pb-3"
       style={{
         flexDirection: dir ? "column" : "row",
         gap: "20px",
@@ -1252,8 +1229,9 @@ const CanvasVibeEditor = () => {
       </div>
 
       <div
+        className="rounded"
         style={{
-          background: bg2,
+          background: bg1,
           maxWidth: !dir ? "100%" : "100%",
           marginTop: !dir && `calc(52px + ${styleOpen ? `80px` : "44px"})`,
         }}
@@ -1294,7 +1272,7 @@ const CanvasVibeEditor = () => {
               className={`form-control rounded h-100 shadow-none p-2 overflow-auto none-scroller`}
               placeholder="Write about post here . . ."
               style={{
-                background: bg2,
+                background: bg1,
                 color: text_clrH,
                 minHeight: `${(text.split("\n").length + 4) * 27}px`,
                 border: `${error ? "1px solid red" : `1px solid ${text_clrL}`}`,
