@@ -4,7 +4,6 @@ import { useQuote } from "../src/context/QueotrContext";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Loading } from "./LazyLoading";
-import { SearchBaar } from "./SearchBaar";
 import SuggetionSlip from "../src/maincomponents/NewUserUpdate";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../src/context/Theme";
@@ -12,8 +11,7 @@ import { usePost } from "../src/context/PostContext";
 
 export const TrackPost = () => {
   const { postId } = useParams();
-  const { all_user, all_post_loading, setActiveIndex, lgbreakPoint } =
-    useQuote();
+  const { setActiveIndex, lgbreakPoint } = useQuote();
   const [user, setUser] = useState(null);
   const [post, setPost] = useState(null);
   const [error, setError] = useState("");

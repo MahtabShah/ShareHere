@@ -104,8 +104,6 @@ function MainHeader({}) {
                 <SearchBaar />
               </div>
 
-              {!sm_break_point && <NotificationBell />}
-
               <button
                 className={`rotate`}
                 onClick={toggleTheme}

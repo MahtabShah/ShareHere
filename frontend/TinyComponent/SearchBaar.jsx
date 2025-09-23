@@ -171,7 +171,7 @@ export const SearchBaar = () => {
         >
           <div
             className="d-flex gap-3 p-2 position-sticky top-0"
-            style={{ background: bg1, zIndex: 1000 }}
+            style={{ background: bg1 }}
           >
             <div
               className="d-flex flex-column gap-2"

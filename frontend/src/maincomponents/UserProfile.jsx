@@ -48,9 +48,9 @@ const UserProfile = ({}) => {
 
   const [activeBtn3Profile, setActiveBtn3Profile] = useState("Public");
 
-  const FollowerPost = user_post?.filter((p) => p.mode == "Follower");
-  const PaidPost = user_post?.filter((p) => p.mode == "Paid");
-  const PublicPost = user_post?.filter((p) => p.mode == "Public");
+  const FollowerPost = user_post?.filter((p) => p.mode == "Follower").reverse();
+  const PaidPost = user_post?.filter((p) => p.mode == "Paid").reverse();
+  const PublicPost = user_post?.filter((p) => p.mode == "Public").reverse();
 
   // console.log("KKKK", all_posts);
 

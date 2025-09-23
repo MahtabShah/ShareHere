@@ -47,9 +47,9 @@ export const ThemeProvider = ({ children }) => {
       localStorage.setItem("theme", "dark");
     } else {
       setMainBg("#f6fafeff");
-      setBg1("#f5f9feff");
-      setBg2("#e0e6ecff");
-      setBg3("#d5dee3ff");
+      setBg1("#f8fbfeff");
+      setBg2("#dbe2e9ff");
+      setBg3("#d1dfe7ff");
       setText_clrH("#000911ff");
       setText_clrM("#222222ff");
       setText_clrL("#bbbbbbff");

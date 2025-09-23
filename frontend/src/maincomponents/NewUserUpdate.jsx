@@ -9,22 +9,24 @@ import { useNavigate } from "react-router-dom";
 
 import { Rank_Calculation } from "../context/PostContext";
 
+const parentStyle = {
+  position: "sticky",
+  width: "340px",
+  top: "94px",
+  height: "90vh",
+  marginTop: "184px",
+};
+
 const SuggetionSlip = () => {
   const { all_user, admin_user, lgbreakPoint } = useQuote();
   const { text_clrM, bg1 } = useTheme();
   const { posts } = usePost();
 
+  console.log("user ", all_user[0]);
+
   return (
     <>
-      <div
-        style={{
-          position: "sticky",
-          width: "340px",
-          top: "94px",
-          height: "90vh",
-          marginTop: "184px",
-        }}
-      >
+      <div style={{ ...parentStyle }}>
         {lgbreakPoint && (
           <div className="user-update" style={{ color: text_clrM }}>
             {admin_user ? (
@@ -78,6 +80,7 @@ const SuggetionSlip = () => {
               <div className="d-flex flex-column gap-3 mt-2">
                 <div className="d-flex flex-column gap-2">
                   {all_user
+                    .filter((u) => !u.followers.includes(admin_user._id))
                     .slice(-4)
                     .reverse()
                     .map(

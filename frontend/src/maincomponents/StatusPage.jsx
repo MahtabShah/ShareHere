@@ -177,7 +177,7 @@ const ProgressBar = ({ currentUser, currentStatusIndex, progress, blink }) => {
                     ? `${progress}%`
                     : "0",
                 height: "100%",
-                transition: blink ? "" : "width 0.05s linear",
+                transition: blink ? "" : "width 0.02s linear",
               }}
             />
           </div>
@@ -566,7 +566,7 @@ export default function StatusPage() {
       console.error("error throwigngliking status", error);
     }
 
-    if (currentStatus?.likes?.some((u) => u._id === admin_user?._id)) {
+    if (currentStatus?.likes?.some((u) => u._id == admin_user?._id)) {
       // Already liked → unlike (remove user id)
       currentStatus.likes = currentStatus?.likes?.filter(
         (u) => u?._id !== admin_user?._id
@@ -587,7 +587,7 @@ export default function StatusPage() {
         <div
           className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-90 d-flex  justify-content-center align-items-center"
           style={{
-            zIndex: 99999991050,
+            zIndex: 9919050,
             padding: mobile_break_point ? "0px" : "10px",
           }}
         >
@@ -596,7 +596,7 @@ export default function StatusPage() {
             style={{
               maxWidth: "500px",
               backgroundImage: `url(${currentStatus?.image})`,
-              backgroundSize: "300% 400%",
+              backgroundSize: "440% 400%",
               backgroundPosition: "center",
               borderRadius: mobile_break_point ? "0px" : "7px",
             }}

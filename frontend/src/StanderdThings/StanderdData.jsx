@@ -24,6 +24,17 @@ const categories = [
   { key: "sad-quotes", title: "Sad Quotes" },
 ];
 
+const pre_images = [
+  "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+  "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+  "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
+  "https://images.unsplash.com/photo-1529070538774-1843cb3265df",
+  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
+  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+  "https://images.unsplash.com/photo-1501594907352-04cda38ebc29",
+];
+
 const pre_bg_color = [
   "#A294F9",
   "#6b3ac4",
@@ -298,4 +309,5 @@ export {
   textShadow,
   boxShadow,
   objectPosition,
+  pre_images,
 };

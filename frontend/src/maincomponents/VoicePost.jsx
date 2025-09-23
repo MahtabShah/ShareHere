@@ -15,7 +15,7 @@ const VoicePost = () => {
   };
   return (
     <div className="p-2 justify-content-center">
-      {/* <p>
+      <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, illo
         nesciunt libero earum repellendus quisquam sequi repudiandae sunt nisi
         sint repellat, ut, perferendis distinctio fuga eaque. Odio aperiam ea
@@ -31,7 +31,7 @@ const VoicePost = () => {
       <video
         src={"C:/Users/mahta/OneDrive/Pictures/Camera imports/2023-11-03"}
         style={{ width: "200px", height: "200px", border: "1px solid red" }}
-      ></video> */}
+      ></video>
     </div>
   );
 };

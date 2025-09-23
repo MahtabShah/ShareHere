@@ -85,7 +85,7 @@ export const VibeTabs = () => {
 
   const TabStyle = {
     fontSize: "16px",
-    zIndex: 1000,
+    zIndex: 100,
     left: `${mobile_break_point ? "0px" : sm_break_point ? "78px" : "248px"}`,
     right: `0px`,
     cursor: "pointer",

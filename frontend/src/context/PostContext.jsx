@@ -17,7 +17,7 @@ export const PostProvider = ({ children }) => {
   const [post_loading, setPost_loading] = useState(false);
   const [page, setPage] = useState(0);
   const [isData, setIsdata] = useState("");
-  const limit = 10;
+  const limit = 15;
   const [cameSet, setCameSet] = useState(new Set());
 
   // Fetch posts but do NOT change page here
@@ -174,10 +174,11 @@ export function Rank_Calculation(post) {
   const comments = post?.comments?.length || 0;
   const followers = post?.followers?.length || 1;
   const following = post?.following?.length || 1;
+  const views = post?.views?.length / ageInHours || 1;
   // const isFollowed = post?.followers?.includes(u=>u._id == admin_user?._id) || 1;
 
   // Engagement Score
-  const recencyFactor = 30 / ageInHours; // decay over 1 day
+  const recencyFactor = 140 / ageInHours; // decay over 1 day
 
   const engagement = recencyFactor + likes * 8 + comments * 24; // comment > like
 
@@ -187,7 +188,7 @@ export function Rank_Calculation(post) {
   // Recency Bonus: newer posts get higher weight
 
   // Final rank formula (tunable)
-  const rank = engagement * influence + (Math.random() * 1000 + 1);
+  const rank = views + engagement * influence + (Math.random() * 1000 + 1);
 
   // console.log("ageInHours", rank, views);
 

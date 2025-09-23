@@ -275,15 +275,6 @@ export default function LeftNavbar() {
             </ul>
           </div>
         )}
-
-        {activeIndex === "Upload" && (
-          <div
-            className="overflow-y-auto h-100 position-relative none-scroller"
-            style={{ zIndex: 8999922, margin: "auto" }}
-          >
-            <CanvasVibeEditor />
-          </div>
-        )}
       </div>
 
       {activeIndex === "Notifications" && (

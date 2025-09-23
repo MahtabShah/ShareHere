@@ -9,8 +9,8 @@ const Explore = () => {
   const { sm_break_point } = useQuote();
   return (
     <div className="mt-5 pt-4 p-2 d-flex flex-column align-items-center justify-content-center">
-      <VoicePost />
-      {/* <section className="d-">
+      {/* <VoicePost /> */}
+      <section className="d-">
         <div className="text-center mb-4">
           <h2 className="fw-bold">Explore Our Platform</h2>
           <p className="text-muted">
@@ -71,9 +71,9 @@ const Explore = () => {
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
-      {/* <section
+      <section
         className="p-2 position-relative d-none h-100 w-100"
         style={{ maxWidth: "801px" }}
       >
@@ -144,7 +144,7 @@ const Explore = () => {
             </p>
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 };
