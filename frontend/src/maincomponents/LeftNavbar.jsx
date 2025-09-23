@@ -75,9 +75,7 @@ export default function LeftNavbar() {
   return (
     <>
       <div
-        className={`LeftNavbar d-flex h-100 position-fixed top-0 ${
-          activeIndex === "Upload" ? "w-100" : ""
-        }`}
+        className={`LeftNavbar d-flex h-100 position-fixed top-0`}
         style={{ zIndex: 991999, background: bg2 }}
       >
         {!mobile_break_point && (
@@ -161,7 +159,7 @@ export default function LeftNavbar() {
                     activeIndex == "Upload" ? "active" : ""
                   }`}
                   onClick={() => {
-                    // setopenSlidWin(true);
+                    // setopenSlidWin(false);
                     // setActiveIndex("Upload");
                     navigate("/Editor");
                   }}

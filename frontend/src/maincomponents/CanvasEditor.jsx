@@ -368,14 +368,17 @@ const CanvasVibeEditor = () => {
       className="overflow-hidden d-flex w-100 pb-3 "
       style={{
         flexDirection: dir ? "column" : "row",
-        gap: "20px",
+        paddingInline: !dir && "1vw",
+
+        gap: "16px",
       }}
     >
       <div
         className="d-flex h-100"
         style={{
-          maxWidth: "501px",
-          minWidth: `min(501px , calc(100vw - 14px)`,
+          width: dir ? "100%" : `calc(200px + 60vw)`,
+          maxWidth: `501px`,
+
           justifySelf: "center",
           margin: dir && "auto",
         }}
@@ -749,7 +752,7 @@ const CanvasVibeEditor = () => {
                 >
                   <input
                     type="color"
-                    value={activeElement?.color}
+                    value={activeElement?.color || "#ff2222d6"}
                     style={{
                       scale: "2",
                       border: ``,
@@ -758,7 +761,7 @@ const CanvasVibeEditor = () => {
                       e.stopPropagation();
                       handleChange(activeElement?.id, "color", e.target.value);
                     }}
-                    defaultValue={"#ff0000"}
+                    // defaultValue={"#ff0000"}
                     open
                   />
                 </div>
@@ -782,7 +785,7 @@ const CanvasVibeEditor = () => {
                         type="color"
                         className="form-control form-control-color w-100 props-btn border"
                         style={{ scale: 3 }}
-                        value={activeElement?.background}
+                        value={activeElement?.background || "#adc"}
                         onChange={(e) =>
                           activeElement
                             ? handleChange(
@@ -1225,12 +1228,12 @@ const CanvasVibeEditor = () => {
       </div>
 
       <div
-        className="rounded"
+        className="rounded w-100"
         style={{
           background: !dir && bg1,
           marginTop: !dir && `calc(52px + ${styleOpen ? `80px` : "44px"})`,
           maxHeight: "fit-content",
-          maxWidth: dir ? "100%" : "37vw",
+          // maxWidth: dir ? "100%" : "clamp(200px, 80%, 800px)",
         }}
       >
         <Visiblity

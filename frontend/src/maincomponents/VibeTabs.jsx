@@ -9,6 +9,8 @@ import { useQuote } from "../context/QueotrContext";
 import SuggetionSlip from "./NewUserUpdate";
 import { Loading } from "../../TinyComponent/LazyLoading";
 
+import CanvasVibeEditor from "./CanvasEditor";
+
 const PostLoading = () => {
   const { post_loading } = usePost();
   const { text_clrM } = useTheme();
