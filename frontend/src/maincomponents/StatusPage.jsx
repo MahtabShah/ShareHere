@@ -18,9 +18,10 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FaHeart } from "react-icons/fa";
 import { BiHeart } from "react-icons/bi";
 import { useStatus } from "../context/StatusContext";
+import { useNavigate } from "react-router-dom";
 
 const isValidUser = (user) => {
-  return user && Object.keys(user).length > 0 && user;
+  return user && Object.keys(user).length > 0;
 };
 
 const StatusImg = ({ u }) => {
@@ -68,7 +69,7 @@ const StatusList = ({ users, openStatus }) => {
   const { admin_user, setActiveIndex, setopenSlidWin, lgbreakPoint } =
     useQuote();
 
-  const { posts } = usePost();
+  const nevigate = useNavigate();
 
   // console.log("u ", users[0]?.status);
   return (
@@ -94,6 +95,7 @@ const StatusList = ({ users, openStatus }) => {
                   if (admin_user?._id === u?._id && u?.status?.length === 0) {
                     setActiveIndex("Upload");
                     setopenSlidWin("Upload");
+                    nevigate("/Editor");
                   } else openStatus(i, 0);
                 }}
               >
@@ -118,6 +120,7 @@ const StatusList = ({ users, openStatus }) => {
                       e.stopPropagation();
                       setActiveIndex("Upload");
                       setopenSlidWin("Upload");
+                      nevigate("/Editor");
                     }}
                   >
                     <FontAwesomeIcon
@@ -131,23 +134,24 @@ const StatusList = ({ users, openStatus }) => {
               </div>
             ))
           ) : (
-            <a
-              className="text-center d-flex justify-content-center fw-semibold align-items-center rounded-circle position-relative"
-              style={{
-                cursor: "pointer",
-                width: "80px",
-                height: "80px",
-                textDecoration: "none",
-                color: "black",
-                border: "2px solid #d55163ff",
-                background: `linear-gradient(120deg, #fda, #a00419ff)`,
-                transitionDuration: "1s",
-              }}
-              href="/signup"
-            >
-              Add <br />
-              status
-            </a>
+            // <a
+            //   className="text-center d-flex justify-content-center fw-semibold align-items-center rounded-circle position-relative"
+            //   style={{
+            //     cursor: "pointer",
+            //     width: "80px",
+            //     height: "80px",
+            //     textDecoration: "none",
+            //     color: "black",
+            //     border: "2px solid #d55163ff",
+            //     background: `linear-gradient(120deg, #fda, #a00419ff)`,
+            //     transitionDuration: "1s",
+            //   }}
+            //   href="/signup"
+            // >
+            //   Add <br />
+            //   status
+            // </a>
+            <></>
           )}
         </div>
       </div>

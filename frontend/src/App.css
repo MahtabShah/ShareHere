@@ -170,3 +170,7 @@ textarea {
 .theme-icon.fade-out {
   opacity: 0.2;
 }
+
+.footer a {
+  text-decoration: none;
+}

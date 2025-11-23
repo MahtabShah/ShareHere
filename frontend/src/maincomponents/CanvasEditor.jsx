@@ -58,7 +58,7 @@ const CanvasVibeEditor = () => {
   const [elements, setElements] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(441);
+  const [canvasHeight, setCanvasHeight] = useState(454);
   const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
   const [exporting, setExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
@@ -1324,7 +1324,7 @@ const CanvasVibeEditor = () => {
         </div>
 
         <div
-          className="d-flex gap-3 px-2  justify-content-end"
+          className="d-flex gap-3 px-2  mt-3 justify-content-end"
           style={{ paddingBottom: dir ? "40px" : "10px" }}
         >
           <label

@@ -39,17 +39,17 @@ export const ThemeProvider = ({ children }) => {
       setMainBg("#040404b3");
       setBg1("#010105ff");
       setBg2("#0f121bff");
-      setBg3("#a4a2a2ff");
+      setBg3("#393939ff");
       setText_clrH("#eeeeee");
       setText_clrM("#c3c2c2ff");
-      setText_clrL("#9b9b9bff");
+      setText_clrL("#6f6e6eff");
       document.body.style.background = bg2;
       localStorage.setItem("theme", "dark");
     } else {
       setMainBg("#f6fafeff");
       setBg1("#f8fbfeff");
       setBg2("#dbe2e9ff");
-      setBg3("#d1dfe7ff");
+      setBg3("#d5d9dbff");
       setText_clrH("#000911ff");
       setText_clrM("#222222ff");
       setText_clrL("#bbbbbbff");

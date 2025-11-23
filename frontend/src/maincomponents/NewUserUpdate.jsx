@@ -12,9 +12,9 @@ import { Rank_Calculation } from "../context/PostContext";
 const parentStyle = {
   position: "sticky",
   width: "340px",
-  top: "94px",
+  top: "154px",
   height: "90vh",
-  marginTop: "184px",
+  marginTop: "164px",
 };
 
 const SuggetionSlip = () => {
@@ -46,7 +46,7 @@ const SuggetionSlip = () => {
                     </a>
                   </div>
                 </div>
-                <p className="my-3 pb-2 small">Suggest For You</p>
+                <p className="my-3 pb-2 small">Suggested For You</p>
               </>
             ) : (
               posts?.length > 0 && (
@@ -77,37 +77,56 @@ const SuggetionSlip = () => {
             )}
 
             {all_user?.length > 0 && (
-              <div className="d-flex flex-column gap-3 mt-2">
-                <div className="d-flex flex-column gap-2">
-                  {all_user
-                    ?.filter((u) => !u?.followers?.includes(admin_user?._id))
-                    .slice(-4)
-                    .reverse()
-                    .map(
-                      (user) =>
-                        user?._id != admin_user?._id && (
-                          <div
-                            key={user.username}
-                            className="d-flex align-items-center gap-5 pb-3 rounded"
-                          >
-                            <UserRing user={user} style={{}} dm={52} />
-                            <div>
-                              <FollowBtn
-                                id={user?._id}
-                                cls={
-                                  "btn btn-outline-primary text-center rounded-1 p-1 ps-3 pe-3"
-                                }
-                                style={{
-                                  cursor: "pointer",
-                                  width: "104px",
-                                }}
-                              />
+              <>
+                <div className="d-flex flex-column gap-3 mt-2">
+                  <div className="d-flex flex-column gap-2">
+                    {all_user
+                      ?.filter((u) => !u?.followers?.includes(admin_user?._id))
+                      .slice(-4)
+                      .reverse()
+                      .map(
+                        (user) =>
+                          user?._id != admin_user?._id && (
+                            <div
+                              key={user.username}
+                              className="d-flex align-items-center gap-5 pb-3 rounded"
+                            >
+                              <UserRing user={user} style={{}} dm={52} />
+                              <div>
+                                <FollowBtn
+                                  id={user?._id}
+                                  cls={
+                                    "btn btn-outline-primary text-center rounded-1 p-1 ps-3 pe-3"
+                                  }
+                                  style={{
+                                    cursor: "pointer",
+                                    width: "104px",
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        )
-                    )}
+                          )
+                      )}
+                  </div>
                 </div>
-              </div>
+
+                <small
+                  className="text-center footer mt-4 d-flex gap-2 flex-column justify-content-center align-items-center"
+                  style={{ color: text_clrM }}
+                >
+                  <div className="d-flex gap-2">
+                    <a href="#">Info</a>
+                    <a href="#">help</a>
+                    <a href="#">privacy</a>
+                    <a href="#">terms</a>
+                  </div>
+                  <a href="#"> write a review</a>
+                  <div className="d-flex gap-2">
+                    <a href="#">locations</a>
+                    <a href="#">languages</a> &amp; more @ 2025 ShareHere
+                  </div>
+                </small>
+              </>
             )}
           </div>
         )}

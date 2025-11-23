@@ -85,7 +85,7 @@ export default function LeftNavbar() {
               height: "100vh",
               maxWidth: "244px",
               background: bg1,
-              borderRight: `1px solid ${text_clrL}`,
+              // borderRight: `1px solid ${text_clrL}`,
             }}
           >
             <ul className="nav nav-pills flex-column gap-3 mb-auto">
@@ -134,6 +134,7 @@ export default function LeftNavbar() {
                   onClick={() => {
                     setActiveIndex("Home");
                     setopenSlidWin(false);
+                    nevigate("/home");
                   }}
                 >
                   <div
