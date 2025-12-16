@@ -48,10 +48,9 @@ const RoutesArr = [
     ),
   },
   {
-    path: "*/",
+    path: "/*",
     element: (
       <>
-        <BottomNav />
         <VibeTabs />
       </>
     ),
