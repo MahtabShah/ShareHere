@@ -10,10 +10,10 @@ export const ThemeProvider = ({ children }) => {
   const [themeType, setThemeType] = useState(theme);
 
   const [mainbg, setMainBg] = useState(
-    themeType === "dark" ? "#040404b3" : "#f6fafeff"
+    themeType === "dark" ? "#0b0f1dff" : "#f6fafeff"
   );
   const [bg1, setBg1] = useState(
-    themeType === "dark" ? "#000000ff" : "#f5f9feff"
+    themeType === "dark" ? "#0b0f1dff" : "#f5f9feff"
   );
   const [bg2, setBg2] = useState(
     themeType === "dark" ? "#0f121bff" : "#e9edf1ff"
@@ -36,10 +36,10 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     if (themeType === "dark") {
-      setMainBg("#040404b3");
-      setBg1("#010105ff");
-      setBg2("#0f121bff");
-      setBg3("#393939ff");
+      setBg1("#10121aff");
+      setMainBg("#0a0a0cff");
+      setBg2("#05070cff");
+      setBg3("#171721ff");
       setText_clrH("#eeeeee");
       setText_clrM("#c3c2c2ff");
       setText_clrL("#6f6e6eff");
@@ -47,7 +47,7 @@ export const ThemeProvider = ({ children }) => {
       localStorage.setItem("theme", "dark");
     } else {
       setMainBg("#f6fafeff");
-      setBg1("#f8fbfeff");
+      setBg1("#f1f5f8ff");
       setBg2("#dbe2e9ff");
       setBg3("#d5d9dbff");
       setText_clrH("#000911ff");

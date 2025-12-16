@@ -88,8 +88,18 @@ function All_Post_Section({ category, loading }) {
   //   };
   // }, [socket]);
 
-  return (
-    !loading &&
+  return loading ? (
+    <>
+      <div
+        className="p-4 fw-bold rounded bg-danger text-light"
+        style={{ border: "3px solid #f00" }}
+      >
+        ⚠️ Kindly Note <br />
+        The site may take a few minutes to load, as free hosting services
+        occasionally pause inactive applications.
+      </div>
+    </>
+  ) : (
     visible_post.map(
       ({ post, user }, idx) =>
         user &&
