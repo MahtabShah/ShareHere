@@ -91,8 +91,8 @@ function All_Post_Section({ category, loading }) {
   return loading ? (
     <>
       <div
-        className="p-4 fw-bold rounded bg-danger text-light"
-        style={{ border: "3px solid #f00" }}
+        className="p-4 mx-2 fw-bold rounded bg-nfo text-primary"
+        style={{ border: "3px solid #00bfffaa", background: "#00bfff17" }}
       >
         ⚠️ Kindly Note <br />
         The site may take a few minutes to load, as free hosting services

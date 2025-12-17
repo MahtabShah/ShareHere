@@ -36,10 +36,10 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     if (themeType === "dark") {
-      setBg1("#10121aff");
-      setMainBg("#0a0a0cff");
+      setBg1("#14161eff");
+      setMainBg("#0e0e1105");
       setBg2("#05070cff");
-      setBg3("#171721ff");
+      setBg3("#39394cff");
       setText_clrH("#eeeeee");
       setText_clrM("#c3c2c2ff");
       setText_clrL("#6f6e6eff");

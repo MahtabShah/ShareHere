@@ -89,7 +89,7 @@ export default function LeftNavbar() {
             }}
           >
             <ul className="nav nav-pills flex-column gap-3 mb-auto">
-              <li className="nav-item   pt-1">
+              <li className="nav-item  me-1 pt-1">
                 <a
                   href="/home"
                   className={`nav-link d-flex align-items-center gap-3 fs-6`}
@@ -125,7 +125,7 @@ export default function LeftNavbar() {
                 </a>
               </li>
 
-              <li className="nav-item">
+              <li className="nav-item me-1">
                 <Nav.Link
                   href={`${openSlidWin ? "" : "/home"}`}
                   className={`nav-link d-flex align-items-center gap-3 fs-6  ${
@@ -154,7 +154,7 @@ export default function LeftNavbar() {
                 </Nav.Link>
               </li>
 
-              <li className="nav-item ">
+              <li className="nav-item me-1">
                 <Nav.Link
                   className={`nav-link d-flex align-items-center gap-3 fs-6 ${
                     activeIndex == "Upload" ? "active" : ""
@@ -182,7 +182,7 @@ export default function LeftNavbar() {
                 </Nav.Link>
               </li>
 
-              <li className="nav-item">
+              <li className="nav-item me-1">
                 <div
                   className={`d-flex p-0 nav-link align-items-center ${
                     activeIndex == "Notifications" ? "active" : "br"
@@ -257,12 +257,13 @@ export default function LeftNavbar() {
                         className="d-flex align-items-center justify-content-center gap-3"
                         style={{ width: "24px", height: "24px" }}
                       >
-                        <FontAwesomeIcon icon={faUser} />
+                        <FontAwesomeIcon color={text_clrM} icon={faUser} />
                       </div>
                       <span
                         className={`fw-semibold pe-5 small ${
                           sm_break_point ? "d-none" : ""
                         }`}
+                        style={{ minWidth: "max-content", color: text_clrM }}
                       >
                         {" "}
                         Create an Account
