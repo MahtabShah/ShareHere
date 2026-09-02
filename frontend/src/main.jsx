@@ -22,6 +22,8 @@ import EditPost from "./maincomponents/EditPost.jsx";
 import { StatusProvider } from "./context/StatusContext.jsx";
 import CanvasVibeEditor from "./maincomponents/CanvasEditor.jsx";
 
+import EditorZ from "./editor/components/editor.jsx";
+
 const RoutesArr = [
   {
     path: "/Explore",
@@ -99,6 +101,7 @@ const RoutesArr = [
   {
     path: "/Editor",
     element: <CanvasVibeEditor />,
+    // element: <EditorZ />,
   },
 ];
 
@@ -118,7 +121,6 @@ const Main = () => {
 
   const mainStyle = {
     marginLeft: `${mb ? "0px" : sm ? "74px" : "244px"}`,
-    // overflow: "auto",
   };
 
   return (

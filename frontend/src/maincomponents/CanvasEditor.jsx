@@ -122,7 +122,7 @@ const CanvasVibeEditor = () => {
 
   const handleChange = (id, key, value) => {
     setElements((prev) =>
-      prev.map((el) => (el.id === id ? { ...el, [key]: value } : el))
+      prev.map((el) => (el.id === id ? { ...el, [key]: value } : el)),
     );
 
     setActiveElement((prev) => ({
@@ -197,7 +197,7 @@ const CanvasVibeEditor = () => {
 
     const res = await axios.post(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      formData
+      formData,
     );
 
     console.log("Uploaded URL:", res.data.secure_url);
@@ -249,7 +249,7 @@ const CanvasVibeEditor = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setUploadClicked(false);
         alert("Uploaded Successfully");
@@ -259,7 +259,7 @@ const CanvasVibeEditor = () => {
     } catch (err) {
       alert(
         "Failed to post, Connection Error or internal issue: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
       );
       // setErrors(err.response?.data?.message || err.message);
       console.error("Error saving sentence", err);
@@ -267,7 +267,8 @@ const CanvasVibeEditor = () => {
     setLazyLoading(false);
   };
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg3, bg2 } = useTheme();
+  const { TxtHighColor, text_clrL, text_clrM, mainbg, bg1, bg3, bg2 } =
+    useTheme();
 
   const [styleOpen, setStyleOpen] = useState(false);
 
@@ -286,7 +287,7 @@ const CanvasVibeEditor = () => {
   const handleMouseMove = (e) => {
     if (isResizing.current) {
       setCanvasHeight(
-        e.clientY - canvasRef.current.getBoundingClientRect().top
+        e.clientY - canvasRef.current.getBoundingClientRect().top,
       );
     }
   };
@@ -295,7 +296,7 @@ const CanvasVibeEditor = () => {
     if (isResizing.current) {
       e.preventDefault(); // prevent scrolling while resizing
       setCanvasHeight(
-        e.touches[0].clientY - canvasRef.current.getBoundingClientRect().top
+        e.touches[0].clientY - canvasRef.current.getBoundingClientRect().top,
       );
     }
   };
@@ -342,7 +343,7 @@ const CanvasVibeEditor = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       console.log("Created status:", res.data);
       alert("Status created!");
@@ -369,27 +370,23 @@ const CanvasVibeEditor = () => {
       style={{
         flexDirection: dir ? "column" : "row",
         paddingInline: !dir && "1vw",
-
         gap: "16px",
-      }}
-    >
+      }}>
       <div
         className="d-flex h-100"
         style={{
           width: dir ? "100%" : `calc(200px + 60vw)`,
           maxWidth: `501px`,
-
           justifySelf: "center",
           margin: dir && "auto",
-        }}
-      >
+        }}>
         <div className="card border-0">
           <div
             className={`position-fixed toolbar-pr p-2`}
             style={{
               zIndex: 1001,
               background: bg1,
-              color: text_clrH,
+              color: TxtHighColor,
               boxShadow: `0 1px 1px ${text_clrL}`,
               right: "0",
               left: `${
@@ -397,8 +394,7 @@ const CanvasVibeEditor = () => {
               }`,
 
               right: 0,
-            }}
-          >
+            }}>
             <div className="d-flex gap-2 overflow-x-auto">
               <div
                 className=" toolbar-button props-btn border-danger d-inline-flex p-1 rounded-1 bg-danger text-light"
@@ -413,21 +409,18 @@ const CanvasVibeEditor = () => {
                     setActiveIndex(null);
                     navigate("/home");
                   }
-                }}
-              >
+                }}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 448 512"
-                  fill={"white"}
-                >
+                  fill={"white"}>
                   <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                 </svg>
               </div>
 
               <summary
                 className="d-flex gap-2 h-100"
-                style={{ color: "#ededed" }}
-              >
+                style={{ color: "#ededed" }}>
                 <div
                   className="toolbar-button props-btn "
                   style={{
@@ -436,8 +429,7 @@ const CanvasVibeEditor = () => {
                   }}
                   onClick={() => {
                     setStyleOpen(!styleOpen);
-                  }}
-                >
+                  }}>
                   &nbsp; {!styleOpen ? "open " : "close "} &nbsp;
                 </div>
               </summary>
@@ -452,11 +444,10 @@ const CanvasVibeEditor = () => {
                     handleChange(
                       activeElement?.id,
                       "fontWeight",
-                      activeElement?.fontWeight === "bold" ? "normal" : "bold"
+                      activeElement?.fontWeight === "bold" ? "normal" : "bold",
                     )
                   }
-                  disabled={!activeElement}
-                >
+                  disabled={!activeElement}>
                   <FontAwesomeIcon
                     icon={faBold}
                     fontSize={12}
@@ -475,11 +466,10 @@ const CanvasVibeEditor = () => {
                       "fontStyle",
                       activeElement?.fontStyle === "italic"
                         ? "normal"
-                        : "italic"
+                        : "italic",
                     )
                   }
-                  disabled={!activeElement}
-                >
+                  disabled={!activeElement}>
                   <FontAwesomeIcon
                     icon={faItalic}
                     fontSize={12}
@@ -500,11 +490,10 @@ const CanvasVibeEditor = () => {
                       "textDecoration",
                       activeElement?.textDecoration === "underline"
                         ? "none"
-                        : "underline"
+                        : "underline",
                     )
                   }
-                  disabled={!activeElement}
-                >
+                  disabled={!activeElement}>
                   <FontAwesomeIcon
                     icon={faUnderline}
                     fontSize={12}
@@ -520,8 +509,7 @@ const CanvasVibeEditor = () => {
                     handleChange(activeElement?.id, "textAlign", "left")
                   }
                   disabled={!activeElement}
-                  style={{ minWidth: "34px" }}
-                >
+                  style={{ minWidth: "34px" }}>
                   <FontAwesomeIcon
                     icon={faAlignLeft}
                     fontSize={12}
@@ -537,8 +525,7 @@ const CanvasVibeEditor = () => {
                     handleChange(activeElement?.id, "textAlign", "center")
                   }
                   disabled={!activeElement}
-                  style={{ minWidth: "34px" }}
-                >
+                  style={{ minWidth: "34px" }}>
                   <FontAwesomeIcon
                     icon={faAlignCenter}
                     fontSize={12}
@@ -554,8 +541,7 @@ const CanvasVibeEditor = () => {
                   onClick={() =>
                     handleChange(activeElement?.id, "textAlign", "right")
                   }
-                  disabled={!activeElement}
-                >
+                  disabled={!activeElement}>
                   <FontAwesomeIcon
                     icon={faAlignRight}
                     fontSize={12}
@@ -568,8 +554,7 @@ const CanvasVibeEditor = () => {
                   style={{ minWidth: "max-content" }}
                   onClick={() => {
                     setStyleOpen(true);
-                  }}
-                >
+                  }}>
                   <div
                     className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
                     onClick={() => {
@@ -582,8 +567,7 @@ const CanvasVibeEditor = () => {
                         active_style === fontFamily ? "#6b0ad2" : ""
                       }`,
                       color: `${active_style === fontFamily ? "#fff" : ""}`,
-                    }}
-                  >
+                    }}>
                     <FaFont />
                   </div>
 
@@ -599,8 +583,7 @@ const CanvasVibeEditor = () => {
                         active_style === fontSize ? "#6b0ad2" : ""
                       }`,
                       color: `${active_style === fontSize ? "#fff" : ""}`,
-                    }}
-                  >
+                    }}>
                     <FaTextHeight title="Increase Font Size" />
                   </div>
 
@@ -616,8 +599,7 @@ const CanvasVibeEditor = () => {
                         active_style === textShadow ? "#6b0ad2" : ""
                       }`,
                       color: `${active_style === textShadow ? "#fff" : ""}`,
-                    }}
-                  >
+                    }}>
                     <FaMagic title="FaShadow" />
                   </div>
 
@@ -633,8 +615,7 @@ const CanvasVibeEditor = () => {
                         active_style === textDecoration ? "#6b0ad2" : ""
                       }`,
                       color: `${active_style === textDecoration ? "#fff" : ""}`,
-                    }}
-                  >
+                    }}>
                     <FaStrikethrough title="Strikethrough" />
                   </div>
 
@@ -648,8 +629,7 @@ const CanvasVibeEditor = () => {
                       cursor: "pointer",
                       background: `${active_style === color ? "#6b0ad2" : ""}`,
                       color: `${active_style === color ? "#fff" : ""}`,
-                    }}
-                  >
+                    }}>
                     <FontAwesomeIcon icon={faPalette} title="Color" />
                   </div>
 
@@ -665,8 +645,7 @@ const CanvasVibeEditor = () => {
                         active_style === letterSpacing ? "#6b0ad2" : ""
                       }`,
                       color: `${active_style === letterSpacing ? "#fff" : ""}`,
-                    }}
-                  >
+                    }}>
                     Spacing
                   </div>
 
@@ -682,8 +661,7 @@ const CanvasVibeEditor = () => {
                         active_style === boxShadow ? "#6b0ad2" : ""
                       }`,
                       color: `${active_style === boxShadow ? "#fff" : ""}`,
-                    }}
-                  >
+                    }}>
                     box Shadow
                   </div>
                 </div>
@@ -697,15 +675,13 @@ const CanvasVibeEditor = () => {
                   style={{
                     cursor: "pointer",
                     minWidth: "max-content",
-                  }}
-                >
+                  }}>
                   Canvas{" "}
                   <div
                     style={{
                       bottom: "-10px",
                       right: "1px",
-                    }}
-                  >
+                    }}>
                     <FaArrowsAltH
                       style={{
                         color: text_clrL,
@@ -726,8 +702,7 @@ const CanvasVibeEditor = () => {
                     style={{
                       cursor: "pointer",
                       minWidth: "max-content",
-                    }}
-                  >
+                    }}>
                     Imagexy
                   </div>
                 )}
@@ -741,15 +716,13 @@ const CanvasVibeEditor = () => {
                   style={{
                     cursor: "pointer",
                     minWidth: "max-content",
-                  }}
-                >
+                  }}>
                   Round
                 </div>
 
                 <div
                   className="btn overflow-hidden p-0 props-btn toolbar-button"
-                  style={{ border: `` }}
-                >
+                  style={{ border: `` }}>
                   <input
                     type="color"
                     value={activeElement?.color || "#ff2222d6"}
@@ -771,12 +744,10 @@ const CanvasVibeEditor = () => {
                   style={{
                     border: `1px solid ${"#ededed"}`,
                     minWidth: "120px",
-                  }}
-                >
+                  }}>
                   <div
                     className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
-                    style={{ translate: "6px" }}
-                  >
+                    style={{ translate: "6px" }}>
                     <small className="flex-grow-1" style={{ color: "#ededed" }}>
                       Background
                     </small>
@@ -791,7 +762,7 @@ const CanvasVibeEditor = () => {
                             ? handleChange(
                                 activeId,
                                 "background",
-                                e.target.value
+                                e.target.value,
                               )
                             : setCanvasBgColor(e.target.value)
                         }
@@ -811,8 +782,7 @@ const CanvasVibeEditor = () => {
                     activeElement
                       ? handleChange(activeId, "background", "00000000")
                       : "";
-                  }}
-                >
+                  }}>
                   &nbsp;Reset BG&nbsp;
                 </button>
               </div>
@@ -833,8 +803,7 @@ const CanvasVibeEditor = () => {
                     }}
                     onClick={() => {
                       handleChange(activeId, style_type, op);
-                    }}
-                  >
+                    }}>
                     <span
                       className="btn border-0 p-2"
                       style={{
@@ -844,8 +813,7 @@ const CanvasVibeEditor = () => {
                             ? ""
                             : op
                         }`,
-                      }}
-                    >
+                      }}>
                       {style_type == "textShadow" || style_type == "boxShadow"
                         ? "A"
                         : op}
@@ -862,12 +830,10 @@ const CanvasVibeEditor = () => {
                     className="d-flex flex-row-reverse props-parent flex-wrap gap-2 overflow-x-auto"
                     style={{
                       height: "max-content",
-                    }}
-                  >
+                    }}>
                     <button
                       className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
-                      onClick={addTextBox}
-                    >
+                      onClick={addTextBox}>
                       <div className="props-btn rounded-0">
                         Add Text &nbsp;
                         <FontAwesomeIcon icon={faTextHeight} className="me-2" />
@@ -885,8 +851,7 @@ const CanvasVibeEditor = () => {
                     style={{
                       minWidth: "max-content",
                     }}
-                    disabled={!activeElement}
-                  >
+                    disabled={!activeElement}>
                     <FontAwesomeIcon icon={faMinus} />
                   </button>
 
@@ -897,8 +862,7 @@ const CanvasVibeEditor = () => {
                         deleteElement(activeElement?.id);
                       }
                     }}
-                    disabled={!activeElement}
-                  >
+                    disabled={!activeElement}>
                     <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </>
@@ -906,8 +870,7 @@ const CanvasVibeEditor = () => {
 
               <div
                 className="d-flex gap-2 w-100 none-scroller overflow-x-auto overflow-y-hidden"
-                style={{ maxHeight: "40px" }}
-              >
+                style={{ maxHeight: "40px" }}>
                 {pre_bg_color.map((c, idx) => {
                   return (
                     <span
@@ -937,8 +900,7 @@ const CanvasVibeEditor = () => {
               <>
                 <div
                   className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bg1, color: text_clrH }}
-                >
+                  style={{ background: bg1, color: TxtHighColor }}>
                   <div className="d-flex flex-grow-1 w-100 flex-column">
                     <label className="w-100 d-flex gap-2 flex-grow-1 ">
                       X
@@ -976,8 +938,7 @@ const CanvasVibeEditor = () => {
                       onClick={() => {
                         setHidePage("");
                         setStyleOpen(false);
-                      }}
-                    >
+                      }}>
                       Close
                     </div>
 
@@ -987,8 +948,7 @@ const CanvasVibeEditor = () => {
                         setRange1(0);
 
                         setRange2(0);
-                      }}
-                    >
+                      }}>
                       Reset
                     </div>
                   </div>
@@ -1000,8 +960,7 @@ const CanvasVibeEditor = () => {
               <>
                 <div
                   className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bg1 }}
-                >
+                  style={{ background: bg1 }}>
                   <div className="d-flex flex-grow-1 w-100 flex-column">
                     <label className="w-100 d-flex flex-column gap-2 flex-grow-1 ">
                       <span className="mb-1 fw-semibold">Round the border</span>
@@ -1016,7 +975,7 @@ const CanvasVibeEditor = () => {
                           handleChange(
                             activeElement?.id,
                             "borderRadius",
-                            e.target.value
+                            e.target.value,
                           );
                         }}
                       />
@@ -1029,8 +988,7 @@ const CanvasVibeEditor = () => {
                       onClick={() => {
                         setHidePage("");
                         setStyleOpen(false);
-                      }}
-                    >
+                      }}>
                       Close
                     </div>
 
@@ -1038,8 +996,7 @@ const CanvasVibeEditor = () => {
                       className="btn btn-dark rounded-1 px-2 py-0 text-end"
                       onClick={() => {
                         handleChange(activeElement?.id, "borderRadius", 0);
-                      }}
-                    >
+                      }}>
                       Reset
                     </div>
                   </div>
@@ -1051,8 +1008,7 @@ const CanvasVibeEditor = () => {
               <>
                 <div
                   className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bg1 }}
-                >
+                  style={{ background: bg1 }}>
                   <div className="d-flex flex-grow-1 w-100 flex-column">
                     <label className="w-100 d-flex flex-column gap-2 flex-grow-1 ">
                       <span className="mb-1 gap-2 d-inline-flex fw-semibold">
@@ -1093,8 +1049,7 @@ const CanvasVibeEditor = () => {
                       onClick={() => {
                         setHidePage("");
                         setStyleOpen(false);
-                      }}
-                    >
+                      }}>
                       Close
                     </div>
 
@@ -1102,8 +1057,7 @@ const CanvasVibeEditor = () => {
                       className="btn btn-dark rounded-1 px-2 py-0 text-end"
                       onClick={() => {
                         setCanvasHeight(400);
-                      }}
-                    >
+                      }}>
                       Reset
                     </div>
                   </div>
@@ -1118,8 +1072,7 @@ const CanvasVibeEditor = () => {
           style={{
             marginTop: `calc(52px + ${styleOpen ? `80px` : "44px"})`,
             width: "100%",
-          }}
-        >
+          }}>
           <UploadButton
             onSelect={(url) => setImageUrl(url)}
             url={imageUrl}
@@ -1140,8 +1093,7 @@ const CanvasVibeEditor = () => {
               backgroundSize: "101%",
               backgroundRepeat: "no-repeat",
               backgroundPosition: `${range1 || 0}px ${range2 || 0}px`,
-            }}
-          >
+            }}>
             {elements.map((el, idx) => (
               <div
                 key={`${el.id}-${idx}`}
@@ -1153,8 +1105,7 @@ const CanvasVibeEditor = () => {
                       ? "2px dashed #13da2aff"
                       : "2px solid transparent",
                 }}
-                spellCheck={false}
-              >
+                spellCheck={false}>
                 <div
                   className="text-element h-100 w-100 overflow-hidden outline-none w-100 h-100 none-scroller p-2"
                   style={{
@@ -1186,8 +1137,7 @@ const CanvasVibeEditor = () => {
                     setActiveElement(el);
                   }}
                   contentEditable={activeId === el.id}
-                  suppressContentEditableWarning={true}
-                >
+                  suppressContentEditableWarning={true}>
                   {el.content}
                 </div>
               </div>
@@ -1214,8 +1164,7 @@ const CanvasVibeEditor = () => {
               right: "10px",
               zIndex: 100,
               cursor: "ns-resize",
-            }}
-          >
+            }}>
             <FaArrowsAltH
               style={{
                 color: "red",
@@ -1234,13 +1183,12 @@ const CanvasVibeEditor = () => {
           marginTop: !dir && `calc(52px + ${styleOpen ? `80px` : "44px"})`,
           maxHeight: "fit-content",
           // maxWidth: dir ? "100%" : "clamp(200px, 80%, 800px)",
-        }}
-      >
+        }}>
         <Visiblity
           visible={visible}
           setVisible={setVisible}
           clr={bg1}
-          bg={text_clrH}
+          bg={TxtHighColor}
         />
 
         <div className="px-2">
@@ -1251,13 +1199,12 @@ const CanvasVibeEditor = () => {
                 width: "40px",
                 height: "40px",
                 backgroundColor: `${admin_user?.bg_clr}`,
-                color: text_clrH,
-              }}
-            >
+                color: TxtHighColor,
+              }}>
               {admin_user?.username?.charAt(0) || "M"}
             </div>
             <div>
-              <div style={{ fontWeight: "bold", color: text_clrH }}>
+              <div style={{ fontWeight: "bold", color: TxtHighColor }}>
                 @{admin_user?.username || "Mahtab"}
               </div>
               <small style={{ color: text_clrM }}>Visibility: {visible}</small>
@@ -1273,7 +1220,7 @@ const CanvasVibeEditor = () => {
               placeholder="Write about post here . . ."
               style={{
                 background: !dir ? bg1 : bg2,
-                color: text_clrH,
+                color: TxtHighColor,
                 minHeight: `${(text.split("\n").length + 4) * 27}px`,
                 border: `${error ? "1px solid red" : `1px solid ${text_clrL}`}`,
               }}
@@ -1282,7 +1229,7 @@ const CanvasVibeEditor = () => {
           </div>
         </div>
 
-        <div className="p-2 small" style={{ color: text_clrH }}>
+        <div className="p-2 small" style={{ color: TxtHighColor }}>
           Set Tag for the post :{" "}
         </div>
         <div className="vibeTabs px-2">
@@ -1295,23 +1242,22 @@ const CanvasVibeEditor = () => {
             style={{
               "--bg1": bg1,
               "--bg2": bg2,
-              "--tc1": text_clrH,
+              "--tc1": TxtHighColor,
               "--tc2": text_clrM,
               maxWidth: !dir
                 ? `calc(100vw - 541px - ${
                     mobile_break_point
                       ? "0px"
                       : sm_break_point
-                      ? "74px"
-                      : "244px"
+                        ? "74px"
+                        : "244px"
                   })`
                 : "100%",
 
               // maxWidth: "400px",
 
               // gridTemplateColumns: "repeat(auto-fit , minmax(100px, 1fr))",
-            }}
-          >
+            }}>
             {categories.map(({ key, title }) => (
               <Tab
                 eventKey={key}
@@ -1325,8 +1271,7 @@ const CanvasVibeEditor = () => {
 
         <div
           className="d-flex gap-3 px-2  mt-3 justify-content-end"
-          style={{ paddingBottom: dir ? "40px" : "10px" }}
-        >
+          style={{ paddingBottom: dir ? "40px" : "10px" }}>
           <label
             htmlFor="images"
             className="btn  ps-3 pe-3 rounded-0 p-2"
@@ -1335,18 +1280,16 @@ const CanvasVibeEditor = () => {
               border: `1px solid ${"#959595ff"}`,
               color: text_clrM,
             }}
-            onClick={HandleStatus}
-          >
+            onClick={HandleStatus}>
             {statusLoading ? <Loading clr={"red"} /> : "Set as Status"}
           </label>
 
           <button
             type={LazyLoading ? "button" : "submit"}
             className="btn btn-danger flex-grow-1 rounded-0"
-            style={{ height: "42px" }}
+            style={{ height: "42px", color: text_clrM }}
             disabled={LazyLoading}
-            onClick={handleSubmit}
-          >
+            onClick={handleSubmit}>
             {LazyLoading ? <Loading clr={"white"} /> : "Post"}
           </button>
         </div>
@@ -1380,16 +1323,14 @@ export function UploadButton({ onSelect, url, setHidePage }) {
           width: "32px",
           cursor: "pointer",
           background: "hsla(177, 37%, 67%, 0.76)",
-        }}
-      >
+        }}>
         {url ? (
           <div
             onClick={() => {
               if (window.confirm("Are you sure to remove the image ?")) {
                 onSelect(null);
               }
-            }}
-          >
+            }}>
             <FontAwesomeIcon icon={faTrash} color="white" />
           </div>
         ) : (
@@ -1440,8 +1381,7 @@ export function Visiblity({ visible, setVisible, clr, bg }) {
                 background: isActive && bg,
                 cursor: option.disabled ? "not-allowed" : "pointer",
                 opacity: option.disabled ? 0.6 : 1,
-              }}
-            >
+              }}>
               <small>{option.label}</small>
             </button>
           );
@@ -1451,443 +1391,5 @@ export function Visiblity({ visible, setVisible, clr, bg }) {
   );
 }
 
-// export const CanvasVibeEditor = () => {
-//   const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg3, bg2 } = useTheme();
-
-//   const parentStyle = {
-//     backgroundColor: mainbg,
-//     borderRadius: "8px",
-//   };
-
-//   // Expanded toolbar options like MS Word
-//   const toolbarOptions = [
-//     // File operations[]
-//     [
-//       // {
-//       //   icon: faFile,
-//       //   op: "new",
-//       //   title: "New Document",
-//       //   group: "file",
-//       //   line: 1,
-//       // },
-//       // { icon: faFolderOpen, op: "open", title: "Open", group: "file", line: 1 },
-//       // { icon: faSave, op: "save", title: "Save", group: "file", line: 1 },
-
-//       // Undo/Redo
-//       { icon: faUndo, op: "undo", title: "Undo", group: "edit", line: 1 },
-//       { icon: faRedo, op: "redo", title: "Redo", group: "edit", line: 1 },
-
-//       { type: "color", op: "foreColor", title: "Text Color", group: "color" },
-//       {
-//         type: "color",
-//         op: "backColor",
-//         title: "Background Color",
-//         group: "color",
-//         line: 2,
-//       },
-//       // Font family and size
-//       {
-//         type: "select",
-//         op: "fontFamily",
-//         title: "Font Family",
-//         options: ["Arial", "Times New Roman", "Calibri", "Georgia", "Verdana"],
-//         group: "font",
-//         line: 1,
-//       },
-
-//       {
-//         type: "select",
-//         op: "fontSize",
-//         title: "Font Size",
-//         options: ["8", "10", "12", "14", "16", "18", "24", "36"],
-//         group: "font",
-//         line: 1,
-//       },
-//     ],
-
-//     // Text formatting
-//     [
-//       // Colors
-
-//       {
-//         icon: faBold,
-//         op: "bold",
-//         style_type: "fontWeight",
-//         title: "Bold",
-//         group: "format",
-//         line: 2,
-//       },
-//       {
-//         icon: faItalic,
-//         op: "italic",
-//         style_type: "fontStyle",
-//         title: "Italic",
-//         group: "format",
-//         line: 2,
-//       },
-//       {
-//         icon: faUnderline,
-//         op: "underline",
-//         style_type: "textDecoration",
-//         title: "Underline",
-//         group: "format",
-//         line: 2,
-//       },
-//       {
-//         icon: faStrikethrough,
-//         op: "strikethrough",
-//         style_type: "textDecoration",
-//         title: "Strikethrough",
-//         group: "format",
-//         line: 2,
-//       },
-
-//       // Alignment
-//       {
-//         icon: faAlignLeft,
-//         op: "justifyLeft",
-//         style_type: "textAlign",
-//         title: "Align Left",
-//         group: "paragraph",
-//         line: 2,
-//       },
-//       {
-//         icon: faAlignCenter,
-//         op: "justifyCenter",
-//         style_type: "textAlign",
-//         title: "Center",
-//         group: "paragraph",
-//         line: 2,
-//       },
-//       {
-//         icon: faAlignRight,
-//         op: "justifyRight",
-//         style_type: "textAlign",
-//         title: "Align Right",
-//         group: "paragraph",
-//         line: 2,
-//       },
-//       {
-//         icon: faAlignJustify,
-//         op: "justifyFull",
-//         style_type: "textAlign",
-//         title: "Justify",
-//         group: "paragraph",
-//         line: 2,
-//       },
-
-//       // Lists
-//       {
-//         icon: faListUl,
-//         op: "insertUnorderedList",
-//         title: "Bullet List",
-//         group: "paragraph",
-//         line: 2,
-//       },
-//       {
-//         icon: faListOl,
-//         op: "insertOrderedList",
-//         title: "Numbered List",
-//         group: "paragraph",
-//         line: 2,
-//       },
-
-//       // Indentation
-//       {
-//         icon: faIndent,
-//         op: "indent",
-//         title: "Increase Indent",
-//         group: "paragraph",
-//         line: 2,
-//       },
-//       {
-//         icon: faOutdent,
-//         op: "outdent",
-//         title: "Decrease Indent",
-//         group: "paragraph",
-//         line: 2,
-//       },
-//     ],
-//   ];
-
-//   const headerStyle = {
-//     backgroundColor: bg1,
-//     // border: `1px solid red`,
-//     borderBottom: `1px solid ${bg3}`,
-//     padding: "8px 12px",
-//     gap: "8px",
-//     width: "100%",
-//     alignItems: "center",
-//     position: "fixed",
-//     zIndex: 9990,
-//     // display: "flex",
-//     // flexWrap: "wrap",
-
-//     // overflow: "auto",
-//   };
-
-//   const editorStyle = {
-//     minHeight: "500px",
-//     height: "70vh",
-//     backgroundColor: mainbg,
-//     caretColor: text_clrH,
-//     outline: "none",
-//     border: "none",
-//     color: text_clrH,
-//     padding: "16px",
-//     lineHeight: "1.6",
-//     fontSize: "14px",
-//     fontFamily: "Calibri, Arial, sans-serif",
-//     marginInline: "16px",
-//   };
-
-//   const groupStyle = {
-//     display: "flex",
-//     alignItems: "center",
-//     gap: "2px",
-//     padding: "3px 6px",
-//     borderRadius: "4px",
-//     backgroundColor: bg2,
-//     marginRight: "7px",
-//   };
-
-//   const separatorStyle = {
-//     width: "1px",
-//     height: "24px",
-//     backgroundColor: bg3,
-//     margin: "0 8px",
-//   };
-
-//   const buttonStyle = {
-//     border: "none",
-//     backgroundColor: "transparent",
-//     color: text_clrM,
-//     padding: "5px 7px",
-//     borderRadius: "3px",
-//     cursor: "pointer",
-//     minWidth: "32px",
-//     fontSize: "12px",
-//   };
-
-//   const selectStyle = {
-//     backgroundColor: bg2,
-//     border: `1px solid ${bg3}`,
-//     color: text_clrM,
-//     borderRadius: "3px",
-//     padding: "4px 8px",
-//     fontSize: "12px",
-//     outline: "none",
-//   };
-
-//   const onRef = useRef(null);
-//   const [activeFormats, setActiveFormats] = useState({});
-//   const [wordCount, setWordCount] = useState(0);
-//   const [pageView, setPageView] = useState(true);
-
-//   // Group toolbar items by their group
-//   const groupedToolbar1 = toolbarOptions[0].reduce((groups, item) => {
-//     if (!groups[item.group]) {
-//       groups[item.group] = [];
-//     }
-//     groups[item.group].push(item);
-//     return groups;
-//   }, {});
-
-//   const groupedToolbar2 = toolbarOptions[1].reduce((groups, item) => {
-//     if (!groups[item.group]) {
-//       groups[item.group] = [];
-//     }
-//     groups[item.group].push(item);
-//     return groups;
-//   }, {});
-
-//   const groupedToolbarArray = [groupedToolbar1, groupedToolbar2];
-
-//   const handleCommand = (command, value = null) => {
-//     document.execCommand(command, false, value);
-//     onRef.current?.focus();
-//     updateActiveFormats();
-//   };
-
-//   const updateActiveFormats = () => {
-//     if (!onRef.current) return;
-
-//     const formats = {
-//       bold: document.queryCommandState("bold"),
-//       italic: document.queryCommandState("italic"),
-//       underline: document.queryCommandState("underline"),
-//       strikethrough: document.queryCommandState("strikethrough"),
-//     };
-//     setActiveFormats(formats);
-//   };
-
-//   const handleInput = () => {
-//     updateActiveFormats();
-//     if (onRef.current) {
-//       const text = onRef.current.innerText || "";
-//       const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-//       setWordCount(words);
-//     }
-//   };
-
-//   const handlePaste = (e) => {
-//     e.preventDefault();
-//     const text = e.clipboardData.getData("text/plain");
-//     document.execCommand("insertText", false, text);
-//   };
-
-//   const togglePageView = () => {
-//     setPageView(!pageView);
-//   };
-
-//   return (
-//     <div className={`d-flex flex-column`} style={{ ...parentStyle }}>
-//       {/* Status Bar */}
-//       {/* <div
-//         style={{
-//           backgroundColor: bg1,
-//           padding: "4px 12px",
-//           borderBottom: `1px solid ${bg3}`,
-//           fontSize: "12px",
-//           color: text_clrL,
-//           display: "flex",
-//           justifyContent: "space-between",
-//         }}
-//       >
-//         <span>Words: {wordCount}</span>
-//         <div>
-//           <button
-//             style={{ ...buttonStyle, fontSize: "10px" }}
-//             onClick={togglePageView}
-//           >
-//             {pageView ? "Web Layout" : "Print Layout"}
-//           </button>
-//         </div>
-//       </div> */}
-
-//       {/* Toolbar */}
-//       <div className="px-3" style={{ ...headerStyle }}>
-//         {groupedToolbarArray.map((groupedToolbar, items) => (
-//           <div className="d-flex overflow-auto none-scroller pb-1" key={items}>
-//             {Object.entries(groupedToolbar).map(([groupName, items]) => (
-//               <div key={groupName} style={groupStyle}>
-//                 {items.map((item, idx) => {
-//                   if (item.type === "select") {
-//                     return (
-//                       <select
-//                         key={item.op}
-//                         style={selectStyle}
-//                         onChange={(e) => handleCommand(item.op, e.target.value)}
-//                         title={item.title}
-//                       >
-//                         <option value="">{item.title}</option>
-//                         {item.options.map((opt) => (
-//                           <option key={opt} value={opt}>
-//                             {opt}
-//                           </option>
-//                         ))}
-//                       </select>
-//                     );
-//                   } else if (item.type === "color") {
-//                     return (
-//                       <button
-//                         key={item.op}
-//                         style={{
-//                           ...buttonStyle,
-//                           color: activeFormats[item.op] ? text_clrH : text_clrM,
-//                         }}
-//                         onClick={() => {
-//                           const color = prompt(
-//                             `Enter ${item.title}:`,
-//                             "#000000"
-//                           );
-//                           if (color) handleCommand(item.op, color);
-//                         }}
-//                         title={item.title}
-//                       >
-//                         <FontAwesomeIcon
-//                           icon={item.icon || faPalette}
-//                           fontSize={14}
-//                         />
-//                       </button>
-//                     );
-//                   } else {
-//                     return (
-//                       <button
-//                         key={item.op}
-//                         style={{
-//                           ...buttonStyle,
-//                           color: activeFormats[item.op] ? text_clrH : text_clrM,
-//                           backgroundColor: activeFormats[item.op]
-//                             ? text_clrL
-//                             : "transparent",
-//                         }}
-//                         onClick={() => handleCommand(item.op)}
-//                         title={item.title}
-//                       >
-//                         <FontAwesomeIcon icon={item.icon} fontSize={14} />
-//                       </button>
-//                     );
-//                   }
-//                 })}
-//                 {/* <div style={separatorStyle} /> */}
-//               </div>
-//             ))}
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Editor Area */}
-//       <div
-//         className="py-3"
-//         style={{
-//           backgroundColor: bg2,
-//           marginTop: "90px",
-//           minHeight: "max-content",
-//         }}
-//       >
-//         <div
-//           ref={onRef}
-//           contentEditable
-//           style={{
-//             ...editorStyle,
-//             backgroundColor: pageView ? bg3 : mainbg,
-//             minHeight: pageView ? "calc(70vh - 80px)" : "500px",
-//             boxShadow: pageView ? "0 0 0 1px rgba(0,0,0,0.1)" : "none",
-//             // margin: "0 auto",
-//             maxWidth: pageView ? "8.5in" : "100%",
-//             caretColor: "red",
-//             maxWidth: "500px",
-//             minHeight: "max-content",
-//           }}
-//           spellCheck="false"
-//           className="word-editor"
-//           onInput={handleInput}
-//           onKeyUp={handleInput}
-//           onPaste={handlePaste}
-//           onFocus={updateActiveFormats}
-//           data-gramm="false"
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// // You'll need these additional FontAwesome imports:
-import {
-  faFile,
-  faFolderOpen,
-  faSave,
-  faStrikethrough,
-  faAlignJustify,
-  faListUl,
-  faListOl,
-  faIndent,
-  faOutdent,
-  faUndo,
-  faRedo,
-  faPalette,
-} from "@fortawesome/free-solid-svg-icons";
-import { set } from "mongoose";
-
+import { faPalette } from "@fortawesome/free-solid-svg-icons";
 export default CanvasVibeEditor;

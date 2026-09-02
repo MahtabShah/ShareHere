@@ -19,15 +19,13 @@ const PostLoading = () => {
   return Errors ? (
     <div
       className="fs-3 text-danger p-2 d-flex justify-content-center align-items-center"
-      style={{ height: "64vh" }}
-    >
+      style={{ height: "64vh" }}>
       {Errors.message} . . .Try again later or refresh the page!
     </div>
   ) : (
     <div
       className="d-flex justify-content-center  mb-5 align-items-end"
-      style={{ height: "20vh" }}
-    >
+      style={{ height: "20vh" }}>
       {post_loading ? (
         <div className="p-3">
           <Loading dm={34} />
@@ -42,13 +40,13 @@ const PostLoading = () => {
 };
 
 const Tab = ({ category, Key }) => {
-  const { bg1, bg2, bg3, text_clrH, text_clrM, text_clrL } = useTheme();
+  const { bg1, bg2, bg3, TxtHighColor, text_clrM, text_clrL } = useTheme();
 
   const TabStyle = {
     border: `1px solid ${bg1}`,
-    color: Key === category ? bg1 : text_clrH,
+    color: Key === category ? bg1 : TxtHighColor,
     minWidth: "max-content",
-    background: Key === category ? text_clrH : bg1,
+    background: Key === category ? TxtHighColor : bg1,
   };
 
   return (
@@ -62,7 +60,7 @@ const Tab = ({ category, Key }) => {
 
 export const VibeTabs = () => {
   const { limit, page, fetch_n_posts, setPosts } = usePost();
-  const { bg1, bg2, bg3, text_clrH, text_clrM, text_clrL } = useTheme();
+  const { bg1, bg2, bg3, TxtHighColor, text_clrM, text_clrL } = useTheme();
   const [loading, setLoading] = useState(true);
   const [Key, setKey] = useState("all");
   const { mobile_break_point, sm_break_point, lgbreakPoint } = useQuote();
@@ -99,8 +97,7 @@ export const VibeTabs = () => {
       <div className="vibeTabs position-relative mt-5 h-100">
         <div
           className="p-2 position-fixed overflow-auto none-scroller d-flex gap-2"
-          style={{ ...TabStyle }}
-        >
+          style={{ ...TabStyle }}>
           {categories.map(({ key, title }) => (
             <div key={title} onClick={() => setKey(key)}>
               <Tab category={key} Key={Key} />
@@ -112,12 +109,10 @@ export const VibeTabs = () => {
           <div
             className={`d-flex gap-3 py-2 justify-content-${
               lgbreakPoint || sm_break_point ? "evenly" : "center"
-            }`}
-          >
+            }`}>
             <div
               className="d-flex flex-column w-100"
-              style={{ maxWidth: "min(521px, 100%)" }}
-            >
+              style={{ maxWidth: "min(521px, 100%)" }}>
               <StatusPage />
 
               {categories.map(
@@ -126,7 +121,7 @@ export const VibeTabs = () => {
                     <div key={title} className="d-flex flex-column gap-4">
                       <All_Post_Section loading={loading} category={key} />
                     </div>
-                  )
+                  ),
               )}
 
               <PostLoading />

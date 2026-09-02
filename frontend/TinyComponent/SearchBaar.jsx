@@ -32,7 +32,7 @@ export const SearchBaar = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${API}/api/crud/search?search=${query}&page=${page}&limit=${limit}`
+        `${API}/api/crud/search?search=${query}&page=${page}&limit=${limit}`,
       );
 
       const data = res?.data?.posts || [];
@@ -41,7 +41,7 @@ export const SearchBaar = () => {
         setFilterd_posts(() => []);
       }
       const uniquePosts = Array.from(
-        new Map([...Filterd_posts, ...data].map((p) => [p._id, p])).values()
+        new Map([...Filterd_posts, ...data].map((p) => [p._id, p])).values(),
       );
 
       setFilterd_posts(() => uniquePosts);
@@ -74,7 +74,7 @@ export const SearchBaar = () => {
     if (!query) return [];
     return all_user
       .filter((user) =>
-        user.username.toLowerCase().includes(query.toLowerCase())
+        user.username.toLowerCase().includes(query.toLowerCase()),
       )
       .sort((a, b) => {
         const indexA = a.username.toLowerCase().indexOf(query.toLowerCase());
@@ -87,7 +87,7 @@ export const SearchBaar = () => {
     const f_res = filter_users(all_user, query);
 
     const uniquePosts = Array.from(
-      new Map(f_res.map((p) => [p._id, p])).values()
+      new Map(f_res.map((p) => [p._id, p])).values(),
     );
 
     setFilterd_result(uniquePosts);
@@ -113,7 +113,7 @@ export const SearchBaar = () => {
     };
   }, []);
 
-  const { text_clrH, text_clrM, bg1, bg3, bg2, text_clrL } = useTheme();
+  const { TxtHighColor, text_clrM, bg1, bg3, bg2, text_clrL } = useTheme();
 
   const containerRef = useRef();
 
@@ -167,12 +167,10 @@ export const SearchBaar = () => {
             boxShadow: "0 2px 4px #212121ff",
           }}
           ref={containerRef}
-          onScroll={handleScroll}
-        >
+          onScroll={handleScroll}>
           <div
             className="d-flex gap-3 p-2 position-sticky top-0"
-            style={{ background: bg1 }}
-          >
+            style={{ background: bg1 }}>
             <div
               className="d-flex flex-column gap-2"
               style={{
@@ -185,23 +183,20 @@ export const SearchBaar = () => {
               onClick={(e) => {
                 setIsTouched(false);
                 e.preventDefault();
-              }}
-            >
+              }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                fill={text_clrH}
-              >
+                fill={TxtHighColor}>
                 <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
               </svg>
             </div>
             <div
               className="gap-2 fs-5 fw-medium "
               style={{
-                color: text_clrH,
+                color: TxtHighColor,
                 fontStyle: "italic",
-              }}
-            >
+              }}>
               Result for query {query}
             </div>
           </div>
@@ -218,15 +213,14 @@ export const SearchBaar = () => {
                     </Fragment>
                     <div
                       className="border"
-                      style={{ minWidth: "104px", maxWidth: "104px" }}
-                    >
+                      style={{ minWidth: "104px", maxWidth: "104px" }}>
                       <FollowBtn
                         id={res?._id}
                         cls="btn btn-primary w-100 p-0 ps-3 rounded-0 pe-3 p-1"
                       />
                     </div>
                   </div>
-                )
+                ),
             )}
           </div>
           {Filterd_posts.length > 0 && isTouched && (
@@ -237,8 +231,7 @@ export const SearchBaar = () => {
                   key={`F-post${idx}`}
                   style={{
                     color: text_clrM,
-                  }}
-                >
+                  }}>
                   <div className="d-flex gap-3 align-items-start">
                     <div className="mt-">
                       <UserRing
@@ -256,8 +249,7 @@ export const SearchBaar = () => {
                         WebkitBoxOrient: "vertical",
                         textOverflow: "ellipsis",
                         overflow: "hidden",
-                      }}
-                    >
+                      }}>
                       {res.text} {/* showing post title */}
                     </small>
                     <div
@@ -265,8 +257,7 @@ export const SearchBaar = () => {
                         setopenSlidWin(false);
                         setQuery("");
                         nevigate(`/home/${res._id}`);
-                      }}
-                    >
+                      }}>
                       <CardPost
                         post={res}
                         style={{

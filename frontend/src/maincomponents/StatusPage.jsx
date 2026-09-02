@@ -25,7 +25,7 @@ const isValidUser = (user) => {
 };
 
 const StatusImg = ({ u }) => {
-  const { text_clrH } = useTheme();
+  const { TxtHighColor } = useTheme();
   const { admin_user } = useQuote();
   const [loaded, setLoaded] = useState(false);
   const style = {
@@ -34,9 +34,9 @@ const StatusImg = ({ u }) => {
     border: u?.status?.every(
       (s) =>
         s.SeenBy?.length > 0 &&
-        s.SeenBy?.some((seenUser) => seenUser._id === admin_user?._id)
+        s.SeenBy?.some((seenUser) => seenUser._id === admin_user?._id),
     )
-      ? `3px solid ${text_clrH}`
+      ? `3px solid ${TxtHighColor}`
       : "3px solid #ed0d32ff",
   };
 
@@ -46,8 +46,7 @@ const StatusImg = ({ u }) => {
         className={`position-relative rounded-circle p-1 story-avatar d-flex align-items-center justify-content-center ${
           loaded ? "" : "loading-pulse"
         }`}
-        style={{ ...style }}
-      >
+        style={{ ...style }}>
         <img
           src={u?.profile_pic}
           alt={u?.username}
@@ -65,7 +64,7 @@ const StatusImg = ({ u }) => {
 };
 
 const StatusList = ({ users, openStatus }) => {
-  const { bg2, bg1, text_clrM, text_clrH, text_clrL } = useTheme();
+  const { bg2, bg1, text_clrM, TxtHighColor, text_clrL } = useTheme();
   const { admin_user, setActiveIndex, setopenSlidWin, lgbreakPoint } =
     useQuote();
 
@@ -79,12 +78,10 @@ const StatusList = ({ users, openStatus }) => {
         style={{
           marginTop: "50px",
           paddingInline: !lgbreakPoint ? "7px" : "0",
-        }}
-      >
+        }}>
         <div
           className="d-flex gap-4 mb-2 overflow-auto w-100 h-100"
-          style={{ minHeight: "84px", transitionDuration: "1s" }}
-        >
+          style={{ minHeight: "84px", transitionDuration: "1s" }}>
           {isValidUser(admin_user) && users?.length > 0 ? (
             users?.map((u, i) => (
               <div
@@ -97,8 +94,7 @@ const StatusList = ({ users, openStatus }) => {
                     setopenSlidWin("Upload");
                     nevigate("/Editor");
                   } else openStatus(i, 0);
-                }}
-              >
+                }}>
                 <StatusImg u={u} />
 
                 <div className="small mt-1" style={{ color: text_clrM }}>
@@ -114,20 +110,19 @@ const StatusList = ({ users, openStatus }) => {
                       right: 0,
                       width: "20px",
                       height: "20px",
-                      border: `1px solid ${text_clrH}`,
+                      border: `1px solid ${TxtHighColor}`,
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveIndex("Upload");
                       setopenSlidWin("Upload");
                       nevigate("/Editor");
-                    }}
-                  >
+                    }}>
                     <FontAwesomeIcon
                       icon={faPlus}
                       fontSize={12}
                       className="m-auto"
-                      color={text_clrH}
+                      color={TxtHighColor}
                     />
                   </div>
                 )}
@@ -167,8 +162,7 @@ const ProgressBar = ({ currentUser, currentStatusIndex, progress, blink }) => {
           <div
             key={i}
             className="flex-fill bg-secondary"
-            style={{ height: "3px" }}
-          >
+            style={{ height: "3px" }}>
             <div
               className="bg-light"
               style={{
@@ -176,10 +170,10 @@ const ProgressBar = ({ currentUser, currentStatusIndex, progress, blink }) => {
                   i < currentStatusIndex
                     ? "100%"
                     : blink
-                    ? 0
-                    : i === currentStatusIndex
-                    ? `${progress}%`
-                    : "0",
+                      ? 0
+                      : i === currentStatusIndex
+                        ? `${progress}%`
+                        : "0",
                 height: "100%",
                 transition: blink ? "" : "width 0.02s linear",
               }}
@@ -204,16 +198,14 @@ const StatusActions = ({ currentStatus, HandleLike }) => {
             zIndex: 100000,
             cursor: "pointer",
           }}
-          onClick={() => setSeenOpen((prev) => !prev)}
-        >
+          onClick={() => setSeenOpen((prev) => !prev)}>
           {seenOpen ? "close" : "views"}
         </div>
       )}
 
       <div
         className="p-1 d-flex justify-content-center"
-        style={{ zIndex: 100000 }}
-      >
+        style={{ zIndex: 100000 }}>
         {currentStatus?.likes?.some((u) => u._id === admin_user?._id) ? (
           <FaHeart color="red" onClick={HandleLike} size={21} />
         ) : (
@@ -230,8 +222,7 @@ const StatusActions = ({ currentStatus, HandleLike }) => {
               right: "8px",
               bottom: "54px",
               maxHeight: "74vh",
-            }}
-          >
+            }}>
             {currentStatus?.SeenBy?.map((u, i) => (
               <div key={i} className="d-flex items-center gap-2 rounded-5">
                 <div
@@ -240,8 +231,7 @@ const StatusActions = ({ currentStatus, HandleLike }) => {
                     height: "46px",
                     minWidth: "46px",
                     maxWidth: "46px",
-                  }}
-                >
+                  }}>
                   <img
                     src={u?.profile_pic || "/default.png"}
                     alt={u?.username}
@@ -276,15 +266,13 @@ const ArrowButtons = ({ handlePrev, handleNext }) => {
     <>
       <button
         className="btn position-absolute top-50 start-0 text-white fs-3"
-        onClick={handlePrev}
-      >
+        onClick={handlePrev}>
         <i className="bi bi-chevron-left"></i>
       </button>
 
       <button
         className="btn position-absolute top-50 end-0 text-white fs-3"
-        onClick={handleNext}
-      >
+        onClick={handleNext}>
         <i className="bi bi-chevron-right"></i>
       </button>
     </>
@@ -307,8 +295,7 @@ const StatusImageViewer = ({ currentStatus, handlePrev, handleNext }) => {
         } else {
           handlePrev();
         }
-      }}
-    >
+      }}>
       <img
         src={currentStatus?.image}
         alt="status"
@@ -336,7 +323,7 @@ export default function StatusPage() {
       const user = await fetch_user_by_Id(admin_user?._id);
       // console.log("user with status", user);
       setUsers(() =>
-        [user, user?.following?.filter((f) => f?.status?.length > 0)].flat()
+        [user, user?.following?.filter((f) => f?.status?.length > 0)].flat(),
       );
     })();
   }, [
@@ -353,7 +340,7 @@ export default function StatusPage() {
   const progressRef = useRef(null);
   const [dots, setDots] = useState(-1);
   const [Onhover, setOnhover] = useState(true);
-  const { bg1, bg2, text_clrH } = useTheme();
+  const { bg1, bg2, TxtHighColor } = useTheme();
   const [pause, setPuase] = useState(false);
 
   var currentUser = currentUserIndex !== null ? users[currentUserIndex] : null;
@@ -386,7 +373,7 @@ export default function StatusPage() {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
-              }
+              },
             );
             console.log("Created status:", res?.data);
           } catch (err) {
@@ -505,7 +492,7 @@ export default function StatusPage() {
       }
 
       currentUser.status = currentUser?.status?.filter(
-        (s) => s !== currentStatus
+        (s) => s !== currentStatus,
       );
 
       setBlink(true);
@@ -573,7 +560,7 @@ export default function StatusPage() {
     if (currentStatus?.likes?.some((u) => u._id == admin_user?._id)) {
       // Already liked → unlike (remove user id)
       currentStatus.likes = currentStatus?.likes?.filter(
-        (u) => u?._id !== admin_user?._id
+        (u) => u?._id !== admin_user?._id,
       );
     } else {
       // Not liked → like (add user id)
@@ -593,8 +580,7 @@ export default function StatusPage() {
           style={{
             zIndex: 9919050,
             padding: mobile_break_point ? "0px" : "10px",
-          }}
-        >
+          }}>
           <div
             className="position-relative border-0 bg-dark  h-100 w-100"
             style={{
@@ -603,8 +589,7 @@ export default function StatusPage() {
               backgroundSize: "440% 400%",
               backgroundPosition: "center",
               borderRadius: mobile_break_point ? "0px" : "7px",
-            }}
-          >
+            }}>
             <div
               className="p-2 h-100 position-relative justify-content-between d-flex flex-column"
               style={{
@@ -612,8 +597,7 @@ export default function StatusPage() {
                   "blur(20px) saturate(1.4) brightness(0.7) sepia(0.1) hue-rotate(-3deg) opacity(0.85)",
 
                 borderRadius: mobile_break_point ? "0px" : "7px",
-              }}
-            >
+              }}>
               {/* Progress bars */}
               <ProgressBar
                 currentUser={currentUser}
@@ -636,14 +620,12 @@ export default function StatusPage() {
                   onClick={(e) => {
                     e.preventDefault();
                     closeModal();
-                  }}
-                >
+                  }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 448 512"
                     fill={"white"}
-                    className="h-100 w-100"
-                  >
+                    className="h-100 w-100">
                     <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                   </svg>
                 </div>
@@ -672,8 +654,7 @@ export default function StatusPage() {
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                      }}
-                    >
+                      }}>
                       {currentStatus.text}
                     </div>
                   </div>
@@ -682,9 +663,8 @@ export default function StatusPage() {
                 <div className="d-flex">
                   <button
                     className="btn p-1 px-2 small rounded-1 d-flex align-items-center justify-content-center"
-                    style={{ background: text_clrH, color: bg2 }}
-                    onClick={() => setPuase((prev) => !prev)}
-                  >
+                    style={{ background: TxtHighColor, color: bg2 }}
+                    onClick={() => setPuase((prev) => !prev)}>
                     <FontAwesomeIcon
                       icon={pause ? faPlay : faPause} // Toggle icon
                       color={bg2}
@@ -694,7 +674,7 @@ export default function StatusPage() {
                   <div
                     onClick={() => {
                       setDots(
-                        dots === currentStatusIndex ? -1 : currentStatusIndex
+                        dots === currentStatusIndex ? -1 : currentStatusIndex,
                       );
 
                       if (dots === currentStatusIndex) {
@@ -702,8 +682,7 @@ export default function StatusPage() {
                       }
                     }}
                     style={{ cursor: "pointer" }}
-                    className="p-2 d-flex align-items-center"
-                  >
+                    className="p-2 d-flex align-items-center">
                     <FaEllipsisV size={14} />
                   </div>
                 </div>
@@ -716,12 +695,10 @@ export default function StatusPage() {
                       zIndex: 1050,
                       right: "40px",
                       top: "45px",
-                    }}
-                  >
+                    }}>
                     <button
                       className="btn w-100 btn-light p-1 px-4 rounded-1"
-                      onClick={closeModal}
-                    >
+                      onClick={closeModal}>
                       {/* <FontAwesomeIcon icon={faTimes} color={bg2} /> */}
                       Close
                     </button>
@@ -729,8 +706,7 @@ export default function StatusPage() {
                     {currentStatus?.user === admin_user?._id && (
                       <button
                         className="btn btn-danger w-100 p-1 px-4 text-light rounded-1"
-                        onClick={HandleDelteStatus}
-                      >
+                        onClick={HandleDelteStatus}>
                         Delete
                       </button>
                     )}

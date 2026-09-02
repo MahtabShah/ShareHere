@@ -47,7 +47,7 @@ export const TrackPost = () => {
     setActiveIndex("");
   }, [postId]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg } = useTheme();
+  const { TxtHighColor, text_clrL, text_clrM, mainbg } = useTheme();
 
   return (
     <>
@@ -55,24 +55,21 @@ export const TrackPost = () => {
         {loading && (
           <div
             className="text-danger w-100 d-flex justify-content-center align-items-center fs-5 text-center"
-            style={{ color: "red" }}
-          >
+            style={{ color: "red" }}>
             <Loading dm={32} />
           </div>
         )}
         {error && (
           <div
             className="w-100 d-flex flex-column rounded justify-content-center align-items-center fs-5 "
-            style={{ color: "#777" }}
-          >
+            style={{ color: "#777" }}>
             <p>{error}</p>
             <div className="d-flex gap-2">
               <button
                 className="btn btn-danger pe-4 ps-4 ms-3"
                 onClick={() => {
                   CommentFn(postId);
-                }}
-              >
+                }}>
                 Try again
               </button>
 
@@ -88,18 +85,16 @@ export const TrackPost = () => {
           style={{
             gap: "104px",
             marginBottom: "80px",
-          }}
-        >
+          }}>
           {user && post && (
             <div
               style={{
                 maxWidth: "600px",
                 boxShadow: `0 1px 3px ${text_clrL} `,
-                color: text_clrH,
+                color: TxtHighColor,
                 background: mainbg,
               }}
-              className="rounded m-1 top overflow-hidden "
-            >
+              className="rounded m-1 top overflow-hidden ">
               <div className="d-flex justify-content-between overflow-hidden ">
                 <h5 className="p-2 m-0 d-flex align-items-start gap-3">
                   {" "}
@@ -113,13 +108,11 @@ export const TrackPost = () => {
                     }}
                     onClick={() => {
                       nevigate("/home");
-                    }}
-                  >
+                    }}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 448 512"
-                      fill={text_clrM}
-                    >
+                      fill={text_clrM}>
                       <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                     </svg>{" "}
                   </div>
@@ -129,8 +122,7 @@ export const TrackPost = () => {
                   className="btn btn-danger props-btn"
                   onClick={() => {
                     nevigate("/home");
-                  }}
-                >
+                  }}>
                   X
                 </button>
               </div>
@@ -147,8 +139,7 @@ export const TrackPost = () => {
                 position: "sticky",
                 top: "64px",
                 width: "340px",
-              }}
-            >
+              }}>
               <SuggetionSlip />
             </div>
           )}

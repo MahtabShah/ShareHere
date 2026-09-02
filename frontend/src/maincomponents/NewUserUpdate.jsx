@@ -34,14 +34,12 @@ const SuggetionSlip = () => {
                 <div className="d-flex flex-column gap-2">
                   <div
                     key={admin_user?.username}
-                    className="d-flex align-items-center gap-2 mb-2 rounded"
-                  >
+                    className="d-flex align-items-center gap-2 mb-2 rounded">
                     <UserRing user={admin_user} dm={50} style={{}} />
                     <a
                       href={`/api/user/${admin_user?._id}`}
                       className="small btn btn-outline-primary text-center rounded-1 p-1 ps-3 pe-3"
-                      style={{ minWidth: "max-content" }}
-                    >
+                      style={{ minWidth: "max-content" }}>
                       see profile
                     </a>
                   </div>
@@ -53,8 +51,7 @@ const SuggetionSlip = () => {
                 <div className="d-flex flex-column gap-2">
                   <div
                     key={admin_user?.username}
-                    className="d-flex align-items-center justify-content-between gap-2 mb-2 rounded"
-                  >
+                    className="d-flex align-items-center justify-content-between gap-2 mb-2 rounded">
                     <div
                       className="h-100 d-flex rounded-5 align-items-center justify-content-center"
                       style={{
@@ -63,8 +60,7 @@ const SuggetionSlip = () => {
                         width: "50px",
                         background: `linear-gradient(120deg, #fda, #e40d29ff)`,
                       }}
-                      alt=""
-                    >
+                      alt="">
                       ?
                     </div>
 
@@ -89,8 +85,7 @@ const SuggetionSlip = () => {
                           user?._id != admin_user?._id && (
                             <div
                               key={user.username}
-                              className="d-flex align-items-center gap-5 pb-3 rounded"
-                            >
+                              className="d-flex align-items-center gap-5 pb-3 rounded">
                               <UserRing user={user} style={{}} dm={52} />
                               <div>
                                 <FollowBtn
@@ -105,15 +100,14 @@ const SuggetionSlip = () => {
                                 />
                               </div>
                             </div>
-                          )
+                          ),
                       )}
                   </div>
                 </div>
 
                 <small
                   className="text-center footer mt-4 d-flex gap-2 flex-column justify-content-center align-items-center"
-                  style={{ color: text_clrM }}
-                >
+                  style={{ color: text_clrM }}>
                   <div className="d-flex gap-2">
                     <a href="#">Info</a>
                     <a href="#">help</a>
@@ -138,7 +132,7 @@ const SuggetionSlip = () => {
 export const SuggetionSlipInPost = () => {
   const { all_user, admin_user, token } = useQuote();
   const [some_user, setsome_user] = useState(null);
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
+  const { TxtHighColor, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
 
   useEffect(() => {
     const rn = Math.floor(Math.random() * (all_user.length - 5) || 0);
@@ -164,13 +158,12 @@ export const SuggetionSlipInPost = () => {
               style={{
                 border: "1px solid #ccc",
                 background: bg1,
-                color: text_clrH,
-              }}
-            >
+                color: TxtHighColor,
+              }}>
               <div className="p-2" style={{ width: "120px", height: "120px" }}>
                 <a href={`/api/user/${u?._id}`}>
                   <img
-                    src={u.profile_pic}
+                    src={u?.profile_pic}
                     alt=""
                     className="h-100 w-100"
                     style={{ objectFit: "cover", borderRadius: "50%" }}
@@ -186,9 +179,8 @@ export const SuggetionSlipInPost = () => {
                     WebkitBoxOrient: "vertical",
                     textOverflow: "ellipsis",
                     overflow: "hidden",
-                  }}
-                >
-                  @{u.username.slice(0, 10)}
+                  }}>
+                  @{u?.username?.slice(0, 10)}
                 </small>
                 <FollowBtn
                   id={u?._id}
@@ -213,7 +205,7 @@ function getCols(width) {
 
 export const GalleryPost = ({ category }) => {
   const [columns, setColumns] = useState(() => getCols(window.innerWidth));
-  const { text_clrH, text_clrL } = useTheme();
+  const { TxtHighColor, text_clrL } = useTheme();
   const { limit, page, post_loading, fetch_n_posts } = usePost();
   const [posts, setPosts] = useState([]);
   const [expanded, setExpanded] = useState(true);
@@ -290,14 +282,12 @@ export const GalleryPost = ({ category }) => {
           paddingBlock: "10px",
           // maxHeight: expanded ? "none" : "400px",
           overflow: expanded ? "visible" : "hidden",
-        }}
-      >
+        }}>
         {columnsArr.map((colPosts, colIdx) => (
           <div
             key={colIdx}
             className={`rounded col-${colIdx + 1}`}
-            style={{ flex: 1 }}
-          >
+            style={{ flex: 1 }}>
             {colPosts.map((p, i) => (
               <img
                 key={`i-${colIdx}-${i}`}
@@ -324,8 +314,7 @@ export const GalleryPost = ({ category }) => {
               height: "200px",
               background:
                 "linear-gradient(rgba(255,255,255,0) 10%, rgba(126, 157, 186, 1) 56%)",
-            }}
-          ></div>
+            }}></div>
           <button
             onClick={FetchMore}
             style={{
@@ -338,8 +327,7 @@ export const GalleryPost = ({ category }) => {
               backgroundColor: "#007bff",
               color: "#fff",
               border: "none",
-            }}
-          >
+            }}>
             See more
           </button>
         </>

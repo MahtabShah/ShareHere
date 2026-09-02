@@ -69,7 +69,7 @@ const EditUserProfile = () => {
 
         const res1 = await axios.post(
           "https://api.cloudinary.com/v1_1/dft5cl5ra/image/upload",
-          profileData
+          profileData,
         );
         uploadedProfileUrl = res1.data.secure_url;
       }
@@ -82,7 +82,7 @@ const EditUserProfile = () => {
 
         const res2 = await axios.post(
           "https://api.cloudinary.com/v1_1/dft5cl5ra/image/upload",
-          coverData
+          coverData,
         );
         uploadedCoverUrl = res2.data.secure_url;
       }
@@ -115,14 +115,13 @@ const EditUserProfile = () => {
     setLoading(false);
   };
 
-  const { text_clrH, text_clrL, text_clrM, bg2, bg1 } = useTheme();
+  const { TxtHighColor, text_clrL, text_clrM, bg2, bg1 } = useTheme();
 
   return (
     <section className="mb-5 pb-5" style={{ background: bg1 }}>
       <div
         className="photoHeader w-100 position-relative border"
-        style={{ height: "calc(140px + 16dvw)", maxHeight: "300px" }}
-      >
+        style={{ height: "calc(140px + 16dvw)", maxHeight: "300px" }}>
         <div className="position-absolute w-100 h-100">
           <img
             src={cover_pic}
@@ -133,8 +132,7 @@ const EditUserProfile = () => {
           <label
             htmlFor="cover_pic"
             className="position-absolute top-0 end-0 m-2 bg-white p-1 border"
-            style={{ cursor: "pointer" }}
-          >
+            style={{ cursor: "pointer" }}>
             Edit Cover
           </label>
           <input
@@ -148,8 +146,7 @@ const EditUserProfile = () => {
 
         <div
           className="text-center position-absolute ps-3"
-          style={{ bottom: "calc(-80px)" }}
-        >
+          style={{ bottom: "calc(-80px)" }}>
           <img
             src={profile_pic}
             className="rounded-circle border"
@@ -161,8 +158,7 @@ const EditUserProfile = () => {
           <label
             htmlFor="profile_pic"
             className="d-block mt-1 bg-light px-2 border"
-            style={{ cursor: "pointer" }}
-          >
+            style={{ cursor: "pointer" }}>
             Edit DP
           </label>
           <input
@@ -182,15 +178,13 @@ const EditUserProfile = () => {
         >
           <div
             className="d-flex align-items-center p-0 m-0 ps-2"
-            style={{ border: `1px solid ${text_clrL}` }}
-          >
+            style={{ border: `1px solid ${text_clrL}` }}>
             <div
               className="pe-2 form-lable"
               style={{
                 borderRight: `1px solid ${text_clrL}`,
                 color: text_clrM,
-              }}
-            >
+              }}>
               Name
             </div>
             <input
@@ -226,8 +220,7 @@ const EditUserProfile = () => {
 
           <button
             className="btn btn-outline-danger rounded-0 mt-3 pe-3 ps-3"
-            type="submit"
-          >
+            type="submit">
             {loading ? <Loading dm={20} clr="text-danger" /> : "Submit"}
           </button>
         </div>

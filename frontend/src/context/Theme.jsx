@@ -6,30 +6,30 @@ const Theme = createContext();
 export const useTheme = () => useContext(Theme) || {};
 
 export const ThemeProvider = ({ children }) => {
-  const theme = localStorage.getItem("theme") || "light"; // Default to light theme if not set
+  const theme = localStorage.getItem("theme") || "light";
   const [themeType, setThemeType] = useState(theme);
 
   const [mainbg, setMainBg] = useState(
-    themeType === "dark" ? "#0b0f1dff" : "#f6fafeff"
+    themeType === "dark" ? "#0b0f1dff" : "#f6fafeff",
   );
   const [bg1, setBg1] = useState(
-    themeType === "dark" ? "#0b0f1dff" : "#f5f9feff"
+    themeType === "dark" ? "#0b0f1dff" : "#f5f9feff",
   );
   const [bg2, setBg2] = useState(
-    themeType === "dark" ? "#0f121bff" : "#e9edf1ff"
+    themeType === "dark" ? "#0f121bff" : "#e9edf1ff",
   );
   const [bg3, setBg3] = useState(
-    themeType === "dark" ? "#a4a2a2ff" : "#d5dee3ff"
+    themeType === "dark" ? "#a4a2a2ff" : "#d5dee3ff",
   );
 
-  const [text_clrH, setText_clrH] = useState(
-    themeType === "dark" ? "#eeeeee" : "#000911ff"
+  const [TxtHighColor, setText_clrH] = useState(
+    themeType === "dark" ? "#eeeeee" : "#000911ff",
   );
   const [text_clrM, setText_clrM] = useState(
-    themeType === "dark" ? "#c3c2c2ff" : "#222222ff"
+    themeType === "dark" ? "#c3c2c2ff" : "#222222ff",
   );
   const [text_clrL, setText_clrL] = useState(
-    themeType === "dark" ? "#9b9b9bff" : "#bbbbbbff"
+    themeType === "dark" ? "#9b9b9bff" : "#bbbbbbff",
   );
 
   document.body.style.background = bg2;
@@ -63,7 +63,7 @@ export const ThemeProvider = ({ children }) => {
       value={{
         mainbg,
         setMainBg,
-        text_clrH,
+        TxtHighColor,
         setText_clrH,
         text_clrL,
         bg1,
@@ -73,8 +73,7 @@ export const ThemeProvider = ({ children }) => {
         text_clrM,
         setText_clrM,
         setThemeType,
-      }}
-    >
+      }}>
       {children}
     </Theme.Provider>
   );

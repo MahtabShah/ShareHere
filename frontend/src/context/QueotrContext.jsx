@@ -3,8 +3,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import axios, { all } from "axios";
 const QuoteContext = createContext();
 const API = import.meta.env.VITE_API_URL;
-import { useNavigate } from "react-router-dom";
-
 import socket from "../maincomponents/socket";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -14,11 +12,11 @@ export const useQuote = () => useContext(QuoteContext) || {};
 
 export const QuoteProvider = ({ children }) => {
   const [sm_break_point, setsm_break_point] = useState(
-    window.innerWidth < 1081
+    window.innerWidth < 1081,
   );
   const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1220);
   const [mobile_break_point, setmobile_break_point] = useState(
-    window.innerWidth <= 600
+    window.innerWidth <= 600,
   );
 
   const [activeIndex, setActiveIndex] = useState("home");
@@ -34,13 +32,11 @@ export const QuoteProvider = ({ children }) => {
   const [duration, setDuration] = useState(3000);
   const [isPaused, setIsPaused] = useState(false);
   const [admin_user, setadmin_user] = useState(null);
-  // const [user, set_user] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [all_statuses, setall_statuses] = useState([]);
   const [all_posts, set_all_posts] = useState([]);
   const [sorted_posts, set_sorted_posts] = useState([]);
-  // const [followings, setFollowings] = useState([]);
   const [uploadClicked, setUploadClicked] = useState(false);
   const [all_post_loading, setAll_post_loading] = useState(false);
   const [Errors, setErrors] = useState(null);
@@ -185,7 +181,7 @@ export const QuoteProvider = ({ children }) => {
         { id: userId },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
     } catch (err) {
       console.error("Error updating follow status:", err);
@@ -199,8 +195,8 @@ export const QuoteProvider = ({ children }) => {
       console.log("updatedUser", updatedUser);
       setall_user((prevUsers) =>
         prevUsers.map((user) =>
-          user?._id === updatedUser?._id ? updatedUser : user
-        )
+          user?._id === updatedUser?._id ? updatedUser : user,
+        ),
       );
     };
 
@@ -283,8 +279,7 @@ export const QuoteProvider = ({ children }) => {
         setVisibleNotification,
         setAll_post_loading,
         VisibleNotification,
-      }}
-    >
+      }}>
       {children}
     </QuoteContext.Provider>
   );

@@ -20,7 +20,7 @@ export default function BottomNav({}) {
     setLoggedIn(!!token);
   }, []);
 
-  const { text_clrH, text_clrL, bg1, bg2 } = useTheme();
+  const { TxtHighColor, text_clrL, bg1, bg2 } = useTheme();
 
   const navItems = [
     {
@@ -56,8 +56,7 @@ export default function BottomNav({}) {
               left: "0",
               background: bg1,
               boxShadow: `0 -2px 4px ${bg2}`,
-            }}
-          >
+            }}>
             <ul className="nav nav-pills gap-3 mb-auto d-flex justify-content-around">
               {/* Dynamic Nav Items */}
               {navItems.map((item) => (
@@ -67,24 +66,21 @@ export default function BottomNav({}) {
                     onClick={() => item.onClick}
                     className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 ${
                       activeIndex === item.key ? "active" : ""
-                    }`}
-                  >
+                    }`}>
                     <div
                       className="d-flex align-items-center justify-content-center"
                       style={{
                         width: "24px",
                         height: "24px",
-                        color: text_clrH,
-                      }}
-                    >
+                        color: TxtHighColor,
+                      }}>
                       <FontAwesomeIcon icon={item.icon} />
                     </div>
                     <span
                       className={`fw-semibold pe-5 ${
                         sm_break_point ? "d-none" : ""
                       }`}
-                      style={{ width: "154px" }}
-                    >
+                      style={{ width: "154px" }}>
                       {item.label}
                     </span>
                   </Nav.Link>
@@ -97,8 +93,7 @@ export default function BottomNav({}) {
                   className={`nav-link p-0 ${
                     activeIndex === "Notifications" ? "active" : " "
                   }`}
-                  style={{ zIndex: 1005 }}
-                >
+                  style={{ zIndex: 1005 }}>
                   <NotificationBell />
                 </div>
               </li>
@@ -111,19 +106,16 @@ export default function BottomNav({}) {
                     className={`nav-link d-flex align-items-center gap-3 fs-6 ${
                       activeIndex === "User" ? "active" : "br"
                     }`}
-                    onClick={() => setActiveIndex("User")}
-                  >
+                    onClick={() => setActiveIndex("User")}>
                     <span
                       className="d-flex align-items-center justify-content-center border rounded-1 text-danger"
-                      style={{ width: "24px", height: "24px" }}
-                    >
+                      style={{ width: "24px", height: "24px" }}>
                       <FontAwesomeIcon icon={faUser} />
                     </span>
                     <span
                       className={`fw-semibold text-dark ${
                         sm_break_point ? "d-none" : ""
-                      }`}
-                    >
+                      }`}>
                       User Profile
                     </span>
                   </a>

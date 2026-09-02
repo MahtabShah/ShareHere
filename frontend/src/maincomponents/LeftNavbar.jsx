@@ -26,6 +26,7 @@ const API = import.meta.env.VITE_API_URL;
 import CanvasVibeEditor from "./CanvasEditor";
 import { useTheme } from "../context/Theme";
 import { NotificationBell } from "./MainHeader";
+
 export default function LeftNavbar() {
   const {
     sm_break_point,
@@ -70,14 +71,14 @@ export default function LeftNavbar() {
     }
   }, [activeIndex]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
+  const { TxtHighColor, text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } =
+    useTheme();
 
   return (
     <>
       <div
         className={`LeftNavbar d-flex h-100 position-fixed top-0`}
-        style={{ zIndex: 991999, background: bg2 }}
-      >
+        style={{ zIndex: 991999, background: bg2 }}>
         {!mobile_break_point && (
           <div
             className="d-flex px-2"
@@ -86,14 +87,12 @@ export default function LeftNavbar() {
               maxWidth: "244px",
               background: bg1,
               // borderRight: `1px solid ${text_clrL}`,
-            }}
-          >
+            }}>
             <ul className="nav nav-pills flex-column gap-3 mb-auto">
               <li className="nav-item  me-1 pt-1">
                 <a
                   href="/home"
-                  className={`nav-link d-flex align-items-center gap-3 fs-6`}
-                >
+                  className={`nav-link d-flex align-items-center gap-3 fs-6`}>
                   <span
                     className={`d-flex align-items-center justify-content-center text-light`}
                     style={{
@@ -112,14 +111,12 @@ export default function LeftNavbar() {
 #c71832, 
   #ff3c78
 )`,
-                    }}
-                  >
+                    }}>
                     AI
                   </span>
 
                   <span
-                    className={`fw-semibold ${sm_break_point ? "d-none" : ""}`}
-                  >
+                    className={`fw-semibold ${sm_break_point ? "d-none" : ""}`}>
                     VIBE INK
                   </span>
                 </a>
@@ -135,20 +132,21 @@ export default function LeftNavbar() {
                     setActiveIndex("Home");
                     setopenSlidWin(false);
                     nevigate("/home");
-                  }}
-                >
+                  }}>
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px", color: text_clrH }}
-                  >
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      color: TxtHighColor,
+                    }}>
                     <FontAwesomeIcon icon={faHome} />
                   </div>
                   <span
                     className={`fw-semibold pe-5 ${
                       sm_break_point ? "d-none" : ""
                     }`}
-                    style={{ width: "154px", color: text_clrH }}
-                  >
+                    style={{ width: "154px", color: TxtHighColor }}>
                     Home
                   </span>
                 </Nav.Link>
@@ -163,20 +161,21 @@ export default function LeftNavbar() {
                     // setopenSlidWin(false);
                     // setActiveIndex("Upload");
                     navigate("/Editor");
-                  }}
-                >
+                  }}>
                   <div
                     className="d-flex align-items-center justify-content-center"
-                    style={{ width: "24px", height: "24px", color: text_clrH }}
-                  >
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      color: TxtHighColor,
+                    }}>
                     <FontAwesomeIcon icon={faPlus} />
                   </div>
                   <span
                     className={`fw-semibold pe-5 ${
                       sm_break_point ? "d-none" : ""
                     }`}
-                    style={{ width: "154px", color: text_clrH }}
-                  >
+                    style={{ width: "154px", color: TxtHighColor }}>
                     Upload
                   </span>
                 </Nav.Link>
@@ -192,15 +191,13 @@ export default function LeftNavbar() {
                     setopenSlidWin(true);
                     setActiveIndex("Notifications");
                   }}
-                  style={{ cursor: "pointer" }}
-                >
+                  style={{ cursor: "pointer" }}>
                   <NotificationBell />
                   <span
                     className={`fw-semibold pe-5 ${
                       sm_break_point ? "d-none" : ""
                     }`}
-                    style={{ width: "154px", color: text_clrH }}
-                  >
+                    style={{ width: "154px", color: TxtHighColor }}>
                     Notifications
                   </span>
                 </div>
@@ -216,15 +213,13 @@ export default function LeftNavbar() {
                       }`}
                       onClick={() => {
                         setActiveIndex("User");
-                      }}
-                    >
+                      }}>
                       <span
                         className={`d-flex align-items-center justify-content-center border rounded-1 text-danger`}
                         style={{
                           width: "24px",
                           height: "24px",
-                        }}
-                      >
+                        }}>
                         <FontAwesomeIcon icon={faUser} />
                       </span>
 
@@ -232,8 +227,7 @@ export default function LeftNavbar() {
                         className={`fw-semibold ${
                           sm_break_point ? "d-none" : ""
                         }`}
-                        style={{ color: text_clrH }}
-                      >
+                        style={{ color: TxtHighColor }}>
                         User Profile
                       </span>
                     </Nav.Link>
@@ -251,20 +245,17 @@ export default function LeftNavbar() {
                       onClick={() => {
                         setopenSlidWin(false);
                         setActiveIndex("User");
-                      }}
-                    >
+                      }}>
                       <div
                         className="d-flex align-items-center justify-content-center gap-3"
-                        style={{ width: "24px", height: "24px" }}
-                      >
+                        style={{ width: "24px", height: "24px" }}>
                         <FontAwesomeIcon color={text_clrM} icon={faUser} />
                       </div>
                       <span
                         className={`fw-semibold pe-5 small ${
                           sm_break_point ? "d-none" : ""
                         }`}
-                        style={{ minWidth: "max-content", color: text_clrM }}
-                      >
+                        style={{ minWidth: "max-content", color: text_clrM }}>
                         {" "}
                         Create an Account
                       </span>
@@ -287,8 +278,7 @@ export default function LeftNavbar() {
             left: `${
               mobile_break_point ? "0" : sm_break_point ? "40px" : "26px"
             }`,
-          }}
-        >
+          }}>
           <Notification setVisibleNotification={setVisibleNotification} />
         </div>
       )}

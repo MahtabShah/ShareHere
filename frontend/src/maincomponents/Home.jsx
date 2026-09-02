@@ -18,7 +18,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
   const { fetch_comments_postId } = usePost();
   const [loading, setLoading] = useState(true);
   const [menuOpenId, setMenuOpenId] = useState(null); // store id of open menu
-  const { bg3, text_clrH, text_clrL } = useTheme();
+  const { bg3, TxtHighColor, text_clrL } = useTheme();
   const { API, token, admin_user } = useQuote();
 
   // console.log(comments);
@@ -57,7 +57,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       alert("Comment reported . . .!!!");
     } catch (err) {
@@ -86,8 +86,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                 background: `${pc?.userId?.bg_clr}`,
                 cursor: "pointer",
               }}
-              onClick={() => navigate(`/api/user/${pc?.userId?._id}`)}
-            >
+              onClick={() => navigate(`/api/user/${pc?.userId?._id}`)}>
               {/* <span>{pc?.userId?.username?.charAt(0).toUpperCase()}</span> */}
               <img
                 src={pc?.userId?.profile_pic}
@@ -108,8 +107,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                   style={{ cursor: "pointer" }}
                   onClick={() =>
                     setMenuOpenId((prev) => (prev === pc._id ? null : pc._id))
-                  }
-                >
+                  }>
                   <BsThreeDotsVertical />
                 </span>
               </div>
@@ -119,25 +117,24 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                 <div className="d-flex gap-2">
                   <button
                     className="btn btn-sm p-0 border-0"
-                    style={{ color: text_clrH, cursor: "pointer" }}
+                    style={{ color: TxtHighColor, cursor: "pointer" }}
                     onClick={async () => {
                       try {
                         const { data } = await axios.put(
                           `${API}/api/crud/like/${pc._id}`,
                           {},
-                          { headers: { Authorization: `Bearer ${token}` } }
+                          { headers: { Authorization: `Bearer ${token}` } },
                         );
                         // update UI instantly
                         setComments((prev) =>
                           prev.map((c) =>
-                            c._id === pc._id ? { ...c, likes: data.likes } : c
-                          )
+                            c._id === pc._id ? { ...c, likes: data.likes } : c,
+                          ),
                         );
                       } catch (err) {
                         console.error("Error liking comment:", err);
                       }
-                    }}
-                  >
+                    }}>
                     {pc.likes?.includes(admin_user?._id) ? (
                       <AiFillLike size={14} />
                     ) : (
@@ -151,7 +148,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                     style={{
                       color: pc.dislikes?.includes(admin_user?._id)
                         ? "red"
-                        : text_clrH,
+                        : TxtHighColor,
                       cursor: "pointer",
                       background: "transparent",
                       rotate: "180deg",
@@ -161,7 +158,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                         const { data } = await axios.put(
                           `${API}/api/crud/dislike/${pc._id}`,
                           {},
-                          { headers: { Authorization: `Bearer ${token}` } }
+                          { headers: { Authorization: `Bearer ${token}` } },
                         );
                         setComments((prev) =>
                           prev.map((c) =>
@@ -171,14 +168,13 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                                   likes: data.likes,
                                   dislikes: data.dislikes,
                                 }
-                              : c
-                          )
+                              : c,
+                          ),
                         );
                       } catch (err) {
                         console.error("Error disliking comment:", err);
                       }
-                    }}
-                  >
+                    }}>
                     {pc.dislikes?.includes(admin_user?._id) ? (
                       <AiFillLike size={14} />
                     ) : (
@@ -199,23 +195,20 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                     background: bg3,
                     border: `1px solid ${text_clrL}`,
                     zIndex: 10,
-                  }}
-                >
+                  }}>
                   {(pc?.userId?._id == admin_user?._id ||
                     user?._id == admin_user?._id) && (
                     <button
                       className="btn w-100 border-0 p-0 py-1 rounded-2"
-                      style={{ color: text_clrH }}
-                      onClick={() => handleDelete(pc._id)}
-                    >
+                      style={{ color: TxtHighColor }}
+                      onClick={() => handleDelete(pc._id)}>
                       Delete
                     </button>
                   )}
                   <button
                     className="btn w-100 border-0 py-1 p-0 rounded-2"
-                    style={{ color: text_clrH }}
-                    onClick={() => handleReport(pc._id)}
-                  >
+                    style={{ color: TxtHighColor }}
+                    onClick={() => handleReport(pc._id)}>
                     Report
                   </button>
                 </div>
@@ -243,8 +236,7 @@ export const CardPost = ({
           height: "100%",
           flexShrink: 0,
           cursor: "pointer",
-        }}
-      >
+        }}>
         <div className="w-100 h-100 bg-image">
           <img
             src={post?.images[0]} // 400px for mobile-friendly width

@@ -54,7 +54,7 @@ export const Notification = ({ setVisibleNotification }) => {
       const res = await axios.get(
         `${API}/api/crud/get_userbyId`,
 
-        { params: { userId }, headers: { Authorization: `Bearer ${token}` } }
+        { params: { userId }, headers: { Authorization: `Bearer ${token}` } },
       );
       // setLoading(false);
       setUser(res?.data);
@@ -85,7 +85,7 @@ export const Notification = ({ setVisibleNotification }) => {
     }
   };
 
-  const { text_clrH, text_clrL, text_clrM, bg1, bg2 } = useTheme();
+  const { TxtHighColor, text_clrL, text_clrM, bg1, bg2 } = useTheme();
   const { admin_user, sm_break_point, setActiveIndex, activeIndex } =
     useQuote();
 
@@ -103,15 +103,13 @@ export const Notification = ({ setVisibleNotification }) => {
             maxWidth: "501px",
             boxShadow: `0 2px 4px ${bg1}`,
             height: "calc(100dvh - 104px)",
-          }}
-        >
+          }}>
           <h5
             className="d-flex px-1 align-items-center gap-3 position-sticky py-2 top-0"
             style={{ background: bg1, zIndex: 9877 }}
             onClick={() => {
               setCount(0);
-            }}
-          >
+            }}>
             <div
               className="d-inline-flex p-1 rounded-1"
               onClick={() => {
@@ -122,13 +120,11 @@ export const Notification = ({ setVisibleNotification }) => {
                 minWidth: "32px",
                 maxHeight: "32px",
                 cursor: "pointer",
-              }}
-            >
+              }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                fill={text_clrH}
-              >
+                fill={TxtHighColor}>
                 <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
               </svg>
             </div>
@@ -139,17 +135,15 @@ export const Notification = ({ setVisibleNotification }) => {
             style={{
               zIndex: "100",
               background: bg2,
-              color: text_clrH,
-            }}
-          >
+              color: TxtHighColor,
+            }}>
             {LazyLoading || curr_all_notifications.length < 1 ? (
               <Loading dm={32} />
             ) : go_comment ? (
               <div className="">
                 <div
                   className="p-1 d-flex gap-3 justify-content-between"
-                  style={{ background: bg2, color: text_clrM }}
-                >
+                  style={{ background: bg2, color: text_clrM }}>
                   <>
                     <div className="flex-grow-1 w-100">
                       {post?.text.split(" ").slice(0, 40).join(" ")} . . .
@@ -160,8 +154,7 @@ export const Notification = ({ setVisibleNotification }) => {
                       onClick={() => {
                         Track_post(post?._id);
                         setopenSlidWin(false);
-                      }}
-                    >
+                      }}>
                       <CardPost post={post} />
                     </div>
                   </>
@@ -186,8 +179,7 @@ export const Notification = ({ setVisibleNotification }) => {
                   heading = (
                     <div
                       className="pb-1 mx-1"
-                      style={{ borderBottom: `2px solid ${text_clrH}` }}
-                    >
+                      style={{ borderBottom: `2px solid ${TxtHighColor}` }}>
                       Last Month
                     </div>
                   );
@@ -196,8 +188,7 @@ export const Notification = ({ setVisibleNotification }) => {
                   heading = (
                     <div
                       className="pb-1 mx-1"
-                      style={{ borderBottom: `2px solid ${text_clrH}` }}
-                    >
+                      style={{ borderBottom: `2px solid ${TxtHighColor}` }}>
                       Last Week
                     </div>
                   );
@@ -206,8 +197,7 @@ export const Notification = ({ setVisibleNotification }) => {
                   heading = (
                     <div
                       className="pb-1 mx-1"
-                      style={{ borderBottom: `2px solid ${text_clrH}` }}
-                    >
+                      style={{ borderBottom: `2px solid ${TxtHighColor}` }}>
                       This Week
                     </div>
                   );
@@ -281,8 +271,7 @@ const LikeCommNotifi = ({
       <div className="likeNootify p-1" onLoad={() => setLoaded(true)}>
         <div
           className="d-flex gap-2 justify-content-between"
-          style={{ display: loaded ? "block" : "none" }}
-        >
+          style={{ display: loaded ? "block" : "none" }}>
           <div
             className="dpPhoto rounded-circle border"
             style={{
@@ -294,8 +283,7 @@ const LikeCommNotifi = ({
             onClick={() => {
               navigate(`/api/user/${n?.sender?._id}`);
               setopenSlidWin(false);
-            }}
-          >
+            }}>
             {n?.sender?.profile_pic && (
               <img
                 src={n?.sender?.profile_pic}
@@ -311,8 +299,7 @@ const LikeCommNotifi = ({
                 className="small"
                 onClick={() => {
                   Track_post(n?.post);
-                }}
-              >
+                }}>
                 <div className="fw-medium on-hover-userid">
                   {n?.sender?.username} {type}
                 </div>
@@ -330,8 +317,7 @@ const LikeCommNotifi = ({
                   WebkitBoxOrient: "vertical",
 
                   textOverflow: "ellipsis",
-                }}
-              >
+                }}>
                 {content}
               </div>
             </div>
@@ -341,8 +327,7 @@ const LikeCommNotifi = ({
               onClick={() => {
                 Track_post(n?.post);
               }}
-              style={{ minWidth: "80px" }}
-            >
+              style={{ minWidth: "80px" }}>
               <div className="rounded">
                 {post && (
                   <CardPost

@@ -37,7 +37,8 @@ const EditPost = () => {
     CommentFn(id);
   }, []);
 
-  const { text_clrH, text_clrL, text_clrM, bg1, bg2, mainbg, bg3 } = useTheme();
+  const { TxtHighColor, text_clrL, text_clrM, bg1, bg2, mainbg, bg3 } =
+    useTheme();
   const [category, setCategory] = useState(post?.category);
   const [visiblity, setVisiblity] = useState(post?.mode);
   const [text, setText] = useState(post?.text || "\n");
@@ -88,7 +89,7 @@ const EditPost = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         alert("Uploaded Successfully");
         nevigate("/home");
@@ -96,7 +97,7 @@ const EditPost = () => {
     } catch (err) {
       alert(
         "Failed to post, Connection Error or internal issue: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
       );
       console.error("Error saving sentence", err);
     }
@@ -107,19 +108,16 @@ const EditPost = () => {
     <>
       <div
         style={{ background: bg2 }}
-        className="d-flex flex-column gap-2 p-3 my-5"
-      >
+        className="d-flex flex-column gap-2 p-3 my-5">
         <div
           className="d-flex rounded flex-row-reverse flex-wrap flex-md-nowrap gap-3 overflow-hidden"
-          style={{}}
-        >
+          style={{}}>
           <div
             className="rounded align-items-center  pe-2 d-flex"
             style={{
               minHeight: "240px",
               margin: "auto",
-            }}
-          >
+            }}>
             <img
               src={post?.images[0]}
               alt=""
@@ -136,8 +134,7 @@ const EditPost = () => {
             className="d-flex flex-column w-100 gap-2 overflow-auto"
             style={{
               minHeight: "200px",
-            }}
-          >
+            }}>
             <textarea
               value={text}
               onChange={handleInput}
@@ -145,7 +142,7 @@ const EditPost = () => {
               placeholder="Write about post here . . ."
               style={{
                 background: bg2,
-                color: text_clrH,
+                color: TxtHighColor,
                 border: `1px solid ${text_clrL}`,
               }}
               spellCheck="false"
@@ -162,10 +159,9 @@ const EditPost = () => {
             className={`btn border p-1 ps-2 pe-2 rounded-5 `}
             onClick={() => setVisiblity("Public")}
             style={{
-              color: visiblity === "Public" ? bg1 : text_clrH,
-              background: visiblity === "Public" ? text_clrH : "",
-            }}
-          >
+              color: visiblity === "Public" ? bg1 : TxtHighColor,
+              background: visiblity === "Public" ? TxtHighColor : "",
+            }}>
             <small> For Public</small>
           </button>
           <button
@@ -174,10 +170,9 @@ const EditPost = () => {
             }`}
             onClick={() => setVisiblity("Follower")}
             style={{
-              color: visiblity === "Follower" ? bg1 : text_clrH,
-              background: visiblity === "Follower" ? text_clrH : "",
-            }}
-          >
+              color: visiblity === "Follower" ? bg1 : TxtHighColor,
+              background: visiblity === "Follower" ? TxtHighColor : "",
+            }}>
             <small> For Follower</small>
           </button>
           <button
@@ -187,18 +182,16 @@ const EditPost = () => {
             onClick={() => setVisiblity("Paid")}
             disabled={true}
             style={{
-              color: visiblity === "Paid" ? bg1 : text_clrH,
-              background: visiblity === "Paid" ? text_clrH : "",
-            }}
-          >
+              color: visiblity === "Paid" ? bg1 : TxtHighColor,
+              background: visiblity === "Paid" ? TxtHighColor : "",
+            }}>
             <small>Paid Only</small>
           </button>
         </div>
 
         <div
           className="vibeTabs mt-3 d-flex flex-column gap-2"
-          style={{ color: text_clrM }}
-        >
+          style={{ color: text_clrM }}>
           <div>
             <b>Select Category of the Post</b>
           </div>
@@ -211,11 +204,10 @@ const EditPost = () => {
             style={{
               "--bg1": bg1,
               "--bg2": bg2,
-              "--tc1": text_clrH,
+              "--tc1": TxtHighColor,
               "--tc2": text_clrM,
               width: "100%",
-            }}
-          >
+            }}>
             {categories.map(({ key, title }) => (
               <Tab
                 eventKey={key}
@@ -240,8 +232,7 @@ const EditPost = () => {
               setCategory(post?.category);
               setVisiblity(post?.mode);
               setText(post?.text);
-            }}
-          >
+            }}>
             Reset
           </label>
 
@@ -250,8 +241,7 @@ const EditPost = () => {
             className="btn btn-danger flex-grow-1 rounded-0"
             style={{ height: "42px" }}
             disabled={LazyLoading}
-            onClick={handleSubmit}
-          >
+            onClick={handleSubmit}>
             {LazyLoading ? <Loading clr={"white"} /> : "Submit"}
           </button>
         </div>

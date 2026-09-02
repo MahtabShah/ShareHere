@@ -57,7 +57,7 @@ const UserProfile = ({}) => {
   const [followMSG, setfollowMSG] = useState(false);
   const [mode, setMode] = useState();
 
-  const { text_clrH, text_clrM, bg1, bg2 } = useTheme();
+  const { TxtHighColor, text_clrM, bg1, bg2 } = useTheme();
 
   useEffect(() => {
     if (user && user?.followers && admin_user) {
@@ -155,19 +155,16 @@ const UserProfile = ({}) => {
           background: bg2,
           // maxWidth: "1200px",
           margin: "auto",
-        }}
-      >
+        }}>
         <div className="pb-3" style={{ background: bg1 }}>
           <div
             className="photoHeader w-100 position-relative"
-            style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}
-          >
+            style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}>
             <div
               className="text-center position-absolute ps-2 overflow-hodden bg-image"
               style={{
                 bottom: "calc(-50px)",
-              }}
-            >
+              }}>
               <div
                 className="rounded-circle bg-image"
                 style={{
@@ -193,8 +190,7 @@ const UserProfile = ({}) => {
 
           <div
             className="text-end pe-3 pt-3"
-            style={{ height: "60px", color: text_clrH }}
-          >
+            style={{ height: "60px", color: TxtHighColor }}>
             <div className="d-flex justify-content-end align-items-center">
               {id !== admin_user?._id && (
                 <>
@@ -212,8 +208,7 @@ const UserProfile = ({}) => {
                   onClick={() => {
                     nevigate(`/api/user/edit/${admin_user?._id}`);
                   }}
-                  style={{ color: bg1, background: text_clrH }}
-                >
+                  style={{ color: bg1, background: TxtHighColor }}>
                   Edit Profile
                 </button>
               )}
@@ -231,19 +226,17 @@ const UserProfile = ({}) => {
                   mobile_break_point
                     ? "100%"
                     : sm_break_point
-                    ? "calc(100% - 50px)"
-                    : "calc(100% - 224px)"
+                      ? "calc(100% - 50px)"
+                      : "calc(100% - 224px)"
                 }`,
-              }}
-            >
+              }}>
               <div
                 className="p-3 rounded bg-black  mt-5 overflow-hidden"
                 style={{
                   maxHeight: "calc(100vh - 200px)",
                   maxWidth: "calc(100vh - 200px)",
                   margin: "auto",
-                }}
-              >
+                }}>
                 <div className="fw-bold d-flex gap-2 align-items-start mb-2 justify-content-between">
                   <p className="small text-warning">
                     ! Use Square size of pic for better visiblity
@@ -251,15 +244,13 @@ const UserProfile = ({}) => {
                   <button
                     className="btn btn-danger btn-sm small text-center p-0"
                     style={{ width: "30px" }}
-                    onClick={() => setProfilePicVisble(!ProfilePicVisble)}
-                  >
+                    onClick={() => setProfilePicVisble(!ProfilePicVisble)}>
                     X
                   </button>
                 </div>
                 <div
                   className="overflow-hidden d-flex align-items-center"
-                  style={{ maxHeight: "calc(100vh - 300px)" }}
-                >
+                  style={{ maxHeight: "calc(100vh - 300px)" }}>
                   <img
                     src={user?.profile_pic}
                     className="w-100 h-100 overflow-hidden"
@@ -272,8 +263,7 @@ const UserProfile = ({}) => {
 
           <div
             className="ps-2 d-flex flex-column justify-content-between"
-            style={{ color: text_clrH }}
-          >
+            style={{ color: TxtHighColor }}>
             <div className="d-flex  justify-content-between">
               <h4 className="flex-grow-1">{user?.username}</h4>
               <div className="d-flex gap-3 ps-3 pe-3 mt-">
@@ -283,8 +273,7 @@ const UserProfile = ({}) => {
                     setOption("followers");
                     fetchFollowerFollowing();
                   }}
-                  style={{ cursor: "pointer" }}
-                >
+                  style={{ cursor: "pointer" }}>
                   <span>Followers</span>
                   <h5>{user?.followers?.length || 0}</h5>
                 </span>
@@ -294,8 +283,7 @@ const UserProfile = ({}) => {
                     setOption("following");
                     fetchFollowerFollowing();
                   }}
-                  style={{ cursor: "pointer" }}
-                >
+                  style={{ cursor: "pointer" }}>
                   <span>Following</span>
                   <h5>{user?.following?.length || 0}</h5>
                 </span>
@@ -312,12 +300,12 @@ const UserProfile = ({}) => {
 
           <div className="m-2 d-flex gap-3" style={{ color: text_clrM }}>
             <div>
-              <span style={{ color: text_clrH }}>{user_post?.length}</span>{" "}
+              <span style={{ color: TxtHighColor }}>{user_post?.length}</span>{" "}
               <span> posts</span>
             </div>
 
             <div>
-              <span style={{ color: text_clrH }}>
+              <span style={{ color: TxtHighColor }}>
                 {user?.followers?.length}
               </span>{" "}
               <span> followers</span>
@@ -328,10 +316,9 @@ const UserProfile = ({}) => {
               className={`btn border p-1 ps-2 pe-2 rounded-5`}
               onClick={() => setActiveBtn3Profile("Public")}
               style={{
-                color: activeBtn3Profile === "Public" ? bg1 : text_clrH,
-                background: activeBtn3Profile === "Public" ? text_clrH : bg1,
-              }}
-            >
+                color: activeBtn3Profile === "Public" ? bg1 : TxtHighColor,
+                background: activeBtn3Profile === "Public" ? TxtHighColor : bg1,
+              }}>
               Public
             </button>
             <button
@@ -339,8 +326,9 @@ const UserProfile = ({}) => {
                 activeBtn3Profile === "Follower" ? "btn-dark" : ""
               }`}
               style={{
-                color: activeBtn3Profile === "Follower" ? bg1 : text_clrH,
-                background: activeBtn3Profile === "Follower" ? text_clrH : bg1,
+                color: activeBtn3Profile === "Follower" ? bg1 : TxtHighColor,
+                background:
+                  activeBtn3Profile === "Follower" ? TxtHighColor : bg1,
               }}
               onClick={() => {
                 setActiveBtn3Profile("Follower");
@@ -348,8 +336,7 @@ const UserProfile = ({}) => {
                 if (mode != "Public") {
                   setfollowMSG(true);
                 }
-              }}
-            >
+              }}>
               Follower
             </button>
             <button
@@ -358,8 +345,7 @@ const UserProfile = ({}) => {
               }`}
               onClick={() => setActiveBtn3Profile("Paid")}
               disabled={true}
-              style={{ color: text_clrH }}
-            >
+              style={{ color: TxtHighColor }}>
               Paid
             </button>
           </div>
@@ -371,8 +357,7 @@ const UserProfile = ({}) => {
               style={{
                 margin: "auto",
                 maxWidth: "600px",
-              }}
-            >
+              }}>
               {LazyLoading ? (
                 <div className="p-3 d-flex justify-content-start">
                   {" "}
@@ -426,8 +411,7 @@ const UserProfile = ({}) => {
                 left: "20vw",
                 height: "20vh",
                 width: "60vw",
-              }}
-            >
+              }}>
               {/* Close Button */}
               <button
                 onClick={() => {
@@ -435,8 +419,7 @@ const UserProfile = ({}) => {
                 }} // <- You can define this function in your component
                 className="position-absolute btn-close"
                 style={{ top: "1px", right: "1px", scale: "0.6" }}
-                aria-label="Close"
-              ></button>
+                aria-label="Close"></button>
 
               {/* Info Text */}
               <small className="text-center">
@@ -468,8 +451,8 @@ const UserProfile = ({}) => {
               mobile_break_point
                 ? "calc(100% - 15px)"
                 : sm_break_point
-                ? "calc(100% - 90px)"
-                : "100%"
+                  ? "calc(100% - 90px)"
+                  : "100%"
             }`,
             boxShadow: "0 0 3px #ddd",
             right: `${lgbreakPoint ? "200px" : "0"}`,
@@ -478,16 +461,14 @@ const UserProfile = ({}) => {
             background: bg2,
             color: text_clrM,
           }}
-          ref={outRef}
-        >
+          ref={outRef}>
           <div className="d-flex justify-content-between align-items-center">
             <div>{option} list</div>
             <div
               className="btn btn-danger"
               onClick={() => {
                 setOption(null);
-              }}
-            >
+              }}>
               X
             </div>
           </div>
@@ -495,27 +476,23 @@ const UserProfile = ({}) => {
           <div className="d-flex flex-column gap-3 mt-3 overflow-y-auto none-scroller">
             <div
               className="d-flex flex-column gap-2"
-              style={{ background: bg2 }}
-            >
+              style={{ background: bg2 }}>
               {option == "followers" &&
                 followers?.map((user, idx) => (
                   <div
                     key={`${user}${idx}`}
-                    className="d-flex align-items-center gap-4 pb-3 rounded"
-                  >
+                    className="d-flex align-items-center gap-4 pb-3 rounded">
                     <span
                       className="w-100"
                       onClick={() => {
                         setOption(false);
-                      }}
-                    >
+                      }}>
                       <UserRing user={user} dm={52} />
                     </span>
                     {user?._id !== admin_user?._id && (
                       <div
                         className="text-center btn p-1 btn-outline-primary"
-                        style={{ minWidth: "142px" }}
-                      >
+                        style={{ minWidth: "142px" }}>
                         <FollowBtn
                           id={user?._id}
                           cls={"rounded-1 p-1 ps-3 pe-3"}
@@ -530,21 +507,18 @@ const UserProfile = ({}) => {
                 following?.map((user, idx) => (
                   <div
                     key={`${user}${idx}`}
-                    className="d-flex align-items-center gap-4 pb-3 rounded"
-                  >
+                    className="d-flex align-items-center gap-4 pb-3 rounded">
                     <span
                       className="w-100"
                       onClick={() => {
                         setOption(false);
-                      }}
-                    >
+                      }}>
                       <UserRing user={user} dm={52} />
                     </span>
                     {user?._id !== admin_user?._id && (
                       <div
                         className="text-center btn p-1 btn-outline-primary"
-                        style={{ minWidth: "142px" }}
-                      >
+                        style={{ minWidth: "142px" }}>
                         <FollowBtn
                           id={user?._id}
                           cls={"rounded-1 p-1 ps-3 pe-3"}

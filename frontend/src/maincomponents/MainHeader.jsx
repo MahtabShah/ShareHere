@@ -60,7 +60,7 @@ function MainHeader({}) {
     });
   }, [smbreakPoint]);
 
-  const { text_clrH, text_clrL, text_clrM, mainbg, bg1, setThemeType } =
+  const { TxtHighColor, text_clrL, text_clrM, mainbg, bg1, setThemeType } =
     useTheme();
   const [fading, setFading] = useState(false);
   const theme = localStorage.getItem("theme");
@@ -90,8 +90,7 @@ function MainHeader({}) {
           marginLeft: `${
             mobile_break_point ? "0px" : sm_break_point ? "74px" : "244px"
           }`,
-        }}
-      >
+        }}>
         <Container fluid>
           <div className="fw-bold fs-6 p-0 m-0 flex-grow-1">
             <div className="d-flex align-items-center gap-2 w-100 flex-grow-1">
@@ -110,11 +109,10 @@ function MainHeader({}) {
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: text_clrH,
+                  color: TxtHighColor,
                   minWidth: "24px",
                   fontSize: 20,
-                }}
-              >
+                }}>
                 <FontAwesomeIcon
                   icon={theme == "dark" ? faSun : faMoon}
                   className={`theme-icon ${fading ? "fade-out" : ""}`}
@@ -130,7 +128,7 @@ function MainHeader({}) {
 }
 
 export const NotificationBell = () => {
-  const { text_clrH } = useTheme();
+  const { TxtHighColor } = useTheme();
   const {
     curr_all_notifications,
     openSlidWin,
@@ -162,7 +160,7 @@ export const NotificationBell = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setcurr_all_notifications(res.data);
     } catch (error) {
@@ -180,12 +178,10 @@ export const NotificationBell = () => {
     <div className="">
       <Nav.Link
         className={`nav-link text-dark d-flex align-items-center gap-3 fs-6 `}
-        onClick={HandleBellIcon}
-      >
+        onClick={HandleBellIcon}>
         <div
           className="d-flex align-items-center small justify-content-center"
-          style={{ width: "24px", height: "24px" }}
-        >
+          style={{ width: "24px", height: "24px" }}>
           {count > 0 && (
             <small
               className="text-light small position-absolute text-center rounded-4 fw-bold "
@@ -193,8 +189,7 @@ export const NotificationBell = () => {
                 translate: "10px -4px",
                 minWidth: "18px",
                 height: "18px",
-              }}
-            >
+              }}>
               <div className="position-relative d-inline-block">
                 {count > 0 && (
                   <span
@@ -203,8 +198,7 @@ export const NotificationBell = () => {
                       fontSize: "0.5rem",
                       width: "20px",
                       height: "20px",
-                    }}
-                  >
+                    }}>
                     {count > 9 ? "9+" : count}
                   </span>
                 )}
@@ -212,7 +206,7 @@ export const NotificationBell = () => {
             </small>
           )}
 
-          <FontAwesomeIcon icon={faBell} color={text_clrH} fontSize={20} />
+          <FontAwesomeIcon icon={faBell} color={TxtHighColor} fontSize={20} />
         </div>
       </Nav.Link>
     </div>
