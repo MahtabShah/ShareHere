@@ -4,11 +4,23 @@
   padding: 0;
 }
 
-html,
+html {
+  overflow: hidden;
+}
+
 body {
   overflow-x: clip;
-  /* background: var(--bg2); */
-  /* border: 2px solid red; */
+  margin-top: 100px !important;
+  max-height: calc(100dvh - 100px);
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+  background: #24617338;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgb(151, 151, 116);
 }
 
 .like-comment-share :hover {

@@ -1,7 +1,13 @@
 // import { StrictMode } from "react";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, useNavigate, useLocation, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  useNavigate,
+  useLocation,
+  Routes,
+  Route,
+} from "react-router-dom";
 import { QuoteProvider, useQuote } from "./context/QueotrContext.jsx";
 import MainHeader from "../src/maincomponents/MainHeader.jsx";
 import UserProfile from "./maincomponents/UserProfile.jsx";
@@ -106,7 +112,8 @@ const RoutesArr = [
 
 const AppLayout = () => {
   const location = useLocation();
-  const { mobile_break_point, isNavCollapsed, openSlidWin, setActiveIndex } = useQuote();
+  const { mobile_break_point, isNavCollapsed, openSlidWin, setActiveIndex } =
+    useQuote();
 
   useEffect(() => {
     if (!openSlidWin) {
@@ -121,8 +128,8 @@ const AppLayout = () => {
       mobile_break_point
         ? "100%"
         : isNavCollapsed
-        ? "calc(100% - 74px)"
-        : "calc(100% - 244px)"
+          ? "calc(100% - 74px)"
+          : "calc(100% - 244px)"
     }`,
     transition:
       "margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
