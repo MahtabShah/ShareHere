@@ -64,7 +64,8 @@ const StatusImg = ({ u }) => {
 };
 
 const StatusList = ({ users, openStatus }) => {
-  const { bgPage, bgSurface, textSecondary, textPrimary, textMuted } = useTheme();
+  const { bgPage, bgSurface, textSecondary, textPrimary, textMuted } =
+    useTheme();
   const { admin_user, setActiveIndex, setopenSlidWin, lgbreakPoint } =
     useQuote();
 
@@ -76,7 +77,6 @@ const StatusList = ({ users, openStatus }) => {
       <div
         className="py-2"
         style={{
-          marginTop: "50px",
           paddingInline: !lgbreakPoint ? "7px" : "0",
         }}>
         <div
