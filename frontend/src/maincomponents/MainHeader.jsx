@@ -216,8 +216,8 @@ function MainHeader({ onLogout } = {}) {
           mobile_break_point
             ? "100%"
             : isNavCollapsed
-            ? "calc(100% - 74px)"
-            : "calc(100% - 244px)"
+              ? "calc(100% - 74px)"
+              : "calc(100% - 244px)"
         }`,
         height: "54px",
         transition:
@@ -330,7 +330,10 @@ function MainHeader({ onLogout } = {}) {
                 whiteSpace: "nowrap",
                 flexShrink: 0,
               }}>
-              <FontAwesomeIcon icon={faSquarePlus} style={{ fontSize: "15px" }} />
+              <FontAwesomeIcon
+                icon={faSquarePlus}
+                style={{ fontSize: "15px" }}
+              />
               {!smbreakPoint && <span>Create</span>}
             </button>
 
@@ -366,12 +369,18 @@ function MainHeader({ onLogout } = {}) {
 
             {/* User Profile Avatar with Dropdown Menu (on mobile, user profile is in BottomNav) */}
             {loggedIn && admin_user?._id && (
-              <div className="position-relative d-none d-sm-block" ref={userMenuRef}>
+              <div
+                className="position-relative d-none d-sm-block"
+                ref={userMenuRef}>
                 <button
                   type="button"
                   className="btn p-0 d-flex align-items-center gap-1 border-0 shadow-none"
                   onClick={() => setShowUserMenu((prev) => !prev)}
-                  title={admin_user?.username ? `@${admin_user.username}` : "My Account"}
+                  title={
+                    admin_user?.username
+                      ? `@${admin_user.username}`
+                      : "My Account"
+                  }
                   style={{
                     background: "transparent",
                     cursor: "pointer",
@@ -384,9 +393,13 @@ function MainHeader({ onLogout } = {}) {
                       height: "32px",
                       borderRadius: "50%",
                       border: `2px solid ${
-                        showUserMenu ? "var(--accent-primary, #e1306c)" : bgBorder
+                        showUserMenu
+                          ? "var(--accent-primary, #e1306c)"
+                          : bgBorder
                       }`,
-                      background: admin_user?.bg_clr || "linear-gradient(135deg, #6366f1, #a855f7)",
+                      background:
+                        admin_user?.bg_clr ||
+                        "linear-gradient(135deg, #6366f1, #a855f7)",
                       color: "#fff",
                       fontWeight: "bold",
                       fontSize: "13px",
@@ -399,7 +412,9 @@ function MainHeader({ onLogout } = {}) {
                         className="w-100 h-100 object-fit-cover"
                       />
                     ) : (
-                      <span>{admin_user?.username?.[0]?.toUpperCase() || "U"}</span>
+                      <span>
+                        {admin_user?.username?.[0]?.toUpperCase() || "U"}
+                      </span>
                     )}
                   </div>
                   <FontAwesomeIcon
@@ -408,7 +423,9 @@ function MainHeader({ onLogout } = {}) {
                       fontSize: "10px",
                       color: textMuted,
                       transition: "transform 0.2s",
-                      transform: showUserMenu ? "rotate(180deg)" : "rotate(0deg)",
+                      transform: showUserMenu
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
                     }}
                   />
                 </button>
@@ -430,7 +447,9 @@ function MainHeader({ onLogout } = {}) {
                     {/* User Profile Header */}
                     <div
                       className="d-flex align-items-center gap-2 p-2 rounded-2 mb-1 cursor-pointer"
-                      onClick={() => handleNavigate("User", `/api/user/${admin_user._id}`)}
+                      onClick={() =>
+                        handleNavigate("User", `/api/user/${admin_user._id}`)
+                      }
                       style={{
                         background: bgSubtle,
                         cursor: "pointer",
@@ -441,7 +460,9 @@ function MainHeader({ onLogout } = {}) {
                           width: "36px",
                           height: "36px",
                           borderRadius: "50%",
-                          background: admin_user?.bg_clr || "linear-gradient(135deg, #6366f1, #a855f7)",
+                          background:
+                            admin_user?.bg_clr ||
+                            "linear-gradient(135deg, #6366f1, #a855f7)",
                           color: "#fff",
                           fontWeight: "bold",
                           fontSize: "14px",
@@ -453,7 +474,9 @@ function MainHeader({ onLogout } = {}) {
                             className="w-100 h-100 object-fit-cover"
                           />
                         ) : (
-                          <span>{admin_user?.username?.[0]?.toUpperCase() || "U"}</span>
+                          <span>
+                            {admin_user?.username?.[0]?.toUpperCase() || "U"}
+                          </span>
                         )}
                       </div>
                       <div className="d-flex flex-column overflow-hidden text-start">
@@ -470,20 +493,28 @@ function MainHeader({ onLogout } = {}) {
                       </div>
                     </div>
 
-                    <div className="my-1" style={{ height: "1px", background: bgBorder }} />
+                    <div
+                      className="my-1"
+                      style={{ height: "1px", background: bgBorder }}
+                    />
 
                     {/* Dropdown Menu Items */}
                     <button
                       type="button"
                       className="btn w-100 d-flex align-items-center gap-2 text-start p-2 border-0 shadow-none rounded-2"
-                      onClick={() => handleNavigate("User", `/api/user/${admin_user._id}`)}
+                      onClick={() =>
+                        handleNavigate("User", `/api/user/${admin_user._id}`)
+                      }
                       style={{
                         color: textPrimary,
                         fontSize: "13px",
                         background: "transparent",
                         cursor: "pointer",
                       }}>
-                      <FontAwesomeIcon icon={faUser} style={{ width: "16px", color: textMuted }} />
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        style={{ width: "16px", color: textMuted }}
+                      />
                       <span>My Profile</span>
                     </button>
 
@@ -497,7 +528,10 @@ function MainHeader({ onLogout } = {}) {
                         background: "transparent",
                         cursor: "pointer",
                       }}>
-                      <FontAwesomeIcon icon={faSquarePlus} style={{ width: "16px", color: textMuted }} />
+                      <FontAwesomeIcon
+                        icon={faSquarePlus}
+                        style={{ width: "16px", color: textMuted }}
+                      />
                       <span>Create Vibe</span>
                     </button>
 
@@ -511,11 +545,17 @@ function MainHeader({ onLogout } = {}) {
                         background: "transparent",
                         cursor: "pointer",
                       }}>
-                      <FontAwesomeIcon icon={faCompass} style={{ width: "16px", color: textMuted }} />
+                      <FontAwesomeIcon
+                        icon={faCompass}
+                        style={{ width: "16px", color: textMuted }}
+                      />
                       <span>Explore Vibes</span>
                     </button>
 
-                    <div className="my-1" style={{ height: "1px", background: bgBorder }} />
+                    <div
+                      className="my-1"
+                      style={{ height: "1px", background: bgBorder }}
+                    />
 
                     <button
                       type="button"
@@ -528,7 +568,10 @@ function MainHeader({ onLogout } = {}) {
                         cursor: "pointer",
                         fontWeight: 500,
                       }}>
-                      <FontAwesomeIcon icon={faRightFromBracket} style={{ width: "16px" }} />
+                      <FontAwesomeIcon
+                        icon={faRightFromBracket}
+                        style={{ width: "16px" }}
+                      />
                       <span>Log Out</span>
                     </button>
                   </div>

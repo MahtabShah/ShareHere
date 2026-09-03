@@ -22,7 +22,7 @@ const SuggetionSlip = () => {
   const { textSecondary, bgSurface } = useTheme();
   const { posts } = usePost();
 
-  console.log("user ", all_user[0]);
+  console.log("user ", all_user);
 
   return (
     <>

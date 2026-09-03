@@ -2,11 +2,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios, { all } from "axios";
 const QuoteContext = createContext();
-const rawApi = import.meta.env.VITE_API_URL;
-const API =
-  rawApi && !rawApi.includes("onrender.com") && !rawApi.includes("localhost:5000")
-    ? rawApi
-    : "";
+const API = import.meta.env.VITE_API_URL;
 import socket from "../maincomponents/socket";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -15,14 +11,14 @@ dayjs.extend(relativeTime);
 export const useQuote = () => useContext(QuoteContext) || {};
 
 export const QuoteProvider = ({ children }) => {
-  const [sm_break_point, setsm_break_point] = useState(
-    () => (typeof window !== "undefined" ? window.innerWidth < 1081 : false),
+  const [sm_break_point, setsm_break_point] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 1081 : false,
   );
-  const [lgbreakPoint, setlgbreakPoint] = useState(
-    () => (typeof window !== "undefined" ? window.innerWidth > 1220 : true),
+  const [lgbreakPoint, setlgbreakPoint] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth > 1220 : true,
   );
-  const [mobile_break_point, setmobile_break_point] = useState(
-    () => (typeof window !== "undefined" ? window.innerWidth <= 768 : false),
+  const [mobile_break_point, setmobile_break_point] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false,
   );
 
   const [activeIndex, setActiveIndex] = useState("Home");
@@ -122,7 +118,7 @@ export const QuoteProvider = ({ children }) => {
         const res = await axios.get(`${API}/api/crud/all_notifications`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        // console.log("setcurr_all_notifications---->", res.data);
+        console.log("setcurr_all_notifications---->", res.data);
         setcurr_all_notifications(res.data);
         return res.data;
       }
