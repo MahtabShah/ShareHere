@@ -25,7 +25,7 @@ const isValidUser = (user) => {
 };
 
 const StatusImg = ({ u }) => {
-  const { TxtHighColor } = useTheme();
+  const { textPrimary } = useTheme();
   const { admin_user } = useQuote();
   const [loaded, setLoaded] = useState(false);
   const style = {
@@ -36,7 +36,7 @@ const StatusImg = ({ u }) => {
         s.SeenBy?.length > 0 &&
         s.SeenBy?.some((seenUser) => seenUser._id === admin_user?._id),
     )
-      ? `3px solid ${TxtHighColor}`
+      ? `3px solid ${textPrimary}`
       : "3px solid #ed0d32ff",
   };
 
@@ -64,7 +64,7 @@ const StatusImg = ({ u }) => {
 };
 
 const StatusList = ({ users, openStatus }) => {
-  const { bg2, bg1, text_clrM, TxtHighColor, text_clrL } = useTheme();
+  const { bgPage, bgSurface, textSecondary, textPrimary, textMuted } = useTheme();
   const { admin_user, setActiveIndex, setopenSlidWin, lgbreakPoint } =
     useQuote();
 
@@ -97,20 +97,20 @@ const StatusList = ({ users, openStatus }) => {
                 }}>
                 <StatusImg u={u} />
 
-                <div className="small mt-1" style={{ color: text_clrM }}>
+                <div className="small mt-1" style={{ color: textSecondary }}>
                   {u?.username}
                 </div>
                 {admin_user?._id === u?._id && (
                   <div
                     className="position-absolute rounded-circle d-flex  fw-bold fs-5 "
                     style={{
-                      background: bg1,
-                      color: text_clrL,
+                      background: bgSurface,
+                      color: textMuted,
                       bottom: "30px",
                       right: 0,
                       width: "20px",
                       height: "20px",
-                      border: `1px solid ${TxtHighColor}`,
+                      border: `1px solid ${textPrimary}`,
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -122,7 +122,7 @@ const StatusList = ({ users, openStatus }) => {
                       icon={faPlus}
                       fontSize={12}
                       className="m-auto"
-                      color={TxtHighColor}
+                      color={textPrimary}
                     />
                   </div>
                 )}
@@ -340,7 +340,7 @@ export default function StatusPage() {
   const progressRef = useRef(null);
   const [dots, setDots] = useState(-1);
   const [Onhover, setOnhover] = useState(true);
-  const { bg1, bg2, TxtHighColor } = useTheme();
+  const { bgSurface, bgPage, textPrimary } = useTheme();
   const [pause, setPuase] = useState(false);
 
   var currentUser = currentUserIndex !== null ? users[currentUserIndex] : null;
@@ -663,11 +663,11 @@ export default function StatusPage() {
                 <div className="d-flex">
                   <button
                     className="btn p-1 px-2 small rounded-1 d-flex align-items-center justify-content-center"
-                    style={{ background: TxtHighColor, color: bg2 }}
+                    style={{ background: textPrimary, color: bgPage }}
                     onClick={() => setPuase((prev) => !prev)}>
                     <FontAwesomeIcon
                       icon={pause ? faPlay : faPause} // Toggle icon
-                      color={bg2}
+                      color={bgPage}
                     />
                   </button>
 
@@ -691,7 +691,7 @@ export default function StatusPage() {
                   <div
                     className="d-flex flex-column gap-2 position-absolute p-2 rounded-1"
                     style={{
-                      background: bg2,
+                      background: bgPage,
                       zIndex: 1050,
                       right: "40px",
                       top: "45px",
@@ -699,7 +699,6 @@ export default function StatusPage() {
                     <button
                       className="btn w-100 btn-light p-1 px-4 rounded-1"
                       onClick={closeModal}>
-                      {/* <FontAwesomeIcon icon={faTimes} color={bg2} /> */}
                       Close
                     </button>
 

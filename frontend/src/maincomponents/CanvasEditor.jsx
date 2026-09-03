@@ -267,7 +267,7 @@ const CanvasVibeEditor = () => {
     setLazyLoading(false);
   };
 
-  const { TxtHighColor, text_clrL, text_clrM, mainbg, bg1, bg3, bg2 } =
+  const { textPrimary, borderColor, textSecondary, textMuted, bgSurface, bgPage } =
     useTheme();
 
   const [styleOpen, setStyleOpen] = useState(false);
@@ -385,14 +385,12 @@ const CanvasVibeEditor = () => {
             className={`position-fixed toolbar-pr p-2`}
             style={{
               zIndex: 1001,
-              background: bg1,
-              color: TxtHighColor,
-              boxShadow: `0 1px 1px ${text_clrL}`,
-              right: "0",
+              background: bgSurface,
+              color: textPrimary,
+              boxShadow: `0 1px 1px ${borderColor}`,
               left: `${
                 mobile_break_point ? "0px" : sm_break_point ? "74px" : "244px"
               }`,
-
               right: 0,
             }}>
             <div className="d-flex gap-2 overflow-x-auto">
@@ -684,7 +682,7 @@ const CanvasVibeEditor = () => {
                     }}>
                     <FaArrowsAltH
                       style={{
-                        color: text_clrL,
+                        color: textMuted,
                         rotate: "90deg",
                       }}
                       size={16}
@@ -900,7 +898,7 @@ const CanvasVibeEditor = () => {
               <>
                 <div
                   className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bg1, color: TxtHighColor }}>
+                  style={{ background: bgSurface, color: textPrimary }}>
                   <div className="d-flex flex-grow-1 w-100 flex-column">
                     <label className="w-100 d-flex gap-2 flex-grow-1 ">
                       X
@@ -960,7 +958,7 @@ const CanvasVibeEditor = () => {
               <>
                 <div
                   className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bg1 }}>
+                  style={{ background: bgSurface }}>
                   <div className="d-flex flex-grow-1 w-100 flex-column">
                     <label className="w-100 d-flex flex-column gap-2 flex-grow-1 ">
                       <span className="mb-1 fw-semibold">Round the border</span>
@@ -1008,7 +1006,7 @@ const CanvasVibeEditor = () => {
               <>
                 <div
                   className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bg1 }}>
+                  style={{ background: bgSurface }}>
                   <div className="d-flex flex-grow-1 w-100 flex-column">
                     <label className="w-100 d-flex flex-column gap-2 flex-grow-1 ">
                       <span className="mb-1 gap-2 d-inline-flex fw-semibold">
@@ -1158,7 +1156,6 @@ const CanvasVibeEditor = () => {
             onMouseDown={startResizing}
             className="position-absolute"
             style={{
-              cursor: "pointer",
               minWidth: "max-content",
               bottom: "-14px",
               right: "10px",
@@ -1179,7 +1176,7 @@ const CanvasVibeEditor = () => {
       <div
         className="rounded w-100"
         style={{
-          background: !dir && bg1,
+          background: !dir && bgSurface,
           marginTop: !dir && `calc(52px + ${styleOpen ? `80px` : "44px"})`,
           maxHeight: "fit-content",
           // maxWidth: dir ? "100%" : "clamp(200px, 80%, 800px)",
@@ -1187,8 +1184,8 @@ const CanvasVibeEditor = () => {
         <Visiblity
           visible={visible}
           setVisible={setVisible}
-          clr={bg1}
-          bg={TxtHighColor}
+          clr={bgSurface}
+          bg={textPrimary}
         />
 
         <div className="px-2">
@@ -1199,15 +1196,15 @@ const CanvasVibeEditor = () => {
                 width: "40px",
                 height: "40px",
                 backgroundColor: `${admin_user?.bg_clr}`,
-                color: TxtHighColor,
+                color: textPrimary,
               }}>
               {admin_user?.username?.charAt(0) || "M"}
             </div>
             <div>
-              <div style={{ fontWeight: "bold", color: TxtHighColor }}>
+              <div style={{ fontWeight: "bold", color: textPrimary }}>
                 @{admin_user?.username || "Mahtab"}
               </div>
-              <small style={{ color: text_clrM }}>Visibility: {visible}</small>
+              <small style={{ color: textSecondary }}>Visibility: {visible}</small>
             </div>
           </div>
           <div className="mt-2 h-100">
@@ -1219,17 +1216,17 @@ const CanvasVibeEditor = () => {
               className={`form-control rounded h-100 shadow-none p-2 overflow-auto none-scroller`}
               placeholder="Write about post here . . ."
               style={{
-                background: !dir ? bg1 : bg2,
-                color: TxtHighColor,
+                background: !dir ? bgSurface : bgPage,
+                color: textPrimary,
                 minHeight: `${(text.split("\n").length + 4) * 27}px`,
-                border: `${error ? "1px solid red" : `1px solid ${text_clrL}`}`,
+                border: `${error ? "1px solid red" : `1px solid ${borderColor}`}`,
               }}
               spellCheck="false"
             />
           </div>
         </div>
 
-        <div className="p-2 small" style={{ color: TxtHighColor }}>
+        <div className="p-2 small" style={{ color: textPrimary }}>
           Set Tag for the post :{" "}
         </div>
         <div className="vibeTabs px-2">
@@ -1240,10 +1237,10 @@ const CanvasVibeEditor = () => {
             className="border-0 d-flex gap-3 py-2 flex-nowrap none-scroller overflow-auto"
             transition={false}
             style={{
-              "--bg1": bg1,
-              "--bg2": bg2,
-              "--tc1": TxtHighColor,
-              "--tc2": text_clrM,
+              "--bg1": bgSurface,
+              "--bg2": bgPage,
+              "--tc1": textPrimary,
+              "--tc2": textSecondary,
               maxWidth: !dir
                 ? `calc(100vw - 541px - ${
                     mobile_break_point
@@ -1278,7 +1275,7 @@ const CanvasVibeEditor = () => {
             style={{
               height: "42px",
               border: `1px solid ${"#959595ff"}`,
-              color: text_clrM,
+              color: textSecondary,
             }}
             onClick={HandleStatus}>
             {statusLoading ? <Loading clr={"red"} /> : "Set as Status"}
@@ -1287,7 +1284,7 @@ const CanvasVibeEditor = () => {
           <button
             type={LazyLoading ? "button" : "submit"}
             className="btn btn-danger flex-grow-1 rounded-0"
-            style={{ height: "42px", color: text_clrM }}
+            style={{ height: "42px", color: textSecondary }}
             disabled={LazyLoading}
             onClick={handleSubmit}>
             {LazyLoading ? <Loading clr={"white"} /> : "Post"}

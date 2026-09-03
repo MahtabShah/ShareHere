@@ -253,15 +253,26 @@ router.get("/:id/following", async (req, res) => {
 // GET /posts?search=keyword&page=1&limit=10
 router.get("/search", async (req, res) => {
   try {
-    const search = req.query.search || "";
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const rawSearch = (req.query.search || "").trim();
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit) || 10);
 
-    const query = search
-      ? { text: { $regex: search, $options: "i" } }
+    // Escape regex special characters to prevent invalid regex syntax errors
+    const escapedSearch = rawSearch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const query = escapedSearch
+      ? {
+          $or: [
+            { text: { $regex: escapedSearch, $options: "i" } },
+            { image_text: { $regex: escapedSearch, $options: "i" } },
+            { category: { $regex: escapedSearch, $options: "i" } },
+          ],
+        }
       : {};
 
-    const posts = await Sentence.find(query).populate("userId")
+    const posts = await Sentence.find(query)
+      .populate("userId")
+      .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -274,7 +285,8 @@ router.get("/search", async (req, res) => {
       pages: Math.ceil(total / limit),
     });
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    console.error("Search error in backend:", error);
+    res.status(500).json({ error: "Server error", posts: [], total: 0 });
   }
 });
 

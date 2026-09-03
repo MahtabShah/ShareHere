@@ -7,7 +7,7 @@ import { Accordion } from "react-bootstrap";
 
 import { Button, Card, CloseButton, Form, Row, Col } from "react-bootstrap";
 import { FaImage } from "react-icons/fa";
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || "";
 
 const UploadProduct = ({ fetchUser, user, setUser }) => {
   const [formData, setFormData] = useState({

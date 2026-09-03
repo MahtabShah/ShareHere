@@ -1,32 +1,35 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
+
+process.env.JWT_SECRET = process.env.JWT_SECRET || "vibe-ink-jwt-secret-key";
+
 const http = require("http");
 const socketIo = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 
-// const allowedOrigin = process.env.NODE_ENV === 'production'
-//   ?
-//   : "http://localhost:5174";
-// Allow multiple origins
 const allowedOrigins =
-  process.env.VITE_FRONTEND_URL || "https://sharehere-frontend.onrender.com"; // Add production frontend
+  process.env.VITE_FRONTEND_URL || "https://sharehere-frontend.onrender.com";
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true, // If using cookies/auth
-  }),
-);
-console.log("Allowed Origin:", allowedOrigins);
+const corsOptions = {
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+};
 
-// Setup Socket.IO with CORS to allow frontend
+app.use(cors(corsOptions));
+app.use(express.json());
+
+// Setup Socket.IO with CORS
 const io = socketIo(server, {
   cors: {
-    origin: allowedOrigins, // Replace with your frontend origin in production
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -40,34 +43,31 @@ io.on("connection", (socket) => {
 });
 
 // Export io to use in your routes
-module.exports = { io };
+module.exports = { io, app, server };
 
-// Middleware
+// Connect to MongoDB with graceful fallback
+mongoose.set("bufferCommands", false);
+if (process.env.MONGO_URI) {
+  mongoose
+    .connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 3000,
+    })
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) =>
+      console.warn(
+        "MongoDB not connected — continuing with offline fallback:",
+        err.message,
+      ),
+    );
+} else {
+  console.warn(
+    "MONGO_URI not provided — running with graceful offline fallback",
+  );
+}
 
-const corsOptions = {
-  origin: allowedOrigins, // must match your deployed frontend
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.use(express.json());
-
-// const dns = require('dns');
-// dns.setDefaultResultOrder('ipv4first');
-
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
-
-// Basic route to check server
+// API health route
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.json({ status: "ok", name: "Vibe Ink" });
 });
 
 const authRoutes = require("./routes/auth");
@@ -82,7 +82,40 @@ app.use("/api/crud", crudRoutes);
 const userRoute = require("./routes/user");
 app.use("/api/user", userRoute);
 
-const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Database offline error fallback middleware
+app.use((err, req, res, next) => {
+  if (
+    err.name === "MongooseError" ||
+    err.name === "MongoNetworkError" ||
+    err.name === "MongooseServerSelectionError" ||
+    (err.message && err.message.includes("buffering timed out"))
+  ) {
+    console.warn(
+      "[AI Studio] Database offline — returning mock fallback response for",
+      req.path,
+    );
+    if (req.method === "GET") {
+      return res.json(
+        req.path.endsWith("s") || req.path.endsWith("s/") ? [] : {},
+      );
+    }
+    return res
+      .status(503)
+      .json({ error: "Database offline — running in preview mode" });
+  }
+  next(err);
+});
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Static frontend serving for production / built SPA
+const distPath = path.resolve(__dirname, "../frontend/dist");
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.use((req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+}
+
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
+});

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, use } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || "";
 import { Loading } from "../../TinyComponent/LazyLoading";
 import { useQuote } from "../context/QueotrContext";
 import { Fragment } from "react";
@@ -57,7 +57,7 @@ const UserProfile = ({}) => {
   const [followMSG, setfollowMSG] = useState(false);
   const [mode, setMode] = useState();
 
-  const { TxtHighColor, text_clrM, bg1, bg2 } = useTheme();
+  const { textPrimary, textSecondary, bgSurface, bgPage } = useTheme();
 
   useEffect(() => {
     if (user && user?.followers && admin_user) {
@@ -152,11 +152,11 @@ const UserProfile = ({}) => {
         className="d-flex flex-column mb-5 pb-3"
         style={{
           paddingTop: `50px`,
-          background: bg2,
+          background: bgPage,
           // maxWidth: "1200px",
           margin: "auto",
         }}>
-        <div className="pb-3" style={{ background: bg1 }}>
+        <div className="pb-3" style={{ background: bgSurface }}>
           <div
             className="photoHeader w-100 position-relative"
             style={{ height: "calc(120px + 20dvw)", maxHeight: "300px" }}>
@@ -168,10 +168,10 @@ const UserProfile = ({}) => {
               <div
                 className="rounded-circle bg-image"
                 style={{
-                  background: user?.bg_clr,
                   minWidth: "100px",
                   minHeight: "100px",
-                  background: `url(${user?.profile_pic})`,
+                  backgroundColor: user?.bg_clr,
+                  backgroundImage: user?.profile_pic ? `url(${user.profile_pic})` : undefined,
                   aspectRatio: "1/1",
                   cursor: "pointer",
                 }}
@@ -190,14 +190,14 @@ const UserProfile = ({}) => {
 
           <div
             className="text-end pe-3 pt-3"
-            style={{ height: "60px", color: TxtHighColor }}>
+            style={{ height: "60px", color: textPrimary }}>
             <div className="d-flex justify-content-end align-items-center">
               {id !== admin_user?._id && (
                 <>
                   <FollowBtn
                     id={id}
                     cls={"btn btn-sm ps-2 pe-2"}
-                    style={{ background: text_clrM, color: bg1 }}
+                    style={{ background: textSecondary, color: bgSurface }}
                   />
                 </>
               )}
@@ -208,7 +208,7 @@ const UserProfile = ({}) => {
                   onClick={() => {
                     nevigate(`/api/user/edit/${admin_user?._id}`);
                   }}
-                  style={{ color: bg1, background: TxtHighColor }}>
+                  style={{ color: bgSurface, background: textPrimary }}>
                   Edit Profile
                 </button>
               )}
@@ -263,7 +263,7 @@ const UserProfile = ({}) => {
 
           <div
             className="ps-2 d-flex flex-column justify-content-between"
-            style={{ color: TxtHighColor }}>
+            style={{ color: textPrimary }}>
             <div className="d-flex  justify-content-between">
               <h4 className="flex-grow-1">{user?.username}</h4>
               <div className="d-flex gap-3 ps-3 pe-3 mt-">
@@ -298,14 +298,14 @@ const UserProfile = ({}) => {
             </p>
           </div>
 
-          <div className="m-2 d-flex gap-3" style={{ color: text_clrM }}>
+          <div className="m-2 d-flex gap-3" style={{ color: textSecondary }}>
             <div>
-              <span style={{ color: TxtHighColor }}>{user_post?.length}</span>{" "}
+              <span style={{ color: textPrimary }}>{user_post?.length}</span>{" "}
               <span> posts</span>
             </div>
 
             <div>
-              <span style={{ color: TxtHighColor }}>
+              <span style={{ color: textPrimary }}>
                 {user?.followers?.length}
               </span>{" "}
               <span> followers</span>
@@ -316,8 +316,8 @@ const UserProfile = ({}) => {
               className={`btn border p-1 ps-2 pe-2 rounded-5`}
               onClick={() => setActiveBtn3Profile("Public")}
               style={{
-                color: activeBtn3Profile === "Public" ? bg1 : TxtHighColor,
-                background: activeBtn3Profile === "Public" ? TxtHighColor : bg1,
+                color: activeBtn3Profile === "Public" ? bgSurface : textPrimary,
+                background: activeBtn3Profile === "Public" ? textPrimary : bgSurface,
               }}>
               Public
             </button>
@@ -326,9 +326,9 @@ const UserProfile = ({}) => {
                 activeBtn3Profile === "Follower" ? "btn-dark" : ""
               }`}
               style={{
-                color: activeBtn3Profile === "Follower" ? bg1 : TxtHighColor,
+                color: activeBtn3Profile === "Follower" ? bgSurface : textPrimary,
                 background:
-                  activeBtn3Profile === "Follower" ? TxtHighColor : bg1,
+                  activeBtn3Profile === "Follower" ? textPrimary : bgSurface,
               }}
               onClick={() => {
                 setActiveBtn3Profile("Follower");
@@ -345,13 +345,13 @@ const UserProfile = ({}) => {
               }`}
               onClick={() => setActiveBtn3Profile("Paid")}
               disabled={true}
-              style={{ color: TxtHighColor }}>
+              style={{ color: textPrimary }}>
               Paid
             </button>
           </div>
         </div>
 
-        <div className="d-flex flex-column gap-5" style={{ background: bg2 }}>
+        <div className="d-flex flex-column gap-5" style={{ background: bgPage }}>
           {
             <section
               style={{
@@ -458,8 +458,8 @@ const UserProfile = ({}) => {
             right: `${lgbreakPoint ? "200px" : "0"}`,
 
             maxWidth: "500px",
-            background: bg2,
-            color: text_clrM,
+            background: bgPage,
+            color: textSecondary,
           }}
           ref={outRef}>
           <div className="d-flex justify-content-between align-items-center">
@@ -476,7 +476,7 @@ const UserProfile = ({}) => {
           <div className="d-flex flex-column gap-3 mt-3 overflow-y-auto none-scroller">
             <div
               className="d-flex flex-column gap-2"
-              style={{ background: bg2 }}>
+              style={{ background: bgPage }}>
               {option == "followers" &&
                 followers?.map((user, idx) => (
                   <div

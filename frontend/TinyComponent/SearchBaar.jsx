@@ -1,4 +1,6 @@
-import { Fragment, useEffect, useState, useRef } from "react";
+import { Fragment, useEffect, useState, useRef, useCallback } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useQuote } from "../src/context/QueotrContext";
 import { UserRing } from "../src/maincomponents/EachPost";
 import { FollowBtn } from "../src/maincomponents/EachPost";
@@ -22,85 +24,124 @@ export const SearchBaar = () => {
   const nevigate = useNavigate();
 
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [limit] = useState(5);
+  const [loading, setLoading] = useState(false);
+  const [limit] = useState(8);
   const [Filterd_posts, setFilterd_posts] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isTouched, setIsTouched] = useState(false);
 
-  // Fetch posts from backend (search by title only)
+  const elementRef = useRef(null);
+  const containerRef = useRef(null);
 
-  const fetchPosts = async () => {
+  // Safe user filter that handles undefined usernames, names, emails, and bios
+  const filter_users = useCallback((usersList, searchStr) => {
+    if (!searchStr || !Array.isArray(usersList)) return [];
+    const q = searchStr.trim().toLowerCase();
+    if (!q) return [];
+
+    return usersList
+      .filter((user) => {
+        if (!user) return false;
+        const username = (user.username || "").toLowerCase();
+        const name = (user.name || "").toLowerCase();
+        const email = (user.email || "").toLowerCase();
+        const bio = (user.bio || "").toLowerCase();
+        return (
+          username.includes(q) ||
+          name.includes(q) ||
+          email.includes(q) ||
+          bio.includes(q)
+        );
+      })
+      .sort((a, b) => {
+        const nameA = (a?.username || a?.name || "").toLowerCase();
+        const nameB = (b?.username || b?.name || "").toLowerCase();
+        const indexA = nameA.indexOf(q);
+        const indexB = nameB.indexOf(q);
+        if (indexA === -1 && indexB === -1) return 0;
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+      });
+  }, []);
+
+  // Fetch posts from backend with encoded query and append support
+  const fetchPosts = async (searchQuery, pageNum = 1, append = false) => {
+    const term = (searchQuery || "").trim();
+    if (!term) {
+      setFilterd_posts([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await axios.get(
-        `${API}/api/crud/search?search=${query}&page=${page}&limit=${limit}`,
+        `${API}/api/crud/search?search=${encodeURIComponent(term)}&page=${pageNum}&limit=${limit}`,
       );
 
       const data = res?.data?.posts || [];
-      console.log("dya ", page);
-      if (page == 1) {
-        setFilterd_posts(() => []);
+      if (append) {
+        setFilterd_posts((prev) => {
+          const map = new Map();
+          [...prev, ...data].forEach((p) => {
+            if (p && p._id) map.set(p._id, p);
+          });
+          return Array.from(map.values());
+        });
+      } else {
+        setFilterd_posts(data);
       }
-      const uniquePosts = Array.from(
-        new Map([...Filterd_posts, ...data].map((p) => [p._id, p])).values(),
-      );
-
-      setFilterd_posts(() => uniquePosts);
-
-      if (data && data.length > 0) {
-        setPage((prev) => prev + 1);
-      }
-
-      setLoading(false);
+      setHasMore(data.length >= limit);
     } catch (err) {
       console.error("Error fetching posts:", err);
+      if (!append) {
+        setFilterd_posts([]);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Sync users filter and debounce server posts search
   useEffect(() => {
-    if (query.trim()) {
-      setFilterd_posts(() => []);
-      fetchPosts();
-      setPage(1);
+    const trimmed = query.trim();
+    if (!trimmed) {
+      setFilterd_result([]);
+      setFilterd_posts([]);
+      setLoading(false);
+      return;
     }
-  }, [query]);
+
+    const matchedUsers = filter_users(all_user, trimmed);
+    const uniqueUsers = Array.from(
+      new Map(matchedUsers.map((u) => [u._id, u])).values(),
+    );
+    setFilterd_result(uniqueUsers);
+
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setPage(1);
+      fetchPosts(trimmed, 1, false);
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [query, all_user, filter_users]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const f_res = filter_users(all_user, query);
-    setFilterd_result(f_res);
+    const trimmed = query.trim();
+    if (trimmed) {
+      const f_res = filter_users(all_user, trimmed);
+      setFilterd_result(f_res);
+      setPage(1);
+      fetchPosts(trimmed, 1, false);
+    }
   };
-
-  const filter_users = (all_user, query) => {
-    if (!query) return [];
-    return all_user
-      .filter((user) =>
-        user.username.toLowerCase().includes(query.toLowerCase()),
-      )
-      .sort((a, b) => {
-        const indexA = a.username.toLowerCase().indexOf(query.toLowerCase());
-        const indexB = b.username.toLowerCase().indexOf(query.toLowerCase());
-        return indexA - indexB;
-      });
-  };
-
-  useEffect(() => {
-    const f_res = filter_users(all_user, query);
-
-    const uniquePosts = Array.from(
-      new Map(f_res.map((p) => [p._id, p])).values(),
-    );
-
-    setFilterd_result(uniquePosts);
-  }, [query, all_user]);
-
-  const [isTouched, setIsTouched] = useState(false);
-  const elementRef = useRef(null);
 
   const handleTouchOutside = (event) => {
     if (elementRef.current && !elementRef.current.contains(event.target)) {
       setIsTouched(false);
-    } else {
-      setIsTouched(true);
     }
   };
 
@@ -113,176 +154,288 @@ export const SearchBaar = () => {
     };
   }, []);
 
-  const { TxtHighColor, text_clrM, bg1, bg3, bg2, text_clrL } = useTheme();
-
-  const containerRef = useRef();
+  const { textPrimary, textSecondary, textMuted, bgSurface, bgPage, bgSubtle, bgBorder } =
+    useTheme();
 
   function handleScroll() {
     const div = containerRef.current;
+    if (!div || loading || !hasMore) return;
 
     if (div.scrollTop + div.clientHeight >= div.scrollHeight - 50) {
-      fetchPosts();
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchPosts(query, nextPage, true);
     }
   }
 
   return (
-    <div className="" ref={elementRef}>
-      <div className="p-0 m-0 h-100" onClick={() => {}}>
-        <form onSubmit={handleSearch} className="input-group rounded-5 bg-none">
+    <div className="position-relative w-100" ref={elementRef}>
+      <div className="p-0 m-0 h-100">
+        <form onSubmit={handleSearch} className="position-relative d-flex align-items-center w-100">
+          <span
+            className="position-absolute start-0 ps-3 d-flex align-items-center"
+            style={{
+              color: textMuted,
+              pointerEvents: "none",
+              zIndex: 2,
+            }}>
+            <FontAwesomeIcon icon={faMagnifyingGlass} style={{ fontSize: "13px" }} />
+          </span>
           <input
             type="text"
-            className="form-control p-1 ps-3 rounded-5 active_search"
-            placeholder="Search vibe here. . . ."
+            className="form-control rounded-pill active_search"
+            placeholder={mobile_break_point ? "Search vibes, users..." : "Search vibes, creators, tags..."}
             value={query}
             style={{
-              background: "transparent",
-              color: text_clrM,
-              border: `1px solid ${bg3}`,
+              background: bgSubtle || "rgba(0,0,0,0.03)",
+              color: textPrimary,
+              border: `1px solid ${bgBorder}`,
+              paddingLeft: "36px",
+              paddingRight: query.trim() ? "34px" : "14px",
+              height: "36px",
+              fontSize: "13.5px",
+              boxShadow: "none",
+              transition: "border-color 0.2s, background 0.2s",
+              width: "100%",
             }}
             onChange={(e) => {
               setQuery(e.target.value);
-              setPage(1); // reset page when typing
               setIsTouched(true);
             }}
+            onFocus={() => setIsTouched(true)}
           />
+          {query.trim() && (
+            <button
+              type="button"
+              className="btn p-0 position-absolute end-0 pe-3 d-flex align-items-center border-0 shadow-none"
+              onClick={() => {
+                setQuery("");
+                setFilterd_posts([]);
+                setFilterd_result([]);
+                setLoading(false);
+              }}
+              title="Clear search"
+              style={{
+                background: "transparent",
+                color: textMuted,
+                cursor: "pointer",
+                zIndex: 2,
+              }}>
+              <FontAwesomeIcon icon={faXmark} style={{ fontSize: "13px" }} />
+            </button>
+          )}
         </form>
       </div>
 
+      {/* Mobile search backdrop */}
+      {query.trim() && isTouched && mobile_break_point && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100"
+          style={{
+            background: "rgba(0, 0, 0, 0.35)",
+            zIndex: 99990,
+          }}
+          onClick={() => setIsTouched(false)}
+        />
+      )}
+
       {query.trim() && isTouched && (
         <div
-          className="rounded-2 position-absolute overflow-auto none-scroller"
+          className="overflow-auto none-scroller"
           style={{
-            background: bg2,
-            border: `1px solid ${text_clrL}`,
-            maxHeight: `calc(100vh - ${mobile_break_point ? "104px" : "60px"})`,
-            width: `calc(100% - ${
-              mobile_break_point ? "6px" : sm_break_point ? "32px" : "20px"
-            })`,
-            margin: "12px auto",
-
-            maxWidth: "600px",
-            left: `${
-              mobile_break_point ? "4px" : sm_break_point ? "18px" : "20px"
-            }`,
-            boxShadow: "0 2px 4px #212121ff",
+            background: bgSurface,
+            border: `1px solid ${bgBorder}`,
+            borderRadius: "14px",
+            boxShadow: "0 10px 32px rgba(0, 0, 0, 0.22)",
+            zIndex: 99999,
+            overflowY: "auto",
+            ...(mobile_break_point
+              ? {
+                  position: "fixed",
+                  top: "56px",
+                  left: "10px",
+                  right: "10px",
+                  width: "auto",
+                  maxHeight: "calc(100dvh - 120px)",
+                }
+              : {
+                  position: "absolute",
+                  top: "calc(100% + 8px)",
+                  left: "0",
+                  right: "0",
+                  width: "100%",
+                  maxHeight: "75vh",
+                }),
           }}
           ref={containerRef}
           onScroll={handleScroll}>
           <div
-            className="d-flex gap-3 p-2 position-sticky top-0"
-            style={{ background: bg1 }}>
-            <div
-              className="d-flex flex-column gap-2"
-              style={{
-                color: text_clrM,
-                fontSize: "14px",
-                marginTop: "6px",
-                minWidth: "18px",
-                cursor: "pointer",
-              }}
-              onClick={(e) => {
-                setIsTouched(false);
-                e.preventDefault();
-              }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                fill={TxtHighColor}>
-                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-              </svg>
+            className="d-flex align-items-center justify-content-between p-3 position-sticky top-0"
+            style={{
+              background: bgSurface,
+              borderBottom: `1px solid ${bgBorder}`,
+              zIndex: 3,
+            }}>
+            <div className="d-flex align-items-center gap-2">
+              <span className="fw-semibold" style={{ color: textPrimary, fontSize: "14px" }}>
+                Results for &ldquo;{query}&rdquo;
+              </span>
             </div>
-            <div
-              className="gap-2 fs-5 fw-medium "
-              style={{
-                color: TxtHighColor,
-                fontStyle: "italic",
-              }}>
-              Result for query {query}
-            </div>
+            <button
+              type="button"
+              className="btn btn-sm p-1 border-0"
+              style={{ color: textMuted }}
+              onClick={() => setIsTouched(false)}>
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
           </div>
 
-          {/* User results */}
-          <div className="d-flex flex-column gap-4 p-2 mb-3">
-            {Filterd_result?.map(
-              (res, idx) =>
-                admin_user?._id !== res?._id &&
-                res && (
-                  <div className="d-flex align-items-end" key={res._id || idx}>
-                    <Fragment>
-                      <UserRing user={res} onlyphoto={false} />
-                    </Fragment>
-                    <div
-                      className="border"
-                      style={{ minWidth: "104px", maxWidth: "104px" }}>
-                      <FollowBtn
-                        id={res?._id}
-                        cls="btn btn-primary w-100 p-0 ps-3 rounded-0 pe-3 p-1"
-                      />
+          {/* User / Creator results */}
+          {Filterd_result?.length > 0 && (
+            <div className="d-flex flex-column gap-1 p-2">
+              <div
+                className="text-muted fw-semibold text-uppercase px-2 pt-1 pb-1"
+                style={{ fontSize: "11px", letterSpacing: "0.5px" }}>
+                Creators ({Filterd_result.length})
+              </div>
+              {Filterd_result.map((res, idx) => {
+                if (!res) return null;
+                const isCurrentAdmin = admin_user?._id === res?._id;
+                return (
+                  <div
+                    className="d-flex align-items-center justify-content-between p-2 rounded-3"
+                    key={res._id || `usr-${idx}`}
+                    style={{
+                      background: bgSurface,
+                      cursor: "pointer",
+                      transition: "background 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = bgSubtle || "rgba(0,0,0,0.04)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = bgSurface;
+                    }}
+                    onClick={() => {
+                      setIsTouched(false);
+                      setQuery("");
+                      if (res?._id) {
+                        nevigate(`/api/user/${res._id}`);
+                      }
+                    }}>
+                    <div className="flex-grow-1 overflow-hidden me-2">
+                      <UserRing user={res} onlyphoto={false} dm={40} />
                     </div>
+                    {!isCurrentAdmin && (
+                      <div
+                        style={{ minWidth: "84px", flexShrink: 0 }}
+                        onClick={(e) => e.stopPropagation()}>
+                        <FollowBtn
+                          id={res?._id}
+                          cls="btn btn-sm btn-outline-primary w-100 py-1 px-2 rounded-pill"
+                        />
+                      </div>
+                    )}
                   </div>
-                ),
-            )}
-          </div>
-          {Filterd_posts.length > 0 && isTouched && (
-            <div className="d-flex flex-column gap-4 p-2 position-relative">
-              {Filterd_posts?.map((res, idx) => (
-                <div
-                  className="d-flex flex-column"
-                  key={`F-post${idx}`}
-                  style={{
-                    color: text_clrM,
-                  }}>
-                  <div className="d-flex gap-3 align-items-start">
-                    <div className="mt-">
+                );
+              })}
+            </div>
+          )}
+
+          {/* Post results */}
+          {Filterd_posts?.length > 0 && (
+            <div className="d-flex flex-column gap-1 p-2 border-top" style={{ borderColor: bgBorder }}>
+              <div
+                className="text-muted fw-semibold text-uppercase px-2 pt-1 pb-1"
+                style={{ fontSize: "11px", letterSpacing: "0.5px" }}>
+                Vibes & Posts ({Filterd_posts.length})
+              </div>
+              {Filterd_posts.map((res, idx) => {
+                if (!res) return null;
+                const postUser =
+                  (all_user && all_user.find((u) => u?._id === (res?.userId?._id || res?.userId))) ||
+                  (res?.userId && typeof res.userId === "object" ? res.userId : null);
+
+                return (
+                  <div
+                    className="d-flex gap-3 align-items-center p-2 rounded-3"
+                    key={`F-post-${res._id || idx}`}
+                    style={{
+                      color: textSecondary,
+                      background: bgSurface,
+                      cursor: "pointer",
+                      transition: "background 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = bgSubtle || "rgba(0,0,0,0.04)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = bgSurface;
+                    }}
+                    onClick={() => {
+                      setopenSlidWin(false);
+                      setIsTouched(false);
+                      setQuery("");
+                      nevigate(`/home/${res._id}`);
+                    }}>
+                    <div onClick={(e) => e.stopPropagation()}>
                       <UserRing
-                        user={
-                          all_user?.filter((u) => u._id === res?.userId?._id)[0]
-                        }
+                        user={postUser}
                         onlyphoto={true}
+                        dm={40}
                       />
                     </div>
-                    <small
-                      className="flex-grow-1 w-100 fw-medium overflow-hidden"
-                      style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 5,
-                        WebkitBoxOrient: "vertical",
-                        textOverflow: "ellipsis",
-                        overflow: "hidden",
-                      }}>
-                      {res.text} {/* showing post title */}
-                    </small>
+                    <div className="flex-grow-1 overflow-hidden">
+                      <div className="small fw-semibold mb-1" style={{ color: textPrimary }}>
+                        @{postUser?.username || postUser?.name || "creator"}
+                      </div>
+                      <small
+                        className="d-block text-truncate fw-normal"
+                        style={{
+                          color: textSecondary,
+                          lineHeight: "1.3",
+                        }}>
+                        {res.text || res.image_text || "View Vibe"}
+                      </small>
+                    </div>
                     <div
-                      onClick={() => {
-                        setopenSlidWin(false);
-                        setQuery("");
-                        nevigate(`/home/${res._id}`);
+                      style={{
+                        width: "52px",
+                        height: "52px",
+                        flexShrink: 0,
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                        border: `1px solid ${bgBorder}`,
                       }}>
                       <CardPost
                         post={res}
                         style={{
-                          width: "104px",
-                          borderRadius: "3px",
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
                         }}
                       />
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
-          {!Filterd_result.length &&
-            !Filterd_posts.length &&
-            (loading ? (
-              <div className="px-4 pb-2">
-                <Loading dm={34} />
-              </div>
-            ) : (
-              <p className="p-2" style={{ color: text_clrM }}>
-                No result
-              </p>
-            ))}
+          {/* Loading indicator */}
+          {loading && (
+            <div className="d-flex justify-content-center py-3">
+              <Loading dm={28} />
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!loading && !Filterd_result.length && !Filterd_posts.length && (
+            <div className="text-center py-4 px-3" style={{ color: textMuted }}>
+              <FontAwesomeIcon icon={faMagnifyingGlass} className="mb-2 fs-4 opacity-50" />
+              <p className="mb-0 small">No creators or vibes matching &ldquo;{query}&rdquo;</p>
+            </div>
+          )}
         </div>
       )}
     </div>

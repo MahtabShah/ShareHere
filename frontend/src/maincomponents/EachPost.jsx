@@ -14,7 +14,7 @@ import { CommentSection } from "./Home";
 import ReportPost from "../../TinyComponent/Report";
 import { useQuote } from "../context/QueotrContext";
 import follow_us from "/src/assets/follow-us.png";
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || "";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -83,7 +83,8 @@ export const EachPost = ({ user, comment }) => {
     }
   }, [admin_user?.followers]);
 
-  const { text_clrL, text_clrM, mainbg, bg1, bg2, bg3 } = useTheme();
+  const { textPrimary, textSecondary, textMuted, bgCard, bgPage, borderColor } =
+    useTheme();
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
   const [height, setHeight] = useState("4.5");
@@ -128,11 +129,13 @@ export const EachPost = ({ user, comment }) => {
   }, [postId]);
 
   return (
-    <div ref={seenRef} style={{ borderBottom: `1px solid ${text_clrL}` }}>
+    <div
+      ref={seenRef}
+      style={{ borderBottom: `1px solid ${borderColor}`, maxWidth: "500px" }}>
       <div
         className="d-flex flex-column gap-2 position-relative bglight"
         key={comment?._id}
-        style={{ background: mainbg }}>
+        style={{ background: bgCard }}>
         {/* user header */}
         <div className="d-flex gap-2 px-2 align-items-center pt-2 justify-content-between flex-grow-1">
           <div className="d-flex flex-grow-1">
@@ -162,12 +165,10 @@ export const EachPost = ({ user, comment }) => {
             )}
 
             <div
-              className={`d-flex  ${
-                false ? "flex-column align-items-end" : "gap-2"
-              }`}
-              style={{ fontSize: "13px", color: text_clrM }}>
+              className="d-flex gap-2"
+              style={{ fontSize: "13px", color: textSecondary }}>
               <small>{user?.followers?.length} followers</small>
-              <small style={{ color: text_clrM }}>
+              <small style={{ color: textSecondary }}>
                 {dayjs(comment?.createdAt).fromNow()}
               </small>
             </div>
@@ -200,7 +201,7 @@ export const EachPost = ({ user, comment }) => {
                       className={`d-flex align-items-center flex-column h-100  rounded-${
                         mobile_break_point ? "0" : "1"
                       }`}
-                      style={{ background: text_clrL }}>
+                      style={{ background: textMuted }}>
                       <div style={{ width: "180px" }}>
                         <img
                           src={follow_us}
@@ -222,7 +223,7 @@ export const EachPost = ({ user, comment }) => {
             {/* post text */}
             <li
               className={`w-100 flex-grow-1 d-flex rounded-3 mt-2`}
-              style={{ color: text_clrM }}>
+              style={{ color: textSecondary }}>
               {comment && (
                 <div
                   key={comment.text}
@@ -267,10 +268,10 @@ export const EachPost = ({ user, comment }) => {
         <div className="d-flex flex-column px-2 pb-2">
           <div
             className={`d-flex pt-1 gap-1 justify-content-between like-comment-share`}
-            style={{ color: text_clrM }}>
+            style={{ color: textSecondary }}>
             <div
               className="d-flex gap-4 px-2 p-1 rounded-4"
-              style={{ background: bg2, minWidth: "max-content" }}>
+              style={{ background: bgPage, minWidth: "max-content" }}>
               <LikeBtn post={comment} size={22} />
               <span
                 className="fw-semibold d-flex align-items-center gap-1"
@@ -295,7 +296,7 @@ export const EachPost = ({ user, comment }) => {
             <div className="d-flex gap-1 align-items-center">
               <span
                 className="me-2"
-                style={{ color: text_clrM, fontSize: "12px" }}>
+                style={{ color: textSecondary, fontSize: "12px" }}>
                 {formatNumber(comment?.views || 1)} views
               </span>
 
@@ -303,8 +304,8 @@ export const EachPost = ({ user, comment }) => {
                 className="small rounded-1"
                 style={{
                   fontSize: "12px",
-                  background: bg2,
-                  border: `1px solid ${text_clrL}`,
+                  background: bgPage,
+                  border: `1px solid ${borderColor}`,
                 }}>
                 <small className="p-2">
                   {comment?.category &&
@@ -330,13 +331,13 @@ export const EachPost = ({ user, comment }) => {
       {isdotClicked && (
         <div
           className={`small fw-medium d-flex flex-wrap gap-3 py-2 px-2`}
-          style={{ color: text_clrM, background: mainbg }}>
+          style={{ color: textSecondary, background: bgCard }}>
           <SlipDotinPost user={user} post={comment} />
         </div>
       )}
 
       {/* comment box */}
-      <section style={{ background: mainbg, color: text_clrM }}>
+      <section style={{ background: bgCard, color: textSecondary }}>
         {(admin_user?._id != user?._id || open_comment) && (
           <div className="gap-1 pt-2 d-flex flex-column position-relative">
             <div className="d-flex gap-1 pb-2  px-2">
@@ -370,8 +371,8 @@ export const EachPost = ({ user, comment }) => {
                 value={new_comment}
                 style={{
                   marginTop: "0.1rem",
-                  background: mainbg,
-                  color: text_clrM,
+                  background: bgCard,
+                  color: textSecondary,
                 }}
               />
 
@@ -382,7 +383,7 @@ export const EachPost = ({ user, comment }) => {
                   {LazyLoading ? (
                     <Loading clr={"red"} />
                   ) : (
-                    <MdSend size={22} color={text_clrM} />
+                    <MdSend size={22} color={textSecondary} />
                   )}
                 </button>
               </div>
@@ -412,55 +413,72 @@ export const UserRing = ({
   dm = 44,
 }) => {
   const nevigate = useNavigate();
-  const { TxtHighColor, text_clrL, text_clrM } = useTheme();
+  const { textPrimary, textMuted, textSecondary } = useTheme();
   const { setopenSlidWin } = useQuote();
+
+  const displayName = user?.username || user?.name || "user";
+  const userPhoto = user?.profile_pic || user?.dp || "";
+  const initial = (displayName?.charAt(0) || "U").toUpperCase();
+  const bgColor = user?.bg_clr || "var(--accent-primary, #e1306c)";
+
+  const handleProfileClick = (e) => {
+    e?.stopPropagation();
+    if (user?._id) {
+      setopenSlidWin(false);
+      nevigate(`/api/user/${user._id}`);
+    }
+  };
 
   return (
     <>
       <div className="d-flex gap-2 flex-grow-1 align-items-center">
         <div
-          className="d-flex align-items-center w-100 justify-content-center rounded-crcle overflow-hidden vibe-ring border"
+          className="d-flex align-items-center justify-content-center rounded-circle overflow-hidden vibe-ring border flex-shrink-0"
           style={{
+            width: `${dm}px`,
+            height: `${dm}px`,
             maxWidth: `${dm}px`,
             minWidth: `${dm}px`,
-            height: `${dm}px`,
-            background: `${user?.bg_clr}`,
-            cursor: "pointer",
+            background: bgColor,
+            cursor: user?._id ? "pointer" : "default",
+            color: "#ffffff",
+            fontWeight: "bold",
+            fontSize: `${Math.round(dm * 0.4)}px`,
             ...style,
-            color: TxtHighColor,
           }}
-          onClick={() => {
-            setopenSlidWin(false);
-            nevigate(`/api/user/${user?._id}`);
-          }}>
-          {/* <div>{user?.username?.charAt(0).toUpperCase()}</div> */}
-          <div className="overflow-hidden">
+          onClick={handleProfileClick}>
+          {userPhoto ? (
             <img
-              src={user?.profile_pic}
-              alt=""
-              className="h-100 w-100 overflow-hidden"
+              src={userPhoto}
+              alt={displayName}
+              className="h-100 w-100"
               style={{
                 objectFit: "cover",
-                maxWidth: `${dm}px`,
-                minWidth: `${dm}px`,
-                minHeight: `${dm}px`,
+              }}
+              onError={(e) => {
+                e.target.style.display = "none";
               }}
             />
-          </div>
+          ) : (
+            <span>{initial}</span>
+          )}
         </div>
 
         {!onlyphoto && (
           <div
-            className=" d-flex flex-column small align-item"
-            style={{ color: text_clrM }}>
+            className="d-flex flex-column small overflow-hidden"
+            style={{ color: textSecondary }}>
             <small
-              className="small fw-medium on-hover-userid"
-              onClick={() => {
-                setopenSlidWin(false);
-
-                nevigate(`/api/user/${user?._id}`);
+              className="small fw-medium on-hover-userid text-truncate"
+              onClick={handleProfileClick}
+              style={{
+                cursor: user?._id ? "pointer" : "default",
+                color: textPrimary,
               }}>
-              @{user?.username}
+              @
+              {user?.username
+                ? user.username
+                : displayName.replace(/\s+/g, "").toLowerCase()}
             </small>
             {user && user?.bio && (
               <small
@@ -472,7 +490,7 @@ export const UserRing = ({
                   WebkitLineClamp: 1,
                   WebkitBoxOrient: "vertical",
                 }}>
-                {user?.bio}
+                {user.bio}
               </small>
             )}
           </div>
@@ -546,7 +564,7 @@ export const FollowBtn = ({ id, cls, style = {} }) => {
 export const SlipDotinPost = ({ user, post }) => {
   const [report, setReport] = useState(false);
   const { admin_user, token } = useQuote();
-  const { text_clrM } = useTheme();
+  const { textSecondary } = useTheme();
 
   const HandleDelete = async () => {
     const condition = window.confirm("want to delete the post");

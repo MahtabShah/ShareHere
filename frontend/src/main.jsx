@@ -1,10 +1,9 @@
 // import { StrictMode } from "react";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, useNavigate } from "react-router-dom";
-import { QuoteProvider } from "./context/QueotrContext.jsx";
+import { BrowserRouter, useNavigate, useLocation, Routes, Route } from "react-router-dom";
+import { QuoteProvider, useQuote } from "./context/QueotrContext.jsx";
 import MainHeader from "../src/maincomponents/MainHeader.jsx";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UserProfile from "./maincomponents/UserProfile.jsx";
 import BottomNav from "../TinyComponent/BotoomNav.jsx";
 import EditUserProfile from "./maincomponents/EditProfile.jsx";
@@ -18,8 +17,9 @@ import { VibeEditorProvider } from "./context/VibeEditorContext.jsx";
 import { TrackPost } from "../TinyComponent/TrackPost.jsx";
 import { PostProvider } from "./context/PostContext.jsx";
 import { VibeTabs } from "./maincomponents/VibeTabs.jsx";
-import EditPost from "./maincomponents/EditPost.jsx";
 import { StatusProvider } from "./context/StatusContext.jsx";
+import { getActiveNavFromPath } from "./context/navUtils.js";
+import EditPost from "./maincomponents/EditPost.jsx";
 import CanvasVibeEditor from "./maincomponents/CanvasEditor.jsx";
 
 import EditorZ from "./editor/components/editor.jsx";
@@ -62,7 +62,6 @@ const RoutesArr = [
     element: (
       <>
         <EditPost />
-        <BottomNav />
       </>
     ),
   },
@@ -105,24 +104,49 @@ const RoutesArr = [
   },
 ];
 
-const Main = () => {
-  const [sm, setsm] = useState(window.innerWidth < 1081);
-  const [mb, setmb] = useState(window.innerWidth < 600);
-
-  const breakPoint = () => {
-    setsm(window.innerWidth < 1081);
-    setmb(window.innerWidth < 600);
-  };
+const AppLayout = () => {
+  const location = useLocation();
+  const { mobile_break_point, isNavCollapsed, openSlidWin, setActiveIndex } = useQuote();
 
   useEffect(() => {
-    window.addEventListener("resize", breakPoint);
-    window.addEventListener("onload", breakPoint);
-  }, []);
+    if (!openSlidWin) {
+      const currentNav = getActiveNavFromPath(location.pathname);
+      setActiveIndex(currentNav);
+    }
+  }, [location.pathname, openSlidWin, setActiveIndex]);
 
   const mainStyle = {
-    marginLeft: `${mb ? "0px" : sm ? "74px" : "244px"}`,
+    marginLeft: `${mobile_break_point ? "0px" : isNavCollapsed ? "74px" : "244px"}`,
+    width: `${
+      mobile_break_point
+        ? "100%"
+        : isNavCollapsed
+        ? "calc(100% - 74px)"
+        : "calc(100% - 244px)"
+    }`,
+    transition:
+      "margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+    minHeight: "100vh",
+    paddingBottom: mobile_break_point ? "64px" : "0px",
   };
 
+  return (
+    <>
+      <LeftNavbar />
+      <MainHeader />
+      <BottomNav />
+      <div className="app-main-content" style={mainStyle}>
+        <Routes>
+          {RoutesArr.map((r, idx) => (
+            <Route path={r.path} key={`routes-${idx}`} element={r.element} />
+          ))}
+        </Routes>
+      </div>
+    </>
+  );
+};
+
+const Main = () => {
   return (
     <BrowserRouter>
       <QuoteProvider>
@@ -130,23 +154,7 @@ const Main = () => {
           <VibeEditorProvider>
             <ThemeProvider>
               <StatusProvider>
-                <LeftNavbar />
-                <MainHeader />
-                <BottomNav />
-
-                <Routes>
-                  {RoutesArr.map((r, idx) => {
-                    return (
-                      <Route
-                        path={r.path}
-                        key={`routes-${idx}`}
-                        element={
-                          <div style={{ ...mainStyle }}>{r.element}</div>
-                        }
-                      />
-                    );
-                  })}
-                </Routes>
+                <AppLayout />
               </StatusProvider>
             </ThemeProvider>
           </VibeEditorProvider>

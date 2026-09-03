@@ -52,7 +52,7 @@ export const setCaret = (editor, r, c, dir = 1) => {
   let rowRef = document.querySelector(".r-c");
   rowRef.innerHTML = `[ ${r} ${c} ]`;
 
-  const curr = [...rows[r]?.children];
+  const curr = [...(rows[r]?.children || [])];
   appendCaret(rows, curr, r, c, dir);
 
   rows[r].append(...curr);
@@ -157,7 +157,7 @@ export const editorOn = (editor) => {
     let rows = [...editor.querySelectorAll(".row-x")];
 
     if (r >= 0) {
-      const innerHtml = [...rows[r]?.children].slice(c);
+      const innerHtml = [...(rows[r]?.children || [])].slice(c);
       newLine.append(...innerHtml);
     }
 
@@ -240,9 +240,9 @@ export const editorOn = (editor) => {
 
     let rows = [...editor.querySelectorAll(".row-x")];
 
-    const curr = [...rows[r]?.children];
+    const curr = [...(rows[r]?.children || [])];
 
-    const updatedRow = [...curr?.slice(0, c), span, ...curr?.slice(c)];
+    const updatedRow = [...(curr?.slice(0, c) || []), span, ...(curr?.slice(c) || [])];
     rows[r].append(...updatedRow);
 
     editor.innerHTML = "";

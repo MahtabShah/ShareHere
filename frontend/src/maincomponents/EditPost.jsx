@@ -37,7 +37,7 @@ const EditPost = () => {
     CommentFn(id);
   }, []);
 
-  const { TxtHighColor, text_clrL, text_clrM, bg1, bg2, mainbg, bg3 } =
+  const { textPrimary, textSecondary, textMuted, bgSurface, bgPage, borderColor } =
     useTheme();
   const [category, setCategory] = useState(post?.category);
   const [visiblity, setVisiblity] = useState(post?.mode);
@@ -107,7 +107,7 @@ const EditPost = () => {
   return (
     <>
       <div
-        style={{ background: bg2 }}
+        style={{ background: bgPage }}
         className="d-flex flex-column gap-2 p-3 my-5">
         <div
           className="d-flex rounded flex-row-reverse flex-wrap flex-md-nowrap gap-3 overflow-hidden"
@@ -141,16 +141,16 @@ const EditPost = () => {
               className={`form-control position-relative d h-100 shadow-none p-2 overflow-auto none-scroller rounded `}
               placeholder="Write about post here . . ."
               style={{
-                background: bg2,
-                color: TxtHighColor,
-                border: `1px solid ${text_clrL}`,
+                background: bgPage,
+                color: textPrimary,
+                border: `1px solid ${borderColor}`,
               }}
               spellCheck="false"
             />
           </div>
         </div>
 
-        <div className="mt-2" style={{ color: text_clrM }}>
+        <div className="mt-2" style={{ color: textSecondary }}>
           <b>Set visibility : </b> Who can see your post ?
         </div>
 
@@ -159,8 +159,8 @@ const EditPost = () => {
             className={`btn border p-1 ps-2 pe-2 rounded-5 `}
             onClick={() => setVisiblity("Public")}
             style={{
-              color: visiblity === "Public" ? bg1 : TxtHighColor,
-              background: visiblity === "Public" ? TxtHighColor : "",
+              color: visiblity === "Public" ? bgSurface : textPrimary,
+              background: visiblity === "Public" ? textPrimary : "",
             }}>
             <small> For Public</small>
           </button>
@@ -170,8 +170,8 @@ const EditPost = () => {
             }`}
             onClick={() => setVisiblity("Follower")}
             style={{
-              color: visiblity === "Follower" ? bg1 : TxtHighColor,
-              background: visiblity === "Follower" ? TxtHighColor : "",
+              color: visiblity === "Follower" ? bgSurface : textPrimary,
+              background: visiblity === "Follower" ? textPrimary : "",
             }}>
             <small> For Follower</small>
           </button>
@@ -182,8 +182,8 @@ const EditPost = () => {
             onClick={() => setVisiblity("Paid")}
             disabled={true}
             style={{
-              color: visiblity === "Paid" ? bg1 : TxtHighColor,
-              background: visiblity === "Paid" ? TxtHighColor : "",
+              color: visiblity === "Paid" ? bgSurface : textPrimary,
+              background: visiblity === "Paid" ? textPrimary : "",
             }}>
             <small>Paid Only</small>
           </button>
@@ -191,7 +191,7 @@ const EditPost = () => {
 
         <div
           className="vibeTabs mt-3 d-flex flex-column gap-2"
-          style={{ color: text_clrM }}>
+          style={{ color: textSecondary }}>
           <div>
             <b>Select Category of the Post</b>
           </div>
@@ -202,10 +202,10 @@ const EditPost = () => {
             className="border-0 d-flex gap-3 py-2 flex-nowrap none-scroller overflow-auto"
             transition={false}
             style={{
-              "--bg1": bg1,
-              "--bg2": bg2,
-              "--tc1": TxtHighColor,
-              "--tc2": text_clrM,
+              "--bg1": bgSurface,
+              "--bg2": bgPage,
+              "--tc1": textPrimary,
+              "--tc2": textSecondary,
               width: "100%",
             }}>
             {categories.map(({ key, title }) => (
@@ -226,7 +226,7 @@ const EditPost = () => {
             style={{
               height: "42px",
               border: `1px solid ${"#959595ff"}`,
-              color: text_clrM,
+              color: textSecondary,
             }}
             onClick={() => {
               setCategory(post?.category);

@@ -33,7 +33,7 @@ function All_Post_Section({ category, loading }) {
 
         if (data?.length > 0) {
           const sorted = data
-            .map((post) => ({
+            ?.map((post) => ({
               ...post,
               rank: Rank_Calculation(post),
             }))
@@ -53,7 +53,7 @@ function All_Post_Section({ category, loading }) {
 
     // make posts unique by _id
     const uniquePosts = Array.from(
-      new Map(posts.map((p) => [p._id, p])).values()
+      new Map(posts.map((p) => [p._id, p])).values(),
     );
 
     return uniquePosts.map((post) => {
@@ -66,11 +66,6 @@ function All_Post_Section({ category, loading }) {
     setRn(Math.floor(Math.random() * 10 + 1));
   }, [category]);
 
-  useEffect(() => {
-    if (!openSlidWin) {
-      setActiveIndex("Home");
-    }
-  }, [openSlidWin]);
   // useEffect(() => {
   //   // "deletedPost" event listen karna
   //   socket.on("deletedPost", (id) => {
@@ -92,8 +87,7 @@ function All_Post_Section({ category, loading }) {
     <>
       <div
         className="p-4 mx-2 fw-bold rounded bg-nfo text-primary"
-        style={{ border: "3px solid #00bfffaa", background: "#00bfff17" }}
-      >
+        style={{ border: "3px solid #00bfffaa", background: "#00bfff17" }}>
         ⚠️ Kindly Note <br />
         The site may take a few minutes to load, as free hosting services
         occasionally pause inactive applications.
@@ -107,24 +101,23 @@ function All_Post_Section({ category, loading }) {
           <div
             key={`comment-${idx}`}
             id={post?._id}
-            className="d-flex flex-column"
-          >
+            className="d-flex flex-column p-1"
+            style={{ margin: "auto" }}>
             {rn && rn + 4 > idx && idx > rn + 2 ? (
               <GalleryPost category={category} />
             ) : (
               <EachPost user={user} comment={post} />
             )}
 
-            {rn && rn + 1 > idx && idx > rn - 1 && (
+            {/* {rn && rn + 1 > idx && idx > rn - 1 && (
               <div
                 className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto "
-                style={{ maxWidth: "100%" }}
-              >
+                style={{ maxWidth: "100%" }}>
                 <SuggetionSlipInPost />
               </div>
-            )}
+            )} */}
           </div>
-        )
+        ),
     )
   );
 }

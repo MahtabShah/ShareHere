@@ -13,7 +13,7 @@ import CanvasVibeEditor from "./CanvasEditor";
 
 const PostLoading = () => {
   const { post_loading } = usePost();
-  const { text_clrM } = useTheme();
+  const { textSecondary } = useTheme();
   const { Errors } = useQuote();
 
   return Errors ? (
@@ -31,7 +31,7 @@ const PostLoading = () => {
           <Loading dm={34} />
         </div>
       ) : (
-        <p className="p-3 text-center" style={{ color: text_clrM }}>
+        <p className="p-3 text-center" style={{ color: textSecondary }}>
           Not available any more vibe at this time : Try again or refresh
         </p>
       )}
@@ -40,13 +40,13 @@ const PostLoading = () => {
 };
 
 const Tab = ({ category, Key }) => {
-  const { bg1, bg2, bg3, TxtHighColor, text_clrM, text_clrL } = useTheme();
+  const { bgSurface, textPrimary } = useTheme();
 
   const TabStyle = {
-    border: `1px solid ${bg1}`,
-    color: Key === category ? bg1 : TxtHighColor,
+    border: `1px solid ${bgSurface}`,
+    color: Key === category ? bgSurface : textPrimary,
     minWidth: "max-content",
-    background: Key === category ? TxtHighColor : bg1,
+    background: Key === category ? textPrimary : bgSurface,
   };
 
   return (
@@ -60,10 +60,11 @@ const Tab = ({ category, Key }) => {
 
 export const VibeTabs = () => {
   const { limit, page, fetch_n_posts, setPosts } = usePost();
-  const { bg1, bg2, bg3, TxtHighColor, text_clrM, text_clrL } = useTheme();
+  const { bgPage } = useTheme();
   const [loading, setLoading] = useState(true);
   const [Key, setKey] = useState("all");
-  const { mobile_break_point, sm_break_point, lgbreakPoint } = useQuote();
+  const { mobile_break_point, sm_break_point, lgbreakPoint, isNavCollapsed } =
+    useQuote();
 
   useEffect(() => {
     (async () => {
@@ -71,7 +72,7 @@ export const VibeTabs = () => {
 
       const res = await fetch_n_posts(limit, 0, Key);
       const sorted = res
-        .map((post) => ({
+        ?.map((post) => ({
           ...post,
           rank: Rank_Calculation(post),
         }))
@@ -86,10 +87,20 @@ export const VibeTabs = () => {
   const TabStyle = {
     fontSize: "16px",
     zIndex: 100,
-    left: `${mobile_break_point ? "0px" : sm_break_point ? "78px" : "248px"}`,
-    right: `0px`,
+    top: "54px",
+    left: `${mobile_break_point ? "0px" : isNavCollapsed ? "74px" : "244px"}`,
+    right: "0px",
+    width: `${
+      mobile_break_point
+        ? "100%"
+        : isNavCollapsed
+          ? "calc(100% - 74px)"
+          : "calc(100% - 244px)"
+    }`,
     cursor: "pointer",
-    background: bg2,
+    background: bgPage,
+    transition:
+      "left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
   };
 
   return (
@@ -105,14 +116,19 @@ export const VibeTabs = () => {
           ))}
         </div>
 
-        <div className="d-flex flex-column gap-3">
+        <div className="d-flex flex-column gap-3 w-100 overflow-hidden">
           <div
             className={`d-flex gap-3 py-2 justify-content-${
               lgbreakPoint || sm_break_point ? "evenly" : "center"
             }`}>
             <div
               className="d-flex flex-column w-100"
-              style={{ maxWidth: "min(521px, 100%)" }}>
+              style={{
+                maxWidth: isNavCollapsed
+                  ? "min(680px, 100%)"
+                  : "min(521px, 100%)",
+                transition: "max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+              }}>
               <StatusPage />
 
               {categories.map(

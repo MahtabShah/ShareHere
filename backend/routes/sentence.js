@@ -93,7 +93,7 @@ router.get("/my", verifyToken, async (req, res) => {
 
   try {
     const sentences = await Sentence.find({ userId: userId }).populate(
-      "userId"
+      "userId",
     );
     // console.log(sentences, 'Sentences fetched for user:', userId);
 
@@ -127,7 +127,7 @@ router.get("/fix-sentences", async (req, res) => {
 
     const result = await User.updateMany(
       { status: { $exists: true } },
-      { $set: { status: [] } }
+      { $set: { status: [] } },
     );
     res.json({ message: "Reports field added to comments without it" });
   } catch (err) {
@@ -136,12 +136,12 @@ router.get("/fix-sentences", async (req, res) => {
   }
 });
 
-router.get("/user_update/:user_id", async (req, res) => {
+router.get("/user_update/:user_id", verifyToken, async (req, res) => {
   const id = req.params.user_id;
   try {
     const result = await User.updateMany(
       { followers: { $exists: true } },
-      { $set: { followers: [] } }
+      { $set: { followers: [] } },
     );
     res.json({ message: "Sentences updated", result });
   } catch (err) {

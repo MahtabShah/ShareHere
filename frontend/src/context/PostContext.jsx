@@ -21,14 +21,18 @@ export const PostProvider = ({ children }) => {
   const [cameSet, setCameSet] = useState(new Set());
 
   // Fetch posts but do NOT change page here
-  const fetch_n_posts = async (l, p, c) => {
+  const fetch_n_posts = async (l = 15, p = 0, c = "all") => {
     setPost_loading(true);
+    const activeToken = localStorage.getItem("token");
+    const safeCategory = !c || c === "undefined" ? "all" : c;
     try {
       const res = await axios.get(
-        `${API}/api/auth/all_sentence?limit=${l}&page=${p}&category=${c}`,
+        `${API}/api/auth/all_sentence?limit=${l}&page=${p}&category=${safeCategory}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+          headers: activeToken
+            ? { Authorization: `Bearer ${activeToken}` }
+            : {},
+        },
       );
 
       if (res.status !== 200) {
@@ -40,7 +44,7 @@ export const PostProvider = ({ children }) => {
 
       return res.data;
     } catch (err) {
-      console.error("Failed to fetch your sentences", err);
+      console.warn("Could not fetch sentences:", err?.message || err);
       return [];
     } finally {
       setPost_loading(false);
@@ -157,8 +161,7 @@ export const PostProvider = ({ children }) => {
         setCameSet,
         cameSet,
         isData,
-      }}
-    >
+      }}>
       {children}
     </PostContext.Provider>
   );

@@ -19,7 +19,7 @@ const parentStyle = {
 
 const SuggetionSlip = () => {
   const { all_user, admin_user, lgbreakPoint } = useQuote();
-  const { text_clrM, bg1 } = useTheme();
+  const { textSecondary, bgSurface } = useTheme();
   const { posts } = usePost();
 
   console.log("user ", all_user[0]);
@@ -28,7 +28,7 @@ const SuggetionSlip = () => {
     <>
       <div style={{ ...parentStyle }}>
         {lgbreakPoint && (
-          <div className="user-update" style={{ color: text_clrM }}>
+          <div className="user-update" style={{ color: textSecondary }}>
             {admin_user ? (
               <>
                 <div className="d-flex flex-column gap-2">
@@ -107,7 +107,7 @@ const SuggetionSlip = () => {
 
                 <small
                   className="text-center footer mt-4 d-flex gap-2 flex-column justify-content-center align-items-center"
-                  style={{ color: text_clrM }}>
+                  style={{ color: textSecondary }}>
                   <div className="d-flex gap-2">
                     <a href="#">Info</a>
                     <a href="#">help</a>
@@ -132,7 +132,8 @@ const SuggetionSlip = () => {
 export const SuggetionSlipInPost = () => {
   const { all_user, admin_user, token } = useQuote();
   const [some_user, setsome_user] = useState(null);
-  const { TxtHighColor, text_clrL, text_clrM, mainbg, bg1, bg2 } = useTheme();
+  const { textPrimary, borderColor, textSecondary, bgSurface, bgPage } =
+    useTheme();
 
   useEffect(() => {
     const rn = Math.floor(Math.random() * (all_user.length - 5) || 0);
@@ -157,8 +158,8 @@ export const SuggetionSlipInPost = () => {
               className="d-flex rounded-2 flex-column position-relative align-items-center py-3 px-4  gap-2"
               style={{
                 border: "1px solid #ccc",
-                background: bg1,
-                color: TxtHighColor,
+                background: bgSurface,
+                color: textPrimary,
               }}>
               <div className="p-2" style={{ width: "120px", height: "120px" }}>
                 <a href={`/api/user/${u?._id}`}>
@@ -173,7 +174,7 @@ export const SuggetionSlipInPost = () => {
               <small className="d-flex fle-column gap-3 justify-content-center w-100 text-light">
                 <small
                   style={{
-                    color: text_clrM,
+                    color: textSecondary,
                     display: "-webkit-box",
                     WebkitLineClamp: 1,
                     WebkitBoxOrient: "vertical",
@@ -205,7 +206,7 @@ function getCols(width) {
 
 export const GalleryPost = ({ category }) => {
   const [columns, setColumns] = useState(() => getCols(window.innerWidth));
-  const { TxtHighColor, text_clrL } = useTheme();
+  const { textPrimary, borderColor } = useTheme();
   const { limit, page, post_loading, fetch_n_posts } = usePost();
   const [posts, setPosts] = useState([]);
   const [expanded, setExpanded] = useState(true);
@@ -293,7 +294,7 @@ export const GalleryPost = ({ category }) => {
                 key={`i-${colIdx}-${i}`}
                 src={p?.images[0]}
                 className="w-100 my-2 rounded"
-                style={{ boxShadow: `0 1px 2px ${text_clrL}` }}
+                style={{ boxShadow: `0 1px 2px ${borderColor}` }}
                 onClick={() => {
                   Track_post(p?._id);
                 }}

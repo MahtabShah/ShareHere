@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CommentSection } from "../src/maincomponents/Home";
 import { CardPost } from "../src/maincomponents/Home";
 import { Loading } from "./LazyLoading";
@@ -10,12 +10,14 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { clamp } from "lodash";
 import { useTheme } from "../src/context/Theme";
 import { usePost } from "../src/context/PostContext";
+import { getActiveNavFromPath } from "../src/context/navUtils";
 dayjs.extend(relativeTime);
 
 const API = import.meta.env.VITE_API_URL;
 
 export const Notification = ({ setVisibleNotification }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [post, setPost] = useState(null);
   const [user, setUser] = useState(null);
   const [LazyLoading, setLazyLoading] = useState(false); // to track which button is animating
@@ -85,7 +87,7 @@ export const Notification = ({ setVisibleNotification }) => {
     }
   };
 
-  const { TxtHighColor, text_clrL, text_clrM, bg1, bg2 } = useTheme();
+  const { textPrimary, textSecondary, bgSurface, bgPage, bgBorder } = useTheme();
   const { admin_user, sm_break_point, setActiveIndex, activeIndex } =
     useQuote();
 
@@ -95,18 +97,18 @@ export const Notification = ({ setVisibleNotification }) => {
         <div
           className="list rounded pb-4 overflow-auto none-scroller"
           style={{
-            border: `1px solid ${text_clrL}`,
+            border: `1px solid ${bgBorder}`,
             minHeight: "100px",
             margin: "auto",
-            background: bg2,
-            color: text_clrM,
+            background: bgPage,
+            color: textSecondary,
             maxWidth: "501px",
-            boxShadow: `0 2px 4px ${bg1}`,
+            boxShadow: `0 2px 4px ${bgSurface}`,
             height: "calc(100dvh - 104px)",
           }}>
           <h5
             className="d-flex px-1 align-items-center gap-3 position-sticky py-2 top-0"
-            style={{ background: bg1, zIndex: 9877 }}
+            style={{ background: bgSurface, zIndex: 9877 }}
             onClick={() => {
               setCount(0);
             }}>
@@ -114,7 +116,7 @@ export const Notification = ({ setVisibleNotification }) => {
               className="d-inline-flex p-1 rounded-1"
               onClick={() => {
                 setopenSlidWin(false);
-                setActiveIndex("x");
+                setActiveIndex(getActiveNavFromPath(location.pathname));
               }}
               style={{
                 minWidth: "32px",
@@ -124,7 +126,7 @@ export const Notification = ({ setVisibleNotification }) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                fill={TxtHighColor}>
+                fill={textPrimary}>
                 <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
               </svg>
             </div>
@@ -134,8 +136,8 @@ export const Notification = ({ setVisibleNotification }) => {
             className="notification  d-flex p-2 pb-4 mb-4  flex-column gap-4 w-100 "
             style={{
               zIndex: "100",
-              background: bg2,
-              color: TxtHighColor,
+              background: bgPage,
+              color: textPrimary,
             }}>
             {LazyLoading || curr_all_notifications.length < 1 ? (
               <Loading dm={32} />
@@ -143,7 +145,7 @@ export const Notification = ({ setVisibleNotification }) => {
               <div className="">
                 <div
                   className="p-1 d-flex gap-3 justify-content-between"
-                  style={{ background: bg2, color: text_clrM }}>
+                  style={{ background: bgPage, color: textSecondary }}>
                   <>
                     <div className="flex-grow-1 w-100">
                       {post?.text.split(" ").slice(0, 40).join(" ")} . . .
@@ -179,7 +181,7 @@ export const Notification = ({ setVisibleNotification }) => {
                   heading = (
                     <div
                       className="pb-1 mx-1"
-                      style={{ borderBottom: `2px solid ${TxtHighColor}` }}>
+                      style={{ borderBottom: `2px solid ${textPrimary}` }}>
                       Last Month
                     </div>
                   );
@@ -188,7 +190,7 @@ export const Notification = ({ setVisibleNotification }) => {
                   heading = (
                     <div
                       className="pb-1 mx-1"
-                      style={{ borderBottom: `2px solid ${TxtHighColor}` }}>
+                      style={{ borderBottom: `2px solid ${textPrimary}` }}>
                       Last Week
                     </div>
                   );
@@ -197,7 +199,7 @@ export const Notification = ({ setVisibleNotification }) => {
                   heading = (
                     <div
                       className="pb-1 mx-1"
-                      style={{ borderBottom: `2px solid ${TxtHighColor}` }}>
+                      style={{ borderBottom: `2px solid ${textPrimary}` }}>
                       This Week
                     </div>
                   );
@@ -259,8 +261,7 @@ const LikeCommNotifi = ({
   }, [n?.post]);
 
   const navigate = useNavigate();
-
-  const { bg2, bg1, text_clrL } = useTheme();
+  const { bgSurface, bgPage, textSecondary } = useTheme();
 
   // console.log(post?.images?.[0]);
   const [loaded, setLoaded] = useState(false); // initially false

@@ -4,7 +4,7 @@ import { useQuote } from "../context/QueotrContext";
 import axios from "axios";
 import { Loading } from "../../TinyComponent/LazyLoading";
 import { useTheme } from "../context/Theme";
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || "";
 
 const token = localStorage.getItem("token");
 
@@ -115,10 +115,10 @@ const EditUserProfile = () => {
     setLoading(false);
   };
 
-  const { TxtHighColor, text_clrL, text_clrM, bg2, bg1 } = useTheme();
+  const { bgSurface, borderColor, textSecondary } = useTheme();
 
   return (
-    <section className="mb-5 pb-5" style={{ background: bg1 }}>
+    <section className="mb-5 pb-5" style={{ background: bgSurface }}>
       <div
         className="photoHeader w-100 position-relative border"
         style={{ height: "calc(140px + 16dvw)", maxHeight: "300px" }}>
@@ -178,12 +178,12 @@ const EditUserProfile = () => {
         >
           <div
             className="d-flex align-items-center p-0 m-0 ps-2"
-            style={{ border: `1px solid ${text_clrL}` }}>
+            style={{ border: `1px solid ${borderColor}` }}>
             <div
               className="pe-2 form-lable"
               style={{
-                borderRight: `1px solid ${text_clrL}`,
-                color: text_clrM,
+                borderRight: `1px solid ${borderColor}`,
+                color: textSecondary,
               }}>
               Name
             </div>
@@ -194,13 +194,13 @@ const EditUserProfile = () => {
               onChange={(e) => setName(e.target.value)}
               required
               spellCheck={false}
-              style={{ background: bg1, color: text_clrM }}
+              style={{ background: bgSurface, color: textSecondary }}
               // placeholder={user?.username}
             />
           </div>
 
           <div className="d-flex flex-column ps-0">
-            <div className="p-2 pt-2 pb-0 pb-2" style={{ color: text_clrM }}>
+            <div className="p-2 pt-2 pb-0 pb-2" style={{ color: textSecondary }}>
               Bio
             </div>
             <textarea
@@ -211,9 +211,9 @@ const EditUserProfile = () => {
               required
               spellCheck={false}
               style={{
-                background: bg1,
-                color: text_clrM,
-                border: `1px solid ${text_clrL}`,
+                background: bgSurface,
+                color: textSecondary,
+                border: `1px solid ${borderColor}`,
               }}
             />
           </div>

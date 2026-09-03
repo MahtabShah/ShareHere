@@ -1,10 +1,14 @@
 
 import { io } from "socket.io-client";
 
-const backendUrl = import.meta.env.VITE_API_URL || "https://sharehere-2ykp.onrender.com"
+const rawUrl = import.meta.env.VITE_API_URL;
+const backendUrl =
+  rawUrl && !rawUrl.includes("onrender.com") && !rawUrl.includes("localhost:5000")
+    ? rawUrl
+    : (typeof window !== "undefined" ? window.location.origin : "");
 
 const socket = io(backendUrl, {
-  transports: ["websocket"],
+  transports: ["websocket", "polling"],
   withCredentials: true,
 });
 

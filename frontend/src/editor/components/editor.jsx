@@ -109,12 +109,12 @@ const EditorZ = () => {
       </label>
 
       <button
-        type={true ? "button" : "submit"}
+        type="button"
         className="btn btn-danger flex-grow-1 mx-3 px-4 rounded-0"
         style={{ height: "42px" }}
         onClick={handleSubmit}
       >
-        {false ? <Loading clr={"white"} /> : "Post"}
+        Post
       </button>
     </StyleWrapper>
   );

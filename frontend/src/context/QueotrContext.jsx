@@ -2,7 +2,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios, { all } from "axios";
 const QuoteContext = createContext();
-const API = import.meta.env.VITE_API_URL;
+const rawApi = import.meta.env.VITE_API_URL;
+const API =
+  rawApi && !rawApi.includes("onrender.com") && !rawApi.includes("localhost:5000")
+    ? rawApi
+    : "";
 import socket from "../maincomponents/socket";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -12,21 +16,40 @@ export const useQuote = () => useContext(QuoteContext) || {};
 
 export const QuoteProvider = ({ children }) => {
   const [sm_break_point, setsm_break_point] = useState(
-    window.innerWidth < 1081,
+    () => (typeof window !== "undefined" ? window.innerWidth < 1081 : false),
   );
-  const [lgbreakPoint, setlgbreakPoint] = useState(window.innerWidth > 1220);
+  const [lgbreakPoint, setlgbreakPoint] = useState(
+    () => (typeof window !== "undefined" ? window.innerWidth > 1220 : true),
+  );
   const [mobile_break_point, setmobile_break_point] = useState(
-    window.innerWidth <= 600,
+    () => (typeof window !== "undefined" ? window.innerWidth <= 768 : false),
   );
 
-  const [activeIndex, setActiveIndex] = useState("home");
+  const [activeIndex, setActiveIndex] = useState("Home");
   const [openSlidWin, setopenSlidWin] = useState(false);
+  const [isLeftNavOpen, setIsLeftNavOpen] = useState(false);
+  const [isNavCollapsed, setIsNavCollapsed] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 1200,
+  );
 
-  window.addEventListener("resize", () => {
-    setsm_break_point(window.innerWidth < 1081);
-    setlgbreakPoint(window.innerWidth > 1220);
-    setmobile_break_point(window.innerWidth < 600);
-  });
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      const isSm = w < 1081;
+      const isMobile = w <= 768;
+      setsm_break_point(isSm);
+      setlgbreakPoint(w > 1220);
+      setmobile_break_point(isMobile);
+      if (w < 1200) {
+        setIsNavCollapsed(true);
+      }
+      if (w > 768) {
+        setIsLeftNavOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const [statusClicked, setStatusClicked] = useState(false);
   const [duration, setDuration] = useState(3000);
@@ -109,27 +132,24 @@ export const QuoteProvider = ({ children }) => {
   };
 
   const HandleShare = async (id) => {
-    // const url = new URL(window.location.href);
-    // const scrollY = window.scrollY || window.pageYOffset;
-    // url.searchParams.set("scroll", scrollY);
-
+    const shareUrl = `${window.location.origin}/home/${id}`;
     const shareData = {
       title: document.title,
       text: "Check out this page!",
-      url: `/home/${id}`,
+      url: shareUrl,
     };
 
     if (navigator.share) {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        alert("Share cancelled or failed.");
+        console.warn("Share cancelled or failed:", err);
       }
     } else {
       // Fallback: copy URL to clipboard
       try {
-        await navigator.clipboard.writeText(url.toString());
-        alert("URL copied to clipboard (native share not supported).");
+        await navigator.clipboard.writeText(shareUrl);
+        alert("URL copied to clipboard!");
       } catch {
         alert("Failed to copy URL.");
       }
@@ -243,7 +263,6 @@ export const QuoteProvider = ({ children }) => {
         HandleShare,
         setStatusClicked,
         curr_all_notifications,
-        fetch_all_notifications,
         setCount,
         count,
 
@@ -255,10 +274,13 @@ export const QuoteProvider = ({ children }) => {
         page,
         set_all_posts,
         setActiveIndex,
-        setUploadClicked,
         uploadClicked,
         setUploadClicked,
         API,
+        isLeftNavOpen,
+        setIsLeftNavOpen,
+        isNavCollapsed,
+        setIsNavCollapsed,
         mobile_break_point,
         lgbreakPoint,
         selectedUserId,
@@ -266,7 +288,6 @@ export const QuoteProvider = ({ children }) => {
         isPaused,
         all_followings,
         all_statuses,
-        token,
         all_user,
         all_posts,
         followersMap,

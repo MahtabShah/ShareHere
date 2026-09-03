@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || "";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePost } from "../context/PostContext";
 import { useEffect } from "react";
@@ -18,7 +18,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
   const { fetch_comments_postId } = usePost();
   const [loading, setLoading] = useState(true);
   const [menuOpenId, setMenuOpenId] = useState(null); // store id of open menu
-  const { bg3, TxtHighColor, text_clrL } = useTheme();
+  const { bgSubtle, textPrimary, textMuted, bgBorder } = useTheme();
   const { API, token, admin_user } = useQuote();
 
   // console.log(comments);
@@ -117,7 +117,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                 <div className="d-flex gap-2">
                   <button
                     className="btn btn-sm p-0 border-0"
-                    style={{ color: TxtHighColor, cursor: "pointer" }}
+                    style={{ color: textPrimary, cursor: "pointer" }}
                     onClick={async () => {
                       try {
                         const { data } = await axios.put(
@@ -148,7 +148,7 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                     style={{
                       color: pc.dislikes?.includes(admin_user?._id)
                         ? "red"
-                        : TxtHighColor,
+                        : textPrimary,
                       cursor: "pointer",
                       background: "transparent",
                       rotate: "180deg",
@@ -192,22 +192,22 @@ export const CommentSection = ({ postId, comments, setComments, user }) => {
                   style={{
                     right: "24px",
                     width: "104px",
-                    background: bg3,
-                    border: `1px solid ${text_clrL}`,
+                    background: bgSubtle,
+                    border: `1px solid ${bgBorder}`,
                     zIndex: 10,
                   }}>
                   {(pc?.userId?._id == admin_user?._id ||
                     user?._id == admin_user?._id) && (
                     <button
                       className="btn w-100 border-0 p-0 py-1 rounded-2"
-                      style={{ color: TxtHighColor }}
+                      style={{ color: textPrimary }}
                       onClick={() => handleDelete(pc._id)}>
                       Delete
                     </button>
                   )}
                   <button
                     className="btn w-100 border-0 py-1 p-0 rounded-2"
-                    style={{ color: TxtHighColor }}
+                    style={{ color: textPrimary }}
                     onClick={() => handleReport(pc._id)}>
                     Report
                   </button>
@@ -227,22 +227,37 @@ export const CardPost = ({
   post,
   style = { height: "100%", width: "100%" },
 }) => {
+  const imageSrc =
+    (Array.isArray(post?.images) && post.images.length > 0 && post.images[0]) ||
+    (Array.isArray(post?.pages) &&
+      post.pages.find((p) => p && p.val && typeof p.val === "string" && (p.val.startsWith("http") || p.val.startsWith("data:")) )?.val) ||
+    "";
+
   return (
     <>
       <div
         className="p-0 m-0 position-relative w-100"
         style={{
-          // aspectRatio: "3/4",
           height: "100%",
           flexShrink: 0,
           cursor: "pointer",
         }}>
-        <div className="w-100 h-100 bg-image">
-          <img
-            src={post?.images[0]} // 400px for mobile-friendly width
-            loading="lazy"
-            style={{ objectFit: "contain", ...style }}
-          />
+        <div className="w-100 h-100 bg-image d-flex align-items-center justify-content-center" style={{ background: "rgba(0,0,0,0.05)" }}>
+          {imageSrc ? (
+            <img
+              src={imageSrc}
+              alt=""
+              loading="lazy"
+              style={{ objectFit: "cover", ...style }}
+              onError={(e) => {
+                e.target.style.display = "none";
+              }}
+            />
+          ) : (
+            <div className="d-flex align-items-center justify-content-center w-100 h-100 p-2 text-center" style={{ fontSize: "11px", color: "var(--accent-primary, #e1306c)", background: "rgba(225,48,108,0.08)" }}>
+              {post?.category || "Vibe"}
+            </div>
+          )}
         </div>
       </div>
     </>

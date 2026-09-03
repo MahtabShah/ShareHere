@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import web_img from "/src/assets/Screenshot 2025-07-01 130410.png";
 import post_img1 from "/src/assets/Screenshot 2025-07-01 185041.png";
 import post_img2 from "/src/assets/Screenshot 2025-07-01 185137.png";
@@ -6,7 +7,13 @@ import { useQuote } from "../context/QueotrContext";
 import VoicePost from "./VoicePost";
 
 const Explore = () => {
-  const { sm_break_point } = useQuote();
+  const { sm_break_point, setActiveIndex, openSlidWin } = useQuote();
+
+  useEffect(() => {
+    if (!openSlidWin) {
+      setActiveIndex("Explore");
+    }
+  }, [openSlidWin, setActiveIndex]);
   return (
     <div className="mt-5 pt-4 p-2 d-flex flex-column align-items-center justify-content-center">
       {/* <VoicePost /> */}
