@@ -267,8 +267,14 @@ const CanvasVibeEditor = () => {
     setLazyLoading(false);
   };
 
-  const { textPrimary, borderColor, textSecondary, textMuted, bgSurface, bgPage } =
-    useTheme();
+  const {
+    textPrimary,
+    borderColor,
+    textSecondary,
+    textMuted,
+    bgSurface,
+    bgPage,
+  } = useTheme();
 
   const [styleOpen, setStyleOpen] = useState(false);
 
@@ -1204,7 +1210,9 @@ const CanvasVibeEditor = () => {
               <div style={{ fontWeight: "bold", color: textPrimary }}>
                 @{admin_user?.username || "Mahtab"}
               </div>
-              <small style={{ color: textSecondary }}>Visibility: {visible}</small>
+              <small style={{ color: textSecondary }}>
+                Visibility: {visible}
+              </small>
             </div>
           </div>
           <div className="mt-2 h-100">

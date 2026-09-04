@@ -10,7 +10,7 @@ html {
 
 body {
   overflow-x: clip;
-  margin-top: 100px !important;
+  margin-top: 52px !important;
   max-height: calc(100dvh - 100px);
 }
 

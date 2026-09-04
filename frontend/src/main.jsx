@@ -1,13 +1,7 @@
 // import { StrictMode } from "react";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  BrowserRouter,
-  useNavigate,
-  useLocation,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter, useLocation, Routes, Route } from "react-router-dom";
 import { QuoteProvider, useQuote } from "./context/QueotrContext.jsx";
 import MainHeader from "../src/maincomponents/MainHeader.jsx";
 import UserProfile from "./maincomponents/UserProfile.jsx";
