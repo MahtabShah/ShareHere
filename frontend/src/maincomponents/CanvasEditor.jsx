@@ -13,6 +13,7 @@ import {
   FaArrowLeft,
   FaPaperPlane,
 } from "react-icons/fa";
+
 import { PiRectangleDashedBold } from "react-icons/pi";
 import { Rnd } from "react-rnd";
 import styled from "styled-components";
@@ -584,10 +585,6 @@ function PostPage({
   );
 }
 
-// ==================================================
-// TOP PANEL
-// ==================================================
-
 function TopPanel({
   activeLayer,
   onDelete,
@@ -776,10 +773,6 @@ function TopPanel({
   );
 }
 
-// ==================================================
-// TEXT LAYER
-// ==================================================
-
 function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
   const canEdit = isActive && !layer.isLocked;
 
@@ -835,10 +828,6 @@ function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
   );
 }
 
-// ==================================================
-// RESIZE HANDLES
-// ==================================================
-
 function ResizeHandles() {
   return (
     <>
@@ -855,10 +844,6 @@ function ResizeHandles() {
     </>
   );
 }
-
-// ==================================================
-// STYLES
-// ==================================================
 
 const EditorContainer = styled.div`
   width: 100%;
