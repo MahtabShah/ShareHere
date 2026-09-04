@@ -207,7 +207,7 @@ function MainHeader({ onLogout } = {}) {
         borderBottom: `1px solid ${bgBorder}`,
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        zIndex: 999,
+        zIndex: 99,
         left: `${
           mobile_break_point ? "0px" : isNavCollapsed ? "74px" : "244px"
         }`,

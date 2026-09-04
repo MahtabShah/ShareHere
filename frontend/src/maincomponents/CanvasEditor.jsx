@@ -1,349 +1,368 @@
-import React, { useState, useRef, useEffect, act } from "react";
-import { toPng } from "html-to-image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useRef, useState } from "react";
+import {
+  FaTrash,
+  FaBold,
+  FaItalic,
+  FaUnderline,
+  FaLock,
+  FaUnlock,
+  FaPlus,
+  FaAlignLeft,
+  FaAlignCenter,
+  FaAlignRight,
+  FaArrowLeft,
+  FaPaperPlane,
+} from "react-icons/fa";
+import { PiRectangleDashedBold } from "react-icons/pi";
 import { Rnd } from "react-rnd";
-import { useQuote } from "../context/QueotrContext";
-import { Loading } from "../../TinyComponent/LazyLoading";
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+import styled from "styled-components";
+import { useTheme } from "../context/Theme";
+import { toJpeg } from "html-to-image";
+import { v4 as uuidv4 } from "uuid";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useQuote } from "../context/QueotrContext";
 
-import Tabs from "react-bootstrap/esm/Tabs";
-import { Tab } from "bootstrap";
+const bgColors = [
+  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+  "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+  "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+  "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+  "linear-gradient(135deg, #30cfd0 0%, #330867 100%)",
+  "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+  "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)",
+  "linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)",
+  "linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)",
+  "linear-gradient(135deg, #48c6ef 0%, #6f86d6 100%)",
+  "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
+  "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
+  "linear-gradient(135deg, #96fbc4 0%, #f9f586 100%)",
+  "linear-gradient(135deg, #ebc0fd 0%, #d9ded8 100%)",
+  "linear-gradient(135deg, #13547a 0%, #80d0c7 100%)",
+  "linear-gradient(135deg, #00c6fb 0%, #005bea 100%)",
+  "linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)",
+  "linear-gradient(135deg, #7f7fd5 0%, #86a8e7 50%, #91eae4 100%)",
+  "linear-gradient(135deg, #232526 0%, #414345 100%)",
+];
 
-import {
-  faTextHeight,
-  faImage,
-  faTrash,
-  faArrowUp,
-  faUpload,
-  faBold,
-  faItalic,
-  faArrowsUpDownLeftRight,
-  faUnderline,
-  faAlignLeft,
-  faAlignCenter,
-  faPenNib,
-  faAlignRight,
-  faMinus,
-} from "@fortawesome/free-solid-svg-icons";
+const initialLayers = [
+  {
+    id: "abc",
+    text: "Lorem, ipsum dolor sit amet consectetur adipisicing elit",
+    isLocked: false,
+    style: {
+      fontWeight: "normal",
+      fontStyle: "normal",
+      textDecoration: "none",
+      fontFamily: "Arial",
+      fontSize: 16,
+      color: "#ffffff",
+      backgroundColor: "transparent",
+      textAlign: "left",
+    },
 
-import {
-  FaStrikethrough,
-  FaFont,
-  FaTextHeight,
-  FaArrowsAltH,
-  FaTrash,
-} from "react-icons/fa";
+    state: {
+      x: 10,
+      y: 10,
+      width: 200,
+      height: 100,
+    },
+  },
+];
 
-import {
-  categories,
-  letterSpacing,
-  color,
-  fontFamily,
-  fontSize,
-  pre_bg_color,
-  textDecoration,
-  textShadow,
-  boxShadow,
-} from "../StanderdThings/StanderdData";
-
-import { useTheme } from "../context/Theme";
-
-import {
-  FaMagic, // For visual effects like shadows/glow
-} from "react-icons/fa";
-
-const CanvasVibeEditor = () => {
-  const [elements, setElements] = useState([]);
-  const [activeId, setActiveId] = useState(null);
-  const [activeElement, setActiveElement] = useState(null);
-  const [canvasHeight, setCanvasHeight] = useState(454);
-  const [canvasBgColor, setCanvasBgColor] = useState("#1c81b7ff");
-  const [exporting, setExporting] = useState(false);
-  const [exportUrl, setExportUrl] = useState(null);
-  const [active_style, setActive_style] = useState(fontFamily);
-  const [style_type, setStyle_type] = useState("fontFamily");
-  const [category, setCategory] = useState("all");
-  const [hidePage, setHidePage] = useState("");
-
+export default function CanvasVibeEditor() {
+  const { colors } = useTheme();
+  const textareaRef = useRef(null);
   const canvasRef = useRef(null);
-  const nevigate = useNavigate();
+  const navigate = useNavigate();
+
   const {
     admin_user,
-    setUploadClicked,
-    sm_break_point,
-    mobile_break_point,
-    API,
     token,
+    API,
+    setUploadClicked,
     setopenSlidWin,
     setActiveIndex,
   } = useQuote();
 
-  useEffect(() => {
-    setActiveIndex("Upload");
-    if (!elements.length) {
-      addTextBox();
-    }
-  }, []);
+  const [visible, setVisible] = useState("Public");
+  const [category, setCategory] = useState("all");
+  const [description, setDescription] = useState("");
+  const [postLoading, setPostLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showPostPage, setShowPostPage] = useState(false);
+  const [canvasBackground, setCanvasBackground] = useState("#940d6d");
 
-  let idCounter =
-    elements.length > 0 ? Math.max(...elements.map((el) => el.id)) + 1 : 1;
-
-  const addTextBox = () => {
-    const newText = {
-      id: idCounter++,
-      type: "text",
-      content: "write here...",
-      x: 50,
-      y: 50,
-      width: 400,
-      height: 400,
-      fontSize: 18,
-      fontFamily: "Arial",
-      color: "#a6e9f1",
-      zIndex: elements.length + 1,
-      fontWeight: "normal",
-      fontStyle: "italic",
-      textDecoration: "none",
-      background: "00000000",
-      letterSpacing: "1",
-      textAlign: "center",
-      textShadow: "",
-      backgroundPosition: "",
-      range1: 0,
-      range2: 0,
-      borderRadius: 0,
-    };
-    setElements((prev) => [...prev, newText]);
-    setActiveId(newText.id);
-    setActiveElement(newText);
+  const handleOpenPost = () => {
+    setError("");
+    setShowPostPage(true);
   };
 
-  const handleChange = (id, key, value) => {
-    setElements((prev) =>
-      prev.map((el) => (el.id === id ? { ...el, [key]: value } : el)),
+  const [layers, setLayers] = useState(initialLayers);
+  const [activeLayerId, setActiveLayerId] = useState(null);
+
+  const activeLayer =
+    layers.find((layer) => layer.id === activeLayerId) ?? null;
+
+  const selectLayer = (layer) => {
+    if (!layer) return;
+    setActiveLayerId(layer.id);
+  };
+
+  // ------------------------------------------------
+  // Update Layer
+  // ------------------------------------------------
+
+  const updateLayer = (id, changes) => {
+    setLayers((prev) =>
+      prev.map((layer) =>
+        layer.id === id
+          ? {
+              ...layer,
+              ...changes,
+            }
+          : layer,
+      ),
     );
-
-    setActiveElement((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-
-    console.log("val ", activeElement);
   };
 
-  const deleteElement = (id) => {
-    const conf = window.confirm("want to delete this element !");
-    if (conf) {
-      setElements((prev) => prev.filter((el) => el.id !== id));
-      setActiveId(elements[0] ? elements[0].id : null);
-      setActiveElement(elements[0] ? elements[0] : null);
-    }
+  // ------------------------------------------------
+  // Add Text Layer
+  // ------------------------------------------------
+
+  const addTextLayer = () => {
+    const id = uuidv4().replace(/-/g, "").slice(0, 8);
+
+    const newLayer = {
+      id,
+      text: "New Text",
+      isLocked: false,
+
+      style: {
+        fontWeight: "normal",
+        fontStyle: "normal",
+        textDecoration: "none",
+        fontFamily: "Arial",
+        fontSize: 16,
+        color: "#ffffff",
+        backgroundColor: "transparent",
+        textAlign: "center",
+      },
+
+      state: {
+        x: Math.floor(Math.random() * 200 + 20),
+        y: Math.floor(Math.random() * 200 + 20),
+        width: Math.floor(Math.random() * 80 + 80),
+        height: Math.floor(Math.random() * 60 + 50),
+      },
+    };
+
+    setLayers((prev) => [...prev, newLayer]);
+    setActiveLayerId(id);
+  };
+  // ------------------------------------------------
+  // Lock / Unlock
+  // ------------------------------------------------
+
+  const toggleLockActiveLayer = () => {
+    if (!activeLayerId) return;
+
+    setLayers((prev) =>
+      prev.map((layer) =>
+        layer.id === activeLayerId
+          ? {
+              ...layer,
+              isLocked: !layer.isLocked,
+            }
+          : layer,
+      ),
+    );
   };
 
-  function base64ToBlob(base64, contentType = "image/png") {
-    const byteCharacters = atob(base64.split(",")[1]); // Remove data:image/png;base64, part
+  const inactiavteLayer = () => {
+    setActiveLayerId(null);
+  };
+
+  // ------------------------------------------------
+  // Update Layer State
+  // ------------------------------------------------
+
+  const updateLayerState = (id, stateChanges) => {
+    setLayers((prev) =>
+      prev.map((layer) =>
+        layer.id === id
+          ? {
+              ...layer,
+              state: {
+                ...layer.state,
+                ...stateChanges,
+              },
+            }
+          : layer,
+      ),
+    );
+  };
+
+  // ------------------------------------------------
+  // Update Active Layer Style
+  // ------------------------------------------------
+
+  const updateActiveLayerStyle = (changes) => {
+    if (!activeLayerId) return;
+
+    setLayers((prev) =>
+      prev.map((layer) =>
+        layer.id === activeLayerId
+          ? {
+              ...layer,
+              style: {
+                ...layer.style,
+                ...changes,
+              },
+            }
+          : layer,
+      ),
+    );
+  };
+
+  // ------------------------------------------------
+  // Delete Active Layer
+  // ------------------------------------------------
+
+  const deleteActiveLayer = () => {
+    if (!activeLayerId) return;
+
+    setLayers((prev) => prev.filter((layer) => layer.id !== activeLayerId));
+
+    setActiveLayerId(null);
+  };
+
+  // ------------------------------------------------
+  // Change Text
+  // ------------------------------------------------
+
+  const changeText = (value) => {
+    if (!activeLayerId) return;
+
+    updateLayer(activeLayerId, {
+      text: value,
+    });
+  };
+
+  const base64ToBlob = (base64, contentType = "image/png") => {
+    const byteCharacters = atob(base64.split(",")[1]);
     const byteArrays = [];
 
     for (let i = 0; i < byteCharacters.length; i += 512) {
       const slice = byteCharacters.slice(i, i + 512);
+
       const byteNumbers = new Array(slice.length);
+
       for (let j = 0; j < slice.length; j++) {
         byteNumbers[j] = slice.charCodeAt(j);
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
+
+      byteArrays.push(new Uint8Array(byteNumbers));
     }
 
-    return new Blob(byteArrays, { type: contentType });
-  }
+    return new Blob(byteArrays, {
+      type: contentType,
+    });
+  };
 
-  const exportAsImage = async () => {
-    if (!canvasRef.current) return;
+  const exportCanvas = async () => {
+    if (!canvasRef.current) return null;
 
     try {
-      setExporting(true);
-      const dataUrl = await toPng(canvasRef.current, {
-        backgroundColor: canvasBgColor,
-        pixelRatio: 2, // Higher quality
+      const dataUrl = await toJpeg(canvasRef.current, {
+        pixelRatio: 3,
       });
 
-      const blob = base64ToBlob(dataUrl, "image/png");
-      const blobUrl = URL.createObjectURL(blob);
-      setExportUrl(dataUrl); // This is now a shorter blob URL
-
-      setExporting(false);
-
-      console.log("blob ", `blob:${blobUrl}`);
       return dataUrl;
     } catch (error) {
-      console.error("Error exporting image:", error);
-      setExporting(false);
+      console.error("Canvas export failed:", error);
+      throw error;
     }
   };
 
-  // -----------------------------------posting-----------------------------
-  const [visible, setVisible] = useState("Public");
-  const [text, setText] = useState("");
-  const [LazyLoading, setLazyLoading] = useState(false);
-  const handleCapture = async () => {
-    const dataURL = await exportAsImage();
+  const uploadCanvas = async () => {
+    const dataUrl = await exportCanvas();
+    if (!dataUrl) {
+      throw new Error("Canvas export returned no image.");
+    }
 
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
+    if (!cloudName) {
+      throw new Error(
+        "VITE_CLOUDINARY_CLOUD_NAME is missing. Check your .env file and restart Vite.",
+      );
+    }
+
+    const imageBlob = base64ToBlob(dataUrl, "image/png");
     const formData = new FormData();
-    formData.append("file", dataURL);
+
+    formData.append("file", imageBlob, "canvas.png");
     formData.append("upload_preset", "page_Image");
-    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
 
-    const res = await axios.post(
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      formData,
-    );
+    try {
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        formData,
+      );
 
-    console.log("Uploaded URL:", res.data.secure_url);
-    return res.data.secure_url;
-  };
-
-  const [error, setError] = useState("");
-
-  const handleInput = (idx, e, key) => {
-    if (key === "text") {
-      setText(e.target.value);
-      console.log(e.target.value);
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Cloudinary status:", error.response?.status);
+      console.error("Cloudinary error:", error.response?.data);
+      throw error;
     }
-
-    setError("");
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handlePost = async () => {
     if (!admin_user) {
-      const confirm = window.confirm("You have to sign up or login to post");
-      if (confirm) {
-        nevigate("/login") || nevigate("/signup");
+      const confirmLogin = window.confirm(
+        "You have to sign up or login to post",
+      );
+
+      if (confirmLogin) {
+        navigate("/login");
       }
-    } else if (text == "") {
-      setError("Plese write something aboute post !");
+
       return;
     }
 
-    setLazyLoading(true);
-    setActiveId(null);
-    setActiveElement({ id: "x" });
-
-    try {
-      const ready_url = await handleCapture();
-      console.log("ready url ", ready_url);
-
-      if (ready_url) {
-        const res = await axios.post(
-          `${API}/api/sentence/post`,
-          {
-            ready_url: ready_url,
-            text: text,
-            mode: visible,
-            id: admin_user?._id,
-            category: category,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-        setUploadClicked(false);
-        alert("Uploaded Successfully");
-        setopenSlidWin(false);
-        nevigate("/home");
-      }
-    } catch (err) {
-      alert(
-        "Failed to post, Connection Error or internal issue: " +
-          (err.response?.data?.message || err.message),
-      );
-      // setErrors(err.response?.data?.message || err.message);
-      console.error("Error saving sentence", err);
-    }
-    setLazyLoading(false);
-  };
-
-  const {
-    textPrimary,
-    borderColor,
-    textSecondary,
-    textMuted,
-    bgSurface,
-    bgPage,
-  } = useTheme();
-
-  const [styleOpen, setStyleOpen] = useState(false);
-
-  const isResizing = useRef(false);
-
-  const startResizing = () => {
-    isResizing.current = true;
-    // Mouse events
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", stopResizing);
-    // Touch events
-    document.addEventListener("touchmove", handleTouchMove, { passive: false });
-    document.addEventListener("touchend", stopResizing);
-  };
-
-  const handleMouseMove = (e) => {
-    if (isResizing.current) {
-      setCanvasHeight(
-        e.clientY - canvasRef.current.getBoundingClientRect().top,
-      );
-    }
-  };
-
-  const handleTouchMove = (e) => {
-    if (isResizing.current) {
-      e.preventDefault(); // prevent scrolling while resizing
-      setCanvasHeight(
-        e.touches[0].clientY - canvasRef.current.getBoundingClientRect().top,
-      );
-    }
-  };
-
-  const stopResizing = () => {
-    isResizing.current = false;
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", stopResizing);
-    document.removeEventListener("touchmove", handleTouchMove);
-    document.removeEventListener("touchend", stopResizing);
-  };
-
-  const [statusLoading, setStatusLoading] = useState(false);
-  const HandleStatus = async (e) => {
-    // const [userId, setUserId] = useState(""); // use logged-in user ID
-    // alert("Currently status feature is not availble. . . stay tuned !");
-    // return;
-
-    e.preventDefault();
-    if (!admin_user) {
-      const confirm = window.confirm("You have to sign up or login to post");
-      if (confirm) {
-        nevigate("/login") || nevigate("/signup");
-      }
-    } else if (text == "") {
-      setError("Plese write something aboute post !");
+    if (!description.trim()) {
+      setError("Please write something about your post.");
       return;
     }
 
-    setActiveId(null);
-    setActiveElement({ id: "x" });
+    if (!layers.length || !layers.some((layer) => layer.text?.trim())) {
+      setError("Please add/write something in the editor.");
+      return;
+    }
 
     try {
-      setStatusLoading(true);
-      const ready_url = await handleCapture();
-      const res = await axios.post(
-        `${API}/api/crud/create_status`,
+      setError("");
+      setPostLoading(true);
+      setActiveLayerId(null);
+
+      const ready_url = await uploadCanvas();
+
+      if (!ready_url) {
+        throw new Error("Failed to upload canvas.");
+      }
+
+      const response = await axios.post(
+        `${API}/api/sentence/post`,
         {
-          text: text,
-          image: ready_url,
-          user: admin_user?._id,
+          ready_url,
+          text: description,
+          mode: visible,
+          id: admin_user?._id,
+          category,
         },
         {
           headers: {
@@ -351,1050 +370,944 @@ const CanvasVibeEditor = () => {
           },
         },
       );
-      console.log("Created status:", res.data);
-      alert("Status created!");
-    } catch (err) {
-      console.error("Error creating status:", err);
+
+      setUploadClicked?.(false);
+      setopenSlidWin?.(false);
+      setActiveIndex?.(null);
+
+      alert("Uploaded Successfully");
+
+      navigate("/home");
+    } catch (error) {
+      console.error("Post failed:", error);
+
+      setError(
+        error.response?.data?.message || error.message || "Failed to post",
+      );
     } finally {
-      setStatusLoading(false);
+      setPostLoading(false);
     }
   };
 
-  const [dir, setDir] = useState(window.innerWidth < 900);
-  window.addEventListener("resize", () => {
-    setDir(window.innerWidth < 900);
-  });
-
-  const navigate = useNavigate();
-  const [imageUrl, setImageUrl] = useState(null);
-  const [range1, setRange1] = useState(0);
-  const [range2, setRange2] = useState(0);
-
   return (
-    <div
-      className="overflow-hidden d-flex w-100 pb-3 "
+    <EditorContainer
       style={{
-        flexDirection: dir ? "column" : "row",
-        paddingInline: !dir && "1vw",
-        gap: "16px",
+        background: colors.bgPage,
+        color: colors.textPrimary,
       }}>
-      <div
-        className="d-flex h-100"
-        style={{
-          width: dir ? "100%" : `calc(200px + 60vw)`,
-          maxWidth: `501px`,
-          justifySelf: "center",
-          margin: dir && "auto",
-        }}>
-        <div className="card border-0">
-          <div
-            className={`position-fixed toolbar-pr p-2`}
-            style={{
-              zIndex: 1001,
-              background: bgSurface,
-              color: textPrimary,
-              boxShadow: `0 1px 1px ${borderColor}`,
-              left: `${
-                mobile_break_point ? "0px" : sm_break_point ? "74px" : "244px"
-              }`,
-              right: 0,
-            }}>
-            <div className="d-flex gap-2 overflow-x-auto">
-              <div
-                className=" toolbar-button props-btn border-danger d-inline-flex p-1 rounded-1 bg-danger text-light"
-                style={{
-                  minWidth: "32px",
-                  maxHeight: "32px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  if (window.confirm("The edit will be discard")) {
-                    setopenSlidWin(false);
-                    setActiveIndex(null);
-                    navigate("/home");
-                  }
-                }}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  fill={"white"}>
-                  <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-                </svg>
-              </div>
+      <TopPanel
+        activeLayer={activeLayer}
+        onDelete={deleteActiveLayer}
+        onStyleChange={updateActiveLayerStyle}
+        onAddText={addTextLayer}
+        onToggleLock={toggleLockActiveLayer}
+        onInactive={inactiavteLayer}
+        onBack={() => {
+          if (confirm("Want to go back...")) {
+            setUploadClicked?.(false);
+            setopenSlidWin?.(false);
+            setActiveIndex?.(null);
+            navigate("/home");
+          }
+        }}
+        onPost={handleOpenPost}
+        postLoading={postLoading}
+      />
 
-              <summary
-                className="d-flex gap-2 h-100"
-                style={{ color: "#ededed" }}>
-                <div
-                  className="toolbar-button props-btn "
-                  style={{
-                    wordSpacing: "pre-wrap",
-                    minWidth: "max-content",
-                  }}
-                  onClick={() => {
-                    setStyleOpen(!styleOpen);
-                  }}>
-                  &nbsp; {!styleOpen ? "open " : "close "} &nbsp;
-                </div>
-              </summary>
-
-              <div className="d-flex overflow-x-auto  rounded-1 h-100 none-scroller gap-2 mb-1">
-                <button
-                  className={`toolbar-button   ${
-                    activeElement?.fontWeight === "bold" ? "active" : ""
-                  }`}
-                  style={{ minWidth: "34px" }}
-                  onClick={() =>
-                    handleChange(
-                      activeElement?.id,
-                      "fontWeight",
-                      activeElement?.fontWeight === "bold" ? "normal" : "bold",
-                    )
-                  }
-                  disabled={!activeElement}>
-                  <FontAwesomeIcon
-                    icon={faBold}
-                    fontSize={12}
-                    color={"#ededed"}
-                  />
-                </button>
-
-                <button
-                  className={`toolbar-button ${
-                    activeElement?.fontStyle === "italic" ? "active" : ""
-                  }`}
-                  style={{ minWidth: "34px" }}
-                  onClick={() =>
-                    handleChange(
-                      activeElement?.id,
-                      "fontStyle",
-                      activeElement?.fontStyle === "italic"
-                        ? "normal"
-                        : "italic",
-                    )
-                  }
-                  disabled={!activeElement}>
-                  <FontAwesomeIcon
-                    icon={faItalic}
-                    fontSize={12}
-                    color={"#ededed"}
-                  />
-                </button>
-
-                <button
-                  className={`toolbar-button ${
-                    activeElement?.textDecoration === "underline"
-                      ? "active"
-                      : ""
-                  }`}
-                  style={{ minWidth: "34px" }}
-                  onClick={() =>
-                    handleChange(
-                      activeElement?.id,
-                      "textDecoration",
-                      activeElement?.textDecoration === "underline"
-                        ? "none"
-                        : "underline",
-                    )
-                  }
-                  disabled={!activeElement}>
-                  <FontAwesomeIcon
-                    icon={faUnderline}
-                    fontSize={12}
-                    color={"#ededed"}
-                  />
-                </button>
-
-                <button
-                  className={`toolbar-button ${
-                    activeElement?.textAlign === "left" ? "active" : ""
-                  }   props-btn `}
-                  onClick={() =>
-                    handleChange(activeElement?.id, "textAlign", "left")
-                  }
-                  disabled={!activeElement}
-                  style={{ minWidth: "34px" }}>
-                  <FontAwesomeIcon
-                    icon={faAlignLeft}
-                    fontSize={12}
-                    color={"#ededed"}
-                  />
-                </button>
-
-                <button
-                  className={`toolbar-button ${
-                    activeElement?.textAlign === "center" ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    handleChange(activeElement?.id, "textAlign", "center")
-                  }
-                  disabled={!activeElement}
-                  style={{ minWidth: "34px" }}>
-                  <FontAwesomeIcon
-                    icon={faAlignCenter}
-                    fontSize={12}
-                    color={"#ededed"}
-                  />
-                </button>
-
-                <button
-                  className={`toolbar-button ${
-                    activeElement?.textAlign === "right" ? "active" : ""
-                  }`}
-                  style={{ minWidth: "34px" }}
-                  onClick={() =>
-                    handleChange(activeElement?.id, "textAlign", "right")
-                  }
-                  disabled={!activeElement}>
-                  <FontAwesomeIcon
-                    icon={faAlignRight}
-                    fontSize={12}
-                    color={"#ededed"}
-                  />
-                </button>
-
-                <div
-                  className="d-flex gap-2 btn-tool overflow-x-auto none-scroller"
-                  style={{ minWidth: "max-content" }}
-                  onClick={() => {
-                    setStyleOpen(true);
-                  }}>
-                  <div
-                    className="toolbar-button d-flex align-items-center rounded-1 px-2 fontFamily "
-                    onClick={() => {
-                      setActive_style(fontFamily);
-                      setStyle_type("fontFamily");
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      background: `${
-                        active_style === fontFamily ? "#6b0ad2" : ""
-                      }`,
-                      color: `${active_style === fontFamily ? "#fff" : ""}`,
-                    }}>
-                    <FaFont />
-                  </div>
-
-                  <div
-                    className="toolbar-button  d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 fontSize"
-                    onClick={() => {
-                      setActive_style(fontSize);
-                      setStyle_type("fontSize");
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      background: `${
-                        active_style === fontSize ? "#6b0ad2" : ""
-                      }`,
-                      color: `${active_style === fontSize ? "#fff" : ""}`,
-                    }}>
-                    <FaTextHeight title="Increase Font Size" />
-                  </div>
-
-                  <div
-                    className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                    onClick={() => {
-                      setActive_style(textShadow);
-                      setStyle_type("textShadow");
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      background: `${
-                        active_style === textShadow ? "#6b0ad2" : ""
-                      }`,
-                      color: `${active_style === textShadow ? "#fff" : ""}`,
-                    }}>
-                    <FaMagic title="FaShadow" />
-                  </div>
-
-                  <div
-                    className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                    onClick={() => {
-                      setActive_style(textDecoration);
-                      setStyle_type("textDecoration");
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      background: `${
-                        active_style === textDecoration ? "#6b0ad2" : ""
-                      }`,
-                      color: `${active_style === textDecoration ? "#fff" : ""}`,
-                    }}>
-                    <FaStrikethrough title="Strikethrough" />
-                  </div>
-
-                  <div
-                    className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 textDecoration"
-                    onClick={() => {
-                      setActive_style(color);
-                      setStyle_type("color");
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      background: `${active_style === color ? "#6b0ad2" : ""}`,
-                      color: `${active_style === color ? "#fff" : ""}`,
-                    }}>
-                    <FontAwesomeIcon icon={faPalette} title="Color" />
-                  </div>
-
-                  <div
-                    className="toolbar-button  d-flex align-items-center  rounded-1 p-0   pe-2 ps-2 letterSpacing"
-                    onClick={() => {
-                      setActive_style(letterSpacing);
-                      setStyle_type("letterSpacing");
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      background: `${
-                        active_style === letterSpacing ? "#6b0ad2" : ""
-                      }`,
-                      color: `${active_style === letterSpacing ? "#fff" : ""}`,
-                    }}>
-                    Spacing
-                  </div>
-
-                  <div
-                    className="toolbar-button d-flex align-items-center  rounded-1 p-0  pe-2 ps-2 backgroundPosition "
-                    onClick={() => {
-                      setActive_style(boxShadow);
-                      setStyle_type("boxShadow");
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      background: `${
-                        active_style === boxShadow ? "#6b0ad2" : ""
-                      }`,
-                      color: `${active_style === boxShadow ? "#fff" : ""}`,
-                    }}>
-                    box Shadow
-                  </div>
-                </div>
-
-                <div
-                  className="props-btn toolbar-button"
-                  onClick={() => {
-                    setStyleOpen(false);
-                    setHidePage("CanvasHeight");
-                  }}
-                  style={{
-                    cursor: "pointer",
-                    minWidth: "max-content",
-                  }}>
-                  Canvas{" "}
-                  <div
-                    style={{
-                      bottom: "-10px",
-                      right: "1px",
-                    }}>
-                    <FaArrowsAltH
-                      style={{
-                        color: textMuted,
-                        rotate: "90deg",
-                      }}
-                      size={16}
-                    />
-                  </div>
-                </div>
-
-                {activeElement?.type === "image" && (
-                  <div
-                    className="props-btn toolbar-button"
-                    onClick={() => {
-                      setStyleOpen(false);
-                      setHidePage("objectPosition");
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      minWidth: "max-content",
-                    }}>
-                    Imagexy
-                  </div>
-                )}
-
-                <div
-                  className="props-btn toolbar-button"
-                  onClick={() => {
-                    setHidePage("borderRadius");
-                    setStyleOpen(false);
-                  }}
-                  style={{
-                    cursor: "pointer",
-                    minWidth: "max-content",
-                  }}>
-                  Round
-                </div>
-
-                <div
-                  className="btn overflow-hidden p-0 props-btn toolbar-button"
-                  style={{ border: `` }}>
-                  <input
-                    type="color"
-                    value={activeElement?.color || "#ff2222d6"}
-                    style={{
-                      scale: "2",
-                      border: ``,
-                    }}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      handleChange(activeElement?.id, "color", e.target.value);
-                    }}
-                    // defaultValue={"#ff0000"}
-                    open
-                  />
-                </div>
-
-                <div
-                  className="props-btn toolbar-button"
-                  style={{
-                    border: `1px solid ${"#ededed"}`,
-                    minWidth: "120px",
-                  }}>
-                  <div
-                    className="btn overflow-hidden  d-flex align-items-center p-0 gap-1 rounded-0 justify-content-between  border-0"
-                    style={{ translate: "6px" }}>
-                    <small className="flex-grow-1" style={{ color: "#ededed" }}>
-                      Background
-                    </small>
-                    <div className="btn overflow-hidden flex-grow-1 props-btn rounded-0 p-0">
-                      <input
-                        type="color"
-                        className="form-control form-control-color w-100 props-btn border"
-                        style={{ scale: 3 }}
-                        value={activeElement?.background || "#adc"}
-                        onChange={(e) =>
-                          activeElement
-                            ? handleChange(
-                                activeId,
-                                "background",
-                                e.target.value,
-                              )
-                            : setCanvasBgColor(e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  className="props-btn fw-medium toolbar-button flex-grow-1"
-                  style={{
-                    border: `1px solid ${"#ededed"}`,
-                    minWidth: "84px",
-                  }}
-                  disabled={!activeElement}
-                  onClick={() => {
-                    activeElement
-                      ? handleChange(activeId, "background", "00000000")
-                      : "";
-                  }}>
-                  &nbsp;Reset BG&nbsp;
-                </button>
-              </div>
-            </div>
-
-            {styleOpen && (
-              <div className="d-flex gap-2 text-light mb-2 overflow-x-auto overflow-y-hidden none-scroller">
-                {active_style.map((op) => (
-                  <button
-                    className={`props-btn toolbar-button ${
-                      activeElement?.[style_type] == op ? "active" : ""
-                    }`}
-                    style={{
-                      color: "#ededed",
-                      minWidth: "fit-content",
-                      minHeight: "max-height",
-                      boxShadow: `${style_type == "boxShadow" ? op : ""}`,
-                    }}
-                    onClick={() => {
-                      handleChange(activeId, style_type, op);
-                    }}>
-                    <span
-                      className="btn border-0 p-2"
-                      style={{
-                        color: "#ededed",
-                        [style_type]: `${
-                          op == "fontSize" || style_type == "boxShadow"
-                            ? ""
-                            : op
-                        }`,
-                      }}>
-                      {style_type == "textShadow" || style_type == "boxShadow"
-                        ? "A"
-                        : op}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className="position-sticky my-1 d-flex gap-2">
-              <div className="" style={{ minWidth: "max-content" }}>
-                <>
-                  <div
-                    className="d-flex flex-row-reverse props-parent flex-wrap gap-2 overflow-x-auto"
-                    style={{
-                      height: "max-content",
-                    }}>
-                    <button
-                      className="btn overflow-hidden btn-primary p-0 props-btn rounded-0"
-                      onClick={addTextBox}>
-                      <div className="props-btn rounded-0">
-                        Add Text &nbsp;
-                        <FontAwesomeIcon icon={faTextHeight} className="me-2" />
-                      </div>
-                    </button>
-                  </div>
-                </>
-              </div>
-
-              {activeId && (
-                <>
-                  <button
-                    className={`btn toolbar-button`}
-                    onClick={() => setActiveId(null)}
-                    style={{
-                      minWidth: "max-content",
-                    }}
-                    disabled={!activeElement}>
-                    <FontAwesomeIcon icon={faMinus} />
-                  </button>
-
-                  <button
-                    className={`btn  toolbar-button`}
-                    onPointerDown={() => {
-                      if (activeElement) {
-                        deleteElement(activeElement?.id);
-                      }
-                    }}
-                    disabled={!activeElement}>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </>
-              )}
-
-              <div
-                className="d-flex gap-2 w-100 none-scroller overflow-x-auto overflow-y-hidden"
-                style={{ maxHeight: "40px" }}>
-                {pre_bg_color.map((c, idx) => {
-                  return (
-                    <span
-                      key={`bg-${idx}`}
-                      className="rounded-5 d-block"
-                      style={{
-                        minWidth: "30px",
-                        minHeight: "30px",
-                        background: `${c}`,
-                        cursor: "pointer",
-                        border: `${
-                          canvasBgColor === c
-                            ? "2px solid red"
-                            : "2px solid #f9d8df00"
-                        }`,
-                      }}
-                      onClick={() => {
-                        setCanvasBgColor(c);
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-
-            {hidePage === "objectPosition" && (
-              <>
-                <div
-                  className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bgSurface, color: textPrimary }}>
-                  <div className="d-flex flex-grow-1 w-100 flex-column">
-                    <label className="w-100 d-flex gap-2 flex-grow-1 ">
-                      X
-                      <input
-                        type="range"
-                        id="rg1"
-                        className="w-100"
-                        min={-600}
-                        max={600}
-                        value={range1}
-                        onChange={(e) => {
-                          setRange1(e.target.value);
-                        }}
-                      />
-                    </label>
-                    <label className="w-100 d-flex gap-2">
-                      Y
-                      <input
-                        type="range"
-                        className="w-100 border"
-                        id="rg2"
-                        min={-1000}
-                        max={1000}
-                        value={range2}
-                        onChange={(e) => {
-                          setRange2(e.target.value);
-                        }}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="d-flex flex-column gap-1 align-items-center">
-                    <div
-                      className="btn btn-danger rounded-1 px-2 py-0 text-end"
-                      onClick={() => {
-                        setHidePage("");
-                        setStyleOpen(false);
-                      }}>
-                      Close
-                    </div>
-
-                    <div
-                      className="btn btn-dark rounded-1 px-2 py-0 text-end"
-                      onClick={() => {
-                        setRange1(0);
-
-                        setRange2(0);
-                      }}>
-                      Reset
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {hidePage === "borderRadius" && (
-              <>
-                <div
-                  className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bgSurface }}>
-                  <div className="d-flex flex-grow-1 w-100 flex-column">
-                    <label className="w-100 d-flex flex-column gap-2 flex-grow-1 ">
-                      <span className="mb-1 fw-semibold">Round the border</span>
-                      <input
-                        type="range"
-                        id="rg1"
-                        className="w-100"
-                        min={0}
-                        max={400}
-                        value={activeElement?.borderRadius}
-                        onChange={(e) => {
-                          handleChange(
-                            activeElement?.id,
-                            "borderRadius",
-                            e.target.value,
-                          );
-                        }}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="d-flex flex-column gap-1 align-items-center">
-                    <div
-                      className="btn btn-danger rounded-1 px-2 py-0 text-end"
-                      onClick={() => {
-                        setHidePage("");
-                        setStyleOpen(false);
-                      }}>
-                      Close
-                    </div>
-
-                    <div
-                      className="btn btn-dark rounded-1 px-2 py-0 text-end"
-                      onClick={() => {
-                        handleChange(activeElement?.id, "borderRadius", 0);
-                      }}>
-                      Reset
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {hidePage === "CanvasHeight" && (
-              <>
-                <div
-                  className="position-absolute py-3 px-2 w-100 top-0 end-0 start-0 d-flex gap-2"
-                  style={{ background: bgSurface }}>
-                  <div className="d-flex flex-grow-1 w-100 flex-column">
-                    <label className="w-100 d-flex flex-column gap-2 flex-grow-1 ">
-                      <span className="mb-1 gap-2 d-inline-flex fw-semibold">
-                        <span style={{ minWidth: "max-content" }}>
-                          Set Canvas Height :
-                        </span>
-                        <input
-                          className="border rounded-1 px-1 w-100"
-                          type="number"
-                          placeholder="Set height"
-                          name=""
-                          min={0}
-                          value={canvasHeight || 0}
-                          onChange={(e) => {
-                            setCanvasHeight(e.target.value);
-                          }}
-                          id=""
-                        />
-                      </span>
-
-                      <input
-                        type="range"
-                        id="ch1"
-                        className="w-100"
-                        min={0}
-                        max={700}
-                        value={canvasHeight}
-                        onChange={(e) => {
-                          setCanvasHeight(e.target.value);
-                        }}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="d-flex flex-column gap-1 align-items-center">
-                    <div
-                      className="btn btn-danger rounded-1 px-2 py-0 text-end"
-                      onClick={() => {
-                        setHidePage("");
-                        setStyleOpen(false);
-                      }}>
-                      Close
-                    </div>
-
-                    <div
-                      className="btn btn-dark rounded-1 px-2 py-0 text-end"
-                      onClick={() => {
-                        setCanvasHeight(400);
-                      }}>
-                      Reset
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+      <CanvasArea>
+        <Canvas
+          ref={canvasRef}
+          width={"100%"}
+          style={{ background: canvasBackground }}>
+          {layers.map((layer) => (
+            <TextLayer
+              key={layer.id}
+              layer={layer}
+              isActive={layer.id === activeLayerId}
+              onSelect={selectLayer}
+              onUpdateState={updateLayerState}
+            />
+          ))}
+        </Canvas>
 
         <div
-          className="position-relative"
+          className="bg-colors d-flex gap-2 py-1 overflow-auto"
           style={{
-            marginTop: `calc(52px + ${styleOpen ? `80px` : "44px"})`,
-            width: "100%",
+            minHeight: "max-content",
+            maxWidth: "350px",
+            cursor: "pointer",
+            minHeight: "40px",
           }}>
-          <UploadButton
-            onSelect={(url) => setImageUrl(url)}
-            url={imageUrl}
-            setHidePage={setHidePage}
-          />
-
-          <div
-            ref={canvasRef}
-            className="canvas-container w-100 position-relative"
-            style={{
-              height: `${canvasHeight}px`,
-              minHeight: "max-content",
-              background: canvasBgColor,
-              backgroundImage: `url(${imageUrl || ""})`,
-              overflow: "hidden",
-              maxWidth: "501px",
-              // margin: "auto",
-              backgroundSize: "101%",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: `${range1 || 0}px ${range2 || 0}px`,
-            }}>
-            {elements.map((el, idx) => (
-              <div
-                key={`${el.id}-${idx}`}
-                style={{
-                  position: "relative",
-                  zIndex: el.zIndex,
-                  border:
-                    activeId === el.id
-                      ? "2px dashed #13da2aff"
-                      : "2px solid transparent",
-                }}
-                spellCheck={false}>
+          {bgColors.map((bg, i) => {
+            return (
+              <>
                 <div
-                  className="text-element h-100 w-100 overflow-hidden outline-none w-100 h-100 none-scroller p-2"
+                  className="span rounded-5"
+                  onClick={() => {
+                    setCanvasBackground(bg);
+                  }}
                   style={{
-                    fontSize: `${el.fontSize}px`,
-                    color: el.color,
-                    fontFamily: el.fontFamily,
-                    fontWeight: el.fontWeight,
-                    fontStyle: el.fontStyle,
-                    textDecoration: el.textDecoration,
-                    textAlign: el.textAlign,
-                    background: el.background,
-                    whiteSpace: "pre-wrap",
-                    userSelect: "none",
-                    letterSpacing: `${el.letterSpacing}px`,
-                    textShadow: el.textShadow,
-                    boxShadow: el.boxShadow,
-                    outline: "none",
-                    borderRadius: `${el.borderRadius}px`,
-                    minHeight: `${activeId && "40px"}`,
+                    minWidth: "35px",
+                    height: "35px",
+                    background: bg,
                   }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                    setActiveId(el.id);
-                    setActiveElement(el);
-                  }}
-                  onTouchStart={(e) => {
-                    e.stopPropagation();
-                    setActiveId(el.id);
-                    setActiveElement(el);
-                  }}
-                  contentEditable={activeId === el.id}
-                  suppressContentEditableWarning={true}>
-                  {el.content}
-                </div>
-              </div>
-            ))}
-
-            {elements.length === 0 && !imageUrl && (
-              <div className="empty-canvas w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white-50">
-                <h4>Add text or images to get started</h4>
-                <p className="text-center">
-                  Click the buttons below to add elements
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div
-            onTouchStart={startResizing}
-            onMouseDown={startResizing}
-            className="position-absolute"
-            style={{
-              minWidth: "max-content",
-              bottom: "-14px",
-              right: "10px",
-              zIndex: 100,
-              cursor: "ns-resize",
-            }}>
-            <FaArrowsAltH
-              style={{
-                color: "red",
-                rotate: "90deg",
-              }}
-              size={26}
-            />
-          </div>
+                />
+              </>
+            );
+          })}
         </div>
-      </div>
+      </CanvasArea>
 
-      <div
-        className="rounded w-100"
-        style={{
-          background: !dir && bgSurface,
-          marginTop: !dir && `calc(52px + ${styleOpen ? `80px` : "44px"})`,
-          maxHeight: "fit-content",
-          // maxWidth: dir ? "100%" : "clamp(200px, 80%, 800px)",
-        }}>
-        <Visiblity
+      <EditorControls>
+        <TextAreaWrapper>
+          <Textarea
+            ref={textareaRef}
+            value={activeLayer?.text ?? ""}
+            disabled={!activeLayer || activeLayer.isLocked}
+            placeholder="Select a text layer"
+            onChange={(e) => changeText(e.target.value)}
+          />
+        </TextAreaWrapper>
+        <ToolButton onClick={handleOpenPost}>
+          <FaPaperPlane />
+        </ToolButton>
+      </EditorControls>
+
+      {showPostPage && (
+        <PostPage
+          onBack={() => setShowPostPage(false)}
+          onPost={handlePost}
+          description={description}
+          setDescription={setDescription}
+          category={category}
+          setCategory={setCategory}
           visible={visible}
           setVisible={setVisible}
-          clr={bgSurface}
-          bg={textPrimary}
+          error={error}
+          postLoading={postLoading}
         />
-
-        <div className="px-2">
-          <div className="d-flex gap-2 align-items-center  pb-0 pt-3">
-            <div
-              className="d-flex fw-semibold text-white rounded-5 align-items-center justify-content-center"
-              style={{
-                width: "40px",
-                height: "40px",
-                backgroundColor: `${admin_user?.bg_clr}`,
-                color: textPrimary,
-              }}>
-              {admin_user?.username?.charAt(0) || "M"}
-            </div>
-            <div>
-              <div style={{ fontWeight: "bold", color: textPrimary }}>
-                @{admin_user?.username || "Mahtab"}
-              </div>
-              <small style={{ color: textSecondary }}>
-                Visibility: {visible}
-              </small>
-            </div>
-          </div>
-          <div className="mt-2 h-100">
-            <textarea
-              value={text}
-              onChange={(e) => {
-                handleInput(0, e, "text");
-              }}
-              className={`form-control rounded h-100 shadow-none p-2 overflow-auto none-scroller`}
-              placeholder="Write about post here . . ."
-              style={{
-                background: !dir ? bgSurface : bgPage,
-                color: textPrimary,
-                minHeight: `${(text.split("\n").length + 4) * 27}px`,
-                border: `${error ? "1px solid red" : `1px solid ${borderColor}`}`,
-              }}
-              spellCheck="false"
-            />
-          </div>
-        </div>
-
-        <div className="p-2 small" style={{ color: textPrimary }}>
-          Set Tag for the post :{" "}
-        </div>
-        <div className="vibeTabs px-2">
-          <Tabs
-            id="controlled-tab-example"
-            activeKey={category}
-            onSelect={(k) => setCategory(k)}
-            className="border-0 d-flex gap-3 py-2 flex-nowrap none-scroller overflow-auto"
-            transition={false}
-            style={{
-              "--bg1": bgSurface,
-              "--bg2": bgPage,
-              "--tc1": textPrimary,
-              "--tc2": textSecondary,
-              maxWidth: !dir
-                ? `calc(100vw - 541px - ${
-                    mobile_break_point
-                      ? "0px"
-                      : sm_break_point
-                        ? "74px"
-                        : "244px"
-                  })`
-                : "100%",
-
-              // maxWidth: "400px",
-
-              // gridTemplateColumns: "repeat(auto-fit , minmax(100px, 1fr))",
-            }}>
-            {categories.map(({ key, title }) => (
-              <Tab
-                eventKey={key}
-                title={title}
-                className="border-0"
-                key={key}
-              />
-            ))}
-          </Tabs>
-        </div>
-
-        <div
-          className="d-flex gap-3 px-2  mt-3 justify-content-end"
-          style={{ paddingBottom: dir ? "40px" : "10px" }}>
-          <label
-            htmlFor="images"
-            className="btn  ps-3 pe-3 rounded-0 p-2"
-            style={{
-              height: "42px",
-              border: `1px solid ${"#959595ff"}`,
-              color: textSecondary,
-            }}
-            onClick={HandleStatus}>
-            {statusLoading ? <Loading clr={"red"} /> : "Set as Status"}
-          </label>
-
-          <button
-            type={LazyLoading ? "button" : "submit"}
-            className="btn btn-danger flex-grow-1 rounded-0"
-            style={{ height: "42px", color: textSecondary }}
-            disabled={LazyLoading}
-            onClick={handleSubmit}>
-            {LazyLoading ? <Loading clr={"white"} /> : "Post"}
-          </button>
-        </div>
-      </div>
-    </div>
+      )}
+    </EditorContainer>
   );
-};
+}
 
-export function UploadButton({ onSelect, url, setHidePage }) {
-  const fileInputRef = useRef(null);
+function PostPage({
+  description,
+  setDescription,
+  category,
+  setCategory,
+  visible,
+  setVisible,
+  error,
+  postLoading,
+  onBack,
+  onPost,
+}) {
+  return (
+    <PostPageContainer>
+      <PostHeader className="w-100">
+        <ToolButton
+          type="button"
+          title="Back to editor"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onBack();
+          }}>
+          <FaArrowLeft size={18} />
+        </ToolButton>
 
-  // File select karte hi URL generate
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setHidePage("objectPosition");
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      onSelect(imageUrl); // parent component ko image url bhejo
-    }
-  };
+        <h2>Create Post</h2>
+      </PostHeader>
+
+      <PostForm>
+        <FormGroup>
+          <label>Description</label>
+          <DescriptionInput
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Write about your post..."
+            disabled={postLoading}
+            spellCheck={false}
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <label>Tag / Category</label>
+
+          <Input
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="Enter category"
+            disabled={postLoading}
+            spellCheck={false}
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <label>Visibility</label>
+
+          <VisibilityOptions>
+            <VisibilityButton
+              type="button"
+              active={visible === "Public"}
+              disabled={postLoading}
+              onClick={() => setVisible("Public")}>
+              For Public
+            </VisibilityButton>
+
+            <VisibilityButton
+              type="button"
+              active={visible === "Follower"}
+              disabled={postLoading}
+              onClick={() => setVisible("Follower")}>
+              For Follower
+            </VisibilityButton>
+
+            <VisibilityButton
+              type="button"
+              active={visible === "Paid"}
+              disabled={true}
+              onClick={() => setVisible("Paid")}>
+              Paid Only
+            </VisibilityButton>
+          </VisibilityOptions>
+        </FormGroup>
+
+        {error && <PostError>{error}</PostError>}
+
+        <PostButton type="button" disabled={postLoading} onClick={onPost}>
+          {postLoading ? "Posting..." : "Post"}
+        </PostButton>
+      </PostForm>
+    </PostPageContainer>
+  );
+}
+
+// ==================================================
+// TOP PANEL
+// ==================================================
+
+function TopPanel({
+  activeLayer,
+  onDelete,
+  onStyleChange,
+  onAddText,
+  onToggleLock,
+  onBack,
+  onPost,
+  postLoading,
+  onInactive,
+}) {
+  const disabled = !activeLayer;
+  const style = activeLayer?.style ?? {};
 
   return (
-    <>
-      {/* Upload button */}
-      <div
-        // click se file input open
-        className="position-absolute rounded-5 d-flex justify-content-center align-items-center top-0 end-0"
-        style={{
-          zIndex: 99,
-          height: "32px",
-          width: "32px",
-          cursor: "pointer",
-          background: "hsla(177, 37%, 67%, 0.76)",
+    <UpperControl onClick={(e) => e.stopPropagation()}>
+      <ToolButton
+        type="button"
+        title="Back to editor"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onBack();
         }}>
-        {url ? (
-          <div
-            onClick={() => {
-              if (window.confirm("Are you sure to remove the image ?")) {
-                onSelect(null);
-              }
-            }}>
-            <FontAwesomeIcon icon={faTrash} color="white" />
-          </div>
-        ) : (
-          <div onClick={() => fileInputRef.current.click()}>
-            <FontAwesomeIcon icon={faUpload} color="white" />
-          </div>
-        )}
-      </div>
+        <FaArrowLeft size={18} />
+      </ToolButton>
 
-      {/* Hidden file input */}
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileChange}
+      <ToolButton onClick={onAddText}>
+        <FaPlus size={18} />
+      </ToolButton>
+
+      <ToolButton disabled={disabled} onClick={onDelete}>
+        <FaTrash />
+      </ToolButton>
+
+      <ToolButton type="button" disabled={disabled} onClick={onInactive}>
+        <PiRectangleDashedBold size={18} />
+      </ToolButton>
+
+      <ToolButton
+        disabled={disabled}
+        active={activeLayer?.isLocked}
+        onClick={onToggleLock}>
+        {activeLayer?.isLocked ? <FaLock /> : <FaUnlock />}
+      </ToolButton>
+
+      <ToolButton
+        disabled={disabled}
+        active={style.fontWeight === "bold"}
+        onClick={() =>
+          onStyleChange({
+            fontWeight: style.fontWeight === "bold" ? "normal" : "bold",
+          })
+        }>
+        <FaBold />
+      </ToolButton>
+
+      <ToolButton
+        disabled={disabled}
+        active={style.fontStyle === "italic"}
+        onClick={() =>
+          onStyleChange({
+            fontStyle: style.fontStyle === "italic" ? "normal" : "italic",
+          })
+        }>
+        <FaItalic />
+      </ToolButton>
+
+      <ToolButton
+        disabled={disabled}
+        active={style.textDecoration === "underline"}
+        onClick={() =>
+          onStyleChange({
+            textDecoration:
+              style.textDecoration === "underline" ? "none" : "underline",
+          })
+        }>
+        <FaUnderline />
+      </ToolButton>
+
+      <ToolButton
+        disabled={disabled}
+        active={style.textAlign === "left"}
+        title="Align Left"
+        onClick={() =>
+          onStyleChange({
+            textAlign: "left",
+          })
+        }>
+        <FaAlignLeft />
+      </ToolButton>
+
+      <ToolButton
+        disabled={disabled}
+        active={style.textAlign === "center"}
+        title="Align Center"
+        onClick={() =>
+          onStyleChange({
+            textAlign: "center",
+          })
+        }>
+        <FaAlignCenter />
+      </ToolButton>
+
+      <ToolButton
+        disabled={disabled}
+        active={style.textAlign === "right"}
+        title="Align Right"
+        onClick={() =>
+          onStyleChange({
+            textAlign: "right",
+          })
+        }>
+        <FaAlignRight />
+      </ToolButton>
+
+      <Select
+        disabled={disabled}
+        value={style.fontFamily ?? "Arial"}
+        onChange={(e) =>
+          onStyleChange({
+            fontFamily: e.target.value,
+          })
+        }>
+        <option value="Arial">Arial</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier New">Courier New</option>
+      </Select>
+
+      <Select
+        disabled={disabled}
+        value={style.fontSize ?? 16}
+        onChange={(e) =>
+          onStyleChange({
+            fontSize: Number(e.target.value),
+          })
+        }>
+        {[8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64].map((size) => (
+          <option key={size} value={size}>
+            {size}px
+          </option>
+        ))}
+      </Select>
+
+      <ColorInput
+        disabled={disabled}
+        type="color"
+        value={style.color ?? "#ffffff"}
+        title="Text Color"
+        onChange={(e) =>
+          onStyleChange({
+            color: e.target.value,
+          })
+        }
       />
+
+      <ColorInput
+        disabled={disabled}
+        type="color"
+        value={
+          style.backgroundColor === "transparent"
+            ? "#000000"
+            : style.backgroundColor
+        }
+        title="Background Color"
+        onChange={(e) =>
+          onStyleChange({
+            backgroundColor: e.target.value,
+          })
+        }
+      />
+
+      <ToolButton
+        disabled={disabled}
+        title="Remove Background"
+        onClick={() =>
+          onStyleChange({
+            backgroundColor: "transparent",
+          })
+        }>
+        ×
+      </ToolButton>
+    </UpperControl>
+  );
+}
+
+// ==================================================
+// TEXT LAYER
+// ==================================================
+
+function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
+  const canEdit = isActive && !layer.isLocked;
+
+  return (
+    <Rnd
+      bounds="parent"
+      className="text-layer"
+      size={{
+        width: layer.state.width,
+        height: layer.state.height,
+      }}
+      position={{
+        x: layer.state.x,
+        y: layer.state.y,
+      }}
+      enableResizing={canEdit}
+      disableDragging={!canEdit}
+      style={{
+        border: "1px dashed",
+        borderColor: isActive ? "var(--accent-color)" : "#0000",
+      }}
+      onPointerDown={() => onSelect(layer)}
+      onDragStop={(e, data) => {
+        onUpdateState(layer.id, {
+          x: data.x,
+          y: data.y,
+        });
+      }}
+      onResizeStop={(e, direction, ref, delta, position) => {
+        onUpdateState(layer.id, {
+          x: position.x,
+          y: position.y,
+          width: ref.offsetWidth,
+          height: ref.offsetHeight,
+        });
+      }}>
+      <LayerContent
+        style={{
+          fontWeight: layer.style?.fontWeight ?? "normal",
+          fontStyle: layer.style?.fontStyle ?? "normal",
+          textDecoration: layer.style?.textDecoration ?? "none",
+          fontFamily: layer.style?.fontFamily ?? "Arial",
+          fontSize: `${layer.style?.fontSize ?? 16}px`,
+          color: layer.style?.color ?? "#ffffff",
+          backgroundColor: layer.style?.backgroundColor ?? "transparent",
+          textAlign: layer.style?.textAlign ?? "left",
+        }}>
+        {layer.text}
+      </LayerContent>
+
+      {canEdit && <ResizeHandles />}
+    </Rnd>
+  );
+}
+
+// ==================================================
+// RESIZE HANDLES
+// ==================================================
+
+function ResizeHandles() {
+  return (
+    <>
+      <Handle className="top-left" />
+      <Handle className="top" />
+      <Handle className="top-right" />
+
+      <Handle className="left" />
+      <Handle className="right" />
+
+      <Handle className="bottom-left" />
+      <Handle className="bottom" />
+      <Handle className="bottom-right" />
     </>
   );
 }
 
-export function Visiblity({ visible, setVisible, clr, bg }) {
-  // Privacy options ka array
-  const privacyOptions = [
-    { value: "Public", label: "For Public", disabled: false },
-    { value: "Follower", label: "For Follower", disabled: false },
-    { value: "Paid", label: "Paid Only", disabled: true },
-  ];
+// ==================================================
+// STYLES
+// ==================================================
 
-  return (
-    <div className="d-flex flex-column mb-3 pt-2 align-items-center">
-      <div className="px-2 small" style={{ color: bg }}>
-        Set Visibility, who can see your post ? :
-      </div>
+const EditorContainer = styled.div`
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  box-sizing: border-box;
 
-      <div className="d-flex gap-3 p-2">
-        {privacyOptions.map((option) => {
-          const isActive = visible === option.value;
+  display: flex;
+  flex-direction: column;
 
-          return (
-            <button
-              key={option.value}
-              className="btn border p-1 ps-2 pe-2 rounded-5"
-              onClick={() => setVisible(option.value)}
-              disabled={option.disabled}
-              style={{
-                color: isActive && clr,
-                background: isActive && bg,
-                cursor: option.disabled ? "not-allowed" : "pointer",
-                opacity: option.disabled ? 0.6 : 1,
-              }}>
-              <small>{option.label}</small>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+  overflow: hidden;
 
-import { faPalette } from "@fortawesome/free-solid-svg-icons";
-export default CanvasVibeEditor;
+  position: relative;
+  z-index: 910011;
+
+  background: var(--bg-page);
+  color: var(--text-primary);
+
+  .bg-colors {
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+  }
+`;
+
+const UpperControl = styled.div`
+  flex-shrink: 0;
+
+  min-height: 50px;
+
+  padding: 16px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  border-bottom: 1px solid var(--border-color);
+
+  background: var(--bg-surface);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+`;
+
+const ColorInput = styled.input`
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  padding: 2px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+
+  background: var(--bg-card);
+
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+`;
+
+const CanvasArea = styled.div`
+  flex: 1;
+  min-height: 0;
+  gap: 5px;
+  width: 100%;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  // justify-content: center;
+  align-items: center;
+
+  padding: 12px;
+
+  box-sizing: border-box;
+
+  background: var(--bg-page);
+`;
+
+const Canvas = styled.div`
+  position: relative;
+
+  flex-shrink: 0;
+
+  width: ${(props) => props.width};
+  max-width: 350px;
+
+  aspect-ratio: 19/20;
+
+  box-sizing: border-box;
+
+  // border: 2px solid var(--accent-color);
+
+  padding: 4px;
+
+  background: #5c0965;
+
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--border-subtle);
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--border-subtle);
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+`;
+
+const EditorControls = styled.div`
+  flex-shrink: 0;
+
+  min-height: 80px;
+
+  padding: 8px;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  border-top: 1px solid var(--border-color);
+
+  background: var(--bg-surface);
+`;
+
+const ToolButton = styled.button`
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid;
+  border-radius: 3px;
+  background: none;
+  border-color: ${(p) => (p.active ? "var(--accent-color)" : "var(--bg-card)")};
+
+  color: ${(p) => (p.active ? "var(--text-primary)" : "var(--text-primary)")};
+
+  cursor: pointer;
+
+  transition: 0.15s ease;
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+`;
+
+const Select = styled.select`
+  flex-shrink: 0;
+
+  height: 34px;
+  min-width: 80px;
+
+  padding: 0 8px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+
+  background: var(--bg-card);
+  color: var(--text-primary);
+
+  outline: none;
+
+  &:focus {
+    border-color: var(--accent-color);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+`;
+
+const TextAreaWrapper = styled.div`
+  flex: 1;
+
+  min-width: 0;
+
+  box-sizing: border-box;
+`;
+
+const Textarea = styled.textarea`
+  width: 100%;
+  height: 100%;
+
+  box-sizing: border-box;
+
+  resize: none;
+
+  padding: 7px;
+
+  border: 1px solid var(--border-color);
+
+  border-radius: 3px;
+
+  outline: none;
+
+  background: var(--bg-card);
+
+  color: var(--text-primary);
+
+  font-family: inherit;
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    border-color: var(--accent-color);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const Handle = styled.div`
+  position: absolute;
+
+  width: 8px;
+  height: 8px;
+
+  box-sizing: border-box;
+
+  background: var(--text-primary);
+
+  border: 1px solid var(--border-color);
+
+  z-index: 10;
+
+  pointer-events: none;
+
+  &.top-left {
+    top: -5px;
+    left: -5px;
+  }
+
+  &.top {
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.top-right {
+    top: -5px;
+    right: -5px;
+  }
+
+  &.left {
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &.right {
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &.bottom-left {
+    bottom: -5px;
+    left: -5px;
+  }
+
+  &.bottom {
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.bottom-right {
+    bottom: -5px;
+    right: -5px;
+  }
+`;
+
+const LayerContent = styled.div`
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  user-select: none;
+
+  word-break: break-word;
+
+  box-sizing: border-box;
+`;
+
+const PostPageContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  background: var(--bg-page);
+  color: var(--text-primary);
+`;
+
+const PostHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+
+  button {
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+`;
+
+const PostForm = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 500px;
+  margin: auto;
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  outline: none;
+`;
+
+const DescriptionInput = styled.textarea`
+  width: 100%;
+  min-height: 120px;
+  box-sizing: border-box;
+  padding: 12px;
+  resize: vertical;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  outline: none;
+`;
+
+const VisibilityOptions = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+`;
+
+const VisibilityButton = styled.button`
+  padding: 9px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: ${(p) =>
+    p.active ? "var(--accent-color)" : "var(--bg-surface)"};
+  color: var(--text-primary);
+  cursor: pointer;
+  opacity: ${(p) => (p.disabled ? 0.5 : 1)};
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+`;
+
+const PostError = styled.div`
+  color: #ff4d4f;
+  font-size: 14px;
+`;
+
+const PostButton = styled.button`
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent-color);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+`;

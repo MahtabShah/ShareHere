@@ -22,8 +22,6 @@ import { getActiveNavFromPath } from "./context/navUtils.js";
 import EditPost from "./maincomponents/EditPost.jsx";
 import CanvasVibeEditor from "./maincomponents/CanvasEditor.jsx";
 
-import EditorZ from "./editor/components/editor.jsx";
-
 const RoutesArr = [
   {
     path: "/Explore",
@@ -127,15 +125,15 @@ const AppLayout = () => {
     }`,
     transition:
       "margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-    minHeight: "100vh",
-    paddingBottom: mobile_break_point ? "64px" : "0px",
+    // height: "100px",
+    // overflow: "auto",
   };
 
   return (
     <>
       <LeftNavbar />
       <MainHeader />
-      <BottomNav />
+      {mobile_break_point && <BottomNav />}
       <div className="app-main-content" style={mainStyle}>
         <Routes>
           {RoutesArr.map((r, idx) => (

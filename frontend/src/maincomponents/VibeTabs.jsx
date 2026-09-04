@@ -105,7 +105,11 @@ export const VibeTabs = () => {
 
   return (
     <>
-      <div className="vibeTabs position-relative">
+      <div
+        className="vibeTabs position-relative"
+        style={{
+          marginTop: "116px",
+        }}>
         <div
           className="p-2 position-fixed overflow-auto none-scroller d-flex gap-2"
           style={{ ...TabStyle }}>
