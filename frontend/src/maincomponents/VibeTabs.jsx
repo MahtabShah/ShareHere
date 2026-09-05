@@ -86,7 +86,7 @@ export const VibeTabs = () => {
 
   const TabStyle = {
     fontSize: "16px",
-    zIndex: 100,
+    zIndex: 10,
     top: "54px",
     left: `${mobile_break_point ? "0px" : isNavCollapsed ? "74px" : "244px"}`,
     right: "0px",

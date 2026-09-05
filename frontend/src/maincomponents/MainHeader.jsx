@@ -223,13 +223,19 @@ function MainHeader({ onLogout } = {}) {
         transition:
           "left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
       }}>
-      <Container fluid className="h-100 px-3">
+      <Container
+        fluid
+        className="h-100 px-3"
+        style={{
+          position: "relative",
+          zIndex: 999106,
+        }}>
         <div className="d-flex align-items-center justify-content-between w-100 h-100 gap-2">
           {/* Left: Mobile Drawer Trigger or Collapsed Brand Badge */}
           <div
             className="d-flex align-items-center gap-2 flex-shrink-0"
             style={{
-              flex: mobile_break_point ? "0 0 auto" : "1 1 0",
+              flex: mobile_break_point ? "0 0 auto" : "0 1 0",
               minWidth: mobile_break_point ? "auto" : "80px",
             }}>
             {mobile_break_point ? (
@@ -272,12 +278,11 @@ function MainHeader({ onLogout } = {}) {
 
           {/* Center: Search Bar */}
           <div
-            className="d-flex justify-content-center px-1"
+            className="d-flex  w-100 flex-grow-1 px-1"
             style={{
-              flex: "1 1 auto",
+              // flex: "1 1 auto",
               maxWidth: "540px",
               minWidth: "0",
-              width: "100%",
             }}>
             <SearchBaar />
           </div>
@@ -290,7 +295,7 @@ function MainHeader({ onLogout } = {}) {
               minWidth: "auto",
             }}>
             {/* Explore Shortcut (hidden on very small screens) */}
-            <button
+            {/* <button
               type="button"
               className="btn p-0 d-none d-md-flex align-items-center gap-1 border-0 shadow-none px-2 flex-shrink-0"
               onClick={() => handleNavigate("Explore", "/Explore")}
@@ -309,7 +314,7 @@ function MainHeader({ onLogout } = {}) {
               }}>
               <FontAwesomeIcon icon={faCompass} style={{ fontSize: "16px" }} />
               <span className="d-none d-lg-inline">Explore</span>
-            </button>
+            </button> */}
 
             {/* Quick Create Vibe Button (hidden on mobile, accessible in BottomNav) */}
             <button
@@ -371,7 +376,10 @@ function MainHeader({ onLogout } = {}) {
             {loggedIn && admin_user?._id && (
               <div
                 className="position-relative d-none d-sm-block"
-                ref={userMenuRef}>
+                ref={userMenuRef}
+                style={{
+                  zIndex: "991060 !important",
+                }}>
                 <button
                   type="button"
                   className="btn p-0 d-flex align-items-center gap-1 border-0 shadow-none"
@@ -433,14 +441,14 @@ function MainHeader({ onLogout } = {}) {
                 {/* Interactive User Dropdown Card */}
                 {showUserMenu && (
                   <div
-                    className="position-absolute rounded-3 shadow-lg p-2"
+                    className="position-absolute border rounded-3 shadow-lg p-2"
                     style={{
                       top: "42px",
                       right: "0px",
                       width: "230px",
                       background: bgSurface,
                       border: `1px solid ${bgBorder}`,
-                      zIndex: 1060,
+                      zIndex: 991060,
                       boxShadow: "0 12px 32px rgba(0,0,0,0.18)",
                       animation: "fadeInBackdrop 0.15s ease",
                     }}>

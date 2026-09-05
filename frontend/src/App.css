@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap");
+
 * {
   box-sizing: border-box !important;
   margin: 0;
@@ -24,6 +26,11 @@ body::-webkit-scrollbar {
 
 body::-webkit-scrollbar-thumb {
   background: rgb(151, 151, 116);
+}
+
+.overflow-auto::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .like-comment-share :hover {

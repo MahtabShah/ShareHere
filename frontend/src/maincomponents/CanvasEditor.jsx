@@ -13,13 +13,25 @@ import {
   FaArrowLeft,
   FaPaperPlane,
 } from "react-icons/fa";
+
+import { AiOutlineDelete } from "react-icons/ai";
+
+import { MdLockOpen, MdLockOutline } from "react-icons/md";
+import { RiImageAddFill } from "react-icons/ri";
+import { TbPhotoCancel } from "react-icons/tb";
+
+import { FaTextHeight } from "react-icons/fa";
+import { RxFontFamily } from "react-icons/rx";
+import { IoColorFill } from "react-icons/io5";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { LuArrowRightLeft } from "react-icons/lu";
 import { BsArrowsMove } from "react-icons/bs";
 import { RxDimensions } from "react-icons/rx";
-import { PiRectangleDashedBold } from "react-icons/pi";
+import { PiRectangleDashedBold, PiX } from "react-icons/pi";
 import { LuArrowUpDown } from "react-icons/lu";
 import { RiInputField } from "react-icons/ri";
+import { RiFocusMode } from "react-icons/ri";
+
 import { Rnd } from "react-rnd";
 import styled from "styled-components";
 import { useTheme } from "../context/Theme";
@@ -29,6 +41,7 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useQuote } from "../context/QueotrContext";
+const initBorder = "1px solid var(--border-color)";
 
 const bgColors = [
   "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -400,7 +413,6 @@ export default function CanvasVibeEditor() {
     try {
       setError("");
       setPostLoading(true);
-
       setActiveLayerId(null);
 
       const ready_url = await uploadCanvas();
@@ -446,6 +458,7 @@ export default function CanvasVibeEditor() {
   /* --------------------------------------------------
      UI
   -------------------------------------------------- */
+  const [photoUrl, setPhotoUrl] = useState(null);
 
   return (
     <EditorContainer
@@ -460,6 +473,8 @@ export default function CanvasVibeEditor() {
         onAddText={addTextLayer}
         onToggleLock={toggleLockActiveLayer}
         onInactive={inactiavteLayer}
+        photoUrl={photoUrl}
+        setPhotoUrl={setPhotoUrl}
         onBack={() => {
           if (confirm("Want to go back...")) {
             setUploadClicked?.(false);
@@ -477,7 +492,11 @@ export default function CanvasVibeEditor() {
           ref={canvasRef}
           width={"100%"}
           style={{
-            background: canvasBackground,
+            backgroundImage: `url(${photoUrl})`,
+            background: photoUrl ?? canvasBackground,
+            backgroundSize: "contain",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}>
           {layers.map((layer) => (
             <TextLayer
@@ -489,37 +508,23 @@ export default function CanvasVibeEditor() {
             />
           ))}
         </Canvas>
-
-        <div
-          className="bg-colors w-100 d-flex gap-2 p-1 overflow-auto"
-          style={{
-            maxWidth: "600px",
-            cursor: "pointer",
-            minHeight: "40px",
-          }}>
-          {bgColors.map((bg, i) => (
-            <div
-              key={i}
-              className="span rounded-5"
-              onClick={() => {
-                setCanvasBackground(bg);
-              }}
-              style={{
-                minWidth: "35px",
-                height: "35px",
-                background: bg,
-              }}
-            />
-          ))}
-        </div>
       </CanvasArea>
 
       <BottomPanel
+        refr={textareaRef}
+        changeText={changeText}
         activeLayer={activeLayer}
         activeLayerId={activeLayerId}
         updateLayerState={updateLayerState}
-        changeText={changeText}
-        refr={textareaRef}
+        canvasBackground={canvasBackground}
+        setCanvasBackground={setCanvasBackground}
+        onDelete={deleteActiveLayer}
+        onStyleChange={updateActiveLayerStyle}
+        onAddText={addTextLayer}
+        onToggleLock={toggleLockActiveLayer}
+        onInactive={inactiavteLayer}
+        onPost={handleOpenPost}
+        postLoading={postLoading}
       />
 
       {showPostPage && (
@@ -633,6 +638,37 @@ function PostPage({
   );
 }
 
+function AddBackgroundImg({ setPhotoUrl, photoUrl }) {
+  function getPhotoUrl(file) {
+    if (!file || !file.type.startsWith("image/")) {
+      return null;
+    }
+
+    return URL.createObjectURL(file);
+  }
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+
+    const url = getPhotoUrl(file);
+    setPhotoUrl(url);
+    console.log(url);
+  };
+
+  return (
+    <>
+      {photoUrl ? (
+        <TbPhotoCancel size={18} onClick={() => setPhotoUrl(null)} />
+      ) : (
+        <label className="uploadButton">
+          <RiImageAddFill size={18} />
+          <input type="file" accept="image/*" onChange={handleFile} />
+        </label>
+      )}
+    </>
+  );
+}
+
 function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
   const canEdit = isActive && !layer.isLocked;
 
@@ -685,22 +721,15 @@ function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
       <LayerContent
         style={{
           fontWeight: layer.style?.fontWeight ?? "normal",
-
           fontStyle: layer.style?.fontStyle ?? "normal",
-
           textDecoration: layer.style?.textDecoration ?? "none",
-
           fontFamily: layer.style?.fontFamily ?? "Arial",
-
           fontSize: `${layer.style?.fontSize ?? 16}px`,
-
           color: layer.style?.color ?? "#ffffff",
-
           backgroundColor: layer.style?.backgroundColor ?? "transparent",
-
           textAlign: layer.style?.textAlign ?? "left",
-
           placeContent: "center",
+          whiteSpace: "break-spaces",
         }}>
         {layer.text}
       </LayerContent>
@@ -720,202 +749,107 @@ function TopPanel({
   onPost,
   postLoading,
   onInactive,
+  photoUrl,
+  setPhotoUrl,
 }) {
   const disabled = !activeLayer;
   const style = activeLayer?.style ?? {};
 
   const tools = [
     {
-      title: "Back to editor",
-      element: FaArrowLeft,
-      onClick: onBack,
-    },
-    {
       title: "Add Text",
       element: FaPlus,
       onClick: onAddText,
+      enable: true,
+      size: 16,
     },
     {
       title: "Delete",
-      element: FaTrash,
+      element: AiOutlineDelete,
       onClick: onDelete,
     },
 
     {
       title: activeLayer?.isLocked ? "Unlock" : "Lock",
-      element: activeLayer?.isLocked ? FaLock : FaUnlock,
+      element: activeLayer?.isLocked ? MdLockOutline : MdLockOpen,
       active: activeLayer?.isLocked,
       onClick: onToggleLock,
     },
-    {
-      title: "Inactive",
-      element: PiRectangleDashedBold,
-      onClick: onInactive,
-    },
-    {
-      title: "Bold",
-      element: FaBold,
-      active: style.fontWeight === "bold",
-      onClick: () =>
-        onStyleChange({
-          fontWeight: style.fontWeight === "bold" ? "normal" : "bold",
-        }),
-    },
-    {
-      title: "Italic",
-      element: FaItalic,
-      active: style.fontStyle === "italic",
-      onClick: () =>
-        onStyleChange({
-          fontStyle: style.fontStyle === "italic" ? "normal" : "italic",
-        }),
-    },
-    {
-      title: "Underline",
-      element: FaUnderline,
-      active: style.textDecoration === "underline",
-      onClick: () =>
-        onStyleChange({
-          textDecoration:
-            style.textDecoration === "underline" ? "none" : "underline",
-        }),
-    },
-    {
-      title: "Align Left",
-      element: FaAlignLeft,
-      active: style.textAlign === "left",
-      onClick: () =>
-        onStyleChange({
-          textAlign: "left",
-        }),
-    },
-    {
-      title: "Align Center",
-      element: FaAlignCenter,
-      active: style.textAlign === "center",
-      onClick: () =>
-        onStyleChange({
-          textAlign: "center",
-        }),
-    },
-    {
-      title: "Align Right",
-      element: FaAlignRight,
-      active: style.textAlign === "right",
-      onClick: () =>
-        onStyleChange({
-          textAlign: "right",
-        }),
-    },
-  ];
-
-  const fontSizes = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
-
-  const fonts = [
-    "Arial",
-    "Verdana",
-    "Georgia",
-    "Times New Roman",
-    "Courier New",
   ];
 
   return (
-    <UpperControl onClick={(e) => e.stopPropagation()}>
-      {tools.map((tool, index) => (
-        <ToolButton
-          key={index}
-          type="button"
-          title={tool.title}
-          disabled={disabled}
-          // active={tool.active}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            tool.onClick?.();
-          }}>
-          {
-            <tool.element
-              size={24}
-              className="p-1"
-              color={tool.active && "var(--accent-color"}
-            />
-          }
-        </ToolButton>
-      ))}
-
-      {/* Font Family */}
-      <Select
-        disabled={disabled}
-        value={style.fontFamily ?? "Arial"}
-        onChange={(e) =>
-          onStyleChange({
-            fontFamily: e.target.value,
-          })
-        }>
-        {fonts.map((font) => (
-          <option key={font} value={font}>
-            {font}
-          </option>
-        ))}
-      </Select>
-
-      {/* Font Size */}
-      <Select
-        disabled={disabled}
-        value={style.fontSize ?? 16}
-        onChange={(e) =>
-          onStyleChange({
-            fontSize: Number(e.target.value),
-          })
-        }>
-        {fontSizes.map((size) => (
-          <option key={size} value={size}>
-            {size}px
-          </option>
-        ))}
-      </Select>
-
-      {/* Text Color */}
-      <ColorInput
-        disabled={disabled}
-        type="color"
-        value={style.color ?? "#ffffff"}
-        title="Text Color"
-        onChange={(e) =>
-          onStyleChange({
-            color: e.target.value,
-          })
-        }
-      />
-
-      {/* Background Color */}
-      <ColorInput
-        disabled={disabled}
-        type="color"
-        value={
-          style.backgroundColor === "transparent"
-            ? "#000000"
-            : style.backgroundColor
-        }
-        title="Background Color"
-        onChange={(e) =>
-          onStyleChange({
-            backgroundColor: e.target.value,
-          })
-        }
-      />
-
-      {/* Remove Background */}
+    <UpperControl
+      className="d-flex gap-2 px-2 overflow-auto align-items-center "
+      onClick={(e) => e.stopPropagation()}>
       <ToolButton
         type="button"
-        disabled={disabled}
-        title="Remove Background"
-        onClick={() =>
-          onStyleChange({
-            backgroundColor: "transparent",
-          })
-        }>
-        ×
+        title={"Back to editor"}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onBack();
+        }}>
+        {<FaArrowLeft size={18} />}
+      </ToolButton>
+
+      <UpperControlLeft className="d-flex gap-3 overflow-auto justify-content-center flex-grow-1 align-items-center ">
+        <ToolButton
+          className="pb-1 rounded-5"
+          style={{
+            border: "1px solid var(--border-color)",
+          }}>
+          <AddBackgroundImg photoUrl={photoUrl} setPhotoUrl={setPhotoUrl} />
+        </ToolButton>
+
+        {tools.map((tool, index) => (
+          <ToolButton
+            key={index}
+            type="button"
+            title={tool.title}
+            disabled={!tool.enable && disabled}
+            className="rounded-5"
+            style={{
+              border: "1px solid var(--border-color)",
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              tool.onClick?.();
+            }}>
+            {
+              <tool.element
+                size={tool.size || 18}
+                color={tool.active && "var(--accent-color"}
+              />
+            }
+          </ToolButton>
+        ))}
+
+        <ToolButton
+          className="rounded-5 overflow-hidden"
+          style={{
+            border: "1px solid var(--border-color)",
+          }}>
+          <ColorInput
+            className="rounded-5"
+            disabled={disabled}
+            type="color"
+            value={style.color ?? "#ffffff"}
+            title="Text Color"
+            style={{ width: "30px", height: "30px" }}
+            onChange={(e) =>
+              onStyleChange({
+                color: e.target.value,
+              })
+            }
+          />
+        </ToolButton>
+      </UpperControlLeft>
+
+      <ToolButton
+        style={{ placeSelf: "center", cursor: "pointer" }}
+        onClick={onPost}>
+        <FaPaperPlane size={16} />
       </ToolButton>
     </UpperControl>
   );
@@ -927,45 +861,215 @@ function BottomPanel({
   updateLayerState,
   changeText,
   refr,
+  setCanvasBackground,
+  canvasBackground,
+  onDelete,
+  onStyleChange,
+  onAddText,
+  onToggleLock,
+  onPost,
+  postLoading,
+  onInactive,
 }) {
   const [window, setWindow] = useState("home");
 
   const disabled = !activeLayer;
+  const style = activeLayer?.style ?? {};
 
-  const onBack = () => {
-    setWindow("home");
+  const tools = {
+    binary: [
+      {
+        onClick: () => setWindow("EditText"),
+        element: AiTwotoneEdit,
+        size: 20,
+      },
+
+      {
+        title: "Inactive",
+        element: RiFocusMode,
+        onClick: onInactive,
+        size: 20,
+      },
+      {
+        title: "Bold",
+        leftBorder: true,
+
+        element: FaBold,
+        active: style.fontWeight === "bold",
+        onClick: () =>
+          onStyleChange({
+            fontWeight: style.fontWeight === "bold" ? "normal" : "bold",
+          }),
+      },
+      {
+        title: "Italic",
+        element: FaItalic,
+        active: style.fontStyle === "italic",
+        onClick: () =>
+          onStyleChange({
+            fontStyle: style.fontStyle === "italic" ? "normal" : "italic",
+          }),
+      },
+      {
+        title: "Underline",
+        element: FaUnderline,
+        active: style.textDecoration === "underline",
+        size: 15,
+        onClick: () =>
+          onStyleChange({
+            textDecoration:
+              style.textDecoration === "underline" ? "none" : "underline",
+          }),
+      },
+      {
+        title: "Align Left",
+        element: FaAlignLeft,
+        active: style.textAlign === "left",
+        onClick: () =>
+          onStyleChange({
+            textAlign: "left",
+          }),
+      },
+      {
+        title: "Align Center",
+        element: FaAlignCenter,
+        active: style.textAlign === "center",
+        onClick: () =>
+          onStyleChange({
+            textAlign: "center",
+          }),
+      },
+      {
+        title: "Align Right",
+        element: FaAlignRight,
+        active: style.textAlign === "right",
+        onClick: () =>
+          onStyleChange({
+            textAlign: "right",
+          }),
+      },
+    ],
+
+    multiple: [
+      {
+        title: "Fill Color",
+        enabled: true,
+        element: IoColorFill,
+        onClick: () => setWindow("FillColor"),
+        size: 19,
+      },
+      {
+        onClick: () => setWindow("FontFamily"),
+        element: RxFontFamily,
+        title: "Font",
+        size: 18,
+      },
+      {
+        element: FaTextHeight,
+        title: "FontSize",
+        onClick: () => setWindow("FontSize"),
+        size: 18,
+      },
+      {
+        title: "Adjust",
+        onClick: () => setWindow("RndState"),
+        element: BsArrowsMove,
+        size: 17,
+      },
+    ],
+  };
+
+  const onBack = () => setWindow("home");
+
+  const WrapToolButton = ({ tool, index }) => {
+    return (
+      <>
+        {tool?.leftBorder && (
+          <div
+            style={{
+              borderLeft: tool?.leftBorder && "1px solid var(--border-color)",
+            }}
+          />
+        )}
+
+        <ToolButton
+          key={index}
+          type="button"
+          title={tool.title}
+          disabled={!tool.enabled && disabled}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            tool.onClick?.();
+          }}>
+          {
+            <tool.element
+              size={tool.size || 16}
+              color={tool.active && "var(--accent-color"}
+            />
+          }
+        </ToolButton>
+      </>
+    );
   };
 
   return (
     <BottomControl
-      className="d-flex flex-column w-100 rounded flex-grow-1 p-1"
+      className="d-flex flex-column w-100 flex-grow-1 p"
       style={{
         margin: "auto",
-        border: "1px solid #8ab2b550",
+        border: "1px solid  var(--border-color)",
         background: `var(--bg-surface)`,
       }}>
-      {/* ------------------------------------------------
-          HOME
-      ------------------------------------------------ */}
-
       {window === "home" && (
-        <div className="d-flex gap-2">
-          <ToolButton disabled={disabled} onClick={() => setWindow("EditText")}>
-            <AiTwotoneEdit size={18} />
-          </ToolButton>
+        <div className="d-flex flex-column gap-2 overflow-auto">
+          <div
+            className="d-flex gap-2 p-2 overflow-auto justify-content-c enter"
+            style={{
+              borderBottom: "1px solid var(--border-color)",
+            }}>
+            {tools.binary.map((tool, index) => (
+              <WrapToolButton tool={tool} index={index} />
+            ))}
+          </div>
 
-          <ToolButton
-            disabled={disabled}
-            title="Position"
-            onClick={() => setWindow("RndState")}>
-            <BsArrowsMove />
-          </ToolButton>
+          <div
+            className="d-fle x gap-2 flex-wrap px-2"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(80px, 1fr))",
+              gap: "10px",
+              maxWidth: "600px",
+            }}>
+            {tools.multiple.map((tool, index) => (
+              <div
+                className="p-1 px-3 flex-grow-1 rounded d-flex flex-column"
+                style={{
+                  alignItems: "center",
+                  border: "1px solid var(--border-color)",
+                }}
+                onClick={(e) => {
+                  if (!disabled || tool.enabled) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    tool.onClick?.();
+                  }
+                }}>
+                <WrapToolButton tool={tool} index={index} />
+                <span
+                  style={{
+                    color:
+                      !tool.enabled && disabled
+                        ? "var(--border-color)"
+                        : "var(--text-muted)",
+                  }}>
+                  {tool.title}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
-
-      {/* ------------------------------------------------
-          RND STATE
-      ------------------------------------------------ */}
 
       {window === "RndState" && (
         <RndStateControll
@@ -976,15 +1080,13 @@ function BottomPanel({
         />
       )}
 
-      {/* ------------------------------------------------
-          TEXT
-      ------------------------------------------------ */}
-
       {window === "EditText" && (
-        <div className="d-flex flex-column flex-grow-1 gap-1">
-          <ToolButton onClick={onBack}>
-            <FaArrowLeft />
-          </ToolButton>
+        <div className="d-flex flex-column flex-grow-1 overflow-auto gap">
+          <div className="d-flex p-2">
+            <ToolButton onClick={onBack}>
+              <FaArrowLeft size={18} />
+            </ToolButton>
+          </div>
 
           <EditorControls>
             <TextAreaWrapper className="h-100">
@@ -998,6 +1100,32 @@ function BottomPanel({
             </TextAreaWrapper>
           </EditorControls>
         </div>
+      )}
+
+      {window === "FillColor" && (
+        <CabvasBackground
+          onBack={onBack}
+          setCanvasBackground={setCanvasBackground}
+          canvasBackground={canvasBackground}
+        />
+      )}
+
+      {window === "FontFamily" && (
+        <FontFamilyPanel
+          onStyleChange={onStyleChange}
+          activeLayer={activeLayer}
+          onBack={onBack}
+        />
+      )}
+
+      {window == "FontSize" && (
+        <>
+          <FontSizePanel
+            onStyleChange={onStyleChange}
+            activeLayer={activeLayer}
+            onBack={onBack}
+          />
+        </>
       )}
     </BottomControl>
   );
@@ -1014,7 +1142,7 @@ function RndStateControll({
     dimension: ["width", "height"],
   };
 
-  const [state, setState] = useState("position");
+  const [state, setState] = useState("dimension");
 
   /*
    * input | swap
@@ -1256,9 +1384,6 @@ function RndStateControll({
             minWidth: 0,
             touchAction: "none",
             userSelect: "none",
-
-            borderRight:
-              index === 0 ? "1px dashed var(--bs-border-color)" : "none",
           }}
           onWheel={handleWheel}
           onPointerDown={handlePointerDown}
@@ -1289,7 +1414,12 @@ function RndStateControll({
 
         <div className="d-flex flex-grow-1">
           {renderMoveSection(firstVariable, 0)}
-
+          <div
+            style={{
+              marginBlock: "20px",
+              borderRight: "1px dashed var(--border-color)",
+            }}
+          />
           {renderMoveSection(secondVariable, 1)}
         </div>
       </div>
@@ -1304,7 +1434,12 @@ function RndStateControll({
     <>
       {/* TOP BAR */}
 
-      <div className="w-100 d-flex gap-2 pb-1" aria-disabled={disabled}>
+      <div
+        className="w-100 d-flex gap-2 p-2"
+        aria-disabled={disabled}
+        style={{
+          borderBottom: "1px solid var(--border-color)",
+        }}>
         {/* BACK */}
 
         <ToolButton onClick={onBack}>
@@ -1335,43 +1470,33 @@ function RndStateControll({
 
         <div
           style={{
-            width: "1px",
-            background: "var(--bs-border-color)",
-            margin: "0 4px",
+            borderRight: "1px solid var(--border-color)",
           }}
         />
 
         {/* INPUT */}
 
         <ControlButton mode="input" title="Input">
-          <RiInputField />
+          <RiInputField size={18} />
         </ControlButton>
 
         {/* MOVE / SWAP */}
 
         <ControlButton mode="swap" title="Move / Swap">
-          ⇄
+          <LuArrowRightLeft size={18} />
         </ControlButton>
-      </div>
-
-      {/* CONTENT */}
-
-      <div
-        className="d-flex flex-column rounded position-relative flex-grow-1 w-100 overflow-hidden"
-        style={{
-          border: "1px solid #8ab2b550",
-        }}>
-        {/* LABELS */}
 
         <div
-          className="d-flex gap-2 p-2"
           style={{
-            borderBottom: "1px solid #8ab2b550",
-          }}>
+            borderRight: "1px solid var(--border-color)",
+          }}
+        />
+
+        <div className="d-flex gap-3 flex-grow-1">
           <div
-            className="flex-grow-1 w-50 d-flex justify-content-center gap-2 text-center"
+            className="flex-grow-1 w-50 d-flex flex-column justify-content-center text-center"
             style={{
-              fontSize: "11px",
+              fontSize: "10px",
               opacity: 0.5,
             }}>
             <span>{firstVariable.toUpperCase()}</span>
@@ -1386,9 +1511,9 @@ function RndStateControll({
           </div>
 
           <div
-            className="flex-grow-1 w-50 text-center d-flex justify-content-center gap-2 "
+            className="flex-grow-1 w-50 text-center  flex-column d-flex justify-content-center "
             style={{
-              fontSize: "11px",
+              fontSize: "10px",
               opacity: 0.5,
             }}>
             <span>{secondVariable.toUpperCase()}</span>
@@ -1401,6 +1526,12 @@ function RndStateControll({
             </span>
           </div>
         </div>
+      </div>
+
+      {/* CONTENT */}
+
+      <div className="d-flex flex-column rounded position-relative flex-grow-1 w-100 overflow-hidden">
+        {/* LABELS */}
 
         {/* INPUT */}
 
@@ -1419,6 +1550,7 @@ function RndStateControll({
     </>
   );
 }
+
 function ResizeHandles() {
   return (
     <>
@@ -1433,6 +1565,143 @@ function ResizeHandles() {
       <Handle className="bottom" />
       <Handle className="bottom-right" />
     </>
+  );
+}
+
+function CabvasBackground({ setCanvasBackground, onBack, canvasBackground }) {
+  return (
+    <>
+      <div
+        className="bg-colors  w-100 d-flex flex-wrap gap-2 p-2 overflow-auto"
+        style={{
+          maxWidth: "600px",
+          cursor: "pointer",
+          minHeight: "40px",
+        }}>
+        <ToolButton
+          className="rounded-5"
+          onClick={onBack}
+          style={{
+            border: initBorder,
+          }}>
+          <FaArrowLeft />
+        </ToolButton>
+
+        {bgColors.map((bg, i) => (
+          <ToolButton
+            active={bg == canvasBackground}
+            key={i}
+            className="span rounded-5"
+            onClick={() => {
+              setCanvasBackground(bg);
+            }}
+            style={{
+              minWidth: "35px",
+              height: "35px",
+              background: bg,
+            }}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
+function FontFamilyPanel({ onBack, onStyleChange, activeLayer }) {
+  const FontFamlies = [
+    "Arial",
+    "Helvetica",
+    "Verdana",
+    "Tahoma",
+    "Trebuchet MS",
+    "Times New Roman",
+    "Georgia",
+    "Garamond",
+    "Courier New",
+    "Lucida Console",
+    "Impact",
+    "Comic Sans MS",
+    "Arial Black",
+    "Segoe UI",
+    "Roboto",
+    "Open Sans",
+    "Lato",
+    "Montserrat",
+    "Poppins",
+    "Raleway",
+    "Oswald",
+    "Merriweather",
+    "Playfair Display",
+    "Nunito",
+    "Ubuntu",
+  ];
+  return (
+    <div
+      className="d-flex gap-2 p-2 flex-wrap"
+      style={{
+        maxHeight: "200px",
+      }}>
+      <ToolButton
+        className="rounded"
+        onClick={onBack}
+        style={{
+          border: initBorder,
+        }}>
+        <FaArrowLeft />
+      </ToolButton>
+      {FontFamlies.map((f) => {
+        const isActive = f == activeLayer?.style?.fontFamily;
+        return (
+          <div
+            key={f}
+            className="p-1 px-2 flex-grow-1 rounded"
+            style={{
+              border: initBorder,
+              fontFamily: f,
+              cursor: "pointer",
+              color: isActive && "var(--accent-color)",
+            }}
+            onClick={() => onStyleChange({ fontFamily: f })}>
+            {f}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function FontSizePanel({ onBack, onStyleChange, activeLayer }) {
+  const fontSizes = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
+
+  return (
+    <div className="d-flex gap-2 flex-wrap justify-content-center p-2">
+      <ToolButton
+        className="rounded-5"
+        onClick={onBack}
+        style={{
+          border: initBorder,
+        }}>
+        <FaArrowLeft />
+      </ToolButton>
+      {fontSizes.map((t, i) => {
+        return (
+          <ToolButton
+            className="rounded-5"
+            active={t == activeLayer?.style?.fontSize}
+            style={{
+              minWidth: "35px",
+              border: "1px solid var(--border-color)",
+              height: "35px",
+              placeContent: "center",
+            }}
+            onClick={() => {
+              onStyleChange({ fontSize: t });
+            }}>
+            {t}
+          </ToolButton>
+        );
+      })}
+    </div>
   );
 }
 
@@ -1462,11 +1731,17 @@ const EditorContainer = styled.div`
 `;
 
 const UpperControl = styled.div`
+  height: min-content;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-surface);
+`;
+
+const UpperControlLeft = styled.div`
   flex-shrink: 0;
 
-  min-height: 50px;
+  min-height: 40px;
 
-  padding: 12px;
+  padding: 8px;
 
   box-sizing: border-box;
 
@@ -1474,14 +1749,14 @@ const UpperControl = styled.div`
   align-items: center;
   gap: 5px;
 
-  border-bottom: 1px solid var(--border-color);
-
-  background: var(--bg-surface);
-
   overflow-x: auto;
   overflow-y: hidden;
 
   scrollbar-width: none;
+
+  .uploadButton input {
+    display: none;
+  }
 
   &::-webkit-scrollbar {
     width: 0;
@@ -1490,24 +1765,14 @@ const UpperControl = styled.div`
 `;
 
 const BottomControl = styled.div`
-  max-width: 600px;
+  // max-width: 600px;
+  overflow: auto;
+  // max-height: 240px;
 `;
 
 const ColorInput = styled.input`
-  flex-shrink: 0;
-
-  width: 34px;
-  height: 34px;
-
-  padding: 2px;
-
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
-
   background: var(--bg-card);
-
   cursor: pointer;
-
   &:disabled {
     opacity: 0.4;
     cursor: not-allowed;
@@ -1545,7 +1810,7 @@ const Canvas = styled.div`
   width: ${(props) => props.width};
   max-width: 300px;
 
-  aspect-ratio: 19/21;
+  aspect-ratio: 19/24;
 
   box-sizing: border-box;
 
@@ -1586,12 +1851,10 @@ const ToolButton = styled.button`
   align-items: center;
   justify-content: center;
 
-  border: 1px solid;
+  border: none;
   border-radius: 3px;
   background: none;
-  border-color: ${(p) => (p.active ? "var(--accent-color)" : "var(--bg-card)")};
-
-  color: ${(p) => (p.active ? "var(--text-primary)" : "var(--text-primary)")};
+  color: ${(p) => (p.active ? "var(--accent-color)" : "var(--text-primary)")};
 
   cursor: pointer;
 

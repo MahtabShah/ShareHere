@@ -583,7 +583,7 @@ export default function LeftNavbar({ onLogout } = {}) {
           <div
             className="position-fixed"
             style={{
-              zIndex: 9999,
+              zIndex: 999999,
               top: mobile_break_point ? "52px" : "54px",
               left: mobile_break_point
                 ? "0"
