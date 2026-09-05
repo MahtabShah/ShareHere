@@ -13,8 +13,13 @@ import {
   FaArrowLeft,
   FaPaperPlane,
 } from "react-icons/fa";
-
+import { AiTwotoneEdit } from "react-icons/ai";
+import { LuArrowRightLeft } from "react-icons/lu";
+import { BsArrowsMove } from "react-icons/bs";
+import { RxDimensions } from "react-icons/rx";
 import { PiRectangleDashedBold } from "react-icons/pi";
+import { LuArrowUpDown } from "react-icons/lu";
+import { RiInputField } from "react-icons/ri";
 import { Rnd } from "react-rnd";
 import styled from "styled-components";
 import { useTheme } from "../context/Theme";
@@ -75,6 +80,7 @@ const initialLayers = [
 
 export default function CanvasVibeEditor() {
   const { colors } = useTheme();
+
   const textareaRef = useRef(null);
   const canvasRef = useRef(null);
   const navigate = useNavigate();
@@ -96,25 +102,36 @@ export default function CanvasVibeEditor() {
   const [showPostPage, setShowPostPage] = useState(false);
   const [canvasBackground, setCanvasBackground] = useState("#940d6d");
 
-  const handleOpenPost = () => {
-    setError("");
-    setShowPostPage(true);
-  };
-
   const [layers, setLayers] = useState(initialLayers);
+
+  /*
+   * IMPORTANT:
+   * Only keep activeLayerId.
+   * Do NOT keep activeLayer separately in state.
+   */
   const [activeLayerId, setActiveLayerId] = useState(null);
 
+  /*
+   * Always derive activeLayer from latest layers.
+   *
+   * This is the main fix for the "one step behind" problem.
+   */
   const activeLayer =
     layers.find((layer) => layer.id === activeLayerId) ?? null;
 
+  /* --------------------------------------------------
+     SELECT LAYER
+  -------------------------------------------------- */
+
   const selectLayer = (layer) => {
     if (!layer) return;
+
     setActiveLayerId(layer.id);
   };
 
-  // ------------------------------------------------
-  // Update Layer
-  // ------------------------------------------------
+  /* --------------------------------------------------
+     UPDATE LAYER
+  -------------------------------------------------- */
 
   const updateLayer = (id, changes) => {
     setLayers((prev) =>
@@ -129,9 +146,29 @@ export default function CanvasVibeEditor() {
     );
   };
 
-  // ------------------------------------------------
-  // Add Text Layer
-  // ------------------------------------------------
+  /* --------------------------------------------------
+     UPDATE LAYER STATE
+  -------------------------------------------------- */
+
+  const updateLayerState = (id, stateChanges) => {
+    setLayers((prev) =>
+      prev.map((layer) =>
+        layer.id === id
+          ? {
+              ...layer,
+              state: {
+                ...layer.state,
+                ...stateChanges,
+              },
+            }
+          : layer,
+      ),
+    );
+  };
+
+  /* --------------------------------------------------
+     ADD TEXT LAYER
+  -------------------------------------------------- */
 
   const addTextLayer = () => {
     const id = uuidv4().replace(/-/g, "").slice(0, 8);
@@ -161,11 +198,13 @@ export default function CanvasVibeEditor() {
     };
 
     setLayers((prev) => [...prev, newLayer]);
+
     setActiveLayerId(id);
   };
-  // ------------------------------------------------
-  // Lock / Unlock
-  // ------------------------------------------------
+
+  /* --------------------------------------------------
+     LOCK / UNLOCK
+  -------------------------------------------------- */
 
   const toggleLockActiveLayer = () => {
     if (!activeLayerId) return;
@@ -182,33 +221,17 @@ export default function CanvasVibeEditor() {
     );
   };
 
+  /* --------------------------------------------------
+     INACTIVE
+  -------------------------------------------------- */
+
   const inactiavteLayer = () => {
     setActiveLayerId(null);
   };
 
-  // ------------------------------------------------
-  // Update Layer State
-  // ------------------------------------------------
-
-  const updateLayerState = (id, stateChanges) => {
-    setLayers((prev) =>
-      prev.map((layer) =>
-        layer.id === id
-          ? {
-              ...layer,
-              state: {
-                ...layer.state,
-                ...stateChanges,
-              },
-            }
-          : layer,
-      ),
-    );
-  };
-
-  // ------------------------------------------------
-  // Update Active Layer Style
-  // ------------------------------------------------
+  /* --------------------------------------------------
+     UPDATE ACTIVE LAYER STYLE
+  -------------------------------------------------- */
 
   const updateActiveLayerStyle = (changes) => {
     if (!activeLayerId) return;
@@ -228,9 +251,9 @@ export default function CanvasVibeEditor() {
     );
   };
 
-  // ------------------------------------------------
-  // Delete Active Layer
-  // ------------------------------------------------
+  /* --------------------------------------------------
+     DELETE ACTIVE LAYER
+  -------------------------------------------------- */
 
   const deleteActiveLayer = () => {
     if (!activeLayerId) return;
@@ -240,9 +263,9 @@ export default function CanvasVibeEditor() {
     setActiveLayerId(null);
   };
 
-  // ------------------------------------------------
-  // Change Text
-  // ------------------------------------------------
+  /* --------------------------------------------------
+     CHANGE TEXT
+  -------------------------------------------------- */
 
   const changeText = (value) => {
     if (!activeLayerId) return;
@@ -251,6 +274,10 @@ export default function CanvasVibeEditor() {
       text: value,
     });
   };
+
+  /* --------------------------------------------------
+     BASE64 TO BLOB
+  -------------------------------------------------- */
 
   const base64ToBlob = (base64, contentType = "image/png") => {
     const byteCharacters = atob(base64.split(",")[1]);
@@ -273,6 +300,10 @@ export default function CanvasVibeEditor() {
     });
   };
 
+  /* --------------------------------------------------
+     EXPORT CANVAS
+  -------------------------------------------------- */
+
   const exportCanvas = async () => {
     if (!canvasRef.current) return null;
 
@@ -288,8 +319,13 @@ export default function CanvasVibeEditor() {
     }
   };
 
+  /* --------------------------------------------------
+     UPLOAD CANVAS
+  -------------------------------------------------- */
+
   const uploadCanvas = async () => {
     const dataUrl = await exportCanvas();
+
     if (!dataUrl) {
       throw new Error("Canvas export returned no image.");
     }
@@ -303,6 +339,7 @@ export default function CanvasVibeEditor() {
     }
 
     const imageBlob = base64ToBlob(dataUrl, "image/png");
+
     const formData = new FormData();
 
     formData.append("file", imageBlob, "canvas.png");
@@ -317,10 +354,25 @@ export default function CanvasVibeEditor() {
       return response.data.secure_url;
     } catch (error) {
       console.error("Cloudinary status:", error.response?.status);
+
       console.error("Cloudinary error:", error.response?.data);
+
       throw error;
     }
   };
+
+  /* --------------------------------------------------
+     OPEN POST
+  -------------------------------------------------- */
+
+  const handleOpenPost = () => {
+    setError("");
+    setShowPostPage(true);
+  };
+
+  /* --------------------------------------------------
+     POST
+  -------------------------------------------------- */
 
   const handlePost = async () => {
     if (!admin_user) {
@@ -348,6 +400,7 @@ export default function CanvasVibeEditor() {
     try {
       setError("");
       setPostLoading(true);
+
       setActiveLayerId(null);
 
       const ready_url = await uploadCanvas();
@@ -390,6 +443,10 @@ export default function CanvasVibeEditor() {
     }
   };
 
+  /* --------------------------------------------------
+     UI
+  -------------------------------------------------- */
+
   return (
     <EditorContainer
       style={{
@@ -419,7 +476,9 @@ export default function CanvasVibeEditor() {
         <Canvas
           ref={canvasRef}
           width={"100%"}
-          style={{ background: canvasBackground }}>
+          style={{
+            background: canvasBackground,
+          }}>
           {layers.map((layer) => (
             <TextLayer
               key={layer.id}
@@ -432,47 +491,36 @@ export default function CanvasVibeEditor() {
         </Canvas>
 
         <div
-          className="bg-colors d-flex gap-2 py-1 overflow-auto"
+          className="bg-colors w-100 d-flex gap-2 p-1 overflow-auto"
           style={{
-            minHeight: "max-content",
-            maxWidth: "350px",
+            maxWidth: "600px",
             cursor: "pointer",
             minHeight: "40px",
           }}>
-          {bgColors.map((bg, i) => {
-            return (
-              <>
-                <div
-                  className="span rounded-5"
-                  onClick={() => {
-                    setCanvasBackground(bg);
-                  }}
-                  style={{
-                    minWidth: "35px",
-                    height: "35px",
-                    background: bg,
-                  }}
-                />
-              </>
-            );
-          })}
+          {bgColors.map((bg, i) => (
+            <div
+              key={i}
+              className="span rounded-5"
+              onClick={() => {
+                setCanvasBackground(bg);
+              }}
+              style={{
+                minWidth: "35px",
+                height: "35px",
+                background: bg,
+              }}
+            />
+          ))}
         </div>
       </CanvasArea>
 
-      <EditorControls>
-        <TextAreaWrapper>
-          <Textarea
-            ref={textareaRef}
-            value={activeLayer?.text ?? ""}
-            disabled={!activeLayer || activeLayer.isLocked}
-            placeholder="Select a text layer"
-            onChange={(e) => changeText(e.target.value)}
-          />
-        </TextAreaWrapper>
-        <ToolButton onClick={handleOpenPost}>
-          <FaPaperPlane />
-        </ToolButton>
-      </EditorControls>
+      <BottomPanel
+        activeLayer={activeLayer}
+        activeLayerId={activeLayerId}
+        updateLayerState={updateLayerState}
+        changeText={changeText}
+        refr={textareaRef}
+      />
 
       {showPostPage && (
         <PostPage
@@ -585,194 +633,6 @@ function PostPage({
   );
 }
 
-function TopPanel({
-  activeLayer,
-  onDelete,
-  onStyleChange,
-  onAddText,
-  onToggleLock,
-  onBack,
-  onPost,
-  postLoading,
-  onInactive,
-}) {
-  const disabled = !activeLayer;
-  const style = activeLayer?.style ?? {};
-
-  return (
-    <UpperControl onClick={(e) => e.stopPropagation()}>
-      <ToolButton
-        type="button"
-        title="Back to editor"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onBack();
-        }}>
-        <FaArrowLeft size={18} />
-      </ToolButton>
-
-      <ToolButton onClick={onAddText}>
-        <FaPlus size={18} />
-      </ToolButton>
-
-      <ToolButton disabled={disabled} onClick={onDelete}>
-        <FaTrash />
-      </ToolButton>
-
-      <ToolButton type="button" disabled={disabled} onClick={onInactive}>
-        <PiRectangleDashedBold size={18} />
-      </ToolButton>
-
-      <ToolButton
-        disabled={disabled}
-        active={activeLayer?.isLocked}
-        onClick={onToggleLock}>
-        {activeLayer?.isLocked ? <FaLock /> : <FaUnlock />}
-      </ToolButton>
-
-      <ToolButton
-        disabled={disabled}
-        active={style.fontWeight === "bold"}
-        onClick={() =>
-          onStyleChange({
-            fontWeight: style.fontWeight === "bold" ? "normal" : "bold",
-          })
-        }>
-        <FaBold />
-      </ToolButton>
-
-      <ToolButton
-        disabled={disabled}
-        active={style.fontStyle === "italic"}
-        onClick={() =>
-          onStyleChange({
-            fontStyle: style.fontStyle === "italic" ? "normal" : "italic",
-          })
-        }>
-        <FaItalic />
-      </ToolButton>
-
-      <ToolButton
-        disabled={disabled}
-        active={style.textDecoration === "underline"}
-        onClick={() =>
-          onStyleChange({
-            textDecoration:
-              style.textDecoration === "underline" ? "none" : "underline",
-          })
-        }>
-        <FaUnderline />
-      </ToolButton>
-
-      <ToolButton
-        disabled={disabled}
-        active={style.textAlign === "left"}
-        title="Align Left"
-        onClick={() =>
-          onStyleChange({
-            textAlign: "left",
-          })
-        }>
-        <FaAlignLeft />
-      </ToolButton>
-
-      <ToolButton
-        disabled={disabled}
-        active={style.textAlign === "center"}
-        title="Align Center"
-        onClick={() =>
-          onStyleChange({
-            textAlign: "center",
-          })
-        }>
-        <FaAlignCenter />
-      </ToolButton>
-
-      <ToolButton
-        disabled={disabled}
-        active={style.textAlign === "right"}
-        title="Align Right"
-        onClick={() =>
-          onStyleChange({
-            textAlign: "right",
-          })
-        }>
-        <FaAlignRight />
-      </ToolButton>
-
-      <Select
-        disabled={disabled}
-        value={style.fontFamily ?? "Arial"}
-        onChange={(e) =>
-          onStyleChange({
-            fontFamily: e.target.value,
-          })
-        }>
-        <option value="Arial">Arial</option>
-        <option value="Verdana">Verdana</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Times New Roman">Times New Roman</option>
-        <option value="Courier New">Courier New</option>
-      </Select>
-
-      <Select
-        disabled={disabled}
-        value={style.fontSize ?? 16}
-        onChange={(e) =>
-          onStyleChange({
-            fontSize: Number(e.target.value),
-          })
-        }>
-        {[8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64].map((size) => (
-          <option key={size} value={size}>
-            {size}px
-          </option>
-        ))}
-      </Select>
-
-      <ColorInput
-        disabled={disabled}
-        type="color"
-        value={style.color ?? "#ffffff"}
-        title="Text Color"
-        onChange={(e) =>
-          onStyleChange({
-            color: e.target.value,
-          })
-        }
-      />
-
-      <ColorInput
-        disabled={disabled}
-        type="color"
-        value={
-          style.backgroundColor === "transparent"
-            ? "#000000"
-            : style.backgroundColor
-        }
-        title="Background Color"
-        onChange={(e) =>
-          onStyleChange({
-            backgroundColor: e.target.value,
-          })
-        }
-      />
-
-      <ToolButton
-        disabled={disabled}
-        title="Remove Background"
-        onClick={() =>
-          onStyleChange({
-            backgroundColor: "transparent",
-          })
-        }>
-        ×
-      </ToolButton>
-    </UpperControl>
-  );
-}
-
 function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
   const canEdit = isActive && !layer.isLocked;
 
@@ -794,14 +654,27 @@ function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
         border: "1px dashed",
         borderColor: isActive ? "var(--accent-color)" : "#0000",
       }}
-      onPointerDown={() => onSelect(layer)}
-      onDragStop={(e, data) => {
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        onSelect(layer);
+      }}
+      /*
+       * LIVE DRAG
+       *
+       * Not onDragStop.
+       */
+      onDrag={(e, data) => {
         onUpdateState(layer.id, {
           x: data.x,
           y: data.y,
         });
       }}
-      onResizeStop={(e, direction, ref, delta, position) => {
+      /*
+       * LIVE RESIZE
+       *
+       * Not onResizeStop.
+       */
+      onResize={(e, direction, ref, delta, position) => {
         onUpdateState(layer.id, {
           x: position.x,
           y: position.y,
@@ -812,13 +685,22 @@ function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
       <LayerContent
         style={{
           fontWeight: layer.style?.fontWeight ?? "normal",
+
           fontStyle: layer.style?.fontStyle ?? "normal",
+
           textDecoration: layer.style?.textDecoration ?? "none",
+
           fontFamily: layer.style?.fontFamily ?? "Arial",
+
           fontSize: `${layer.style?.fontSize ?? 16}px`,
+
           color: layer.style?.color ?? "#ffffff",
+
           backgroundColor: layer.style?.backgroundColor ?? "transparent",
+
           textAlign: layer.style?.textAlign ?? "left",
+
+          placeContent: "center",
         }}>
         {layer.text}
       </LayerContent>
@@ -828,6 +710,715 @@ function TextLayer({ layer, isActive, onSelect, onUpdateState }) {
   );
 }
 
+function TopPanel({
+  activeLayer,
+  onDelete,
+  onStyleChange,
+  onAddText,
+  onToggleLock,
+  onBack,
+  onPost,
+  postLoading,
+  onInactive,
+}) {
+  const disabled = !activeLayer;
+  const style = activeLayer?.style ?? {};
+
+  const tools = [
+    {
+      title: "Back to editor",
+      element: FaArrowLeft,
+      onClick: onBack,
+    },
+    {
+      title: "Add Text",
+      element: FaPlus,
+      onClick: onAddText,
+    },
+    {
+      title: "Delete",
+      element: FaTrash,
+      onClick: onDelete,
+    },
+
+    {
+      title: activeLayer?.isLocked ? "Unlock" : "Lock",
+      element: activeLayer?.isLocked ? FaLock : FaUnlock,
+      active: activeLayer?.isLocked,
+      onClick: onToggleLock,
+    },
+    {
+      title: "Inactive",
+      element: PiRectangleDashedBold,
+      onClick: onInactive,
+    },
+    {
+      title: "Bold",
+      element: FaBold,
+      active: style.fontWeight === "bold",
+      onClick: () =>
+        onStyleChange({
+          fontWeight: style.fontWeight === "bold" ? "normal" : "bold",
+        }),
+    },
+    {
+      title: "Italic",
+      element: FaItalic,
+      active: style.fontStyle === "italic",
+      onClick: () =>
+        onStyleChange({
+          fontStyle: style.fontStyle === "italic" ? "normal" : "italic",
+        }),
+    },
+    {
+      title: "Underline",
+      element: FaUnderline,
+      active: style.textDecoration === "underline",
+      onClick: () =>
+        onStyleChange({
+          textDecoration:
+            style.textDecoration === "underline" ? "none" : "underline",
+        }),
+    },
+    {
+      title: "Align Left",
+      element: FaAlignLeft,
+      active: style.textAlign === "left",
+      onClick: () =>
+        onStyleChange({
+          textAlign: "left",
+        }),
+    },
+    {
+      title: "Align Center",
+      element: FaAlignCenter,
+      active: style.textAlign === "center",
+      onClick: () =>
+        onStyleChange({
+          textAlign: "center",
+        }),
+    },
+    {
+      title: "Align Right",
+      element: FaAlignRight,
+      active: style.textAlign === "right",
+      onClick: () =>
+        onStyleChange({
+          textAlign: "right",
+        }),
+    },
+  ];
+
+  const fontSizes = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
+
+  const fonts = [
+    "Arial",
+    "Verdana",
+    "Georgia",
+    "Times New Roman",
+    "Courier New",
+  ];
+
+  return (
+    <UpperControl onClick={(e) => e.stopPropagation()}>
+      {tools.map((tool, index) => (
+        <ToolButton
+          key={index}
+          type="button"
+          title={tool.title}
+          disabled={disabled}
+          // active={tool.active}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            tool.onClick?.();
+          }}>
+          {
+            <tool.element
+              size={24}
+              className="p-1"
+              color={tool.active && "var(--accent-color"}
+            />
+          }
+        </ToolButton>
+      ))}
+
+      {/* Font Family */}
+      <Select
+        disabled={disabled}
+        value={style.fontFamily ?? "Arial"}
+        onChange={(e) =>
+          onStyleChange({
+            fontFamily: e.target.value,
+          })
+        }>
+        {fonts.map((font) => (
+          <option key={font} value={font}>
+            {font}
+          </option>
+        ))}
+      </Select>
+
+      {/* Font Size */}
+      <Select
+        disabled={disabled}
+        value={style.fontSize ?? 16}
+        onChange={(e) =>
+          onStyleChange({
+            fontSize: Number(e.target.value),
+          })
+        }>
+        {fontSizes.map((size) => (
+          <option key={size} value={size}>
+            {size}px
+          </option>
+        ))}
+      </Select>
+
+      {/* Text Color */}
+      <ColorInput
+        disabled={disabled}
+        type="color"
+        value={style.color ?? "#ffffff"}
+        title="Text Color"
+        onChange={(e) =>
+          onStyleChange({
+            color: e.target.value,
+          })
+        }
+      />
+
+      {/* Background Color */}
+      <ColorInput
+        disabled={disabled}
+        type="color"
+        value={
+          style.backgroundColor === "transparent"
+            ? "#000000"
+            : style.backgroundColor
+        }
+        title="Background Color"
+        onChange={(e) =>
+          onStyleChange({
+            backgroundColor: e.target.value,
+          })
+        }
+      />
+
+      {/* Remove Background */}
+      <ToolButton
+        type="button"
+        disabled={disabled}
+        title="Remove Background"
+        onClick={() =>
+          onStyleChange({
+            backgroundColor: "transparent",
+          })
+        }>
+        ×
+      </ToolButton>
+    </UpperControl>
+  );
+}
+
+function BottomPanel({
+  activeLayer,
+  activeLayerId,
+  updateLayerState,
+  changeText,
+  refr,
+}) {
+  const [window, setWindow] = useState("home");
+
+  const disabled = !activeLayer;
+
+  const onBack = () => {
+    setWindow("home");
+  };
+
+  return (
+    <BottomControl
+      className="d-flex flex-column w-100 rounded flex-grow-1 p-1"
+      style={{
+        margin: "auto",
+        border: "1px solid #8ab2b550",
+        background: `var(--bg-surface)`,
+      }}>
+      {/* ------------------------------------------------
+          HOME
+      ------------------------------------------------ */}
+
+      {window === "home" && (
+        <div className="d-flex gap-2">
+          <ToolButton disabled={disabled} onClick={() => setWindow("EditText")}>
+            <AiTwotoneEdit size={18} />
+          </ToolButton>
+
+          <ToolButton
+            disabled={disabled}
+            title="Position"
+            onClick={() => setWindow("RndState")}>
+            <BsArrowsMove />
+          </ToolButton>
+        </div>
+      )}
+
+      {/* ------------------------------------------------
+          RND STATE
+      ------------------------------------------------ */}
+
+      {window === "RndState" && (
+        <RndStateControll
+          activeLayer={activeLayer}
+          activeLayerId={activeLayerId}
+          updateLayerState={updateLayerState}
+          onBack={onBack}
+        />
+      )}
+
+      {/* ------------------------------------------------
+          TEXT
+      ------------------------------------------------ */}
+
+      {window === "EditText" && (
+        <div className="d-flex flex-column flex-grow-1 gap-1">
+          <ToolButton onClick={onBack}>
+            <FaArrowLeft />
+          </ToolButton>
+
+          <EditorControls>
+            <TextAreaWrapper className="h-100">
+              <Textarea
+                ref={refr}
+                value={activeLayer?.text ?? ""}
+                disabled={!activeLayer || activeLayer.isLocked}
+                placeholder="Select a text layer"
+                onChange={(e) => changeText(e.target.value)}
+              />
+            </TextAreaWrapper>
+          </EditorControls>
+        </div>
+      )}
+    </BottomControl>
+  );
+}
+
+function RndStateControll({
+  activeLayer,
+  activeLayerId,
+  updateLayerState,
+  onBack,
+}) {
+  const mapVariabl = {
+    position: ["x", "y"],
+    dimension: ["width", "height"],
+  };
+
+  const [state, setState] = useState("position");
+
+  /*
+   * input | swap
+   */
+  const [controlMode, setControlMode] = useState("swap");
+
+  /*
+   * Swap is UI-only.
+   *
+   * It DOES NOT swap x/y values.
+   */
+  const [swapState, setSwapState] = useState({
+    position: false,
+    dimension: false,
+  });
+
+  const touchStart = useRef(null);
+
+  const disabled = !activeLayer;
+
+  const variables = mapVariabl[state];
+
+  /*
+   * Only change visual order.
+   *
+   * Example:
+   *
+   * false -> [x, y]
+   * true  -> [y, x]
+   *
+   * But activeLayer.state.x and activeLayer.state.y
+   * NEVER change because of swap.
+   */
+  const displayedVariables = swapState[state]
+    ? [...variables].reverse()
+    : variables;
+
+  const firstVariable = displayedVariables[0];
+  const secondVariable = displayedVariables[1];
+
+  /* --------------------------------------------------
+     UPDATE VALUE
+  -------------------------------------------------- */
+
+  const updateValue = (key, value) => {
+    if (!activeLayerId) return;
+
+    const number = Number(value);
+
+    updateLayerState(activeLayerId, {
+      [key]: state === "dimension" ? Math.max(1, number || 1) : number || 0,
+    });
+  };
+
+  /* --------------------------------------------------
+     MOVE
+  -------------------------------------------------- */
+
+  const moveBy = (delta, key) => {
+    if (!activeLayerId || !key) return;
+
+    const currentValue = Number(activeLayer.state[key]) || 0;
+
+    const nextValue =
+      state === "dimension"
+        ? Math.max(1, currentValue + delta)
+        : currentValue + delta;
+
+    updateLayerState(activeLayerId, {
+      [key]: nextValue,
+    });
+  };
+
+  /* --------------------------------------------------
+     TOUCH START
+  -------------------------------------------------- */
+
+  const handlePointerDown = (e) => {
+    if (disabled) return;
+
+    if (e.pointerType !== "touch") return;
+
+    touchStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+
+  /* --------------------------------------------------
+     TOUCH MOVE
+  -------------------------------------------------- */
+
+  const handlePointerMove = (e) => {
+    if (disabled) return;
+
+    if (e.pointerType !== "touch") return;
+
+    if (!touchStart.current) return;
+
+    const dx = e.clientX - touchStart.current.x;
+
+    const dy = e.clientY - touchStart.current.y;
+
+    touchStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+
+    const key = e.currentTarget.getAttribute("data-key");
+
+    const index = Number(e.currentTarget.getAttribute("data-index"));
+
+    if (!key) return;
+
+    /*
+     * First section:
+     * horizontal movement
+     *
+     * Second section:
+     * vertical movement
+     */
+    if (index === 0) {
+      moveBy(dx, key);
+    } else {
+      moveBy(dy, key);
+    }
+  };
+
+  /* --------------------------------------------------
+     TOUCH END
+  -------------------------------------------------- */
+
+  const handlePointerUp = (e) => {
+    touchStart.current = null;
+
+    try {
+      e.currentTarget.releasePointerCapture?.(e.pointerId);
+    } catch {}
+  };
+
+  /* --------------------------------------------------
+     WHEEL
+  -------------------------------------------------- */
+
+  const handleWheel = (e) => {
+    if (disabled) return;
+
+    e.preventDefault();
+
+    const key = e.currentTarget.getAttribute("data-key");
+
+    const index = Number(e.currentTarget.getAttribute("data-index"));
+
+    if (!key) return;
+
+    if (index === 0) {
+      moveBy(-e.deltaX, key);
+    } else {
+      moveBy(-e.deltaY, key);
+    }
+  };
+
+  /* --------------------------------------------------
+     SWAP
+  -------------------------------------------------- */
+
+  const toggleSwap = () => {
+    setSwapState((prev) => ({
+      ...prev,
+      [state]: !prev[state],
+    }));
+  };
+
+  /* --------------------------------------------------
+     CONTROL BUTTON
+  -------------------------------------------------- */
+
+  const ControlButton = ({ mode, children, title }) => {
+    return (
+      <ToolButton
+        type="button"
+        disabled={disabled}
+        active={controlMode === mode}
+        title={title}
+        onClick={() => setControlMode(mode)}>
+        {children}
+      </ToolButton>
+    );
+  };
+
+  /* --------------------------------------------------
+     INPUT MODE
+  -------------------------------------------------- */
+
+  const renderInputMode = () => {
+    return (
+      <div className="d-flex gap-2 w-100">
+        {/* FIRST */}
+
+        <div className="flex-grow-1">
+          <Textarea
+            itemType="Number"
+            rows={1}
+            disabled={disabled}
+            value={activeLayer ? activeLayer.state[firstVariable] : ""}
+            onChange={(e) => updateValue(firstVariable, e.target.value)}
+          />
+        </div>
+
+        {/* SECOND */}
+
+        <div className="flex-grow-1">
+          <Textarea
+            itemType="Number"
+            rows={1}
+            disabled={disabled}
+            value={activeLayer ? activeLayer.state[secondVariable] : ""}
+            onChange={(e) => updateValue(secondVariable, e.target.value)}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  /* --------------------------------------------------
+     SWAP / MOVE MODE
+  -------------------------------------------------- */
+
+  const renderSwapMode = () => {
+    const renderMoveSection = (key, index) => {
+      return (
+        <div
+          data-key={key}
+          data-index={index}
+          className="w-100 d-flex align-items-center justify-content-center"
+          style={{
+            minWidth: 0,
+            touchAction: "none",
+            userSelect: "none",
+
+            borderRight:
+              index === 0 ? "1px dashed var(--bs-border-color)" : "none",
+          }}
+          onWheel={handleWheel}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}>
+          <div
+            className="text-center w-100"
+            style={{
+              fontSize: "20px",
+              fontWeight: 600,
+              color: "#6d888ba8",
+            }}>
+            {/* {Math.floor(Number(activeLayer?.state[key]) || 0)} */}
+            {index == 0 ? <LuArrowRightLeft /> : <LuArrowUpDown />}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <div
+        className="w-100 h-100 d-flex flex-column"
+        style={{
+          minHeight: "100px",
+        }}>
+        {/* MOVE AREA */}
+
+        <div className="d-flex flex-grow-1">
+          {renderMoveSection(firstVariable, 0)}
+
+          {renderMoveSection(secondVariable, 1)}
+        </div>
+      </div>
+    );
+  };
+
+  /* --------------------------------------------------
+     MAIN
+  -------------------------------------------------- */
+
+  return (
+    <>
+      {/* TOP BAR */}
+
+      <div className="w-100 d-flex gap-2 pb-1" aria-disabled={disabled}>
+        {/* BACK */}
+
+        <ToolButton onClick={onBack}>
+          <FaArrowLeft />
+        </ToolButton>
+
+        {/* POSITION */}
+
+        <ToolButton
+          disabled={disabled}
+          active={state === "position"}
+          title="Position"
+          onClick={() => setState("position")}>
+          <BsArrowsMove />
+        </ToolButton>
+
+        {/* DIMENSION */}
+
+        <ToolButton
+          disabled={disabled}
+          active={state === "dimension"}
+          title="Dimension"
+          onClick={() => setState("dimension")}>
+          <RxDimensions />
+        </ToolButton>
+
+        {/* DIVIDER */}
+
+        <div
+          style={{
+            width: "1px",
+            background: "var(--bs-border-color)",
+            margin: "0 4px",
+          }}
+        />
+
+        {/* INPUT */}
+
+        <ControlButton mode="input" title="Input">
+          <RiInputField />
+        </ControlButton>
+
+        {/* MOVE / SWAP */}
+
+        <ControlButton mode="swap" title="Move / Swap">
+          ⇄
+        </ControlButton>
+      </div>
+
+      {/* CONTENT */}
+
+      <div
+        className="d-flex flex-column rounded position-relative flex-grow-1 w-100 overflow-hidden"
+        style={{
+          border: "1px solid #8ab2b550",
+        }}>
+        {/* LABELS */}
+
+        <div
+          className="d-flex gap-2 p-2"
+          style={{
+            borderBottom: "1px solid #8ab2b550",
+          }}>
+          <div
+            className="flex-grow-1 w-50 d-flex justify-content-center gap-2 text-center"
+            style={{
+              fontSize: "11px",
+              opacity: 0.5,
+            }}>
+            <span>{firstVariable.toUpperCase()}</span>
+
+            <span>
+              {Math.floor(
+                Number(
+                  activeLayer?.state[state == "position" ? "x" : "width"],
+                ) || 0,
+              )}
+            </span>
+          </div>
+
+          <div
+            className="flex-grow-1 w-50 text-center d-flex justify-content-center gap-2 "
+            style={{
+              fontSize: "11px",
+              opacity: 0.5,
+            }}>
+            <span>{secondVariable.toUpperCase()}</span>
+            <span>
+              {Math.floor(
+                Number(
+                  activeLayer?.state[state == "position" ? "y" : "height"],
+                ) || 0,
+              )}
+            </span>
+          </div>
+        </div>
+
+        {/* INPUT */}
+
+        {controlMode === "input" && (
+          <div className="d-flex flex-grow-1 align-items-center p-2">
+            {renderInputMode()}
+          </div>
+        )}
+
+        {/* MOVE */}
+
+        {controlMode === "swap" && (
+          <div className="d-flex flex-grow-1">{renderSwapMode()}</div>
+        )}
+      </div>
+    </>
+  );
+}
 function ResizeHandles() {
   return (
     <>
@@ -875,13 +1466,13 @@ const UpperControl = styled.div`
 
   min-height: 50px;
 
-  padding: 16px;
+  padding: 12px;
 
   box-sizing: border-box;
 
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 
   border-bottom: 1px solid var(--border-color);
 
@@ -896,6 +1487,10 @@ const UpperControl = styled.div`
     width: 0;
     height: 0;
   }
+`;
+
+const BottomControl = styled.div`
+  max-width: 600px;
 `;
 
 const ColorInput = styled.input`
@@ -920,7 +1515,6 @@ const ColorInput = styled.input`
 `;
 
 const CanvasArea = styled.div`
-  flex: 1;
   min-height: 0;
   gap: 5px;
   width: 100%;
@@ -937,6 +1531,10 @@ const CanvasArea = styled.div`
   box-sizing: border-box;
 
   background: var(--bg-page);
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const Canvas = styled.div`
@@ -945,9 +1543,9 @@ const Canvas = styled.div`
   flex-shrink: 0;
 
   width: ${(props) => props.width};
-  max-width: 350px;
+  max-width: 300px;
 
-  aspect-ratio: 19/20;
+  aspect-ratio: 19/21;
 
   box-sizing: border-box;
 
@@ -958,39 +1556,11 @@ const Canvas = styled.div`
   background: #5c0965;
 
   overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 1px;
-    background: var(--border-subtle);
-    transform: translateX(-50%);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 1px;
-    background: var(--border-subtle);
-    transform: translateY(-50%);
-    pointer-events: none;
-    z-index: 1;
-  }
 `;
 
 const EditorControls = styled.div`
-  flex-shrink: 0;
-
   min-height: 80px;
-
+  height: 100%;
   padding: 8px;
 
   box-sizing: border-box;

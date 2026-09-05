@@ -85,16 +85,16 @@ export default function BottomNav({}) {
         setActiveIndex("Home");
       },
     },
-    {
-      key: "Explore",
-      label: "Explore",
-      icon: faCompass,
-      href: "/Explore",
-      onClick: () => {
-        setopenSlidWin(false);
-        setActiveIndex("Explore");
-      },
-    },
+    // {
+    //   key: "Explore",
+    //   label: "Explore",
+    //   icon: faCompass,
+    //   href: "/Explore",
+    //   onClick: () => {
+    //     setopenSlidWin(false);
+    //     setActiveIndex("Explore");
+    //   },
+    // },
     {
       key: "Upload",
       label: "Create",

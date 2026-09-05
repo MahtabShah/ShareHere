@@ -45,8 +45,8 @@ export default function LeftNavbar({ onLogout } = {}) {
   const effectiveActiveNav = openSlidWin
     ? "Notifications"
     : activeIndex === "Notifications"
-    ? currentNavFromPath
-    : activeIndex || currentNavFromPath;
+      ? currentNavFromPath
+      : activeIndex || currentNavFromPath;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -123,7 +123,10 @@ export default function LeftNavbar({ onLogout } = {}) {
             title="Home"
             style={{
               cursor: "pointer",
-              color: effectiveActiveNav === "Home" ? "var(--accent-primary, #e1306c)" : textPrimary,
+              color:
+                effectiveActiveNav === "Home"
+                  ? "var(--accent-primary, #e1306c)"
+                  : textPrimary,
               borderRadius: "10px",
             }}>
             <div
@@ -132,14 +135,16 @@ export default function LeftNavbar({ onLogout } = {}) {
               <FontAwesomeIcon icon={faHouse} fontSize={18} />
             </div>
             {!isCollapsed && (
-              <span className="fw-semibold text-truncate" style={{ fontSize: "15px" }}>
+              <span
+                className="fw-semibold text-truncate"
+                style={{ fontSize: "15px" }}>
                 Home
               </span>
             )}
           </div>
 
           {/* Explore Link */}
-          <div
+          {/* <div
             className={`nav-link d-flex align-items-center ${isCollapsed ? "justify-content-center px-0" : "gap-3 px-3"} py-2 ${
               effectiveActiveNav === "Explore" ? "active" : ""
             }`}
@@ -160,7 +165,7 @@ export default function LeftNavbar({ onLogout } = {}) {
                 Explore
               </span>
             )}
-          </div>
+          </div> */}
 
           {/* Create Vibe / Upload Link */}
           <div
@@ -171,7 +176,10 @@ export default function LeftNavbar({ onLogout } = {}) {
             title="Create Vibe"
             style={{
               cursor: "pointer",
-              color: effectiveActiveNav === "Upload" ? "var(--accent-primary, #e1306c)" : textPrimary,
+              color:
+                effectiveActiveNav === "Upload"
+                  ? "var(--accent-primary, #e1306c)"
+                  : textPrimary,
               borderRadius: "10px",
             }}>
             <div
@@ -180,7 +188,9 @@ export default function LeftNavbar({ onLogout } = {}) {
               <FontAwesomeIcon icon={faSquarePlus} fontSize={19} />
             </div>
             {!isCollapsed && (
-              <span className="fw-semibold text-truncate" style={{ fontSize: "15px" }}>
+              <span
+                className="fw-semibold text-truncate"
+                style={{ fontSize: "15px" }}>
                 Create Vibe
               </span>
             )}
@@ -189,7 +199,9 @@ export default function LeftNavbar({ onLogout } = {}) {
           {/* Notifications Link */}
           <div
             className={`nav-link d-flex align-items-center ${isCollapsed ? "justify-content-center px-0" : "gap-3 px-3"} py-2 ${
-              effectiveActiveNav === "Notifications" && openSlidWin ? "active" : ""
+              effectiveActiveNav === "Notifications" && openSlidWin
+                ? "active"
+                : ""
             }`}
             onClick={handleNotificationsClick}
             title="Notifications"
@@ -223,7 +235,9 @@ export default function LeftNavbar({ onLogout } = {}) {
               <FontAwesomeIcon icon={faBell} fontSize={18} />
             </div>
             {!isCollapsed && (
-              <span className="fw-semibold text-truncate" style={{ fontSize: "15px" }}>
+              <span
+                className="fw-semibold text-truncate"
+                style={{ fontSize: "15px" }}>
                 Notifications
               </span>
             )}
@@ -235,11 +249,18 @@ export default function LeftNavbar({ onLogout } = {}) {
               className={`nav-link d-flex align-items-center ${isCollapsed ? "justify-content-center px-0" : "gap-3 px-3"} py-2 ${
                 effectiveActiveNav === "User" ? "active" : ""
               }`}
-              onClick={() => handleNavClick("User", `/api/user/${admin_user._id}`)}
-              title={admin_user?.username ? `@${admin_user.username}` : "Profile"}
+              onClick={() =>
+                handleNavClick("User", `/api/user/${admin_user._id}`)
+              }
+              title={
+                admin_user?.username ? `@${admin_user.username}` : "Profile"
+              }
               style={{
                 cursor: "pointer",
-                color: effectiveActiveNav === "User" ? "var(--accent-primary, #e1306c)" : textPrimary,
+                color:
+                  effectiveActiveNav === "User"
+                    ? "var(--accent-primary, #e1306c)"
+                    : textPrimary,
                 borderRadius: "10px",
               }}>
               <div
@@ -250,7 +271,11 @@ export default function LeftNavbar({ onLogout } = {}) {
                     src={admin_user.profile_pic}
                     alt={admin_user.username}
                     className="rounded-circle"
-                    style={{ width: "24px", height: "24px", objectFit: "cover" }}
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      objectFit: "cover",
+                    }}
                   />
                 ) : (
                   <div
@@ -266,11 +291,17 @@ export default function LeftNavbar({ onLogout } = {}) {
                 )}
               </div>
               {!isCollapsed && (
-                <div className="d-flex flex-column text-truncate" style={{ lineHeight: 1.2 }}>
-                  <span className="fw-semibold text-truncate" style={{ fontSize: "14px" }}>
+                <div
+                  className="d-flex flex-column text-truncate"
+                  style={{ lineHeight: 1.2 }}>
+                  <span
+                    className="fw-semibold text-truncate"
+                    style={{ fontSize: "14px" }}>
                     {admin_user?.name || `@${admin_user?.username}`}
                   </span>
-                  <small className="text-truncate" style={{ fontSize: "11px", color: textMuted }}>
+                  <small
+                    className="text-truncate"
+                    style={{ fontSize: "11px", color: textMuted }}>
                     View profile
                   </small>
                 </div>
@@ -285,7 +316,10 @@ export default function LeftNavbar({ onLogout } = {}) {
               title="Sign In / Register"
               style={{
                 cursor: "pointer",
-                color: effectiveActiveNav === "User" ? "var(--accent-primary, #e1306c)" : textPrimary,
+                color:
+                  effectiveActiveNav === "User"
+                    ? "var(--accent-primary, #e1306c)"
+                    : textPrimary,
                 borderRadius: "10px",
               }}>
               <div
@@ -294,7 +328,9 @@ export default function LeftNavbar({ onLogout } = {}) {
                 <FontAwesomeIcon icon={faRightToBracket} fontSize={18} />
               </div>
               {!isCollapsed && (
-                <span className="fw-semibold text-truncate" style={{ fontSize: "15px" }}>
+                <span
+                  className="fw-semibold text-truncate"
+                  style={{ fontSize: "15px" }}>
                   Sign In / Register
                 </span>
               )}
@@ -303,7 +339,9 @@ export default function LeftNavbar({ onLogout } = {}) {
         </div>
 
         {/* Bottom Utility Controls (Theme Switcher, Logout, Desktop Collapse Toggle) */}
-        <div className="d-flex flex-column gap-1 pt-3" style={{ borderTop: `1px solid ${bgBorder}` }}>
+        <div
+          className="d-flex flex-column gap-1 pt-3"
+          style={{ borderTop: `1px solid ${bgBorder}` }}>
           {/* Quick Theme Toggle */}
           <div
             className={`nav-link d-flex align-items-center ${isCollapsed ? "justify-content-center px-0" : "gap-3 px-3"} py-2`}
@@ -320,7 +358,9 @@ export default function LeftNavbar({ onLogout } = {}) {
               <FontAwesomeIcon icon={isDark ? faSun : faMoon} fontSize={17} />
             </div>
             {!isCollapsed && (
-              <span className="fw-medium text-truncate" style={{ fontSize: "14px" }}>
+              <span
+                className="fw-medium text-truncate"
+                style={{ fontSize: "14px" }}>
                 {isDark ? "Light Mode" : "Dark Mode"}
               </span>
             )}
@@ -342,7 +382,9 @@ export default function LeftNavbar({ onLogout } = {}) {
                 <FontAwesomeIcon icon={faRightFromBracket} fontSize={17} />
               </div>
               {!isCollapsed && (
-                <span className="fw-medium text-truncate" style={{ fontSize: "14px" }}>
+                <span
+                  className="fw-medium text-truncate"
+                  style={{ fontSize: "14px" }}>
                   Log Out
                 </span>
               )}
@@ -363,10 +405,15 @@ export default function LeftNavbar({ onLogout } = {}) {
               <div
                 className="d-flex align-items-center justify-content-center"
                 style={{ width: "24px", height: "24px" }}>
-                <FontAwesomeIcon icon={isNavCollapsed ? faChevronRight : faChevronLeft} fontSize={14} />
+                <FontAwesomeIcon
+                  icon={isNavCollapsed ? faChevronRight : faChevronLeft}
+                  fontSize={14}
+                />
               </div>
               {!isCollapsed && (
-                <span className="fw-normal text-truncate" style={{ fontSize: "13px" }}>
+                <span
+                  className="fw-normal text-truncate"
+                  style={{ fontSize: "13px" }}>
                   Collapse sidebar
                 </span>
               )}
@@ -460,7 +507,9 @@ export default function LeftNavbar({ onLogout } = {}) {
               padding: "16px 14px",
             }}>
             {/* Drawer Header with Close Button */}
-            <div className="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom" style={{ borderColor: bgBorder }}>
+            <div
+              className="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom"
+              style={{ borderColor: bgBorder }}>
               <div
                 className="d-flex align-items-center gap-2"
                 onClick={() => handleNavClick("Home", "/home")}
@@ -536,10 +585,16 @@ export default function LeftNavbar({ onLogout } = {}) {
             style={{
               zIndex: 9999,
               top: mobile_break_point ? "52px" : "54px",
-              left: mobile_break_point ? "0" : isNavCollapsed ? "74px" : "244px",
+              left: mobile_break_point
+                ? "0"
+                : isNavCollapsed
+                  ? "74px"
+                  : "244px",
               width: mobile_break_point ? "100%" : "440px",
               maxWidth: "100vw",
-              height: mobile_break_point ? "calc(100dvh - 102px)" : "calc(100dvh - 54px)",
+              height: mobile_break_point
+                ? "calc(100dvh - 102px)"
+                : "calc(100dvh - 54px)",
               transition: "left 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
               animation: "slideInFromLeft 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
               boxShadow: "4px 0 24px rgba(0, 0, 0, 0.18)",
