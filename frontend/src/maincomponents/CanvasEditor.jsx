@@ -1810,7 +1810,7 @@ const Canvas = styled.div`
   width: ${(props) => props.width};
   max-width: 300px;
 
-  aspect-ratio: 19/24;
+  aspect-ratio: 1;
 
   box-sizing: border-box;
 
