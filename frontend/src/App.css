@@ -248,3 +248,9 @@ select,
 option {
   color: #191919 !important;
 }
+
+.vc-switch {
+  bottom: 100px !important;
+  right: 40px !important;
+  z-index: 999999 !important;
+}
