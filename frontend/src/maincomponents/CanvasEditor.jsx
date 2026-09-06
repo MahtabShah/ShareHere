@@ -624,10 +624,24 @@ function PostPage({
   debugLogs,
 }) {
   return (
-    <PostPageContainer>
+    <PostPageContainer className="overflow-auto">
+      <PostHeader className="w-100">
+        <ToolButton
+          type="button"
+          title="Back to editor"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onBack();
+          }}>
+          <FaArrowLeft size={18} />
+        </ToolButton>
+
+        <h2>Create Post</h2>
+      </PostHeader>
+
       <div
         style={{
-          position: "fixed",
           top: "100px",
           bottom: 0,
           left: 0,
@@ -646,20 +660,6 @@ function PostPage({
           <div key={i}>{log}</div>
         ))}
       </div>
-      <PostHeader className="w-100">
-        <ToolButton
-          type="button"
-          title="Back to editor"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onBack();
-          }}>
-          <FaArrowLeft size={18} />
-        </ToolButton>
-
-        <h2>Create Post</h2>
-      </PostHeader>
 
       <PostForm>
         <FormGroup>
