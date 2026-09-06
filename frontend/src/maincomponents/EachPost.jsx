@@ -140,40 +140,42 @@ export const EachPost = ({ user, each_post }) => {
       }}>
       <PostHeader user={user} admin_user={admin_user} each_post={each_post} />
 
-      <div className="d-flex borde r flex-column gap-2">
+      <div className="d-flex flex-column gap-2">
         <div
           className="overflow-hidden w-100"
           style={{
             maxWidth: "440px",
             alignSelf: "center",
           }}>
-          {mode == "Public" && (
-            <img
-              loading="lazy"
-              className="w-100 h-100 rounded-2"
-              style={{ objectFit: "cover" }}
-              src={each_post?.images[0] || ""}
-            />
-          )}
+          <div className="d-flex">
+            {mode == "Public" && (
+              <img
+                loading="lazy"
+                className="w-100 h-100 rounded-2"
+                style={{ objectFit: "cover" }}
+                src={each_post?.images[0] || ""}
+              />
+            )}
 
-          {mode == "Follower" && (
-            <div
-              className={`d-flex align-items-center flex-column h-100`}
-              style={{ background: textMuted }}>
-              <div style={{ width: "180px" }}>
-                <img
-                  src={follow_us}
-                  alt=""
-                  className={`h-100 w-100`}
-                  style={{ objectFit: "cover", opacity: "0.4" }}
-                />
+            {mode == "Follower" && (
+              <div
+                className={`d-flex align-items-center flex-column h-100`}
+                style={{ background: textMuted }}>
+                <div style={{ width: "180px" }}>
+                  <img
+                    src={follow_us}
+                    alt=""
+                    className={`h-100 w-100`}
+                    style={{ objectFit: "cover", opacity: "0.4" }}
+                  />
+                </div>
+                <p className="p-2 px-3 fs-5">
+                  This is for <b>Followers only</b>. Follow{" "}
+                  <b>@{user?.username}</b> to access this post.
+                </p>
               </div>
-              <p className="p-2 px-3 fs-5">
-                This is for <b>Followers only</b>. Follow{" "}
-                <b>@{user?.username}</b> to access this post.
-              </p>
-            </div>
-          )}
+            )}
+          </div>
 
           <div
             className="pb- 2"
