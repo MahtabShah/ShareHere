@@ -365,44 +365,79 @@ export default function CanvasVibeEditor() {
 
     return new Blob(byteArrays, { type: contentType });
   }
-  // --------------------------------------------------
-  // POST
-  // --
-  // ------------------------------------------------
   const exportAsImage = async () => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current) {
+      throw new Error("Canvas element not found.");
+    }
 
     try {
-      const dataUrl = await toPng(canvasRef.current, {
+      const blob = await toBlob(canvasRef.current, {
         backgroundColor: canvasBackground,
-        pixelRatio: 2, // Higher quality
+        pixelRatio: 2,
+        cacheBust: true,
       });
 
-      const blob = base64ToBlob(dataUrl, "image/png");
-      const blobUrl = URL.createObjectURL(blob);
-      // setExportUrl(dataUrl); // This is now a shorter blob URL
-      console.log("blob ", `blob:${blobUrl}`);
-      return dataUrl;
+      if (!blob) {
+        throw new Error("Failed to generate image Blob.");
+      }
+
+      if (blob.size === 0) {
+        throw new Error("Generated image Blob is empty.");
+      }
+
+      console.log("Image Blob:", blob);
+      console.log("Blob size:", blob.size);
+      console.log("Blob type:", blob.type);
+
+      return blob;
     } catch (error) {
       console.error("Error exporting image:", error);
+      throw error;
     }
   };
 
   const handleCapture = async () => {
-    const dataURL = await exportAsImage();
+    try {
+      // HTML → PNG Blob
+      const imageBlob = await exportAsImage();
 
-    const formData = new FormData();
-    formData.append("file", dataURL);
-    formData.append("upload_preset", "page_Image");
-    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
+      if (!imageBlob) {
+        throw new Error("Image Blob is missing.");
+      }
 
-    const res = await axios.post(
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      formData,
-    );
+      // FormData
+      const formData = new FormData();
 
-    console.log("Uploaded URL:", res.data.secure_url);
-    return res.data.secure_url;
+      formData.append("file", imageBlob, "canvas.png");
+
+      formData.append("upload_preset", "page_Image");
+
+      // Upload
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        formData,
+      );
+
+      const secureUrl = res?.data?.secure_url;
+
+      if (!secureUrl) {
+        throw new Error("Cloudinary did not return secure_url.");
+      }
+
+      console.log("Uploaded URL:", secureUrl);
+
+      return secureUrl;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+
+      console.error("Cloudinary response:", error?.response?.data);
+
+      throw new Error(
+        error?.response?.data?.error?.message ||
+          error?.message ||
+          "Image upload failed.",
+      );
+    }
   };
 
   const handlePost = async (e) => {
