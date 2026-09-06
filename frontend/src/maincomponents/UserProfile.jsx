@@ -171,7 +171,9 @@ const UserProfile = ({}) => {
                   minWidth: "100px",
                   minHeight: "100px",
                   backgroundColor: user?.bg_clr,
-                  backgroundImage: user?.profile_pic ? `url(${user.profile_pic})` : undefined,
+                  backgroundImage: user?.profile_pic
+                    ? `url(${user.profile_pic})`
+                    : undefined,
                   aspectRatio: "1/1",
                   cursor: "pointer",
                 }}
@@ -317,7 +319,8 @@ const UserProfile = ({}) => {
               onClick={() => setActiveBtn3Profile("Public")}
               style={{
                 color: activeBtn3Profile === "Public" ? bgSurface : textPrimary,
-                background: activeBtn3Profile === "Public" ? textPrimary : bgSurface,
+                background:
+                  activeBtn3Profile === "Public" ? textPrimary : bgSurface,
               }}>
               Public
             </button>
@@ -326,7 +329,8 @@ const UserProfile = ({}) => {
                 activeBtn3Profile === "Follower" ? "btn-dark" : ""
               }`}
               style={{
-                color: activeBtn3Profile === "Follower" ? bgSurface : textPrimary,
+                color:
+                  activeBtn3Profile === "Follower" ? bgSurface : textPrimary,
                 background:
                   activeBtn3Profile === "Follower" ? textPrimary : bgSurface,
               }}
@@ -351,7 +355,9 @@ const UserProfile = ({}) => {
           </div>
         </div>
 
-        <div className="d-flex flex-column gap-5" style={{ background: bgPage }}>
+        <div
+          className="d-flex flex-column gap-5"
+          style={{ background: bgPage }}>
           {
             <section
               style={{
@@ -369,7 +375,7 @@ const UserProfile = ({}) => {
                     PublicPost?.map((ps, idx) => {
                       return (
                         <Fragment key={idx}>
-                          <EachPost user={user} comment={ps} />
+                          <EachPost user={user} each_post={ps} />
                         </Fragment>
                       );
                     })}
@@ -379,7 +385,7 @@ const UserProfile = ({}) => {
                       return (
                         <>
                           <Fragment key={idx}>
-                            <EachPost user={user} comment={ps} />
+                            <EachPost user={user} each_post={ps} />
                           </Fragment>
                         </>
                       );
@@ -390,7 +396,7 @@ const UserProfile = ({}) => {
                       return (
                         <>
                           <Fragment key={idx}>
-                            <EachPost user={user} comment={ps} />
+                            <EachPost user={user} each_post={ps} />
                           </Fragment>
                         </>
                       );

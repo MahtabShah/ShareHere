@@ -221,7 +221,7 @@ export const EachPost = ({ user, each_post }) => {
               color: textSecondary,
             }}>
             <div
-              className="d-flex gap-4 rounded-5"
+              className="d-flex gap-3 rounded-5"
               style={{ minWidth: "max-content" }}>
               <LikeBtn post={each_post} size={25} />
               <span
@@ -242,7 +242,7 @@ export const EachPost = ({ user, each_post }) => {
                 </span>
               </span>
               <span
-                className="fw-semibold"
+                className="fw-semibold ms-1 ps-1"
                 onClick={() => HandleShare(each_post?._id)}
                 style={{ marginTop: "1px" }}>
                 <BiShare size={25} />

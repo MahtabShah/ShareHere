@@ -127,7 +127,7 @@ export const TrackPost = () => {
                 </button>
               </div>
 
-              <EachPost user={user} comment={post} />
+              <EachPost user={user} each_post={post} />
             </div>
           )}
 

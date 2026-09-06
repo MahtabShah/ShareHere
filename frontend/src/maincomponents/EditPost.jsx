@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useQuote } from "../context/QueotrContext";
 import { useTheme } from "../context/Theme";
-import { EachPost } from "./EachPost";
 import { categories, objectPosition } from "../StanderdThings/StanderdData";
 import Tabs from "react-bootstrap/esm/Tabs";
 import { Tab } from "bootstrap";
@@ -37,8 +36,14 @@ const EditPost = () => {
     CommentFn(id);
   }, []);
 
-  const { textPrimary, textSecondary, textMuted, bgSurface, bgPage, borderColor } =
-    useTheme();
+  const {
+    textPrimary,
+    textSecondary,
+    textMuted,
+    bgSurface,
+    bgPage,
+    borderColor,
+  } = useTheme();
   const [category, setCategory] = useState(post?.category);
   const [visiblity, setVisiblity] = useState(post?.mode);
   const [text, setText] = useState(post?.text || "\n");
