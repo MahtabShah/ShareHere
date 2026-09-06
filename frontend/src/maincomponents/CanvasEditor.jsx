@@ -421,7 +421,7 @@ export default function CanvasVibeEditor() {
         throw new Error("Failed to upload canvas.");
       }
 
-      const response = await axios.post(
+      await axios.post(
         `${API}/api/sentence/post`,
         {
           ready_url,
@@ -444,12 +444,11 @@ export default function CanvasVibeEditor() {
       alert("Uploaded Successfully");
 
       navigate("/home");
-    } catch (error) {
-      console.error("Post failed:", error);
+    } catch (err) {
+      console.error("Post failed:", err);
+      alert("some thing is wrong..");
 
-      setError(
-        error.response?.data?.message || error.message || "Failed to post",
-      );
+      setError(err.response?.data?.message || err?.message || "Failed to post");
     } finally {
       setPostLoading(false);
     }
