@@ -142,7 +142,7 @@ export const EachPost = ({ user, each_post }) => {
 
       <div className="d-flex borde r flex-column gap-2">
         <div
-          className="overflow-hidden w-100 rounded-2"
+          className="overflow-hidden w-100"
           style={{
             maxWidth: "440px",
             alignSelf: "center",
@@ -150,7 +150,7 @@ export const EachPost = ({ user, each_post }) => {
           {mode == "Public" && (
             <img
               loading="lazy"
-              className="w-100 h-100"
+              className="w-100 h-100 rounded-2"
               style={{ objectFit: "cover" }}
               src={each_post?.images[0] || ""}
             />
