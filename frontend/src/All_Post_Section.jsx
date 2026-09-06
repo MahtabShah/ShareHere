@@ -99,21 +99,21 @@ function All_Post_Section({ category, loading }) {
         ({ post, user }, idx) =>
           user &&
           post && (
-            <div key={idx} id={post?._id}>
-              {idx == 4 + Math.floor(Math.random() * 4) ? (
-                <GalleryPost category={category} />
-              ) : (
-                <EachPost user={user} each_post={post} />
-              )}
-
-              {/* {rn && rn + 1 > idx && idx > rn - 1 && (
-              <div
-                className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto "
-                style={{ maxWidth: "100%" }}>
-                <SuggetionSlipInPost />
+            <>
+              <div key={idx} id={post?._id}>
+                {idx == 4 + Math.floor(Math.random() * 4) ? (
+                  <GalleryPost category={category} />
+                ) : (
+                  <EachPost user={user} each_post={post} />
+                )}
               </div>
-            )} */}
-            </div>
+
+              {rn + 1 > idx && idx > rn - 1 && (
+                <div className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto ">
+                  <SuggetionSlipInPost />
+                </div>
+              )}
+            </>
           ),
       )}
     </div>
