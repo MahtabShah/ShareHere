@@ -137,7 +137,7 @@ export const EachPost = ({ user, each_post }) => {
         placeSelf: "center",
         background: bgCard,
         position: "relative",
-        padding: mobile_bp ? "max(2vw, 5px)" : "20px",
+        padding: mobile_bp ? "max(2vw, 8px)" : "20px",
       }}>
       <PostHeader user={user} admin_user={admin_user} each_post={each_post} />
 
@@ -152,7 +152,7 @@ export const EachPost = ({ user, each_post }) => {
             {mode == "Public" && (
               <img
                 loading="lazy"
-                className="w-100 h-100 rounded-2"
+                className="w-100 h-100"
                 style={{ objectFit: "cover" }}
                 src={each_post?.images[0] || ""}
               />
