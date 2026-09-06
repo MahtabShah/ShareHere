@@ -413,8 +413,33 @@ export default function CanvasVibeEditor() {
   /* --------------------------------------------------
    POST
 -------------------------------------------------- */
+  const [debugLogs, setDebugLogs] = useState([]);
+  const log = (...args) => {
+    console.log(...args);
 
-  const handlePost = async () => {
+    setDebugLogs((prev) => [
+      ...prev,
+      args
+        .map((arg) => {
+          if (arg instanceof Error) {
+            return `${arg.name}: ${arg.message}\n${arg.stack || ""}`;
+          }
+
+          if (typeof arg === "object" && arg !== null) {
+            try {
+              return JSON.stringify(arg, null, 2);
+            } catch {
+              return String(arg);
+            }
+          }
+
+          return String(arg);
+        })
+        .join(" "),
+    ]);
+  };
+
+  const handlePost = async (e) => {
     // Login check
     if (!admin_user) {
       const confirmLogin = window.confirm(
@@ -479,6 +504,8 @@ export default function CanvasVibeEditor() {
       navigate("/home");
     } catch (err) {
       console.error("POST ERROR:", err);
+
+      log({ err });
 
       const message =
         err?.response?.data?.error?.message ||
@@ -576,6 +603,7 @@ export default function CanvasVibeEditor() {
           setVisible={setVisible}
           error={error}
           postLoading={postLoading}
+          debugLogs={debugLogs}
         />
       )}
     </EditorContainer>
@@ -593,9 +621,31 @@ function PostPage({
   postLoading,
   onBack,
   onPost,
+  debugLogs,
 }) {
   return (
     <PostPageContainer>
+      <div
+        style={{
+          position: "fixed",
+          top: "100px",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          maxHeight: "200px",
+          overflow: "auto",
+          background: "black",
+          color: "lime",
+          zIndex: 999999,
+          fontSize: "12px",
+          padding: "10px",
+          color: "#f2f0f0",
+        }}>
+        Error is:
+        {debugLogs.map((log, i) => (
+          <div key={i}>{log}</div>
+        ))}
+      </div>
       <PostHeader className="w-100">
         <ToolButton
           type="button"
