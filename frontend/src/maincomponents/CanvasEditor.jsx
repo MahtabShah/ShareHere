@@ -322,13 +322,13 @@ export default function CanvasVibeEditor() {
 
     try {
       const dataUrl = await toJpeg(canvasRef.current, {
-        pixelRatio: 3,
+        pixelRatio: 2,
       });
 
       return dataUrl;
-    } catch (error) {
-      console.error("Canvas export failed:", error);
-      throw error;
+    } catch (err) {
+      console.error("Canvas export failed:", err);
+      throw err;
     }
   };
 
@@ -365,12 +365,12 @@ export default function CanvasVibeEditor() {
       );
 
       return response.data.secure_url;
-    } catch (error) {
-      console.error("Cloudinary status:", error.response?.status);
+    } catch (err) {
+      console.error("Cloudinary status:", err?.response?.status);
 
-      console.error("Cloudinary error:", error.response?.data);
+      console.error("Cloudinary error:", err?.response?.data);
 
-      throw error;
+      throw err;
     }
   };
 
@@ -400,7 +400,7 @@ export default function CanvasVibeEditor() {
       return;
     }
 
-    if (!description.trim()) {
+    if (!description?.trim()) {
       setError("Please write something about your post.");
       return;
     }
@@ -448,7 +448,9 @@ export default function CanvasVibeEditor() {
       console.error("Post failed:", err);
       alert("some thing is wrong..");
 
-      setError(err.response?.data?.message || err?.message || "Failed to post");
+      setError(
+        err?.response?.data?.message || err?.message || "Failed to post",
+      );
     } finally {
       setPostLoading(false);
     }
