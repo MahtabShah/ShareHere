@@ -345,6 +345,7 @@ export default function CanvasVibeEditor() {
     if (!canvasRef?.current) {
       throw new Error("Canvas element not found.");
     }
+    log({ "3...48": "....348" });
 
     try {
       const dataUrl = await toJpeg(canvasRef.current, {
@@ -352,12 +353,16 @@ export default function CanvasVibeEditor() {
         quality: 0.9,
       });
 
+      log({ "data Url": dataUrl });
+
       if (!dataUrl) {
         throw new Error("Canvas export returned empty data.");
       }
 
       return dataUrl;
     } catch (err) {
+      log({ "data Url export": dataUrl });
+
       throw new Error(err?.message || "Canvas export failed.");
     }
   };
