@@ -304,24 +304,6 @@ export default function CanvasVibeEditor() {
    DATA URL → BLOB
 -------------------------------------------------- */
 
-  const dataUrlToBlob = async (dataUrl) => {
-    if (!dataUrl || typeof dataUrl !== "string") {
-      throw new Error("Invalid image data.");
-    }
-
-    try {
-      const response = await fetch(dataUrl);
-
-      if (!response.ok) {
-        throw new Error("Failed to convert image to Blob.");
-      }
-
-      return await response.blob();
-    } catch (err) {
-      throw new Error(err?.message || "Failed to create image Blob.");
-    }
-  };
-
   // --------------------------------------------------
   // DEBUG LOGGER
   // --------------------------------------------------
@@ -349,68 +331,140 @@ export default function CanvasVibeEditor() {
     ]);
   };
 
-  function base64ToBlob(base64, contentType = "image/png") {
-    // Handle both full data URLs and raw base64 strings
-    let base64Data = base64;
-    if (base64.includes(",")) {
-      base64Data = base64.split(",")[1];
-    }
+  const dataUrlToBlob = (dataUrl) => {
+    return new Promise((resolve, reject) => {
+      try {
+        // Handle both full data URLs and raw base64 strings
+        let base64Data = dataUrl;
+        if (dataUrl.includes(",")) {
+          base64Data = dataUrl.split(",")[1];
+        }
 
-    const byteCharacters = atob(base64Data);
-    const byteArrays = [];
+        const byteCharacters = atob(base64Data);
+        const byteArrays = [];
 
-    for (let i = 0; i < byteCharacters.length; i += 512) {
-      const slice = byteCharacters.slice(i, i + 512);
-      const byteNumbers = new Array(slice.length);
-      for (let j = 0; j < slice.length; j++) {
-        byteNumbers[j] = slice.charCodeAt(j);
+        for (let i = 0; i < byteCharacters.length; i += 512) {
+          const slice = byteCharacters.slice(i, i + 512);
+          const byteNumbers = new Array(slice.length);
+          for (let j = 0; j < slice.length; j++) {
+            byteNumbers[j] = slice.charCodeAt(j);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+
+        const blob = new Blob(byteArrays, { type: "image/png" });
+        resolve(blob);
+      } catch (error) {
+        reject(new Error("Failed to convert image: " + error.message));
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
+    });
+  };
 
-    return new Blob(byteArrays, { type: contentType });
-  }
+  // --------------------------------------------------
+  // FIXED: EXPORT AS IMAGE with Mobile Support
+  // --------------------------------------------------
 
-  // Fix 2: Update exportAsImage to return a Blob instead of dataURL
   const exportAsImage = async () => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current) {
+      throw new Error("Canvas not found");
+    }
 
     try {
+      console.log("📸 Starting image export...");
+
+      // Get data URL from canvas
       const dataUrl = await toPng(canvasRef.current, {
-        backgroundColor: canvasBackground,
-        pixelRatio: 2, // Higher quality
+        backgroundColor: canvasBackground || "#940d6d",
+        pixelRatio: 2,
+        cacheBust: true,
       });
 
-      // Convert data URL to Blob
-      const blob = base64ToBlob(dataUrl, "image/png");
+      console.log("✅ Data URL created, length:", dataUrl?.length);
 
-      // Create a File object for better compatibility with FormData
+      if (!dataUrl || dataUrl.length < 100) {
+        throw new Error("Invalid data URL generated");
+      }
+
+      // Convert to Blob
+      const blob = await dataUrlToBlob(dataUrl);
+
+      console.log("✅ Blob created, size:", blob.size, "bytes");
+
+      if (blob.size < 100) {
+        throw new Error("Blob size too small - image may be corrupted");
+      }
+
+      // Create File object
       const file = new File([blob], `canvas_${Date.now()}.png`, {
         type: "image/png",
       });
 
-      console.log("Blob created successfully");
-      return file; // Return File object instead of dataUrl
+      console.log("✅ File created:", file.name, "size:", file.size, "bytes");
+
+      return file;
     } catch (error) {
-      console.error("Error exporting image:", error);
-      throw error; // Re-throw to handle in handleCapture
+      console.error("❌ Export error:", error);
+      throw new Error("Export failed: " + error.message);
     }
   };
 
-  // Fix 3: Update handleCapture to use File object
+  // --------------------------------------------------
+  // FIXED: HANDLE CAPTURE with Debug Logging
+  // --------------------------------------------------
+
   const handleCapture = async () => {
+    const logs = [];
+    const log = (msg, data) => {
+      console.log(msg, data || "");
+      logs.push({ msg, data });
+    };
+
     try {
+      log("🚀 Starting capture process...");
+
+      // Step 1: Export image as File
+      log("📤 Exporting image...");
       const file = await exportAsImage();
 
       if (!file) {
-        throw new Error("Failed to export image");
+        throw new Error("No file returned from export");
       }
 
+      log("✅ File created:", {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      });
+
+      // Validate file size
+      if (file.size < 100) {
+        throw new Error("File size too small: " + file.size + " bytes");
+      }
+
+      // Step 2: Create FormData
+      log("📦 Creating FormData...");
       const formData = new FormData();
-      formData.append("file", file); // Now appending a File object
+      formData.append("file", file);
       formData.append("upload_preset", "page_Image");
       formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
+
+      // Log FormData contents (for debugging)
+      for (let pair of formData.entries()) {
+        if (pair[0] === "file") {
+          const fileObj = pair[1];
+          log("📎 FormData file:", {
+            name: fileObj.name,
+            size: fileObj.size,
+            type: fileObj.type,
+          });
+        } else {
+          log("📎 FormData field:", pair[0], "=", pair[1]);
+        }
+      }
+
+      // Step 3: Upload to Cloudinary
+      log("☁️ Uploading to Cloudinary...");
 
       const res = await axios.post(
         `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -419,44 +473,62 @@ export default function CanvasVibeEditor() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          timeout: 60000, // 60 second timeout for mobile
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total,
+            );
+            log(`📊 Upload progress: ${percentCompleted}%`);
+          },
         },
       );
 
-      console.log("Uploaded URL:", res.data.secure_url);
+      log("✅ Upload successful!");
+      log("🔗 URL:", res.data.secure_url);
+
       return res.data.secure_url;
     } catch (error) {
-      console.error("Upload error:", error);
-      throw new Error(
-        error?.response?.data?.error?.message || "Failed to upload image",
-      );
+      console.error("❌ Capture/Upload error:", error);
+
+      // Log detailed error information
+      log("❌ Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        stack: error.stack,
+      });
+
+      // Create user-friendly error message
+      let userMessage = "Failed to upload image. ";
+
+      if (error.message === "Network Error") {
+        userMessage += "Please check your internet connection.";
+      } else if (error.response?.status === 400) {
+        userMessage += "Invalid image format. Please try again.";
+      } else if (error.response?.status === 413) {
+        userMessage += "Image is too large. Please try a smaller image.";
+      } else if (error.response?.data?.error?.message) {
+        userMessage += error.response.data.error.message;
+      } else {
+        userMessage += error.message || "Please try again.";
+      }
+
+      throw new Error(userMessage);
     }
   };
 
-  // Alternative fix: If you prefer to keep dataURL approach, use this version
-  const handleCaptureAlternative = async () => {
-    const dataURL = await exportAsImage(); // This returns dataURL
-
-    // Convert dataURL to Blob and then to File
-    const blob = base64ToBlob(dataURL, "image/png");
-    const file = new File([blob], `canvas_${Date.now()}.png`, {
-      type: "image/png",
-    });
-
-    const formData = new FormData();
-    formData.append("file", file); // Use File object
-    formData.append("upload_preset", "page_Image");
-    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
-
-    const res = await axios.post(
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      formData,
-    );
-
-    console.log("Uploaded URL:", res.data.secure_url);
-    return res.data.secure_url;
-  };
+  // --------------------------------------------------
+  // FIXED: handlePost with Better Error Handling
+  // --------------------------------------------------
 
   const handlePost = async (e) => {
+    // Prevent default if event exists
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+
+    console.log("📝 Starting post process...");
+
     // ---------------------------------------------
     // Login check
     // ---------------------------------------------
@@ -479,7 +551,7 @@ export default function CanvasVibeEditor() {
 
     if (!description?.trim()) {
       setError("Please write something about your post.");
-
+      alert("Please write something about your post.");
       return;
     }
 
@@ -489,7 +561,7 @@ export default function CanvasVibeEditor() {
 
     if (!layers?.length || !layers.some((layer) => layer.text?.trim())) {
       setError("Please add/write something in the editor.");
-
+      alert("Please add/write something in the editor.");
       return;
     }
 
@@ -498,29 +570,52 @@ export default function CanvasVibeEditor() {
       setPostLoading(true);
       setActiveLayerId(null);
 
+      console.log("🔄 Post upload started...");
+
       // -------------------------------------------
-      // 1. Upload image
+      // 1. Upload image with retry logic
       // -------------------------------------------
 
-      log("Starting post upload...");
+      let ready_url = null;
+      let retries = 2;
 
-      const ready_url = await handleCapture();
-
-      log("ready_url:", ready_url);
+      while (retries >= 0 && !ready_url) {
+        try {
+          console.log(`📤 Upload attempt ${3 - retries}...`);
+          ready_url = await handleCapture();
+          break;
+        } catch (uploadError) {
+          console.error(
+            `❌ Upload attempt ${3 - retries} failed:`,
+            uploadError,
+          );
+          retries--;
+          if (retries >= 0) {
+            console.log("⏳ Retrying upload...");
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          } else {
+            throw uploadError;
+          }
+        }
+      }
 
       if (!ready_url) {
-        throw new Error("Failed to upload canvas.");
+        throw new Error("Failed to upload image after multiple attempts");
       }
+
+      console.log("✅ Image uploaded:", ready_url);
 
       // -------------------------------------------
       // 2. Create post
       // -------------------------------------------
 
+      console.log("📝 Creating post...");
+
       const response = await axios.post(
         `${API}/api/sentence/post`,
         {
           ready_url,
-          text: description,
+          text: description || "this is description",
           mode: visible,
           id: admin_user?._id,
           category,
@@ -529,51 +624,95 @@ export default function CanvasVibeEditor() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          timeout: 30000,
         },
       );
 
-      // -------------------------------------------
-      // 3. Response
-      // -------------------------------------------
-
-      log("Post response:", response?.data);
+      console.log("✅ Post created:", response?.data);
 
       // -------------------------------------------
-      // 4. Success
+      // 3. Success
       // -------------------------------------------
 
       setUploadClicked?.(false);
       setopenSlidWin?.(false);
       setActiveIndex?.(null);
 
-      alert("Uploaded Successfully");
-
+      alert("✅ Uploaded Successfully!");
       navigate("/home");
     } catch (err) {
-      console.error("POST ERROR:", err);
+      console.error("❌ POST ERROR:", err);
 
-      // IMPORTANT:
-      // response doesn't exist here.
-      // Use err instead.
-      log("POST ERROR:", err?.message || "Failed to post.");
-
+      // Log detailed error
       if (err?.response) {
-        log("POST STATUS:", err.response.status);
-
-        log("POST RESPONSE:", err.response.data);
+        console.error("📊 Response status:", err.response.status);
+        console.error("📊 Response data:", err.response.data);
       }
 
-      const message =
-        err?.response?.data?.error?.message ||
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to post.";
+      // Create user-friendly error message
+      let message = "Failed to post. ";
+
+      if (err.message && err.message.includes("Network Error")) {
+        message += "Please check your internet connection and try again.";
+      } else if (err.response?.status === 401) {
+        message += "Please login again.";
+      } else if (err.response?.status === 500) {
+        message += "Server error. Please try again later.";
+      } else {
+        message += err.message || "Please try again.";
+      }
 
       setError(message);
-
       alert(message);
     } finally {
       setPostLoading(false);
+      console.log("🏁 Post process completed");
+    }
+  };
+
+  // --------------------------------------------------
+  // DEBUG: Add this to see what's happening on mobile
+  // --------------------------------------------------
+
+  // Add this useEffect for debugging on mobile
+  useEffect(() => {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      console.log("📱 Running on mobile device");
+      console.log("📱 User Agent:", navigator.userAgent);
+
+      // Check canvas availability
+      if (canvasRef.current) {
+        console.log("✅ Canvas found");
+      } else {
+        console.log("❌ Canvas not found");
+      }
+    }
+  }, []);
+
+  // Add this function to test image creation
+  const testImageCreation = async () => {
+    try {
+      console.log("🧪 Testing image creation...");
+      const file = await exportAsImage();
+      console.log("✅ Test successful:", file);
+
+      // Create a download link to verify the image
+      const url = URL.createObjectURL(file);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "test.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      return true;
+    } catch (error) {
+      console.error("❌ Test failed:", error);
+      alert("Test failed: " + error.message);
+      return false;
     }
   };
 
