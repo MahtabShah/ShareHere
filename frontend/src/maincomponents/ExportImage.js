@@ -211,7 +211,7 @@ export const getImageUrl = async (elementRef, options = {}) => {
 
   return await exportAndUpload(elementRef.current, {
     backgroundColor,
-    scale: 2,
+    scale: 10,
     width: d.width || 300,
     height: d.height || 300,
     onProgress,
