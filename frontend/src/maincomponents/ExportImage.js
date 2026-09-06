@@ -209,47 +209,10 @@ export const getImageUrl = async (elementRef, options = {}) => {
 
   return await exportAndUpload(elementRef.current, {
     backgroundColor,
-    scale: 2,
+    scale: 4,
     width: 300,
     height: 300,
     onProgress,
     retries,
   });
-};
-
-export const testExport = async (elementRef, backgroundColor = "#940d6d") => {
-  try {
-    if (!elementRef || !elementRef.current) {
-      alert("Element not found!");
-      return;
-    }
-
-    console.log("🧪 Testing html2canvas export...");
-
-    const file = await exportElementToFile(elementRef.current, {
-      backgroundColor,
-      width: 300,
-      height: 300,
-      scale: 2,
-    });
-
-    console.log("✅ Test successful:", file);
-
-    // Download to test
-    const url = URL.createObjectURL(file);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "test_export.png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    alert(`✅ Test successful! Image downloaded. Size: ${file.size} bytes`);
-    return file;
-  } catch (error) {
-    console.error("❌ Test failed:", error);
-    alert("Test failed: " + error.message);
-    throw error;
-  }
 };

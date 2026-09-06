@@ -469,13 +469,10 @@ export default function CanvasVibeEditor() {
       />
 
       <CanvasArea className="border">
-        <div
-          className="border h-100  w-100"
-          style={{ placeItems: "center" }}
-          ref={canvasRef}>
+        <div className="border d-flex justify-content-center h-100 p-2 w-100">
           <Canvas
             width={"100%"}
-            className="border"
+            ref={canvasRef}
             style={{
               backgroundImage: `url(${photoUrl})`,
               background: photoUrl ?? canvasBackground,
@@ -1819,7 +1816,7 @@ const Canvas = styled.div`
   width: ${(props) => props.width};
   max-width: 300px;
 
-  aspect-ratio: 1;
+  aspect-ratio: 5/6;
 
   box-sizing: border-box;
 
