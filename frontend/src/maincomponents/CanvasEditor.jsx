@@ -36,6 +36,8 @@ import { Rnd } from "react-rnd";
 import styled from "styled-components";
 import { useTheme } from "../context/Theme";
 import { toJpeg } from "html-to-image";
+import { toBlob } from "html-to-image";
+
 import { v4 as uuidv4 } from "uuid";
 
 import axios from "axios";
@@ -114,26 +116,7 @@ export default function CanvasVibeEditor() {
   const [error, setError] = useState("");
   const [showPostPage, setShowPostPage] = useState(false);
   const [canvasBackground, setCanvasBackground] = useState("#940d6d");
-  const [debugLogs, setDebugLogs] = useState([]);
 
-  const log = (...args) => {
-    console.log(...args);
-
-    setDebugLogs((prev) => [
-      ...prev,
-      ...args.map((arg) => {
-        if (typeof arg === "object" && arg !== null) {
-          try {
-            return JSON.stringify(arg, null, 2);
-          } catch {
-            return String(arg);
-          }
-        }
-
-        return String(arg);
-      }),
-    ]);
-  };
   const [layers, setLayers] = useState(initialLayers);
 
   /*
@@ -337,94 +320,155 @@ export default function CanvasVibeEditor() {
     }
   };
 
-  /* --------------------------------------------------
-   EXPORT CANVAS
--------------------------------------------------- */
+  // --------------------------------------------------
+  // DEBUG LOGGER
+  // --------------------------------------------------
+
+  const [debugLogs, setDebugLogs] = useState([]);
+
+  const log = (...args) => {
+    console.log(...args);
+
+    setDebugLogs((prev) => [
+      ...prev,
+      args
+        .map((arg) => {
+          if (typeof arg === "object" && arg !== null) {
+            try {
+              return JSON.stringify(arg, null, 2);
+            } catch {
+              return String(arg);
+            }
+          }
+
+          return String(arg);
+        })
+        .join(" "),
+    ]);
+  };
+
+  // --------------------------------------------------
+  // EXPORT HTML ELEMENT → BLOB
+  // --------------------------------------------------
 
   const exportCanvas = async () => {
-    if (!canvasRef?.current) {
+    const element = canvasRef?.current;
+
+    if (!element) {
       throw new Error("Canvas element not found.");
     }
-    log({ "3...48": "....348" });
 
     try {
-      const dataUrl = await toJpeg(canvasRef.current, {
+      log("Starting image export...");
+
+      const imageBlob = await toBlob(element, {
         pixelRatio: 1,
-        quality: 0.9,
+        cacheBust: true,
+        backgroundColor: "#ffffff",
       });
 
-      log({ "data Url": dataUrl });
-
-      if (!dataUrl) {
-        throw new Error("Canvas export returned empty data.");
+      if (!imageBlob) {
+        throw new Error("html-to-image returned an empty Blob.");
       }
 
-      return dataUrl;
+      if (imageBlob.size === 0) {
+        throw new Error("Generated image Blob is empty.");
+      }
+
+      log("Image exported successfully.");
+      log("Blob size:", imageBlob.size);
+      log("Blob type:", imageBlob.type);
+
+      return imageBlob;
     } catch (err) {
-      log({ "data Url export": dataUrl });
+      console.error("EXPORT ERROR:", err);
+
+      log("EXPORT ERROR:", err?.message || "Canvas export failed.");
+
+      if (err?.stack) {
+        log("EXPORT STACK:", err.stack);
+      }
 
       throw new Error(err?.message || "Canvas export failed.");
     }
   };
 
-  /* --------------------------------------------------
-   UPLOAD CANVAS
--------------------------------------------------- */
+  // --------------------------------------------------
+  // UPLOAD CANVAS
+  // --------------------------------------------------
 
   const uploadCanvas = async () => {
     try {
-      // 1. Export canvas
-      const dataUrl = await exportCanvas();
-      log({ "Dta url 373": dataUrl });
+      // ---------------------------------------------
+      // 1. Export HTML → Blob
+      // ---------------------------------------------
 
-      if (!dataUrl) {
-        throw new Error("Canvas export returned no image.");
-      }
+      const imageBlob = await exportCanvas();
 
+      log("Image Blob created.");
+      log("Blob size:", imageBlob.size);
+
+      // ---------------------------------------------
       // 2. Cloudinary configuration
+      // ---------------------------------------------
+
       const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
       if (!cloudName) {
         throw new Error("VITE_CLOUDINARY_CLOUD_NAME is missing.");
       }
 
-      // 3. Convert Data URL → Blob
-      const imageBlob = await dataUrlToBlob(dataUrl);
+      // ---------------------------------------------
+      // 3. FormData
+      // ---------------------------------------------
 
-      if (!imageBlob || imageBlob.size === 0) {
-        throw new Error("Image Blob is empty.");
-      }
-
-      // 4. FormData
       const formData = new FormData();
 
       formData.append("file", imageBlob, "canvas.jpg");
 
       formData.append("upload_preset", "page_Image");
 
-      // 5. Upload
+      // ---------------------------------------------
+      // 4. Upload to Cloudinary
+      // ---------------------------------------------
+
+      log("Uploading image to Cloudinary...");
+
       const response = await axios.post(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
         formData,
       );
 
-      // 6. Validate response
+      // ---------------------------------------------
+      // 5. Validate response
+      // ---------------------------------------------
+
+      log("Cloudinary response:", response?.data);
+
       const secureUrl = response?.data?.secure_url;
 
       if (!secureUrl) {
         throw new Error("Cloudinary did not return an image URL.");
       }
 
+      log("Cloudinary upload successful.");
+      log("Secure URL:", secureUrl);
+
       return secureUrl;
     } catch (err) {
       console.error("UPLOAD ERROR:", err);
-      log({ "UPLOAD ERROR:": err?.message || "Image upload failed." });
+
+      log("UPLOAD ERROR:", err?.message || "Image upload failed.");
 
       // Axios error
       if (err?.response) {
         console.error("Cloudinary/API status:", err.response.status);
 
         console.error("Cloudinary/API data:", err.response.data);
+
+        log("Cloudinary status:", err.response.status);
+
+        log("Cloudinary response:", err.response.data);
       }
 
       throw new Error(
@@ -436,12 +480,15 @@ export default function CanvasVibeEditor() {
     }
   };
 
-  /* --------------------------------------------------
-   POST
--------------------------------------------------- */
+  // --------------------------------------------------
+  // POST
+  // --------------------------------------------------
 
   const handlePost = async (e) => {
+    // ---------------------------------------------
     // Login check
+    // ---------------------------------------------
+
     if (!admin_user) {
       const confirmLogin = window.confirm(
         "You have to sign up or login to post",
@@ -454,15 +501,23 @@ export default function CanvasVibeEditor() {
       return;
     }
 
+    // ---------------------------------------------
     // Description validation
+    // ---------------------------------------------
+
     if (!description?.trim()) {
       setError("Please write something about your post.");
+
       return;
     }
 
+    // ---------------------------------------------
     // Layer validation
+    // ---------------------------------------------
+
     if (!layers?.length || !layers.some((layer) => layer.text?.trim())) {
       setError("Please add/write something in the editor.");
+
       return;
     }
 
@@ -471,15 +526,24 @@ export default function CanvasVibeEditor() {
       setPostLoading(true);
       setActiveLayerId(null);
 
-      // Upload image
+      // -------------------------------------------
+      // 1. Upload image
+      // -------------------------------------------
+
+      log("Starting post upload...");
+
       const ready_url = await uploadCanvas();
-      log({ "ready_url ERROR:": ready_url });
+
+      log("ready_url:", ready_url);
 
       if (!ready_url) {
         throw new Error("Failed to upload canvas.");
       }
 
-      // Create post
+      // -------------------------------------------
+      // 2. Create post
+      // -------------------------------------------
+
       const response = await axios.post(
         `${API}/api/sentence/post`,
         {
@@ -496,9 +560,16 @@ export default function CanvasVibeEditor() {
         },
       );
 
-      log({ "response ERROR:": response });
+      // -------------------------------------------
+      // 3. Response
+      // -------------------------------------------
 
-      // Success
+      log("Post response:", response?.data);
+
+      // -------------------------------------------
+      // 4. Success
+      // -------------------------------------------
+
       setUploadClicked?.(false);
       setopenSlidWin?.(false);
       setActiveIndex?.(null);
@@ -509,7 +580,16 @@ export default function CanvasVibeEditor() {
     } catch (err) {
       console.error("POST ERROR:", err);
 
-      log({ "err ERROR:": response });
+      // IMPORTANT:
+      // response doesn't exist here.
+      // Use err instead.
+      log("POST ERROR:", err?.message || "Failed to post.");
+
+      if (err?.response) {
+        log("POST STATUS:", err.response.status);
+
+        log("POST RESPONSE:", err.response.data);
+      }
 
       const message =
         err?.response?.data?.error?.message ||
@@ -518,6 +598,7 @@ export default function CanvasVibeEditor() {
         "Failed to post.";
 
       setError(message);
+
       alert(message);
     } finally {
       setPostLoading(false);
