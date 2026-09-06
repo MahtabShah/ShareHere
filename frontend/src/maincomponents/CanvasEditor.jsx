@@ -350,7 +350,13 @@ export default function CanvasVibeEditor() {
   };
 
   function base64ToBlob(base64, contentType = "image/png") {
-    const byteCharacters = atob(base64.split(",")[1]); // Remove data:image/png;base64, part
+    // Handle both full data URLs and raw base64 strings
+    let base64Data = base64;
+    if (base64.includes(",")) {
+      base64Data = base64.split(",")[1];
+    }
+
+    const byteCharacters = atob(base64Data);
     const byteArrays = [];
 
     for (let i = 0; i < byteCharacters.length; i += 512) {
@@ -365,79 +371,89 @@ export default function CanvasVibeEditor() {
 
     return new Blob(byteArrays, { type: contentType });
   }
+
+  // Fix 2: Update exportAsImage to return a Blob instead of dataURL
   const exportAsImage = async () => {
-    if (!canvasRef.current) {
-      throw new Error("Canvas element not found.");
-    }
+    if (!canvasRef.current) return;
 
     try {
-      const blob = await toBlob(canvasRef.current, {
+      const dataUrl = await toPng(canvasRef.current, {
         backgroundColor: canvasBackground,
-        pixelRatio: 2,
-        cacheBust: true,
+        pixelRatio: 2, // Higher quality
       });
 
-      if (!blob) {
-        throw new Error("Failed to generate image Blob.");
-      }
+      // Convert data URL to Blob
+      const blob = base64ToBlob(dataUrl, "image/png");
 
-      if (blob.size === 0) {
-        throw new Error("Generated image Blob is empty.");
-      }
+      // Create a File object for better compatibility with FormData
+      const file = new File([blob], `canvas_${Date.now()}.png`, {
+        type: "image/png",
+      });
 
-      console.log("Image Blob:", blob);
-      console.log("Blob size:", blob.size);
-      console.log("Blob type:", blob.type);
-
-      return blob;
+      console.log("Blob created successfully");
+      return file; // Return File object instead of dataUrl
     } catch (error) {
       console.error("Error exporting image:", error);
-      throw error;
+      throw error; // Re-throw to handle in handleCapture
     }
   };
 
+  // Fix 3: Update handleCapture to use File object
   const handleCapture = async () => {
     try {
-      // HTML → PNG Blob
-      const imageBlob = await exportAsImage();
+      const file = await exportAsImage();
 
-      if (!imageBlob) {
-        throw new Error("Image Blob is missing.");
+      if (!file) {
+        throw new Error("Failed to export image");
       }
 
-      // FormData
       const formData = new FormData();
-
-      formData.append("file", imageBlob, "canvas.png");
-
+      formData.append("file", file); // Now appending a File object
       formData.append("upload_preset", "page_Image");
+      formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
 
-      // Upload
       const res = await axios.post(
         `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
         formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
 
-      const secureUrl = res?.data?.secure_url;
-
-      if (!secureUrl) {
-        throw new Error("Cloudinary did not return secure_url.");
-      }
-
-      console.log("Uploaded URL:", secureUrl);
-
-      return secureUrl;
+      console.log("Uploaded URL:", res.data.secure_url);
+      return res.data.secure_url;
     } catch (error) {
-      console.error("Cloudinary upload error:", error);
-
-      console.error("Cloudinary response:", error?.response?.data);
-
+      console.error("Upload error:", error);
       throw new Error(
-        error?.response?.data?.error?.message ||
-          error?.message ||
-          "Image upload failed.",
+        error?.response?.data?.error?.message || "Failed to upload image",
       );
     }
+  };
+
+  // Alternative fix: If you prefer to keep dataURL approach, use this version
+  const handleCaptureAlternative = async () => {
+    const dataURL = await exportAsImage(); // This returns dataURL
+
+    // Convert dataURL to Blob and then to File
+    const blob = base64ToBlob(dataURL, "image/png");
+    const file = new File([blob], `canvas_${Date.now()}.png`, {
+      type: "image/png",
+    });
+
+    const formData = new FormData();
+    formData.append("file", file); // Use File object
+    formData.append("upload_preset", "page_Image");
+    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
+
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      formData,
+    );
+
+    console.log("Uploaded URL:", res.data.secure_url);
+    return res.data.secure_url;
   };
 
   const handlePost = async (e) => {
@@ -593,27 +609,32 @@ export default function CanvasVibeEditor() {
         postLoading={postLoading}
       />
 
-      <CanvasArea>
-        <Canvas
-          ref={canvasRef}
-          width={"100%"}
-          style={{
-            backgroundImage: `url(${photoUrl})`,
-            background: photoUrl ?? canvasBackground,
-            backgroundSize: "contain",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}>
-          {layers.map((layer) => (
-            <TextLayer
-              key={layer.id}
-              layer={layer}
-              isActive={layer.id === activeLayerId}
-              onSelect={selectLayer}
-              onUpdateState={updateLayerState}
-            />
-          ))}
-        </Canvas>
+      <CanvasArea className="border">
+        <div
+          className="border h-100  w-100"
+          style={{ placeItems: "center" }}
+          ref={canvasRef}>
+          <Canvas
+            width={"100%"}
+            className="border"
+            style={{
+              backgroundImage: `url(${photoUrl})`,
+              background: photoUrl ?? canvasBackground,
+              backgroundSize: "contain",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}>
+            {layers.map((layer) => (
+              <TextLayer
+                key={layer.id}
+                layer={layer}
+                isActive={layer.id === activeLayerId}
+                onSelect={selectLayer}
+                onUpdateState={updateLayerState}
+              />
+            ))}
+          </Canvas>
+        </div>
       </CanvasArea>
 
       <BottomPanel
