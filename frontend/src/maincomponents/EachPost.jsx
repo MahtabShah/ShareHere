@@ -131,7 +131,10 @@ export const EachPost = ({ user, comment }) => {
   return (
     <div
       ref={seenRef}
-      style={{ borderBottom: `1px solid ${borderColor}`, maxWidth: "500px" }}>
+      style={{
+        borderBottom: `1px solid ${borderColor}`,
+        maxWidth: "480px",
+      }}>
       <div
         className="d-flex flex-column gap-2 position-relative bglight"
         key={comment?._id}

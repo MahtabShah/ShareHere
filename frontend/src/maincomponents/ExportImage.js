@@ -207,11 +207,13 @@ export const getImageUrl = async (elementRef, options = {}) => {
     throw new Error("Element reference is invalid");
   }
 
+  const d = elementRef.current.getBoundingClientRect();
+
   return await exportAndUpload(elementRef.current, {
     backgroundColor,
-    scale: 4,
-    width: 300,
-    height: 300,
+    scale: 2,
+    width: d.width || 300,
+    height: d.height || 300,
     onProgress,
     retries,
   });

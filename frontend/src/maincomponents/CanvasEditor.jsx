@@ -15,7 +15,6 @@ import {
 } from "react-icons/fa";
 
 import { AiOutlineDelete } from "react-icons/ai";
-
 import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { RiImageAddFill } from "react-icons/ri";
 import { TbPhotoCancel } from "react-icons/tb";
@@ -33,6 +32,7 @@ import { RiInputField } from "react-icons/ri";
 import { RiFocusMode } from "react-icons/ri";
 
 import { Rnd } from "react-rnd";
+import { toPng } from "html-to-image";
 import styled from "styled-components";
 import { useTheme } from "../context/Theme";
 import { getImageUrl } from "./ExportImage";
@@ -82,7 +82,7 @@ const initialLayers = [
       fontSize: 16,
       color: "#ffffff",
       backgroundColor: "transparent",
-      textAlign: "left",
+      textAlign: "center",
     },
 
     state: {
@@ -354,13 +354,15 @@ export default function CanvasVibeEditor() {
       // 1. Upload image with retry logic
       // -------------------------------------------
 
-      const ready_url = await getImageUrl(canvasRef, {
-        background: canvasBackground,
-        onProgress: (percent) => {
-          setProgress(percent);
-        },
-        retries: 3,
-      });
+      // const ready_url = await getImageUrl(canvasRef, {
+      //   background: canvasBackground,
+
+      //   onProgress: (percent) => {
+      //     setProgress(percent);
+      //   },
+      // });
+
+      const ready_url = await handleCapture();
 
       if (!ready_url) {
         throw new Error("Failed to upload image after multiple attempts");
@@ -413,6 +415,63 @@ export default function CanvasVibeEditor() {
       setPostLoading(false);
       console.log("🏁 Post process completed");
     }
+  };
+
+  function base64ToBlob(base64, contentType = "image/png") {
+    const byteCharacters = atob(base64.split(",")[1]); // Remove data:image/png;base64, part
+    const byteArrays = [];
+
+    for (let i = 0; i < byteCharacters.length; i += 512) {
+      const slice = byteCharacters.slice(i, i + 512);
+      const byteNumbers = new Array(slice.length);
+      for (let j = 0; j < slice.length; j++) {
+        byteNumbers[j] = slice.charCodeAt(j);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, { type: contentType });
+  }
+
+  const exportAsImage = async () => {
+    if (!canvasRef.current) return;
+
+    try {
+      const dataUrl = await toPng(canvasRef.current, {
+        backgroundColor: canvasBackground,
+        pixelRatio: 2, // Higher quality
+      });
+
+      const blob = base64ToBlob(dataUrl, "image/png");
+      const blobUrl = URL.createObjectURL(blob);
+
+      console.log("blob ", `blob:${blobUrl}`);
+      return dataUrl;
+    } catch (error) {
+      console.error("Error exporting image:", error);
+    }
+  };
+
+  // -----------------------------------posting-----------------------------
+  const [text, setText] = useState("");
+  const [LazyLoading, setLazyLoading] = useState(false);
+
+  const handleCapture = async () => {
+    const dataURL = await exportAsImage();
+
+    const formData = new FormData();
+    formData.append("file", dataURL);
+    formData.append("upload_preset", "page_Image");
+    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
+
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      formData,
+    );
+
+    console.log("Uploaded URL:", res.data.secure_url);
+    return res?.data?.secure_url;
   };
 
   // --------------------------------------------------
@@ -1816,7 +1875,7 @@ const Canvas = styled.div`
   width: ${(props) => props.width};
   max-width: 300px;
 
-  aspect-ratio: 5/6;
+  aspect-ratio: 1;
 
   box-sizing: border-box;
 
