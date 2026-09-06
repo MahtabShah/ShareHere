@@ -1,5 +1,3 @@
-// ----------------------------------Done------------------------------------
-
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { MdSend } from "react-icons/md";
@@ -7,9 +5,9 @@ import { Loading } from "../../TinyComponent/LazyLoading";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa"; // from Font Awesome
 import { BiShare, BiChat, BiHeart, BiFontFamily } from "react-icons/bi";
+import { FaRegComment } from "react-icons/fa";
 import Nav from "react-bootstrap/Nav";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import { CommentSection } from "./Home";
 import ReportPost from "../../TinyComponent/Report";
 import { useQuote } from "../context/QueotrContext";
@@ -34,17 +32,17 @@ function formatNumber(num) {
   return num.toString();
 }
 
-export const EachPost = ({ user, comment }) => {
+export const EachPost = ({ user, each_post }) => {
   const [open_comment, setopen_comment] = useState(false);
   const [new_comment, setnew_comment] = useState("");
   const [LazyLoading, setLazyLoading] = useState(false);
   const [isdotClicked, setdotClicked] = useState(false);
-  const [comments, setComments] = useState(comment?.comments || []); // store comments here
+  const [comments, setComments] = useState(each_post?.comments || []); // store comments here
   const nevigate = useNavigate();
-  const [mode, setMode] = useState(comment?.mode);
+  const [mode, setMode] = useState(each_post?.mode);
 
   const { admin_user, token, HandleShare, mobile_break_point } = useQuote();
-  const postId = comment?._id;
+  const postId = each_post?._id;
 
   const Handlecomment = (e) => setnew_comment(e.target.value);
 
@@ -66,10 +64,10 @@ export const EachPost = ({ user, comment }) => {
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      setComments(res?.data?.comments); // append new comment instantly
+      setComments(res?.data?.comments); // append new each_post instantly
       setnew_comment("");
     } catch (err) {
-      alert("comment failed: " + err.response?.data?.message || err.message);
+      alert("each_post failed: " + err.response?.data?.message || err.message);
     }
     setLazyLoading(false);
   };
@@ -78,13 +76,12 @@ export const EachPost = ({ user, comment }) => {
     if (user && user?.followers && admin_user) {
       const isFollower = user?.followers?.includes(admin_user?._id);
       setMode(
-        isFollower || admin_user?._id == user?._id ? "Public" : comment?.mode,
+        isFollower || admin_user?._id == user?._id ? "Public" : each_post?.mode,
       );
     }
   }, [admin_user?.followers]);
 
-  const { textPrimary, textSecondary, textMuted, bgCard, bgPage, borderColor } =
-    useTheme();
+  const { textSecondary, textMuted, bgCard, bgPage, borderColor } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
   const [height, setHeight] = useState("4.5");
@@ -102,10 +99,10 @@ export const EachPost = ({ user, comment }) => {
   useEffect(() => {
     const el = contentRef.current;
     if (el) {
-      const isTruncated = comment.text.split("\n").length > 3;
+      const isTruncated = each_post?.text.split("\n").length > 3;
       setShouldTruncate(isTruncated);
     }
-  }, [comment.text]);
+  }, [each_post?.text]);
 
   const seenRef = useRef(null);
   useEffect(() => {
@@ -126,224 +123,204 @@ export const EachPost = ({ user, comment }) => {
 
   useEffect(() => {
     CommentFn(postId);
+    console.log(each_post);
   }, [postId]);
+
+  const [report, setReport] = useState(false);
 
   return (
     <div
+      className="w-100 d-flex flex-column gap-3 p-3"
       ref={seenRef}
       style={{
-        borderBottom: `1px solid ${borderColor}`,
-        maxWidth: "480px",
+        maxWidth: "520px",
+        placeSelf: "center",
+        background: bgCard,
+        position: "relative",
       }}>
-      <div
-        className="d-flex flex-column gap-2 position-relative bglight"
-        key={comment?._id}
-        style={{ background: bgCard }}>
-        {/* user header */}
-        <div className="d-flex gap-2 px-2 align-items-center pt-2 justify-content-between flex-grow-1">
-          <div className="d-flex flex-grow-1">
-            <UserRing user={user} />
-          </div>
+      <PostHeader user={user} admin_user={admin_user} each_post={each_post} />
+
+      <div className="d-flex borde r flex-column gap-2">
+        <div
+          className="overflow-hidden rounded-2"
+          style={{
+            maxWidth: "440px",
+            alignSelf: "center",
+          }}>
+          {mode == "Public" && (
+            <img
+              loading="lazy"
+              className="w-100 h-100"
+              style={{ objectFit: "cover" }}
+              src={each_post?.images[0] || ""}
+            />
+          )}
+
+          {mode == "Follower" && (
+            <div
+              className={`d-flex align-items-center flex-column h-100`}
+              style={{ background: textMuted }}>
+              <div style={{ width: "180px" }}>
+                <img
+                  src={follow_us}
+                  alt=""
+                  className={`h-100 w-100`}
+                  style={{ objectFit: "cover", opacity: "0.4" }}
+                />
+              </div>
+              <p className="p-2 px-3 fs-5">
+                This is for <b>Followers only</b>. Follow{" "}
+                <b>@{user?.username}</b> to access this post.
+              </p>
+            </div>
+          )}
 
           <div
-            className="d-flex flex-column justify-content-start align-items-end"
-            style={{ minWidth: "max-content" }}>
-            {user?._id !== admin_user?._id && (
-              <FollowBtn
-                id={user?._id}
-                cls={`rounded-0 pe-0 fw-medium text-primary border-0`}
+            className="pb- 2"
+            style={{
+              color: textSecondary,
+            }}>
+            {each_post && (
+              <div
+                className="pt-3 d-flex b order position-relative"
                 style={{
-                  fontSize: "13px",
-                  cursor: "pointer",
-                  background: "transparent",
-                  fontFamily: "monospace",
-                }}
-              />
-            )}
-
-            {user?._id === admin_user?._id && (
-              <div className="small">
-                <StatusBtn post={comment} />
-              </div>
-            )}
-
-            <div
-              className="d-flex gap-2"
-              style={{ fontSize: "13px", color: textSecondary }}>
-              <small>{user?.followers?.length} followers</small>
-              <small style={{ color: textSecondary }}>
-                {dayjs(comment?.createdAt).fromNow()}
-              </small>
-            </div>
-          </div>
-        </div>
-
-        {/* post image */}
-        <div>
-          <ul style={{ listStyle: "none" }} className="p-0 m-0">
-            <div
-              className={`d-flex align-items-center ${
-                mobile_break_point ? "" : "px-2"
-              }`}
-              style={{ overflow: "hidden" }}>
-              <div className="p-0 w-100 position-relative">
-                <div className="bg-image d-flex align-items-center flex-column">
-                  {mode == "Public" && (
-                    <img
-                      src={`${comment?.images[0]}`}
-                      loading="lazy"
-                      className={`w-100 h-100 rounded-${
-                        mobile_break_point ? "0" : "1"
-                      }`}
-                      style={{ objectFit: "cover" }}
-                    />
-                  )}
-
-                  {mode == "Follower" && (
-                    <div
-                      className={`d-flex align-items-center flex-column h-100  rounded-${
-                        mobile_break_point ? "0" : "1"
-                      }`}
-                      style={{ background: textMuted }}>
-                      <div style={{ width: "180px" }}>
-                        <img
-                          src={follow_us}
-                          alt=""
-                          className={`h-100 w-100`}
-                          style={{ objectFit: "cover", opacity: "0.4" }}
-                        />
-                      </div>
-                      <p className="p-2 px-3 fs-5">
-                        This is for <b>Followers only</b>. Follow{" "}
-                        <b>@{user?.username}</b> to access this.
-                      </p>
-                    </div>
-                  )}
+                  overflow: "hidden",
+                  transition: "height 0.3s ease",
+                }}>
+                <div ref={contentRef} className="flex-gr ow-1 text-ce nter">
+                  {each_post?.text.split("\n").map((line, index) => (
+                    <React.Fragment key={index}>
+                      {1 < index && (index <= 2 ? <br /> : expanded && <br />)}
+                      {index <= 2 ? <>{line}</> : expanded && <>{line}</>}
+                    </React.Fragment>
+                  ))}
                 </div>
-              </div>
-            </div>
 
-            {/* post text */}
-            <li
-              className={`w-100 flex-grow-1 d-flex rounded-3 mt-2`}
-              style={{ color: textSecondary }}>
-              {comment && (
-                <div
-                  key={comment.text}
-                  className="w-100 px-2"
-                  style={{
-                    overflow: "hidden",
-                    transition: "height 0.3s ease",
-                    // border: "2px solid red",
-                  }}>
-                  <span ref={contentRef}>
-                    {comment.text.split("\n").map((line, index) => (
-                      <React.Fragment key={index}>
-                        {1 < index &&
-                          (index <= 2 ? <br /> : expanded && <br />)}
-                        {index <= 2 ? <>{line}</> : expanded && <>{line}</>}
-                      </React.Fragment>
-                    ))}
+                {shouldTruncate && (
+                  <span
+                    onClick={() => setExpanded(!expanded)}
+                    aria-expanded={expanded}
+                    className="fw-semibold position- px-1 pt-1 rounded"
+                    style={{
+                      color: "var(--accent-color)",
+                      cursor: "pointer",
+                      placeSelf: "end",
+                      right: 0,
+                      minWidth: "max-content",
+                    }}>
+                    {expanded ? ". . . less" : ". . . more"}
                   </span>
+                )}
+              </div>
+            )}
+          </div>
 
-                  {shouldTruncate && (
-                    <span
-                      onClick={() => setExpanded(!expanded)}
-                      aria-expanded={expanded}
-                      className="border-0 fw-semibold "
-                      style={{
-                        background: "none",
-                        color: "hsla(234, 89%, 43%, 1.00)",
-                        cursor: "pointer",
-                        fontSize: "inherit",
-                        minWidth: "10px",
-                      }}>
-                      {expanded ? ". . . less" : " . . . more"}
-                    </span>
-                  )}
-                </div>
-              )}
-            </li>
-          </ul>
-        </div>
-
-        {/* like / comment / share */}
-        <div className="d-flex flex-column px-2 pb-2">
           <div
-            className={`d-flex pt-1 gap-1 justify-content-between like-comment-share`}
-            style={{ color: textSecondary }}>
+            className={`d-flex gap-1 py-2 justify-content-between like-comment-share`}
+            style={{
+              color: textSecondary,
+            }}>
             <div
-              className="d-flex gap-4 px-2 p-1 rounded-4"
-              style={{ background: bgPage, minWidth: "max-content" }}>
-              <LikeBtn post={comment} size={22} />
+              className="d-flex gap-4 rounded-5"
+              style={{ minWidth: "max-content" }}>
+              <LikeBtn post={each_post} size={25} />
               <span
                 className="fw-semibold d-flex align-items-center gap-1"
                 onClick={() => setopen_comment(!open_comment)}>
                 <span
                   style={{
-                    marginTop: "0rem",
-                    color: open_comment ? "#a0a" : "",
+                    marginBottom: "1px",
+                    color: open_comment ? "var(--accent-color)" : "",
                   }}>
-                  <BiChat size={21} color={open_comment ? "#a0a" : ""} />{" "}
-                  <small>{comments.length}&nbsp;</small>
+                  <FaRegComment
+                    size={22}
+                    color={open_comment ? "var(--accent-color)" : ""}
+                  />{" "}
+                  {comments.length > 0 && (
+                    <small>{comments.length}&nbsp;</small>
+                  )}
                 </span>
               </span>
               <span
                 className="fw-semibold"
-                onClick={() => HandleShare(comment?._id)}
-                style={{ marginTop: "-1px" }}>
-                <BiShare size={21} />
+                onClick={() => HandleShare(each_post?._id)}
+                style={{ marginTop: "1px" }}>
+                <BiShare size={25} />
               </span>
             </div>
 
-            <div className="d-flex gap-1 align-items-center">
-              <span
-                className="me-2"
-                style={{ color: textSecondary, fontSize: "12px" }}>
-                {formatNumber(comment?.views || 1)} views
-              </span>
+            <div className="d-flex position-relative gap-1 align-items-center">
+              {/* <span
+            className="me-2"
+            style={{ color: textSecondary, fontSize: "12px" }}>
+            {formatNumber(each_post?.views || 1)} views
+          </span>
+
+          <div
+            className="small px-2 rounded-4"
+            style={{
+              fontSize: "12px",
+              background: bgPage,
+              border: `1px solid ${borderColor}`,
+            }}>
+            <small className="p-2">
+              {each_post?.category &&
+                each_post.category.charAt(0).toUpperCase() +
+                  each_post.category.slice(1)}
+            </small>
+          </div> */}
 
               <div
-                className="small rounded-1"
+                className="d-flex position-relative"
+                onClick={() => {
+                  setdotClicked(!isdotClicked);
+                  if (report) setReport(false);
+                }}
                 style={{
-                  fontSize: "12px",
-                  background: bgPage,
-                  border: `1px solid ${borderColor}`,
-                }}>
-                <small className="p-2">
-                  {comment?.category &&
-                    comment.category.charAt(0).toUpperCase() +
-                      comment.category.slice(1)}
-                </small>
-              </div>
-
-              <div
-                className="d-flex"
-                onClick={() => setdotClicked(!isdotClicked)}
-                style={{
-                  rotate: isdotClicked ? "-45deg" : "",
+                  rotate: isdotClicked ? "360deg" : "",
+                  transitionDuration: "0.3s",
                   translate: mobile_break_point ? "4px" : "7px",
                 }}>
-                <BsThreeDotsVertical size={18} />
+                <BsThreeDotsVertical size={20} />
               </div>
+
+              {isdotClicked && (
+                <div
+                  className={`small fw-medium w-100 rounded-2 d-flex flex-column p-3 gap-3`}
+                  style={{
+                    color: textSecondary,
+                    position: "absolute",
+                    bottom: "0",
+                    right: "20px",
+                    minWidth: "200px",
+                    background: bgPage,
+                    border: "1px solid var(--border-color)",
+                  }}>
+                  <SlipDotinPost
+                    user={user}
+                    post={each_post}
+                    report={report}
+                    setReport={setReport}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {isdotClicked && (
-        <div
-          className={`small fw-medium d-flex flex-wrap gap-3 py-2 px-2`}
-          style={{ color: textSecondary, background: bgCard }}>
-          <SlipDotinPost user={user} post={comment} />
-        </div>
-      )}
+      {report && <ReportPost postId={each_post?._id} />}
 
-      {/* comment box */}
-      <section style={{ background: bgCard, color: textSecondary }}>
+      {/* each_post box */}
+      <section
+        className="pt-3"
+        style={{
+          color: textSecondary,
+          borderTop: `1px solid var(--border-color)`,
+        }}>
         {(admin_user?._id != user?._id || open_comment) && (
-          <div className="gap-1 pt-2 d-flex flex-column position-relative">
-            <div className="d-flex gap-1 pb-2  px-2">
+          <div className="d-flex flex-column position-relative mb-3">
+            <div className="d-flex gap-1">
               <div
                 className="d-flex align-items-center justify-content-center rounded-crcle text-white me-2 overflow-hidden"
                 style={{
@@ -374,7 +351,7 @@ export const EachPost = ({ user, comment }) => {
                 value={new_comment}
                 style={{
                   marginTop: "0.1rem",
-                  background: bgCard,
+                  background: "none",
                   color: textSecondary,
                 }}
               />
@@ -382,7 +359,7 @@ export const EachPost = ({ user, comment }) => {
               <div className="d-flex gap-3" style={{ alignSelf: "end" }}>
                 <button
                   className="btn border-0 p-1 ps-3 pe-0 rounded-0"
-                  onClick={(e) => SubmitComment(e, comment?._id)}>
+                  onClick={(e) => SubmitComment(e, each_post?._id)}>
                   {LazyLoading ? (
                     <Loading clr={"red"} />
                   ) : (
@@ -416,7 +393,7 @@ export const UserRing = ({
   dm = 44,
 }) => {
   const nevigate = useNavigate();
-  const { textPrimary, textMuted, textSecondary } = useTheme();
+  const { textPrimary, textSecondary } = useTheme();
   const { setopenSlidWin } = useQuote();
 
   const displayName = user?.username || user?.name || "user";
@@ -434,7 +411,7 @@ export const UserRing = ({
 
   return (
     <>
-      <div className="d-flex gap-2 flex-grow-1 align-items-center">
+      <div className="d-flex gap-2  flex-grow-1 align-items-center">
         <div
           className="d-flex align-items-center justify-content-center rounded-circle overflow-hidden vibe-ring border flex-shrink-0"
           style={{
@@ -503,6 +480,30 @@ export const UserRing = ({
   );
 };
 
+const PostHeader = ({ user, admin_user, each_post }) => {
+  return (
+    <div className="d-flex align-items-center justify-content-between p-1">
+      <div className="flex-grow-1">
+        <UserRing user={user} />
+      </div>
+
+      <div className="text-end" style={{ minWidth: "max-content" }}>
+        {user?._id !== admin_user?._id && <FollowBtn id={user?._id} />}
+        {user?._id === admin_user?._id && <StatusBtn post={each_post} />}
+
+        <div
+          className="d-flex gap-2"
+          style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+          <small>{user?.followers?.length} followers</small>
+          <small style={{ color: "var(--text-secondary)" }}>
+            {dayjs(each_post?.createdAt).fromNow()}
+          </small>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /**
  * NOTE: Always ensure that when you use FollowBtn, you pass the latest user object
  * (with up-to-date followers array) as a prop, and update it in the parent component
@@ -510,7 +511,7 @@ export const UserRing = ({
  * we can also fetch letest user by its id in follow btn, ok next time In Sha Allah
  */
 
-export const FollowBtn = ({ id, cls, style = {} }) => {
+export const FollowBtn = ({ id, cls = "text-primary", style = {} }) => {
   const { admin_user, token } = useQuote();
   const { fetch_user_by_Id } = usePost();
   const [user, setUser] = useState(null);
@@ -553,9 +554,9 @@ export const FollowBtn = ({ id, cls, style = {} }) => {
     <>
       {user && (
         <div
-          className={`${cls}`}
+          className={`${cls} fw-medium`}
           onClick={handleClick}
-          style={{ ...style, minWidth: "max-content" }}
+          style={{ ...style, minWidth: "max-content", cursor: "pointer" }}
           aria-readonly={true}>
           {isFollower ? "Unfollow" : "Follow"}
         </div>
@@ -564,10 +565,8 @@ export const FollowBtn = ({ id, cls, style = {} }) => {
   );
 };
 
-export const SlipDotinPost = ({ user, post }) => {
-  const [report, setReport] = useState(false);
+export const SlipDotinPost = ({ user, post, report, setReport }) => {
   const { admin_user, token } = useQuote();
-  const { textSecondary } = useTheme();
 
   const HandleDelete = async () => {
     const condition = window.confirm("want to delete the post");
@@ -596,7 +595,7 @@ export const SlipDotinPost = ({ user, post }) => {
 
         <>
           <Nav.Link href={`/post/edit/${post._id}`}>Edit Post</Nav.Link>
-          <Nav.Link onClick={HandleDelete} className=" pe-2 ps-2 text-danger">
+          <Nav.Link onClick={HandleDelete} className="text-danger">
             Delete
           </Nav.Link>
         </>
@@ -609,18 +608,8 @@ export const SlipDotinPost = ({ user, post }) => {
         onClick={() => {
           setReport(!report);
         }}>
-        {/* <span
-          className="d-inline-flex bg-danger text-light justify-content-center"
-          style={{
-            minWidth: "20px",
-            clipPath: "polygon(0 100%, 50% 0 , 100% 100%)",
-          }}
-        >
-          !
-        </span>{" "} */}
         Report
       </Nav.Link>
-      {report && <ReportPost postId={post?._id} />}
     </>
   );
 };
@@ -692,10 +681,11 @@ export const LikeBtn = ({ post, size = 18 }) => {
           {isliked ? <FaHeart size={size} /> : <BiHeart size={size} />}
         </span>
 
-        <small className="" style={{ marginTop: "1px" }}>
-          {" "}
-          {Post?.likes?.length || 0}&nbsp;
-        </small>
+        {Post?.likes?.length > 0 && (
+          <small className="" style={{ marginTop: "1px" }}>
+            {Post?.likes?.length}&nbsp;
+          </small>
+        )}
       </span>
     </>
   );
@@ -737,7 +727,7 @@ export const StatusBtn = ({ post }) => {
         className="small d-inline-flex fw-semibold text-danger"
         style={{ alignSelf: "end", cursor: "pointer", minWidth: "max-content" }}
         onClick={HandleStatus}>
-        Set status
+        Add Story
       </span>
     </>
   );

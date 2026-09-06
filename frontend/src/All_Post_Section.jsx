@@ -94,31 +94,29 @@ function All_Post_Section({ category, loading }) {
       </div>
     </>
   ) : (
-    visible_post.map(
-      ({ post, user }, idx) =>
-        user &&
-        post && (
-          <div
-            key={`comment-${idx}`}
-            id={post?._id}
-            className="d-flex flex-column p-1"
-            style={{ margin: "auto" }}>
-            {rn && rn + 4 > idx && idx > rn + 2 ? (
-              <GalleryPost category={category} />
-            ) : (
-              <EachPost user={user} comment={post} />
-            )}
+    <div className="d-flex gap-5 pb-4 bor der flex-column p-2">
+      {visible_post.map(
+        ({ post, user }, idx) =>
+          user &&
+          post && (
+            <div key={idx} id={post?._id}>
+              {idx == 4 + Math.floor(Math.random() * 4) ? (
+                <GalleryPost category={category} />
+              ) : (
+                <EachPost user={user} each_post={post} />
+              )}
 
-            {/* {rn && rn + 1 > idx && idx > rn - 1 && (
+              {/* {rn && rn + 1 > idx && idx > rn - 1 && (
               <div
                 className="mt-4 mb-3 p-1 rounded-3 d-flex gap-4 none-scroller overflow-x-auto "
                 style={{ maxWidth: "100%" }}>
                 <SuggetionSlipInPost />
               </div>
             )} */}
-          </div>
-        ),
-    )
+            </div>
+          ),
+      )}
+    </div>
   );
 }
 

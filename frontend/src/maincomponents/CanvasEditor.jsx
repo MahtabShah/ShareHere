@@ -44,7 +44,6 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { MdLockOpen, MdLockOutline } from "react-icons/md";
 import { RiImageAddFill } from "react-icons/ri";
 import { TbPhotoCancel } from "react-icons/tb";
-
 import { FaTextHeight } from "react-icons/fa";
 import { RxFontFamily } from "react-icons/rx";
 import { IoColorFill } from "react-icons/io5";
@@ -52,20 +51,17 @@ import { AiTwotoneEdit } from "react-icons/ai";
 import { LuArrowRightLeft } from "react-icons/lu";
 import { BsArrowsMove } from "react-icons/bs";
 import { RxDimensions } from "react-icons/rx";
-import { PiRectangleDashedBold, PiX } from "react-icons/pi";
 import { LuArrowUpDown } from "react-icons/lu";
 import { RiInputField } from "react-icons/ri";
 import { RiFocusMode } from "react-icons/ri";
 
 import { Rnd } from "react-rnd";
 import { toPng } from "html-to-image";
-import styled from "styled-components";
 import { useTheme } from "../context/Theme";
 import { getImageUrl } from "./ExportImage";
 
-import { v4 as uuidv4 } from "uuid";
-
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import { useQuote } from "../context/QueotrContext";
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -122,7 +118,6 @@ const initialLayers = [
 
 export default function CanvasVibeEditor() {
   const { colors } = useTheme();
-
   const textareaRef = useRef(null);
   const canvasRef = useRef(null);
   const navigate = useNavigate();
@@ -143,37 +138,15 @@ export default function CanvasVibeEditor() {
   const [error, setError] = useState("");
   const [showPostPage, setShowPostPage] = useState(false);
   const [canvasBackground, setCanvasBackground] = useState("#940d6d");
-
   const [layers, setLayers] = useState(initialLayers);
-
-  /*
-   * IMPORTANT:
-   * Only keep activeLayerId.
-   * Do NOT keep activeLayer separately in state.
-   */
   const [activeLayerId, setActiveLayerId] = useState(null);
-
-  /*
-   * Always derive activeLayer from latest layers.
-   *
-   * This is the main fix for the "one step behind" problem.
-   */
   const activeLayer =
     layers.find((layer) => layer.id === activeLayerId) ?? null;
 
-  /* --------------------------------------------------
-     SELECT LAYER
-  -------------------------------------------------- */
-
   const selectLayer = (layer) => {
     if (!layer) return;
-
     setActiveLayerId(layer.id);
   };
-
-  /* --------------------------------------------------
-     UPDATE LAYER
-  -------------------------------------------------- */
 
   const updateLayer = (id, changes) => {
     setLayers((prev) =>
@@ -187,10 +160,6 @@ export default function CanvasVibeEditor() {
       ),
     );
   };
-
-  /* --------------------------------------------------
-     UPDATE LAYER STATE
-  -------------------------------------------------- */
 
   const updateLayerState = (id, stateChanges) => {
     setLayers((prev) =>
@@ -207,10 +176,6 @@ export default function CanvasVibeEditor() {
       ),
     );
   };
-
-  /* --------------------------------------------------
-     ADD TEXT LAYER
-  -------------------------------------------------- */
 
   const addTextLayer = () => {
     const id = uuidv4().replace(/-/g, "").slice(0, 8);
@@ -244,10 +209,6 @@ export default function CanvasVibeEditor() {
     setActiveLayerId(id);
   };
 
-  /* --------------------------------------------------
-     LOCK / UNLOCK
-  -------------------------------------------------- */
-
   const toggleLockActiveLayer = () => {
     if (!activeLayerId) return;
 
@@ -263,17 +224,9 @@ export default function CanvasVibeEditor() {
     );
   };
 
-  /* --------------------------------------------------
-     INACTIVE
-  -------------------------------------------------- */
-
   const inactiavteLayer = () => {
     setActiveLayerId(null);
   };
-
-  /* --------------------------------------------------
-     UPDATE ACTIVE LAYER STYLE
-  -------------------------------------------------- */
 
   const updateActiveLayerStyle = (changes) => {
     if (!activeLayerId) return;
@@ -293,10 +246,6 @@ export default function CanvasVibeEditor() {
     );
   };
 
-  /* --------------------------------------------------
-     DELETE ACTIVE LAYER
-  -------------------------------------------------- */
-
   const deleteActiveLayer = () => {
     if (!activeLayerId) return;
 
@@ -304,10 +253,6 @@ export default function CanvasVibeEditor() {
 
     setActiveLayerId(null);
   };
-
-  /* --------------------------------------------------
-     CHANGE TEXT
-  -------------------------------------------------- */
 
   const changeText = (value) => {
     if (!activeLayerId) return;
@@ -331,12 +276,6 @@ export default function CanvasVibeEditor() {
       e.preventDefault();
     }
 
-    console.log("📝 Starting post process...");
-
-    // ---------------------------------------------
-    // Login check
-    // ---------------------------------------------
-
     if (!admin_user) {
       const confirmLogin = window.confirm(
         "You have to sign up or login to post",
@@ -349,19 +288,11 @@ export default function CanvasVibeEditor() {
       return;
     }
 
-    // ---------------------------------------------
-    // Description validation
-    // ---------------------------------------------
-
     if (!description?.trim()) {
       setError("Please write something about your post.");
       alert("Please write something about your post.");
       return;
     }
-
-    // ---------------------------------------------
-    // Layer validation
-    // ---------------------------------------------
 
     if (!layers?.length || !layers.some((layer) => layer.text?.trim())) {
       setError("Please add/write something in the editor.");
@@ -374,11 +305,6 @@ export default function CanvasVibeEditor() {
       setPostLoading(true);
       setActiveLayerId(null);
 
-      console.log("🔄 Post upload started...");
-
-      // -------------------------------------------
-      // 1. Upload image with retry logic
-      // -------------------------------------------
       const ready_url = await getImageUrl(canvasRef, {
         background: canvasBackground,
         onProgress: (percent) => {
@@ -392,10 +318,6 @@ export default function CanvasVibeEditor() {
         if (!ready_url) {
           throw new Error("Failed to upload image after multiple attempts");
         }
-
-        console.log("✅ Image uploaded:", ready_url);
-
-        console.log("📝 Creating post...");
 
         const response = await axios.post(
           `${API}/api/sentence/post`,
@@ -413,12 +335,6 @@ export default function CanvasVibeEditor() {
             timeout: 30000,
           },
         );
-
-        console.log("✅ Post created:", response?.data);
-
-        // -------------------------------------------
-        // 3. Success
-        // -------------------------------------------
 
         setUploadClicked?.(false);
         setopenSlidWin?.(false);
@@ -500,11 +416,6 @@ export default function CanvasVibeEditor() {
     return res?.data?.secure_url;
   };
 
-  // --------------------------------------------------
-  // DEBUG: Add this to see what's happening on mobile
-  // --------------------------------------------------
-
-  // Add this useEffect for debugging on mobile
   useEffect(() => {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
@@ -521,9 +432,6 @@ export default function CanvasVibeEditor() {
     }
   }, []);
 
-  /* --------------------------------------------------
-     UI
-  -------------------------------------------------- */
   const [photoUrl, setPhotoUrl] = useState(null);
 
   return (
@@ -553,15 +461,15 @@ export default function CanvasVibeEditor() {
         postLoading={postLoading}
       />
 
-      <CanvasArea className="border">
-        <div className="border d-flex justify-content-center h-100 p-2 w-100">
+      <CanvasArea>
+        <div className="d-flex justify-content-center h-100 p-2 w-100">
           <Canvas
             width={"100%"}
             ref={canvasRef}
             style={{
-              backgroundImage: `url(${photoUrl})`,
-              background: photoUrl ?? canvasBackground,
-              backgroundSize: "contain",
+              backgroundImage: photoUrl ? `url(${photoUrl})` : canvasBackground,
+              backgroundSize: "100%",
+              backgroundOrigin: "border-box",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}>

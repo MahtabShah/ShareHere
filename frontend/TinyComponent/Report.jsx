@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Loading } from "./LazyLoading";
 import { useQuote } from "../src/context/QueotrContext";
+import { Textarea } from "../src/maincomponents/CanvasStyled";
 
 const ReportPost = ({ postId }) => {
   const [reason, setReason] = useState("");
@@ -40,7 +41,11 @@ const ReportPost = ({ postId }) => {
   };
 
   return (
-    <div className="w-100 card p-4 mb-4 rounded-0">
+    <div
+      className="w-100 cardp-4 mb-4 py-3 rounded-0 "
+      style={{
+        borderTop: "1px solid var(--border-color)",
+      }}>
       <h5 className="mb-3">Report This Post</h5>
 
       {submitted ? (
@@ -49,17 +54,20 @@ const ReportPost = ({ postId }) => {
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="reason" className="form-label">
+          <div className="mb-3 ">
+            <label htmlFor="reason" className="form-label ">
               Reason
             </label>
             <select
-              className="form-select"
+              className="w-100 p-2 rounded"
+              style={{
+                border: "1px solid var(--border-color)",
+                color: "var(--text-primary)",
+              }}
               id="reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              required
-            >
+              required>
               <option value="">Select a reason</option>
               <option value="abuse">Abuse</option>
               <option value="hate">Hate Speech</option>
@@ -74,15 +82,14 @@ const ReportPost = ({ postId }) => {
             <label htmlFor="details" className="form-label">
               Additional Details (Optional)
             </label>
-            <textarea
-              className="form-control"
+            <Textarea
               id="details"
               rows={6}
               value={details}
               style={{ height: "100px" }}
               onChange={(e) => setDetails(e.target.value)}
               placeholder="Add any extra information..."
-            ></textarea>
+            />
           </div>
 
           {error && (

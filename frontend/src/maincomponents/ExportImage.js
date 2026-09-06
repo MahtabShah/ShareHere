@@ -18,7 +18,7 @@ export const exportElementToFile = async (element, options = {}) => {
     backgroundColor = "#940d6d",
     width = 300,
     height = 300,
-    scale = 2, // Higher = better quality
+    scale = 4, // Higher = better quality
   } = options;
 
   try {
@@ -33,7 +33,7 @@ export const exportElementToFile = async (element, options = {}) => {
 
     // Capture with html2canvas - EXACT COPY
     const canvas = await html2canvas(element, {
-      scale: scale,
+      scale: scale || 4,
       backgroundColor: backgroundColor,
       useCORS: true,
       allowTaint: true,

@@ -146,7 +146,7 @@ export const VibeTabs = () => {
 
               <PostLoading />
             </div>
-            {lgbreakPoint && <SuggetionSlip />}
+            {/* {lgbreakPoint && <SuggetionSlip />} */}
           </div>
         </div>
       </div>
