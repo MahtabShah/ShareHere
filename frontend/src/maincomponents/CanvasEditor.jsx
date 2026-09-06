@@ -114,7 +114,26 @@ export default function CanvasVibeEditor() {
   const [error, setError] = useState("");
   const [showPostPage, setShowPostPage] = useState(false);
   const [canvasBackground, setCanvasBackground] = useState("#940d6d");
+  const [debugLogs, setDebugLogs] = useState([]);
 
+  const log = (...args) => {
+    console.log(...args);
+
+    setDebugLogs((prev) => [
+      ...prev,
+      ...args.map((arg) => {
+        if (typeof arg === "object" && arg !== null) {
+          try {
+            return JSON.stringify(arg, null, 2);
+          } catch {
+            return String(arg);
+          }
+        }
+
+        return String(arg);
+      }),
+    ]);
+  };
   const [layers, setLayers] = useState(initialLayers);
 
   /*
@@ -323,13 +342,13 @@ export default function CanvasVibeEditor() {
 -------------------------------------------------- */
 
   const exportCanvas = async () => {
-    if (!canvasRef.current) {
+    if (!canvasRef?.current) {
       throw new Error("Canvas element not found.");
     }
 
     try {
       const dataUrl = await toJpeg(canvasRef.current, {
-        pixelRatio: 1.5,
+        pixelRatio: 1,
         quality: 0.9,
       });
 
@@ -351,6 +370,7 @@ export default function CanvasVibeEditor() {
     try {
       // 1. Export canvas
       const dataUrl = await exportCanvas();
+      log({ "Dta url 373": dataUrl });
 
       if (!dataUrl) {
         throw new Error("Canvas export returned no image.");
@@ -393,6 +413,7 @@ export default function CanvasVibeEditor() {
       return secureUrl;
     } catch (err) {
       console.error("UPLOAD ERROR:", err);
+      log({ "UPLOAD ERROR:": err?.message || "Image upload failed." });
 
       // Axios error
       if (err?.response) {
@@ -413,31 +434,6 @@ export default function CanvasVibeEditor() {
   /* --------------------------------------------------
    POST
 -------------------------------------------------- */
-  const [debugLogs, setDebugLogs] = useState([]);
-  const log = (...args) => {
-    console.log(...args);
-
-    setDebugLogs((prev) => [
-      ...prev,
-      args
-        .map((arg) => {
-          if (arg instanceof Error) {
-            return `${arg.name}: ${arg.message}\n${arg.stack || ""}`;
-          }
-
-          if (typeof arg === "object" && arg !== null) {
-            try {
-              return JSON.stringify(arg, null, 2);
-            } catch {
-              return String(arg);
-            }
-          }
-
-          return String(arg);
-        })
-        .join(" "),
-    ]);
-  };
 
   const handlePost = async (e) => {
     // Login check
@@ -472,6 +468,7 @@ export default function CanvasVibeEditor() {
 
       // Upload image
       const ready_url = await uploadCanvas();
+      log({ "ready_url ERROR:": ready_url });
 
       if (!ready_url) {
         throw new Error("Failed to upload canvas.");
@@ -494,6 +491,8 @@ export default function CanvasVibeEditor() {
         },
       );
 
+      log({ "response ERROR:": response });
+
       // Success
       setUploadClicked?.(false);
       setopenSlidWin?.(false);
@@ -505,7 +504,7 @@ export default function CanvasVibeEditor() {
     } catch (err) {
       console.error("POST ERROR:", err);
 
-      log({ err });
+      log({ "err ERROR:": response });
 
       const message =
         err?.response?.data?.error?.message ||
