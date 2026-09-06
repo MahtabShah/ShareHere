@@ -280,7 +280,7 @@ const ArrowButtons = ({ handlePrev, handleNext }) => {
 };
 
 const StatusImageViewer = ({ currentStatus, handlePrev, handleNext }) => {
-  const { mobile_break_point } = useQuote();
+  const { mobile_bp } = useQuote();
   return (
     <div
       className="w-100 h-100 d-flex flex-column align-items-center position-relative"
@@ -301,7 +301,7 @@ const StatusImageViewer = ({ currentStatus, handlePrev, handleNext }) => {
         alt="status"
         className="w-100"
         style={{
-          borderRadius: mobile_break_point ? "4px" : "7px",
+          borderRadius: mobile_bp ? "4px" : "7px",
           objectFit: "cover",
           maxHeight: "100%",
           objectPosition: "50% 50%",
@@ -312,8 +312,7 @@ const StatusImageViewer = ({ currentStatus, handlePrev, handleNext }) => {
 };
 
 export default function StatusPage() {
-  const { admin_user, API, token, setadmin_user, mobile_break_point } =
-    useQuote();
+  const { admin_user, API, token, setadmin_user, mobile_bp } = useQuote();
   const { fetch_user_by_Id } = usePost();
   const [users, setUsers] = useState([]);
   // console.log(admin_user);
@@ -579,7 +578,7 @@ export default function StatusPage() {
           className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-90 d-flex  justify-content-center align-items-center"
           style={{
             zIndex: 9919050,
-            padding: mobile_break_point ? "0px" : "10px",
+            padding: mobile_bp ? "0px" : "10px",
           }}>
           <div
             className="position-relative border-0 bg-dark  h-100 w-100"
@@ -588,7 +587,7 @@ export default function StatusPage() {
               backgroundImage: `url(${currentStatus?.image})`,
               backgroundSize: "440% 400%",
               backgroundPosition: "center",
-              borderRadius: mobile_break_point ? "0px" : "7px",
+              borderRadius: mobile_bp ? "0px" : "7px",
             }}>
             <div
               className="p-2 h-100 position-relative justify-content-between d-flex flex-column"
@@ -596,7 +595,7 @@ export default function StatusPage() {
                 backdropFilter:
                   "blur(20px) saturate(1.4) brightness(0.7) sepia(0.1) hue-rotate(-3deg) opacity(0.85)",
 
-                borderRadius: mobile_break_point ? "0px" : "7px",
+                borderRadius: mobile_bp ? "0px" : "7px",
               }}>
               {/* Progress bars */}
               <ProgressBar

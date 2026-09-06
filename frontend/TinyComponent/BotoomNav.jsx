@@ -20,7 +20,7 @@ export default function BottomNav({}) {
   const {
     admin_user,
     token,
-    mobile_break_point,
+    mobile_bp,
     setActiveIndex,
     activeIndex,
     openSlidWin,
@@ -36,8 +36,7 @@ export default function BottomNav({}) {
   const location = useLocation();
 
   const isMobile =
-    mobile_break_point ||
-    (typeof window !== "undefined" && window.innerWidth <= 768);
+    mobile_bp || (typeof window !== "undefined" && window.innerWidth <= 768);
 
   // Normalize nav keys to consistent capitalized form
   const normalizeNav = (val) => {

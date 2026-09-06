@@ -94,7 +94,7 @@ function All_Post_Section({ category, loading }) {
       </div>
     </>
   ) : (
-    <div className="d-flex gap-5 pb-4 bor der flex-column p-2">
+    <div className="d-flex gap-5 pb-4 bor der flex-column">
       {visible_post.map(
         ({ post, user }, idx) =>
           user &&

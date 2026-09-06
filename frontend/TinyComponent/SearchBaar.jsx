@@ -17,7 +17,7 @@ export const SearchBaar = () => {
     all_user,
     admin_user,
     setopenSlidWin,
-    mobile_break_point,
+    mobile_bp,
     API,
     sm_break_point,
   } = useQuote();
@@ -154,8 +154,15 @@ export const SearchBaar = () => {
     };
   }, []);
 
-  const { textPrimary, textSecondary, textMuted, bgSurface, bgPage, bgSubtle, bgBorder } =
-    useTheme();
+  const {
+    textPrimary,
+    textSecondary,
+    textMuted,
+    bgSurface,
+    bgPage,
+    bgSubtle,
+    bgBorder,
+  } = useTheme();
 
   function handleScroll() {
     const div = containerRef.current;
@@ -171,7 +178,9 @@ export const SearchBaar = () => {
   return (
     <div className="position-relative w-100" ref={elementRef}>
       <div className="p-0 m-0 h-100">
-        <form onSubmit={handleSearch} className="position-relative d-flex align-items-center w-100">
+        <form
+          onSubmit={handleSearch}
+          className="position-relative d-flex align-items-center w-100">
           <span
             className="position-absolute start-0 ps-3 d-flex align-items-center"
             style={{
@@ -179,12 +188,19 @@ export const SearchBaar = () => {
               pointerEvents: "none",
               zIndex: 2,
             }}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} style={{ fontSize: "13px" }} />
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              style={{ fontSize: "13px" }}
+            />
           </span>
           <input
             type="text"
             className="form-control rounded-pill active_search"
-            placeholder={mobile_break_point ? "Search vibes, users..." : "Search vibes, creators, tags..."}
+            placeholder={
+              mobile_bp
+                ? "Search vibes, users..."
+                : "Search vibes, creators, tags..."
+            }
             value={query}
             style={{
               background: bgSubtle || "rgba(0,0,0,0.03)",
@@ -228,7 +244,7 @@ export const SearchBaar = () => {
       </div>
 
       {/* Mobile search backdrop */}
-      {query.trim() && isTouched && mobile_break_point && (
+      {query.trim() && isTouched && mobile_bp && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100"
           style={{
@@ -249,7 +265,7 @@ export const SearchBaar = () => {
             boxShadow: "0 10px 32px rgba(0, 0, 0, 0.22)",
             zIndex: 99999,
             overflowY: "auto",
-            ...(mobile_break_point
+            ...(mobile_bp
               ? {
                   position: "fixed",
                   top: "56px",
@@ -277,7 +293,9 @@ export const SearchBaar = () => {
               zIndex: 3,
             }}>
             <div className="d-flex align-items-center gap-2">
-              <span className="fw-semibold" style={{ color: textPrimary, fontSize: "14px" }}>
+              <span
+                className="fw-semibold"
+                style={{ color: textPrimary, fontSize: "14px" }}>
                 Results for &ldquo;{query}&rdquo;
               </span>
             </div>
@@ -311,7 +329,8 @@ export const SearchBaar = () => {
                       transition: "background 0.15s ease",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = bgSubtle || "rgba(0,0,0,0.04)";
+                      e.currentTarget.style.background =
+                        bgSubtle || "rgba(0,0,0,0.04)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = bgSurface;
@@ -344,7 +363,9 @@ export const SearchBaar = () => {
 
           {/* Post results */}
           {Filterd_posts?.length > 0 && (
-            <div className="d-flex flex-column gap-1 p-2 border-top" style={{ borderColor: bgBorder }}>
+            <div
+              className="d-flex flex-column gap-1 p-2 border-top"
+              style={{ borderColor: bgBorder }}>
               <div
                 className="text-muted fw-semibold text-uppercase px-2 pt-1 pb-1"
                 style={{ fontSize: "11px", letterSpacing: "0.5px" }}>
@@ -353,8 +374,13 @@ export const SearchBaar = () => {
               {Filterd_posts.map((res, idx) => {
                 if (!res) return null;
                 const postUser =
-                  (all_user && all_user.find((u) => u?._id === (res?.userId?._id || res?.userId))) ||
-                  (res?.userId && typeof res.userId === "object" ? res.userId : null);
+                  (all_user &&
+                    all_user.find(
+                      (u) => u?._id === (res?.userId?._id || res?.userId),
+                    )) ||
+                  (res?.userId && typeof res.userId === "object"
+                    ? res.userId
+                    : null);
 
                 return (
                   <div
@@ -367,7 +393,8 @@ export const SearchBaar = () => {
                       transition: "background 0.15s ease",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = bgSubtle || "rgba(0,0,0,0.04)";
+                      e.currentTarget.style.background =
+                        bgSubtle || "rgba(0,0,0,0.04)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = bgSurface;
@@ -379,14 +406,12 @@ export const SearchBaar = () => {
                       nevigate(`/home/${res._id}`);
                     }}>
                     <div onClick={(e) => e.stopPropagation()}>
-                      <UserRing
-                        user={postUser}
-                        onlyphoto={true}
-                        dm={40}
-                      />
+                      <UserRing user={postUser} onlyphoto={true} dm={40} />
                     </div>
                     <div className="flex-grow-1 overflow-hidden">
-                      <div className="small fw-semibold mb-1" style={{ color: textPrimary }}>
+                      <div
+                        className="small fw-semibold mb-1"
+                        style={{ color: textPrimary }}>
                         @{postUser?.username || postUser?.name || "creator"}
                       </div>
                       <small
@@ -432,8 +457,13 @@ export const SearchBaar = () => {
           {/* Empty state */}
           {!loading && !Filterd_result.length && !Filterd_posts.length && (
             <div className="text-center py-4 px-3" style={{ color: textMuted }}>
-              <FontAwesomeIcon icon={faMagnifyingGlass} className="mb-2 fs-4 opacity-50" />
-              <p className="mb-0 small">No creators or vibes matching &ldquo;{query}&rdquo;</p>
+              <FontAwesomeIcon
+                icon={faMagnifyingGlass}
+                className="mb-2 fs-4 opacity-50"
+              />
+              <p className="mb-0 small">
+                No creators or vibes matching &ldquo;{query}&rdquo;
+              </p>
             </div>
           )}
         </div>

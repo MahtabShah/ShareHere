@@ -17,7 +17,7 @@ export const QuoteProvider = ({ children }) => {
   const [lgbreakPoint, setlgbreakPoint] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth > 1220 : true,
   );
-  const [mobile_break_point, setmobile_break_point] = useState(() =>
+  const [mobile_bp, setmobile_break_point] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth <= 768 : false,
   );
 
@@ -277,7 +277,7 @@ export const QuoteProvider = ({ children }) => {
         setIsLeftNavOpen,
         isNavCollapsed,
         setIsNavCollapsed,
-        mobile_break_point,
+        mobile_bp,
         lgbreakPoint,
         selectedUserId,
         admin_user,

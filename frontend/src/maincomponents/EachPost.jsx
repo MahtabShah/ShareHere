@@ -41,7 +41,7 @@ export const EachPost = ({ user, each_post }) => {
   const nevigate = useNavigate();
   const [mode, setMode] = useState(each_post?.mode);
 
-  const { admin_user, token, HandleShare, mobile_break_point } = useQuote();
+  const { admin_user, token, HandleShare, mobile_bp } = useQuote();
   const postId = each_post?._id;
 
   const Handlecomment = (e) => setnew_comment(e.target.value);
@@ -130,13 +130,14 @@ export const EachPost = ({ user, each_post }) => {
 
   return (
     <div
-      className="w-100 d-flex flex-column gap-3 p-3"
+      className={`w-100 d-flex gap-2 flex-column`}
       ref={seenRef}
       style={{
         maxWidth: "520px",
         placeSelf: "center",
         background: bgCard,
         position: "relative",
+        padding: mobile_bp ? "max(2vw, 5px)" : "20px",
       }}>
       <PostHeader user={user} admin_user={admin_user} each_post={each_post} />
 
@@ -218,7 +219,7 @@ export const EachPost = ({ user, each_post }) => {
           </div>
 
           <div
-            className={`d-flex gap-1 py-2 justify-content-between like-comment-share`}
+            className={`d-flex gap-1 py-3 justify-content-between like-comment-share`}
             style={{
               color: textSecondary,
             }}>
@@ -281,7 +282,7 @@ export const EachPost = ({ user, each_post }) => {
                 style={{
                   rotate: isdotClicked ? "360deg" : "",
                   transitionDuration: "0.3s",
-                  translate: mobile_break_point ? "4px" : "7px",
+                  translate: mobile_bp ? "4px" : "7px",
                 }}>
                 <BsThreeDotsVertical size={20} />
               </div>
@@ -484,7 +485,7 @@ export const UserRing = ({
 
 const PostHeader = ({ user, admin_user, each_post }) => {
   return (
-    <div className="d-flex align-items-center justify-content-between p-1">
+    <div className="d-flex align-items-center justify-content-between py-2 pe-1">
       <div className="flex-grow-1">
         <UserRing user={user} />
       </div>

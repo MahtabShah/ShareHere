@@ -123,7 +123,7 @@ function MainHeader({ onLogout } = {}) {
 
   const {
     admin_user,
-    mobile_break_point,
+    mobile_bp,
     setActiveIndex,
     setIsLeftNavOpen,
     isNavCollapsed,
@@ -208,12 +208,10 @@ function MainHeader({ onLogout } = {}) {
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         zIndex: 99,
-        left: `${
-          mobile_break_point ? "0px" : isNavCollapsed ? "74px" : "244px"
-        }`,
+        left: `${mobile_bp ? "0px" : isNavCollapsed ? "74px" : "244px"}`,
         right: "0px",
         width: `${
-          mobile_break_point
+          mobile_bp
             ? "100%"
             : isNavCollapsed
               ? "calc(100% - 74px)"
@@ -235,10 +233,10 @@ function MainHeader({ onLogout } = {}) {
           <div
             className="d-flex align-items-center gap-2 flex-shrink-0"
             style={{
-              flex: mobile_break_point ? "0 0 auto" : "0 1 0",
-              minWidth: mobile_break_point ? "auto" : "80px",
+              flex: mobile_bp ? "0 0 auto" : "0 1 0",
+              minWidth: mobile_bp ? "auto" : "80px",
             }}>
-            {mobile_break_point ? (
+            {mobile_bp ? (
               <button
                 type="button"
                 className="btn p-1 d-flex align-items-center justify-content-center border-0 shadow-none"

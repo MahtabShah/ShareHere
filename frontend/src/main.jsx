@@ -104,8 +104,7 @@ const RoutesArr = [
 
 const AppLayout = () => {
   const location = useLocation();
-  const { mobile_break_point, isNavCollapsed, openSlidWin, setActiveIndex } =
-    useQuote();
+  const { mobile_bp, isNavCollapsed, openSlidWin, setActiveIndex } = useQuote();
 
   useEffect(() => {
     if (!openSlidWin) {
@@ -115,9 +114,9 @@ const AppLayout = () => {
   }, [location.pathname, openSlidWin, setActiveIndex]);
 
   const mainStyle = {
-    marginLeft: `${mobile_break_point ? "0px" : isNavCollapsed ? "74px" : "244px"}`,
+    marginLeft: `${mobile_bp ? "0px" : isNavCollapsed ? "74px" : "244px"}`,
     width: `${
-      mobile_break_point
+      mobile_bp
         ? "100%"
         : isNavCollapsed
           ? "calc(100% - 74px)"
@@ -133,7 +132,7 @@ const AppLayout = () => {
     <>
       <LeftNavbar />
       <MainHeader />
-      {mobile_break_point && <BottomNav />}
+      {mobile_bp && <BottomNav />}
       <div className="app-main-content" style={mainStyle}>
         <Routes>
           {RoutesArr.map((r, idx) => (

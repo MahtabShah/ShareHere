@@ -21,7 +21,7 @@ const UserProfile = ({}) => {
     admin_user,
     token,
     all_user,
-    mobile_break_point,
+    mobile_bp,
     sm_break_point,
     lgbreakPoint,
     setActiveIndex,
@@ -225,7 +225,7 @@ const UserProfile = ({}) => {
                 bottom: 0,
                 top: 0,
                 width: `${
-                  mobile_break_point
+                  mobile_bp
                     ? "100%"
                     : sm_break_point
                       ? "calc(100% - 50px)"
@@ -454,7 +454,7 @@ const UserProfile = ({}) => {
             top: "120px",
             maxHeight: "calc(100% - 140px)",
             width: `${
-              mobile_break_point
+              mobile_bp
                 ? "calc(100% - 15px)"
                 : sm_break_point
                   ? "calc(100% - 90px)"

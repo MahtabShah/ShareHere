@@ -63,7 +63,7 @@ export const VibeTabs = () => {
   const { bgPage } = useTheme();
   const [loading, setLoading] = useState(true);
   const [Key, setKey] = useState("all");
-  const { mobile_break_point, sm_break_point, lgbreakPoint, isNavCollapsed } =
+  const { mobile_bp, sm_break_point, lgbreakPoint, isNavCollapsed } =
     useQuote();
 
   useEffect(() => {
@@ -88,10 +88,10 @@ export const VibeTabs = () => {
     fontSize: "16px",
     zIndex: 10,
     top: "54px",
-    left: `${mobile_break_point ? "0px" : isNavCollapsed ? "74px" : "244px"}`,
+    left: `${mobile_bp ? "0px" : isNavCollapsed ? "74px" : "244px"}`,
     right: "0px",
     width: `${
-      mobile_break_point
+      mobile_bp
         ? "100%"
         : isNavCollapsed
           ? "calc(100% - 74px)"

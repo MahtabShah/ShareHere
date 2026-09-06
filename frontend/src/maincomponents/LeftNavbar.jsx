@@ -23,7 +23,7 @@ import { getActiveNavFromPath } from "../context/navUtils";
 export default function LeftNavbar({ onLogout } = {}) {
   const {
     admin_user,
-    mobile_break_point,
+    mobile_bp,
     openSlidWin,
     setopenSlidWin,
     activeIndex,
@@ -84,7 +84,7 @@ export default function LeftNavbar({ onLogout } = {}) {
   const handleNavClick = (key, path) => {
     setopenSlidWin(false);
     setActiveIndex(key);
-    if (mobile_break_point) {
+    if (mobile_bp) {
       setIsLeftNavOpen(false);
     }
     if (path) {
@@ -93,7 +93,7 @@ export default function LeftNavbar({ onLogout } = {}) {
   };
 
   const handleNotificationsClick = () => {
-    if (mobile_break_point) {
+    if (mobile_bp) {
       setIsLeftNavOpen(false);
     }
     setCount(0);
@@ -427,7 +427,7 @@ export default function LeftNavbar({ onLogout } = {}) {
   return (
     <>
       {/* 1. DESKTOP & TABLET PERSISTENT LEFT NAVBAR */}
-      {!mobile_break_point && (
+      {!mobile_bp && (
         <aside
           className="LeftNavbar position-fixed top-0 start-0 h-100 d-flex flex-column"
           style={{
@@ -479,7 +479,7 @@ export default function LeftNavbar({ onLogout } = {}) {
       )}
 
       {/* 2. MOBILE SLIDE-IN OFFCANVAS DRAWER */}
-      {mobile_break_point && isLeftNavOpen && (
+      {mobile_bp && isLeftNavOpen && (
         <>
           {/* Dark Semi-transparent Backdrop Overlay */}
           <div
@@ -584,15 +584,11 @@ export default function LeftNavbar({ onLogout } = {}) {
             className="position-fixed"
             style={{
               zIndex: 999999,
-              top: mobile_break_point ? "52px" : "54px",
-              left: mobile_break_point
-                ? "0"
-                : isNavCollapsed
-                  ? "74px"
-                  : "244px",
-              width: mobile_break_point ? "100%" : "440px",
+              top: mobile_bp ? "52px" : "54px",
+              left: mobile_bp ? "0" : isNavCollapsed ? "74px" : "244px",
+              width: mobile_bp ? "100%" : "440px",
               maxWidth: "100vw",
-              height: mobile_break_point
+              height: mobile_bp
                 ? "calc(100dvh - 102px)"
                 : "calc(100dvh - 54px)",
               transition: "left 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
