@@ -169,8 +169,6 @@ textarea {
 }
 
 .bg-for-readyUrl {
-  max-width: 600px;
-  aspect-ratio: 6/7;
   z-index: 1000;
   flex-shrink: 0;
   white-space: pre-wrap;

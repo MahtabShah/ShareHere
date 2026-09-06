@@ -142,7 +142,7 @@ export const EachPost = ({ user, each_post }) => {
 
       <div className="d-flex borde r flex-column gap-2">
         <div
-          className="overflow-hidden rounded-2"
+          className="overflow-hidden w-100 rounded-2"
           style={{
             maxWidth: "440px",
             alignSelf: "center",
