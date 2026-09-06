@@ -137,7 +137,7 @@ export const EachPost = ({ user, each_post }) => {
         placeSelf: "center",
         background: bgCard,
         position: "relative",
-        padding: mobile_bp ? "max(2vw, 8px)" : "20px",
+        padding: mobile_bp ? "max(2vw, 10px)" : "20px",
       }}>
       <PostHeader user={user} admin_user={admin_user} each_post={each_post} />
 
@@ -681,7 +681,7 @@ export const LikeBtn = ({ post, size = 18 }) => {
           className={`${
             animatingBtn === "likes" ? "animate-rotate" : ""
           } rotate`}>
-          {isliked ? <FaHeart size={size} /> : <BiHeart size={size} />}
+          {isliked ? <FaHeart size={size - 1} /> : <BiHeart size={size} />}
         </span>
 
         {Post?.likes?.length > 0 && (
