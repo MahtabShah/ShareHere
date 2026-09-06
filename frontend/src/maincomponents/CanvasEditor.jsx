@@ -318,17 +318,31 @@ export default function CanvasVibeEditor() {
   -------------------------------------------------- */
 
   const exportCanvas = async () => {
-    if (!canvasRef.current) return null;
+    if (!canvasRef.current) {
+      throw new Error("Canvas element not found.");
+    }
 
     try {
+      console.log("Starting canvas export...");
+
       const dataUrl = await toJpeg(canvasRef.current, {
-        pixelRatio: 2,
+        pixelRatio: 2, // mobile ke liye safer
+        quality: 0.9,
       });
+
+      if (!dataUrl) {
+        throw new Error("Canvas export returned empty data.");
+      }
+
+      console.log("Canvas exported successfully.");
 
       return dataUrl;
     } catch (err) {
       console.error("Canvas export failed:", err);
-      throw err;
+
+      throw err instanceof Error
+        ? err
+        : new Error(String(err || "Canvas export failed"));
     }
   };
 
@@ -337,43 +351,66 @@ export default function CanvasVibeEditor() {
   -------------------------------------------------- */
 
   const uploadCanvas = async () => {
-    const dataUrl = await exportCanvas();
-
-    if (!dataUrl) {
-      throw new Error("Canvas export returned no image.");
-    }
-
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-
-    if (!cloudName) {
-      throw new Error(
-        "VITE_CLOUDINARY_CLOUD_NAME is missing. Check your .env file and restart Vite.",
-      );
-    }
-
-    const imageBlob = base64ToBlob(dataUrl, "image/png");
-
-    const formData = new FormData();
-
-    formData.append("file", imageBlob, "canvas.png");
-    formData.append("upload_preset", "page_Image");
-
     try {
+      console.log("Exporting canvas...");
+
+      const dataUrl = await exportCanvas();
+
+      if (!dataUrl) {
+        throw new Error("Canvas export returned no image.");
+      }
+
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
+      if (!cloudName) {
+        throw new Error("VITE_CLOUDINARY_CLOUD_NAME is missing.");
+      }
+
+      console.log("Converting image...");
+
+      const imageBlob = base64ToBlob(dataUrl, "image/jpeg");
+
+      if (!imageBlob) {
+        throw new Error("Failed to create image blob.");
+      }
+
+      console.log(
+        "Blob size:",
+        (imageBlob.size / 1024 / 1024).toFixed(2),
+        "MB",
+      );
+
+      const formData = new FormData();
+
+      formData.append("file", imageBlob, "canvas.jpg");
+      formData.append("upload_preset", "page_Image");
+
+      console.log("Uploading to Cloudinary...");
+
       const response = await axios.post(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
         formData,
       );
 
+      console.log("Cloudinary response:", response.data);
+
       return response.data.secure_url;
     } catch (err) {
-      console.error("Cloudinary status:", err?.response?.status);
+      console.error("UPLOAD ERROR:", err);
 
-      console.error("Cloudinary error:", err?.response?.data);
+      console.error("UPLOAD ERROR MESSAGE:", err?.message);
 
-      throw err;
+      console.error("UPLOAD ERROR RESPONSE:", err?.response?.data);
+
+      throw err instanceof Error
+        ? err
+        : new Error(
+            err?.message ||
+              err?.response?.data?.message ||
+              "Image upload failed.",
+          );
     }
   };
-
   /* --------------------------------------------------
      OPEN POST
   -------------------------------------------------- */
@@ -415,13 +452,19 @@ export default function CanvasVibeEditor() {
       setPostLoading(true);
       setActiveLayerId(null);
 
+      console.log("1. Starting upload...");
+
       const ready_url = await uploadCanvas();
+
+      console.log("2. Image URL:", ready_url);
 
       if (!ready_url) {
         throw new Error("Failed to upload canvas.");
       }
 
-      await axios.post(
+      console.log("3. Creating post...");
+
+      const response = await axios.post(
         `${API}/api/sentence/post`,
         {
           ready_url,
@@ -437,6 +480,8 @@ export default function CanvasVibeEditor() {
         },
       );
 
+      console.log("4. Post created:", response.data);
+
       setUploadClicked?.(false);
       setopenSlidWin?.(false);
       setActiveIndex?.(null);
@@ -445,12 +490,19 @@ export default function CanvasVibeEditor() {
 
       navigate("/home");
     } catch (err) {
-      console.error("Post failed:", err);
-      alert("some thing is wrong..");
+      console.error("========== POST ERROR ==========");
+      console.error("Error:", err);
+      console.error("Message:", err?.message);
+      console.error("Response:", err?.response);
+      console.error("Response data:", err?.response?.data);
+      console.error("================================");
 
-      setError(
-        err?.response?.data?.message || err?.message || "Failed to post",
-      );
+      const message =
+        err?.response?.data?.message || err?.message || "Failed to post";
+
+      setError(message);
+
+      alert(message);
     } finally {
       setPostLoading(false);
     }
