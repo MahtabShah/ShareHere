@@ -35,7 +35,7 @@ import { RiFocusMode } from "react-icons/ri";
 import { Rnd } from "react-rnd";
 import styled from "styled-components";
 import { useTheme } from "../context/Theme";
-import { toJpeg } from "html-to-image";
+import { toPng } from "html-to-image";
 import { toBlob } from "html-to-image";
 
 import { v4 as uuidv4 } from "uuid";
@@ -43,6 +43,8 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useQuote } from "../context/QueotrContext";
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
 const initBorder = "1px solid var(--border-color)";
 
 const bgColors = [
@@ -347,142 +349,61 @@ export default function CanvasVibeEditor() {
     ]);
   };
 
-  // --------------------------------------------------
-  // EXPORT HTML ELEMENT → BLOB
-  // --------------------------------------------------
+  function base64ToBlob(base64, contentType = "image/png") {
+    const byteCharacters = atob(base64.split(",")[1]); // Remove data:image/png;base64, part
+    const byteArrays = [];
 
-  const exportCanvas = async () => {
-    const element = canvasRef?.current;
-
-    if (!element) {
-      throw new Error("Canvas element not found.");
+    for (let i = 0; i < byteCharacters.length; i += 512) {
+      const slice = byteCharacters.slice(i, i + 512);
+      const byteNumbers = new Array(slice.length);
+      for (let j = 0; j < slice.length; j++) {
+        byteNumbers[j] = slice.charCodeAt(j);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
     }
 
-    try {
-      log("Starting image export...");
-
-      const imageBlob = await toBlob(element, {
-        pixelRatio: 1,
-        cacheBust: true,
-        backgroundColor: "#ffffff",
-      });
-
-      if (!imageBlob) {
-        throw new Error("html-to-image returned an empty Blob.");
-      }
-
-      if (imageBlob.size === 0) {
-        throw new Error("Generated image Blob is empty.");
-      }
-
-      log("Image exported successfully.");
-      log("Blob size:", imageBlob.size);
-      log("Blob type:", imageBlob.type);
-
-      return imageBlob;
-    } catch (err) {
-      console.error("EXPORT ERROR:", err);
-
-      log("EXPORT ERROR:", err?.message || "Canvas export failed.");
-
-      if (err?.stack) {
-        log("EXPORT STACK:", err.stack);
-      }
-
-      throw new Error(err?.message || "Canvas export failed.");
-    }
-  };
-
-  // --------------------------------------------------
-  // UPLOAD CANVAS
-  // --------------------------------------------------
-
-  const uploadCanvas = async () => {
-    try {
-      // ---------------------------------------------
-      // 1. Export HTML → Blob
-      // ---------------------------------------------
-
-      const imageBlob = await exportCanvas();
-
-      log("Image Blob created.");
-      log("Blob size:", imageBlob.size);
-
-      // ---------------------------------------------
-      // 2. Cloudinary configuration
-      // ---------------------------------------------
-
-      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-
-      if (!cloudName) {
-        throw new Error("VITE_CLOUDINARY_CLOUD_NAME is missing.");
-      }
-
-      // ---------------------------------------------
-      // 3. FormData
-      // ---------------------------------------------
-
-      const formData = new FormData();
-
-      formData.append("file", imageBlob, "canvas.jpg");
-
-      formData.append("upload_preset", "page_Image");
-
-      // ---------------------------------------------
-      // 4. Upload to Cloudinary
-      // ---------------------------------------------
-
-      log("Uploading image to Cloudinary...");
-
-      const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        formData,
-      );
-
-      // ---------------------------------------------
-      // 5. Validate response
-      // ---------------------------------------------
-
-      log("Cloudinary response:", response?.data);
-
-      const secureUrl = response?.data?.secure_url;
-
-      if (!secureUrl) {
-        throw new Error("Cloudinary did not return an image URL.");
-      }
-
-      log("Cloudinary upload successful.");
-      log("Secure URL:", secureUrl);
-
-      return secureUrl;
-    } catch (err) {
-      console.error("UPLOAD ERROR:", err);
-
-      log("UPLOAD ERROR:", err?.message || "Image upload failed.");
-
-      // Axios error
-      if (err?.response) {
-        console.error("Cloudinary/API status:", err.response.status);
-
-        console.error("Cloudinary/API data:", err.response.data);
-
-        log("Cloudinary status:", err.response.status);
-
-        log("Cloudinary response:", err.response.data);
-      }
-
-      throw new Error(
-        err?.response?.data?.error?.message ||
-          err?.response?.data?.message ||
-          err?.message ||
-          "Image upload failed.",
-      );
-    }
-  };
-
+    return new Blob(byteArrays, { type: contentType });
+  }
   // --------------------------------------------------
   // POST
-  // --------------------------------------------------
+  // --
+  // ------------------------------------------------
+  const exportAsImage = async () => {
+    if (!canvasRef.current) return;
+
+    try {
+      const dataUrl = await toPng(canvasRef.current, {
+        backgroundColor: canvasBackground,
+        pixelRatio: 2, // Higher quality
+      });
+
+      const blob = base64ToBlob(dataUrl, "image/png");
+      const blobUrl = URL.createObjectURL(blob);
+      // setExportUrl(dataUrl); // This is now a shorter blob URL
+      console.log("blob ", `blob:${blobUrl}`);
+      return dataUrl;
+    } catch (error) {
+      console.error("Error exporting image:", error);
+    }
+  };
+
+  const handleCapture = async () => {
+    const dataURL = await exportAsImage();
+
+    const formData = new FormData();
+    formData.append("file", dataURL);
+    formData.append("upload_preset", "page_Image");
+    formData.append("cloud_name", CLOUDINARY_CLOUD_NAME);
+
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      formData,
+    );
+
+    console.log("Uploaded URL:", res.data.secure_url);
+    return res.data.secure_url;
+  };
 
   const handlePost = async (e) => {
     // ---------------------------------------------
@@ -532,7 +453,7 @@ export default function CanvasVibeEditor() {
 
       log("Starting post upload...");
 
-      const ready_url = await uploadCanvas();
+      const ready_url = await handleCapture();
 
       log("ready_url:", ready_url);
 
@@ -604,6 +525,7 @@ export default function CanvasVibeEditor() {
       setPostLoading(false);
     }
   };
+
   /* --------------------------------------------------
      UI
   -------------------------------------------------- */
@@ -724,7 +646,7 @@ function PostPage({
 
         <h2>Create Post</h2>
       </PostHeader>
-
+      {/* 
       <div
         style={{
           top: "100px",
@@ -744,7 +666,7 @@ function PostPage({
         {debugLogs.map((log, i) => (
           <div key={i}>{log}</div>
         ))}
-      </div>
+      </div> */}
 
       <PostForm>
         <FormGroup>
